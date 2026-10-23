@@ -1,0 +1,1763 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1E3B27"><meta name="mobile-web-app-capable" content="yes"><title>Control del Campo</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>html,body{margin:0;padding:0}img{max-width:100%}</style></head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700;800&display=swap">
+<style>
+/* Concepto: app de bolsillo para el campo. Una portada con hilera de nogales en perspectiva (lo único atrevido),
+   barra de pestañas fija abajo para cambiar de módulo con un toque, módulos con color propio
+   (trabajo = nogal, aplicaciones = limón, riego = agua del pozo, campo = madera de nogal), hojas inferiores con botón siempre visible. */
+:root{
+  --bg:#EDEFE8; --surface:#FAFBF7; --surface-2:#E2E8DB; --fg:#17231A; --muted:#566659; --line:#D2D9CA;
+  --accent:#2C5234; --on-accent:#F7F9F2; --hero:#1E3B27; --on-hero:#F1F5EA; --focus:#E4B91C;
+  --lemon:#E4B91C; --lemon-bg:#FAF0C6; --lemon-fg:#6B5400;
+  --water:#27688A; --water-bg:#DAE9F1;
+  --wood:#7A5A3B; --wood-bg:#EEE4D6;
+  --slate:#4F5E68; --slate-bg:#E2E7EA;
+  --ok-bg:#D9E9D0; --ok-fg:#27472A; --idle-bg:#E6E3D6; --idle-fg:#5F5238;
+  --alert:#B1472A; --alert-bg:#F6E0D7;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1711; --surface:#18221A; --surface-2:#223024; --fg:#E8EEE3; --muted:#9DAF9F; --line:#2D3C30;
+    --accent:#8CC487; --on-accent:#0D1A10; --hero:#1A3824; --on-hero:#F1F5EA; --focus:#EBC43A;
+    --lemon:#EBC43A; --lemon-bg:#38301A; --lemon-fg:#EFD677;
+    --water:#82B8D6; --water-bg:#1B303E;
+    --wood:#D4B087; --wood-bg:#33291E;
+    --slate:#A9B7BF; --slate-bg:#25303A;
+    --ok-bg:#1F3A22; --ok-fg:#B4DDA9; --idle-bg:#312D20; --idle-fg:#D8C397;
+    --alert:#EE9068; --alert-bg:#3B2419;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1711; --surface:#18221A; --surface-2:#223024; --fg:#E8EEE3; --muted:#9DAF9F; --line:#2D3C30;
+  --accent:#8CC487; --on-accent:#0D1A10; --hero:#1A3824; --on-hero:#F1F5EA; --focus:#EBC43A;
+  --lemon:#EBC43A; --lemon-bg:#38301A; --lemon-fg:#EFD677;
+  --water:#82B8D6; --water-bg:#1B303E;
+  --wood:#D4B087; --wood-bg:#33291E;
+  --slate:#A9B7BF; --slate-bg:#25303A;
+  --ok-bg:#1F3A22; --ok-fg:#B4DDA9; --idle-bg:#312D20; --idle-fg:#D8C397;
+  --alert:#EE9068; --alert-bg:#3B2419;
+  color-scheme:dark;
+}
+[hidden]{display:none !important}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg); color:var(--fg); font:17px/1.45 var(--font-body);
+  padding-block:0 112px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg)}
+.wrap{max-width:540px; margin:0 auto; display:grid; gap:16px}
+h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0; letter-spacing:-.01em}
+p{margin:0}
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:12px 10px}
+.mark{flex:none; width:34px; height:34px; color:var(--accent)}
+.top h1{font-size:19px; line-height:1.1; font-weight:700}
+.top .where{font-size:13px; color:var(--muted)}
+.top .date{margin-left:auto; text-align:right; font-size:13.5px; color:var(--muted); min-width:0}
+.top .date::first-letter{text-transform:uppercase}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; min-width:0}
+#app{display:grid; gap:16px; min-width:0}
+.sect{display:grid; gap:12px}
+.sect h2,.ch{font-size:19px; font-weight:700}
+.ch{display:flex; align-items:center; gap:8px}
+.ch svg{flex:none; width:22px; height:22px}
+.sub{color:var(--muted)}
+.note{font-size:15px; color:var(--muted)}
+.note.warn{color:var(--alert); background:var(--alert-bg); padding:10px 12px; border-radius:12px; font-weight:700}
+/* chips */
+.chip{display:inline-flex; align-items:center; gap:6px; justify-self:start; padding:4px 11px; border-radius:999px; font-size:14px; font-weight:700; line-height:1.3}
+.chip.ok{background:var(--ok-bg); color:var(--ok-fg)}
+.chip.idle{background:var(--idle-bg); color:var(--idle-fg)}
+.chip.warn{background:var(--alert-bg); color:var(--alert)}
+.chip.info{background:var(--water-bg); color:var(--water)}
+.who .chip{white-space:nowrap; flex-shrink:0}
+/* botones */
+button{font:inherit; font-weight:700; border-radius:14px; cursor:pointer; min-height:52px; padding:10px 18px; border:0; background:var(--surface-2); color:var(--fg); -webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+button.primary{width:100%; min-height:60px; font-size:19px; border-radius:16px; background:var(--accent); color:var(--on-accent)}
+button.small{min-height:44px; padding:8px 16px; font-size:16px}
+button:active{transform:scale(.985)}
+button[disabled]{cursor:default; opacity:.55}
+.link{background:transparent; color:var(--accent); min-height:44px; padding:6px 4px; justify-self:start}
+/* portada */
+.hero{background:var(--hero); color:var(--on-hero); border-radius:26px; overflow:hidden; display:grid}
+.hero-top{position:relative; height:164px}
+.hero-top svg{position:absolute; inset:0; width:100%; height:100%; display:block}
+.hero-top .hi{position:absolute; left:20px; top:16px; right:90px; display:grid; gap:2px}
+.hero-top h2{font-size:32px; line-height:1.05; font-weight:800; letter-spacing:-.02em}
+.hero-top p{font-size:14px; opacity:.8}
+.hero-body{padding:6px 20px 20px; display:grid; gap:12px}
+.hero .chip{background:rgba(255,255,255,.14); color:var(--on-hero)}
+.hero .chip i{width:8px; height:8px; border-radius:50%; background:#8FD080; display:inline-block}
+.hero .chip.idle i{background:#E4B91C}
+.hero .big{font-family:var(--font-display); font-size:24px; line-height:1.15; font-weight:700; text-wrap:balance}
+.hero .sub{color:var(--on-hero); opacity:.78}
+.hero button.primary{background:var(--lemon); color:#2A2100; min-height:64px; font-size:21px}
+.hero button.primary.leave{background:var(--on-hero); color:var(--hero)}
+.hero .note.warn{background:rgba(255,255,255,.12); color:#FFD2BD}
+.hero label{color:var(--on-hero)}
+.hero input{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.28); color:var(--on-hero)}
+.hero input::placeholder{color:rgba(241,245,234,.55)}
+/* hoy toca */
+.card.prio{background:var(--lemon-bg); border-color:transparent; color:var(--fg)}
+.card.prio .ch{color:var(--lemon-fg)}
+.card.prio .asg{border-color:color-mix(in srgb,var(--lemon-fg) 25%,transparent)}
+/* módulos */
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.tile{--mc:var(--accent); --mb:var(--ok-bg); display:grid; grid-template-rows:auto 1fr auto; align-content:start; gap:2px; justify-items:start; text-align:left; background:var(--surface); border:1px solid var(--line); color:var(--fg); min-height:118px; padding:14px; border-radius:20px}
+.tile[data-m=aplic]{--mc:var(--lemon-fg); --mb:var(--lemon-bg)}
+.tile[data-m=riego]{--mc:var(--water); --mb:var(--water-bg)}
+.tile[data-m=campo]{--mc:var(--wood); --mb:var(--wood-bg)}
+.tile[data-m=personal],.tile[data-m=permisos]{--mc:var(--slate); --mb:var(--slate-bg)}
+.tile .ti{width:40px; height:40px; border-radius:12px; background:var(--mb); color:var(--mc); display:grid; place-items:center; margin-bottom:8px}
+.tile .ti svg{width:23px; height:23px}
+.tile b{font-family:var(--font-display); font-size:17px; line-height:1.15; font-weight:700}
+.tile small{font-weight:400; font-size:14px; color:var(--muted); line-height:1.3}
+.tile.wide{grid-column:1/-1; grid-template-columns:auto 1fr; grid-template-rows:auto auto; column-gap:14px; align-items:center; min-height:76px; padding:12px 14px}
+.tile.wide .ti{grid-row:1/3; margin:0}
+.tile.wide b,.tile.wide small{align-self:center}
+/* semana */
+.week{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; height:118px}
+.wd{display:grid; grid-template-rows:1fr auto; justify-items:center; gap:6px; min-width:0}
+.wd .bar{align-self:end; display:grid; justify-items:center; gap:3px; width:100%; min-height:0}
+.wd .hv{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.wd .col{width:100%; max-width:30px; border-radius:9px 9px 5px 5px; background:color-mix(in srgb,var(--accent) 58%,var(--surface))}
+.wd.on .col{background:var(--accent)}
+.wd.none .col{background:var(--surface-2); height:5px !important}
+.wd .dl{font-size:13px; color:var(--muted)}
+.wd.on .dl{color:var(--fg); font-weight:700}
+.total{display:flex; justify-content:space-between; gap:12px; padding-top:10px; border-top:1px solid var(--line); font-weight:700; font-variant-numeric:tabular-nums}
+details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; align-items:center; color:var(--accent)}
+/* listas */
+.rows{display:grid; gap:0}
+.row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:10px 0; border-top:1px solid var(--line); min-width:0}
+.row:first-child{border-top:0}
+.row .l{min-width:0; overflow-wrap:anywhere}
+.row .r{font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; color:var(--muted)}
+.row .r b{color:var(--fg)}
+.asg{display:grid; gap:8px; padding:14px 0; border-top:1px solid var(--line)}
+.asg:first-of-type{border-top:0; padding-top:0}
+.asg .who{display:flex; justify-content:space-between; align-items:center; gap:10px; min-width:0}
+.asg .who b{font-family:var(--font-display); font-size:18px; font-weight:700; min-width:0; overflow-wrap:anywhere}
+.asg > button + button{margin-top:-2px}
+.asg > button.small{background:transparent; color:var(--alert); justify-self:start; padding-inline:0}
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.pp{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line)}
+.pp:first-child{border-top:0}
+.av{width:42px; height:42px; border-radius:50%; background:var(--ok-bg); color:var(--ok-fg); display:grid; place-items:center; font:700 17px var(--font-display)}
+.pp b{font-family:var(--font-display); font-size:17px}
+.pp .sub{font-size:14px}
+.cua{display:grid; gap:8px}
+.cua .head{display:flex; align-items:center; gap:8px; min-width:0}
+.cua .head h3{font-size:19px; min-width:0; overflow-wrap:anywhere}
+.cua button.small{justify-self:start}
+.dot{display:inline-block; width:12px; height:12px; border-radius:50%; background:var(--accent); flex:none}
+.dot.lemon{background:var(--lemon)}
+.stock{font-family:var(--font-display); font-size:30px; line-height:1.1; font-weight:700; font-variant-numeric:tabular-nums}
+.meter{height:12px; border-radius:7px; background:var(--surface-2); overflow:hidden}
+.meter i{display:block; height:100%; border-radius:7px; background:var(--water)}
+.meter.over i{background:var(--alert)}
+.calc{white-space:pre-line; background:var(--surface-2); border-radius:14px; padding:12px 14px; font-variant-numeric:tabular-nums; font-size:16px; line-height:1.55}
+/* encabezado de pantalla */
+.ph{--mc:var(--accent); --mb:var(--ok-bg); display:flex; align-items:center; gap:12px; min-width:0}
+.ph[data-m=aplic]{--mc:var(--lemon-fg); --mb:var(--lemon-bg)}
+.ph[data-m=riego]{--mc:var(--water); --mb:var(--water-bg)}
+.ph[data-m=campo]{--mc:var(--wood); --mb:var(--wood-bg)}
+.ph[data-m=personal],.ph[data-m=permisos]{--mc:var(--slate); --mb:var(--slate-bg)}
+.ph .pi{flex:none; width:46px; height:46px; border-radius:14px; background:var(--mb); color:var(--mc); display:grid; place-items:center}
+.ph .pi svg{width:26px; height:26px}
+.ph h2{font-size:26px; line-height:1.05; font-weight:800; letter-spacing:-.02em}
+.ph p{font-size:14.5px; color:var(--muted)}
+/* formularios */
+.field{display:grid; gap:6px}
+label{font-weight:700; font-size:16px}
+input[type=text],input[type=date],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
+input[type=text]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+select{appearance:none; -webkit-appearance:none; padding-right:44px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23738575' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center}
+textarea{font-size:18px; min-height:92px; resize:vertical}
+/* barra de pestañas */
+.nav{position:fixed; left:0; right:0; bottom:0; z-index:15; display:grid; grid-template-columns:repeat(5,1fr); gap:2px; background:var(--surface); border-top:1px solid var(--line);
+  padding:8px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.nav button{display:grid; justify-items:center; gap:3px; min-height:58px; padding:6px 2px; background:transparent; color:var(--muted); font-size:12.5px; font-weight:700; border-radius:16px}
+.nav .ni{width:54px; height:30px; border-radius:15px; display:grid; place-items:center}
+.nav .ni svg{width:23px; height:23px}
+.nav button[aria-current=page]{color:var(--fg)}
+.nav button[aria-current=page] .ni{background:var(--ok-bg); color:var(--ok-fg)}
+.nav button[data-s=aplic][aria-current=page] .ni{background:var(--lemon-bg); color:var(--lemon-fg)}
+.nav button[data-s=riego][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
+.nav button[data-s=campo][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
+.nav .nb{position:relative}
+.nav .nb i{position:absolute; top:-4px; right:6px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--alert); color:#fff; font:700 11.5px/18px var(--font-body); text-align:center; font-style:normal}
+/* hojas inferiores */
+.sheet{position:fixed; inset:0; z-index:40; background:rgba(8,16,10,.55); display:flex; align-items:flex-end; justify-content:center; padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px)}
+.sheet .box{width:100%; max-width:560px; max-height:92vh; background:var(--surface); border-radius:26px 26px 0 0; display:flex; flex-direction:column; overflow:hidden}
+.sheet .box::before{content:""; flex:none; width:44px; height:5px; border-radius:3px; background:var(--line); margin:10px auto 0}
+.sheet .box > h2{flex:none; font-size:24px; font-weight:800; padding:14px 20px 12px}
+.sbody{overflow-y:auto; padding:2px 20px 18px; display:grid; gap:14px; align-content:start; overscroll-behavior:contain}
+.sbody h3{font:700 15px var(--font-body); color:var(--accent); padding-top:12px; border-top:1px solid var(--line)}
+.sbody > h3:first-child{border-top:0; padding-top:0}
+.sbody > div:not(.field){display:grid; gap:14px}
+.sfoot{flex:none; display:grid; gap:4px; padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); background:var(--surface)}
+.sfoot button:not(.primary){background:transparent; color:var(--muted); min-height:46px}
+.sheet .sub{font-size:17px}
+.cal{display:grid; grid-template-columns:repeat(7,1fr); gap:4px}
+.cal .h{font-size:13px; color:var(--muted); text-align:center; padding-bottom:2px}
+.cal .d{min-height:50px; border-radius:10px; background:var(--surface-2); padding:4px 2px; display:grid; align-content:start; justify-items:center; gap:2px; font-size:13px; font-variant-numeric:tabular-nums}
+.cal .d.off{background:transparent}
+.cal .d.hoy{outline:2px solid var(--accent)}
+.cal .d.fin{opacity:.7}
+.cal .b{font:700 11.5px/1 var(--font-body); min-width:20px; text-align:center; padding:3px 4px; border-radius:7px; background:var(--accent); color:var(--on-accent)}
+.cal .b.w{background:var(--wood); color:#fff}
+.cal .b.p{background:transparent; color:var(--fg); border:1.5px dashed var(--muted)}
+.mes{display:flex; align-items:center; justify-content:space-between; gap:8px}
+.mes b{font-family:var(--font-display); font-size:18px; text-transform:capitalize}
+.mes button{min-height:44px; padding:6px 16px}
+.saldo{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center}
+.saldo div{background:var(--surface-2); border-radius:14px; padding:10px 4px}
+.saldo b{display:block; font:700 24px var(--font-display); font-variant-numeric:tabular-nums}
+.saldo small{font-size:13px; color:var(--muted)}
+.toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(92px + env(safe-area-inset-bottom,0px)); z-index:50;
+  background:var(--fg); color:var(--bg); padding:12px 18px; border-radius:14px; font-weight:700; max-width:calc(100% - 32px); text-align:center; box-shadow:0 8px 24px -8px rgba(0,0,0,.4)}
+@media (prefers-reduced-motion: no-preference){
+  button{transition:transform .08s, background-color .15s}
+  .sheet:not([hidden]) .box{animation:subir .24s ease-out}
+  .toast:not([hidden]){animation:aparece .2s ease-out}
+  @keyframes subir{from{transform:translateY(32px); opacity:.4}}
+  @keyframes aparece{from{opacity:0; transform:translate(-50%,8px)}}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 35V17"/><path d="M20 17c-7 0-11-4-11-10 7 0 11 4 11 10z"/><path d="M20 24c6 0 10-3.500 10-9-6 0-10 3.500-10 9z"/>
+    </svg>
+    <div style="min-width:0">
+      <h1>Control del Campo</h1>
+      <p class="where">Chincolco, Petorca</p>
+    </div>
+    <p class="date" id="fechaHoy"></p>
+  </header>
+  <main id="app" aria-live="polite"></main>
+</div>
+<nav class="nav" id="nav" aria-label="Módulos" hidden></nav>
+<div class="sheet" id="sheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <h2 id="sheetTitle"></h2>
+<div class="sbody">
+    <p class="sub" id="sheetText"></p>
+</div>
+<div class="sfoot">    <button class="primary" id="sheetOk">Sí, registrar</button>
+    <button id="sheetCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="editSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="edTitle">
+    <h2 id="edTitle">Editar cuartel</h2>
+<div class="sbody">
+    <div class="field"><label for="edNombre">Nombre</label><input type="text" id="edNombre" maxlength="40"></div>
+    <div class="field"><label for="edEsp">Especie</label><select id="edEsp"><option>Nogal</option><option>Limón</option></select></div>
+    <div class="field"><label for="edVar">Variedad</label><input type="text" id="edVar" maxlength="30" placeholder="Ej: Chandler"></div>
+    <div class="field"><label for="edAnio">Año de plantación</label><input type="text" id="edAnio" inputmode="numeric" maxlength="4" placeholder="Ej: 2018"></div>
+    <div class="field"><label for="edHa">Hectáreas</label><input type="text" id="edHa" inputmode="decimal" placeholder="Ej: 0,75"></div>
+    <div class="field"><label for="edArb">Número de árboles</label><input type="text" id="edArb" inputmode="numeric" placeholder="Ej: 250"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="edOk">Guardar</button>
+    <button id="edCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="arbSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="arTitle">
+    <h2 id="arTitle">Registrar un árbol</h2>
+<div class="sbody">
+    <div class="field"><label for="arSector">Sector</label><select id="arSector"></select></div>
+    <div class="field"><label for="arHilera">Hilera</label><input type="text" id="arHilera" inputmode="numeric" maxlength="3" placeholder="Ej: 5"></div>
+    <div class="field"><label for="arArbol">Árbol</label><input type="text" id="arArbol" inputmode="numeric" maxlength="3" placeholder="Ej: 10"></div>
+    <div class="field"><label for="arEstado">Estado</label><select id="arEstado"></select></div>
+    <div class="field"><label for="arTexto">Qué observas</label><textarea id="arTexto" maxlength="400" placeholder="Ej: presenta agallas y descoloración en su follaje"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="arOk">Guardar registro</button>
+    <button id="arCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="apSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="apTitle">
+    <h2 id="apTitle">Registrar aplicación</h2>
+<div class="sbody">
+    <div class="field"><label for="apSector">¿Dónde?</label><select id="apSector"></select></div>
+    <div class="field"><label for="apEquipo">Equipo</label><select id="apEquipo"></select></div>
+    <h3>Producto principal</h3>
+    <div class="field"><label for="apProd">Producto</label><select id="apProd"></select></div>
+    <div class="field"><label for="apModo">¿Cómo se mide la dosis?</label><select id="apModo"></select></div>
+    <div class="field" id="apDosisF"><label for="apDosis" id="apDosisL">Dosis por hectárea (según la etiqueta)</label><input type="text" id="apDosis" inputmode="decimal" placeholder="Ej: 3"></div>
+    <h3>Producto secundario (opcional)</h3>
+    <div class="field"><label for="apProd2">Mezclar con</label><select id="apProd2"></select></div>
+    <p class="note" id="ap2Hint">Elige un producto para indicar su dosis.</p>
+    <div id="ap2Box" hidden>
+      <div class="field"><label for="apModo2">¿Cómo se mide la dosis?</label><select id="apModo2"></select></div>
+      <div class="field" id="apDosis2F"><label for="apDosis2" id="apDosis2L">Porcentaje de la mezcla (%)</label><input type="text" id="apDosis2" inputmode="decimal" placeholder="Ej: 2"></div>
+    </div>
+    <h3>Agua de la mezcla</h3>
+    <div class="field"><label for="apHa">Superficie tratada (ha)</label><input type="text" id="apHa" inputmode="decimal" placeholder="Ej: 0,5"></div>
+    <div class="field"><label for="apAgua">Agua por ha (L), si aplica</label><input type="text" id="apAgua" inputmode="decimal" placeholder="Ej: 100"></div>
+    <div class="field"><label for="apAguaTot">Agua total para diluir (L)</label><input type="text" id="apAguaTot" inputmode="decimal" placeholder="Ej: 20"></div>
+    <div class="field"><label for="apTanque">Capacidad del estanque o tambor (L)</label><input type="text" id="apTanque" inputmode="decimal" placeholder="Ej: 20"></div>
+    <button type="button" class="link" id="apLlenar">Usar la capacidad completa como agua total</button>
+    <p class="note warn" id="apAviso" hidden></p>
+    <p class="calc" id="apCalc"></p>
+    <h3>Cantidades que se descuentan de la bodega</h3>
+    <div class="field"><label for="apCant" id="apCantLbl">Producto principal usado</label><input type="text" id="apCant" inputmode="decimal" placeholder="Ej: 1,5"></div>
+    <div class="field" id="apCant2F" hidden><label for="apCant2" id="apCant2Lbl">Producto secundario usado</label><input type="text" id="apCant2" inputmode="decimal" placeholder="Ej: 0,4"></div>
+    <div class="field"><label for="apNotas">Notas (opcional)</label><textarea id="apNotas" maxlength="300" placeholder="Ej: viento suave, se protegieron los troncos"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="apOk">Guardar aplicación</button>
+    <button id="apCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="plSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="plTitle">
+    <h2 id="plTitle">Planificar aplicación</h2>
+<div class="sbody">
+    <div class="field"><label for="plFecha">Día</label><input type="date" id="plFecha"></div>
+    <div class="field"><label for="plSector">¿Dónde?</label><select id="plSector"></select></div>
+    <div class="field"><label for="plEquipo">Equipo</label><select id="plEquipo"></select></div>
+    <h3>Producto principal</h3>
+    <div class="field"><label for="plProd">Producto</label><select id="plProd"></select></div>
+    <div class="field"><label for="plModo">¿Cómo se mide la dosis?</label><select id="plModo"></select></div>
+    <div class="field" id="plDosisF"><label for="plDosis" id="plDosisL">Dosis por hectárea (según la etiqueta)</label><input type="text" id="plDosis" inputmode="decimal" placeholder="Ej: 3"></div>
+    <div class="field" id="plCantF" hidden><label for="plCant" id="plCantLbl">Cantidad del principal</label><input type="text" id="plCant" inputmode="decimal" placeholder="Ej: 2"></div>
+    <h3>Producto secundario (opcional)</h3>
+    <div class="field"><label for="plProd2">Mezclar con</label><select id="plProd2"></select></div>
+    <p class="note" id="pl2Hint">Elige un producto para indicar su dosis.</p>
+    <div id="pl2Box" hidden>
+      <div class="field"><label for="plModo2">¿Cómo se mide la dosis?</label><select id="plModo2"></select></div>
+      <div class="field" id="plDosis2F"><label for="plDosis2" id="plDosis2L">Porcentaje de la mezcla (%)</label><input type="text" id="plDosis2" inputmode="decimal" placeholder="Ej: 2"></div>
+      <div class="field" id="plCant2F" hidden><label for="plCant2" id="plCant2Lbl">Cantidad del secundario</label><input type="text" id="plCant2" inputmode="decimal" placeholder="Ej: 4"></div>
+    </div>
+    <h3>Agua de la mezcla</h3>
+    <div class="field"><label for="plAguaTot">Agua total para diluir (L)</label><input type="text" id="plAguaTot" inputmode="decimal" placeholder="Ej: 200"></div>
+    <button type="button" class="link" id="plLlenar">Usar la capacidad completa del equipo</button>
+    <p class="calc" id="plCalc" hidden></p>
+    <div class="field"><label for="plNotas">Para qué (opcional)</label><textarea id="plNotas" maxlength="300" placeholder="Ej: malezas en la hilera, sector 1"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="plOk">Guardar en el calendario</button>
+    <button id="plCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="rgSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="rgTitle">
+    <h2 id="rgTitle">Registrar riego</h2>
+<div class="sbody">
+    <div class="field"><label for="rgSector">¿Qué sector regaste?</label><select id="rgSector"></select></div>
+    <div class="field"><label for="rgFecha">Día</label><select id="rgFecha"></select></div>
+    <div class="field"><label for="rgHoras">Horas de riego</label><select id="rgHoras"></select></div>
+    <p class="calc" id="rgCalc"></p>
+    <div class="field"><label for="rgM3">m³ medidos (opcional, si tienes medidor)</label><input type="text" id="rgM3" inputmode="decimal" placeholder="Si lo dejas vacío se estima"></div>
+    <div class="field"><label for="rgNotas">Notas (opcional)</label><textarea id="rgNotas" maxlength="300" placeholder="Ej: se cortó la luz a la mitad"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="rgOk">Guardar riego</button>
+    <button id="rgCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="pcSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
+    <h2 id="pcTitle">Calculadora de porcentaje</h2>
+<div class="sbody">
+    <p class="note">Sirve para cualquier mezcla al X %: 1 % son 10 mL (o 10 g) de producto por cada litro de mezcla. Ejemplo: mezcla de bencina y aceite para motor de 2 tiempos al 2 % (1 parte de aceite en 50 de bencina).</p>
+    <div class="field"><label for="pcPct">Porcentaje de producto en la mezcla (%)</label><input type="text" id="pcPct" inputmode="decimal" placeholder="Ej: 2"></div>
+    <div class="field"><label for="pcLitros">Cantidad total de mezcla</label><input type="text" id="pcLitros" inputmode="decimal" placeholder="Ej: 5"></div>
+    <div class="field"><label for="pcUn">Unidad de la mezcla</label><select id="pcUn"><option value="L">Litros (L)</option><option value="mL">Mililitros (mL)</option></select></div>
+    <div class="field"><label for="pcTipo">El producto es</label><select id="pcTipo"><option value="liq">Líquido (se mide en mL o litros)</option><option value="sol">Sólido (se mide en gramos o kilos)</option></select></div>
+    <div class="field"><label for="pcDil">Se completa con</label><select id="pcDil"><option>agua</option><option>bencina</option><option>otro líquido</option></select></div>
+    <p class="calc" id="pcOut">Escribe los datos para ver el resultado.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="pcCerrar">Listo</button></div>
+  </div>
+</div>
+<div class="sheet" id="stSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="stTitle">
+    <h2 id="stTitle">Movimiento de stock</h2>
+<div class="sbody">
+    <div class="field"><label for="stMotivo">Motivo</label><select id="stMotivo"><option>Compra</option><option>Ajuste de inventario</option><option>Pérdida o derrame</option></select></div>
+    <div class="field"><label for="stCant" id="stCantLbl">Cantidad</label><input type="text" id="stCant" inputmode="decimal" placeholder="Ej: 20"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="stOk">Guardar movimiento</button>
+    <button id="stCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="trSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="trTitle">
+    <h2 id="trTitle">Registrar trabajo</h2>
+<div class="sbody">
+    <div class="field"><label for="trAct">¿Qué se hizo?</label><select id="trAct"></select></div>
+    <div class="field"><label for="trSector">¿Dónde?</label><select id="trSector"></select></div>
+    <div class="field"><label for="trHoras">Horas de trabajo</label><input type="text" id="trHoras" inputmode="decimal" maxlength="5" placeholder="Ej: 3,5"></div>
+    <div class="field"><label for="trQuienes">Quiénes trabajaron (opcional)</label><input type="text" id="trQuienes" maxlength="80" placeholder="Ej: Yolanda y Juan"></div>
+    <div class="field"><label for="trMaq">Máquina usada</label><select id="trMaq"></select></div>
+    <div class="field"><label for="trDetalle">Detalle (opcional)</label><textarea id="trDetalle" maxlength="300" placeholder="Ej: se desmalezó la entrehilera de las hileras 1 a 10"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="trOk">Guardar trabajo</button>
+    <button id="trCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="perSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="peTitle">
+    <h2 id="peTitle">Agregar persona</h2>
+<div class="sbody">
+    <div class="field"><label for="peNombre">Nombre</label><input type="text" id="peNombre" maxlength="40" placeholder="Ej: Juan Pérez"></div>
+    <div class="field"><label for="peFunc">Función habitual</label><select id="peFunc"></select></div>
+    <div class="field"><label for="peJorn">Tipo de jornada habitual</label><select id="peJorn"></select></div>
+</div>
+<div class="sfoot">    <button class="primary" id="peOk">Guardar</button>
+    <button id="peCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="asgSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="asTitle">
+    <h2 id="asTitle">Agregar a hoy</h2>
+<div class="sbody">
+    <div class="field"><label for="asPersona">Persona</label><select id="asPersona"></select></div>
+    <div class="field"><label for="asFunc">Función de hoy</label><select id="asFunc"></select></div>
+    <div class="field"><label for="asJorn">Tipo de jornada</label><select id="asJorn"></select></div>
+    <div class="field"><label for="asCuartel">Dónde trabaja</label><select id="asCuartel"></select></div>
+    <div class="field"><label for="asHorario">Horario previsto (opcional)</label><input type="text" id="asHorario" maxlength="20" placeholder="Ej: 08:00–17:00"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="asOk">Agregar a la lista de hoy</button>
+    <button id="asCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="cnSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="cnTitle">
+    <h2 id="cnTitle">Cuéntale a Diego</h2>
+<div class="sbody">
+    <p class="sub">Si algo no funciona, no entiendes un paso o tienes una idea para mejorar la app, escríbelo aquí. Diego lo recibe con la pantalla donde estabas.</p>
+    <div class="field"><label for="cnTipo">¿Qué es?</label><select id="cnTipo"><option>Algo no funciona</option><option>No entiendo cómo se hace</option><option>Tengo una idea o sugerencia</option></select></div>
+    <div class="field"><label for="cnTexto">Cuéntalo con tus palabras</label><textarea id="cnTexto" maxlength="600" placeholder="Ej: al guardar la aplicación me aparece un error"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="cnOk">Enviar a Diego</button>
+    <button id="cnCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="guSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="guTitle">
+    <h2 id="guTitle"></h2>
+<div class="sbody">
+    <p class="sub" id="guTexto"></p>
+    <p class="note" id="guPaso"></p>
+</div>
+<div class="sfoot">    <button class="primary" id="guOk">Siguiente</button>
+    <button id="guCancel">Cerrar la guía</button></div>
+  </div>
+</div>
+<div class="sheet" id="pmSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <h2 id="pmTitle">Pedir días libres</h2>
+<div class="sbody">
+    <div class="field"><label for="pmTipo">¿Qué necesitas?</label><select id="pmTipo"><option>Vacaciones</option><option>Permiso con goce de sueldo</option><option>Permiso sin goce de sueldo</option><option>Otro</option></select></div>
+    <div class="field"><label for="pmDur">¿Cuánto tiempo?</label><select id="pmDur"><option value="">Uno o más días completos</option><option value="mañana">Medio día (mañana)</option><option value="tarde">Medio día (tarde)</option></select></div>
+    <div class="field"><label for="pmDesde" id="pmDesdeL">Desde</label><input type="date" id="pmDesde"></div>
+    <div class="field" id="pmHastaF"><label for="pmHasta">Hasta (último día)</label><input type="date" id="pmHasta"></div>
+    <div class="field"><label for="pmDias">Días a descontar</label><input type="text" id="pmDias" inputmode="decimal" placeholder="Ej: 2"></div>
+    <p class="note" id="pmNota">Los días completos se cuentan de lunes a viernes. Si eliges medio día, descuenta 0,5.</p>
+    <p class="note warn" id="pmAviso" hidden></p>
+    <div class="field"><label for="pmMotivo">Motivo (opcional)</label><textarea id="pmMotivo" maxlength="300" placeholder="Ej: trámite en Santiago"></textarea></div>
+</div>
+<div class="sfoot">    <button class="primary" id="pmOk">Enviar solicitud</button>
+    <button id="pmCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="sdSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="sdTitle">
+    <h2 id="sdTitle">Días del año</h2>
+<div class="sbody">
+    <div class="field"><label for="sdQuien">Persona</label><select id="sdQuien"></select></div>
+    <div class="field"><label for="sdDias" id="sdDiasL">Días disponibles en el año</label><input type="text" id="sdDias" inputmode="decimal" placeholder="Ej: 15"></div>
+    <p class="note">Escribe los días que le corresponden según su contrato. La app resta los permisos aprobados.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="sdOk">Guardar</button>
+    <button id="sdCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="firebase-config.js"></script>
+<script src="seed.js"></script>
+<script src="app-bundle.js"></script>
+<script>
+(function(){
+  var TZ = "America/Santiago";
+  var $ = function(id){ return document.getElementById(id); };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[] };
+
+  var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
+  var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
+  var fmtL = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,weekday:"long",day:"numeric",month:"long"});
+  var fmtD = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,weekday:"short",day:"numeric"});
+  function fecha(d){ return fmtF.format(d || new Date()); }
+  function hora(iso){ return fmtH.format(new Date(iso)); }
+  function dia(f){ return fmtD.format(new Date(f + "T12:00:00Z")); }
+  function mins(tr, now){
+    var m = 0;
+    (tr || []).forEach(function(t){
+      var a = Date.parse(t.entrada);
+      var b = t.salida ? Date.parse(t.salida) : now;
+      if (b && b > a) m += (b - a) / 60000;
+    });
+    return Math.floor(m);
+  }
+  function dur(m){ var h = Math.floor(m / 60), r = m % 60; return h ? h + " h " + String(r).padStart(2, "0") + " min" : r + " min"; }
+  function weekStart(f){
+    var d = new Date(f + "T12:00:00Z"); var dow = (d.getUTCDay() + 6) % 7;
+    d.setUTCDate(d.getUTCDate() - dow); return d.toISOString().slice(0, 10);
+  }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function estado(dias, now){
+    var hoy = fecha(new Date(now));
+    var d = (dias || []).filter(function(x){ return x.fecha === hoy; })[0];
+    var tr = d && d.tramos ? d.tramos : [];
+    var last = tr[tr.length - 1];
+    var st = last ? (last.salida ? "closed" : "open") : "none";
+    return { hoy: hoy, tr: tr, last: last, st: st, min: mins(tr, now) };
+  }
+  function semana(dias, now){
+    var hoy = fecha(new Date(now)), ws = weekStart(hoy);
+    var rows = (dias || []).filter(function(x){ return x.fecha >= ws && x.fecha <= hoy; })
+      .sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; });
+    var total = 0, sinSalida = 0;
+    rows.forEach(function(x){
+      var abierto = (x.tramos || []).some(function(t){ return !t.salida; });
+      if (x.fecha === hoy) total += mins(x.tramos, now);
+      else { total += mins(x.tramos, null); if (abierto) sinSalida++; }
+    });
+    return { rows: rows, total: total, sinSalida: sinSalida, hoy: hoy };
+  }
+
+  var toastT;
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 3500);
+  }
+
+  async function marcar(tipo){
+    var now = new Date(), iso = now.toISOString(), hoy = fecha(now);
+    var e = estado(S.dias, now.getTime());
+    var tr = e.tr.map(function(t){ return { entrada: t.entrada, salida: t.salida || null }; });
+    if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null }); }
+    else { if (e.st !== "open") return; tr[tr.length - 1].salida = iso; }
+    try {
+      await S.db.doc("asistencia/" + S.uid + "/dias/" + hoy).set({ fecha: hoy, tramos: tr });
+      toast(tipo === "in" ? "Llegada registrada a las " + hora(iso) : "Salida registrada a las " + hora(iso));
+    } catch (err) {
+      if (err && err.code === "invalid_argument"){ S.noWrite = true; render(); toast("No tienes permiso para registrar. Avísale a Diego."); }
+      else toast("No se pudo guardar. Revisa tu señal e intenta de nuevo.");
+    }
+  }
+
+  var pending = null;
+  function pedir(tipo){
+    pending = tipo;
+    $("sheetTitle").textContent = tipo === "in" ? "¿Registrar tu llegada?" : "¿Registrar tu salida?";
+    $("sheetText").textContent = "Hora actual: " + fmtH.format(new Date()) + ". Se guarda al confirmar.";
+    $("sheetOk").textContent = tipo === "in" ? "Sí, llegué" : "Sí, me voy";
+    $("sheet").hidden = false; $("sheetOk").focus();
+  }
+  function cerrar(){ $("sheet").hidden = true; pending = null; }
+  $("sheetCancel").onclick = cerrar;
+  $("sheetOk").onclick = async function(){
+    var tipo = pending; var b = $("sheetOk"); b.disabled = true;
+    await marcar(tipo); b.disabled = false; cerrar();
+  };
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("sheet").hidden) cerrar(); });
+
+  function setView(key, build){
+    if (S.view === key && ["nodb", "noid", "loading", "name"].indexOf(key) >= 0) return;
+    S.view = key; $("app").replaceChildren(build());
+  }
+  function msg(titulo, texto){
+    return function(){
+      var c = el("section", "card status"); c.appendChild(el("h2", "big", titulo)); c.appendChild(el("p", "sub", texto)); return c;
+    };
+  }
+
+
+  /* ---- consultas del equipo y guía de uso ---- */
+  function abrirConsulta(){ $("cnTexto").value = ""; $("cnTipo").selectedIndex = 0; $("cnSheet").hidden = false; $("cnTexto").focus(); }
+  $("cnCancel").onclick = function(){ $("cnSheet").hidden = true; };
+  $("cnOk").onclick = async function(){
+    var t = $("cnTexto").value.trim(); if (t.length < 3){ toast("Escribe qué pasó o qué idea tienes."); return; }
+    var b = $("cnOk"); b.disabled = true;
+    try {
+      await S.db.collection("consultas").add({ tipo: $("cnTipo").value, texto: t, pantalla: (PH[S.screen] ? PH[S.screen][0] : "Inicio"), rol: S.owner ? "dueño" : S.manager ? "editora" : "colaboradora", resuelta: false, ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      $("cnSheet").hidden = true; toast("Listo, Diego recibió tu mensaje");
+    } catch (err){ toast("No se pudo enviar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  var GUIA = [
+    ["Bienvenida", "Esta app te sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve."],
+    ["Llegué y Me voy", "En Inicio, el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice Me voy). Si sales a almorzar, usa Me voy y luego Volví al campo."],
+    ["Barra de abajo", "Con los cinco botones de abajo cambias de pantalla: Inicio, Trabajo, Aplicar, Riego y Campo. El número rojo en Aplicar avisa cuántas aplicaciones tocan hoy."],
+    ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca Hacerla ahora y todo viene cargado."],
+    ["Bodega", "En Aplicar, Bodega muestra cuánto producto queda. Si falta o sobra, usa Agregar o ajustar stock. Diego revisa y autoriza cada cambio."],
+    ["Si algo falla", "En Inicio, el botón Tengo un problema o una idea le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico."]
+  ];
+  var guI = 0;
+  function pintarGuia(){
+    var g = GUIA[guI]; $("guTitle").textContent = g[0]; $("guTexto").textContent = g[1]; $("guPaso").textContent = "Paso " + (guI + 1) + " de " + GUIA.length;
+    $("guOk").textContent = guI === GUIA.length - 1 ? "Entendido" : "Siguiente";
+  }
+  function abrirGuia(manual){
+    if (!manual){ try { if (localStorage.getItem("guia1")) return; } catch (e){ } }
+    guI = 0; pintarGuia(); $("guSheet").hidden = false;
+  }
+  function cerrarGuia(){ $("guSheet").hidden = true; try { localStorage.setItem("guia1", "1"); } catch (e){ } }
+  $("guOk").onclick = function(){ if (guI < GUIA.length - 1){ guI++; pintarGuia(); } else cerrarGuia(); };
+  $("guCancel").onclick = cerrarGuia;
+
+
+  /* ---- permisos, saldos y calendario ---- */
+  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  function pmEstado(x){ var r = S.pres[x.id]; return r ? r.estado : "pendiente"; }
+  function contarDias(d, h){
+    if (!d || !h || h < d) return 0; var n = 0, f = d, guard = 0;
+    while (f <= h && guard++ < 400){ var dw = new Date(f + "T12:00:00Z").getUTCDay(); if (dw !== 0 && dw !== 6) n++; f = addDays(f, 1); }
+    return n;
+  }
+  function pmAnio(){ return fecha().slice(0, 4); }
+  function saldoDe(uid){
+    var anio = pmAnio(), tom = 0, pen = 0;
+    S.permisos.forEach(function(x){
+      if (x.uid !== uid || String(x.desde).slice(0, 4) !== anio || x.tipo === "Permiso sin goce de sueldo" || x.tipo === "Otro") return;
+      var e = pmEstado(x); if (e === "aprobado") tom += Number(x.dias) || 0; else if (e === "pendiente") pen += Number(x.dias) || 0;
+    });
+    var c = S.saldos[uid], real = c && c.anual != null, anual = real ? Number(c.anual) : 15;
+    return { anual: anual, prueba: !real, tom: tom, pen: pen, quedan: anual - tom - pen };
+  }
+  function nPend(){ return S.permisos.filter(function(x){ return pmEstado(x) === "pendiente"; }).length; }
+  function fuera(f){ return S.permisos.filter(function(x){ return pmEstado(x) === "aprobado" && x.desde <= f && x.hasta >= f; }); }
+  function pmRefrescar(){
+    var med = !!$("pmDur").value; $("pmHastaF").hidden = med; $("pmDesdeL").textContent = med ? "Día" : "Desde";
+    var d = $("pmDesde").value, h = $("pmHasta").value; if (d && (!h || h < d || med)){ $("pmHasta").value = d; h = d; }
+    if (med) $("pmDias").value = "0,5"; else if (d && h && !$("pmDias").dataset.man) $("pmDias").value = String(contarDias(d, h)).replace(".", ",");
+    var ch = S.permisos.filter(function(x){ return x.uid !== S.uid && pmEstado(x) !== "rechazado" && d && h && x.desde <= h && x.hasta >= d; })[0];
+    $("pmAviso").hidden = !ch; if (ch) $("pmAviso").textContent = "Ojo: " + (ch.por || "otra persona") + " ya tiene " + (pmEstado(ch) === "aprobado" ? "aprobado" : "pedido") + " permiso del " + fmtD2(ch.desde) + " al " + fmtD2(ch.hasta) + ". Igual puedes enviar la solicitud.";
+  }
+  $("pmDesde").onchange = $("pmHasta").onchange = pmRefrescar;
+  $("pmDur").onchange = function(){ delete $("pmDias").dataset.man; pmRefrescar(); };
+  $("pmDias").oninput = function(){ $("pmDias").dataset.man = "1"; };
+  function abrirPermiso(){
+    $("pmTipo").selectedIndex = 0; $("pmDur").value = ""; var hoy = fecha(); $("pmDesde").min = hoy; $("pmHasta").min = hoy; var sig = addDays(hoy, 1); while ([0, 6].indexOf(new Date(sig + "T12:00:00Z").getUTCDay()) >= 0) sig = addDays(sig, 1); $("pmDesde").value = sig; $("pmHasta").value = sig;
+    delete $("pmDias").dataset.man; $("pmMotivo").value = ""; pmRefrescar(); $("pmSheet").hidden = false;
+  }
+  $("pmCancel").onclick = function(){ $("pmSheet").hidden = true; };
+  $("pmOk").onclick = async function(){
+    var d = $("pmDesde").value, h = $("pmHasta").value, n = numI($("pmDias"));
+    if (!d || !h || h < d){ toast("Revisa las fechas: el último día no puede ser antes del primero."); return; }
+    if (!(n > 0)){ toast("Escribe cuántos días son."); return; }
+    var b = $("pmOk"); b.disabled = true;
+    try {
+      var ref = S.db.collection("permisos").doc(); var ahora = new Date().toISOString();
+      await ref.set({ uid: S.uid, por: S.nombre, tipo: $("pmTipo").value, desde: d, hasta: h, dias: n, medio: $("pmDur").value, motivo: $("pmMotivo").value.trim(), ts: ahora });
+      if (S.owner) await S.db.doc("permisos_res/" + ref.id).set({ estado: "aprobado", por: S.nombre, ts: ahora, nota: "Registrado por el dueño" });
+      $("pmSheet").hidden = true; toast(S.owner ? "Permiso registrado" : "Solicitud enviada. Diego la revisará");
+    } catch (err){ toast("No se pudo enviar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  async function resolverPm(x, ok){
+    try { await S.db.doc("permisos_res/" + x.id).set({ estado: ok ? "aprobado" : "rechazado", por: S.nombre, ts: new Date().toISOString() }); toast(ok ? "Permiso aprobado" : "Permiso rechazado"); }
+    catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
+  function abrirSaldo(uid){
+    var ids = {}; ids[S.uid] = S.nombre; Object.keys(S.team).forEach(function(i){ ids[i] = S.team[i].nombre || "Sin nombre"; });
+    fill($("sdQuien"), Object.keys(ids).map(function(i){ return { value: i, label: ids[i] }; }), uid || S.uid);
+    var c = S.saldos[$("sdQuien").value]; $("sdDias").value = c && c.anual != null ? String(c.anual).replace(".", ",") : ""; $("sdSheet").hidden = false;
+  }
+  $("sdQuien").onchange = function(){ var c = S.saldos[$("sdQuien").value]; $("sdDias").value = c && c.anual != null ? String(c.anual).replace(".", ",") : ""; };
+  $("sdCancel").onclick = function(){ $("sdSheet").hidden = true; };
+  $("sdOk").onclick = async function(){
+    var n = numI($("sdDias")); if (n == null || n < 0){ toast("Escribe los días disponibles."); return; }
+    var b = $("sdOk"); b.disabled = true;
+    try { await S.db.doc("saldos/" + $("sdQuien").value).set({ anual: n, anio: pmAnio(), nombre: $("sdQuien").options[$("sdQuien").selectedIndex].textContent, ts: new Date().toISOString() }); $("sdSheet").hidden = true; toast("Días guardados"); }
+    catch (err){ toast("No se pudo guardar."); }
+    b.disabled = false;
+  };
+  function buildPermisos(){
+    var f = document.createDocumentFragment(); f.appendChild(ph("permisos"));
+    var hoy = fecha(); if (!S.pmMes) S.pmMes = hoy.slice(0, 7);
+    var b0 = el("button", "primary", "Pedir días libres"); b0.onclick = abrirPermiso; f.appendChild(b0);
+
+    var sv = el("section", "card sect"); sv.appendChild(el("h2", null, "Saldo de días " + pmAnio()));
+    function filaSaldo(uid, nombre, conBoton){
+      var s = saldoDe(uid), bx = el("div", "asg"); var wo = el("div", "who"); wo.appendChild(el("b", null, nombre)); bx.appendChild(wo);
+      {
+        var g = el("div", "saldo");
+        [["Del año", s.anual], ["Tomados", s.tom], ["Quedan", s.quedan]].forEach(function(c){ var d = el("div"); d.appendChild(el("b", null, nf(c[1], c[1] % 1 ? 1 : 0))); d.appendChild(el("small", null, c[0])); g.appendChild(d); });
+        bx.appendChild(g);
+        if (s.prueba) bx.appendChild(el("p", "note", "Los 15 días son un valor de prueba, no los días reales disponibles." + (S.owner ? " Defínelos abajo." : "")));
+        if (s.pen) bx.appendChild(el("p", "note", "Incluye " + nf(s.pen, s.pen % 1 ? 1 : 0) + " día(s) por aprobar."));
+        if (s.quedan < 0) bx.appendChild(el("p", "note warn", "Pidió más días de los que tiene."));
+      }
+      if (conBoton){ var bt = el("button", "link", "Definir días del año"); bt.onclick = function(){ abrirSaldo(uid); }; bx.appendChild(bt); }
+      return bx;
+    }
+    if (S.owner){
+      var ids = {}; ids[S.uid] = S.nombre; Object.keys(S.team).forEach(function(i){ ids[i] = S.team[i].nombre || "Sin nombre"; });
+      Object.keys(ids).forEach(function(i){ sv.appendChild(filaSaldo(i, ids[i], true)); });
+    } else sv.appendChild(filaSaldo(S.uid, S.nombre, false));
+    sv.appendChild(el("p", "note", "Vacaciones y permisos con goce descuentan del saldo. Los permisos sin goce no."));
+    f.appendChild(sv);
+
+    if (S.owner){
+      var pe = S.permisos.filter(function(x){ return pmEstado(x) === "pendiente"; }).slice().sort(function(a, b){ return a.desde < b.desde ? -1 : 1; });
+      var pc = el("section", "card sect" + (pe.length ? " prio" : "")); pc.appendChild(el("h2", null, "Por aprobar" + (pe.length ? " (" + pe.length + ")" : "")));
+      if (!pe.length) pc.appendChild(el("p", "sub", "No hay solicitudes pendientes."));
+      pe.forEach(function(x){
+        var bx = el("div", "asg"); bx.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo));
+        bx.appendChild(el("p", null, (x.medio ? "El " + fmtD2(x.desde) + " · medio día (" + x.medio + ")" : "Del " + fmtD2(x.desde) + " al " + fmtD2(x.hasta)) + " · " + nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día" : " días")));
+        if (x.motivo) bx.appendChild(el("p", "sub", x.motivo));
+        bx.appendChild(el("p", "note", "Pedido el " + fmtFH.format(new Date(x.ts))));
+        var bb = el("div", "btns"); var ok = el("button", "primary", "Aprobar"); ok.onclick = function(){ ok.disabled = true; resolverPm(x, true); }; var no = el("button", "small", "Rechazar"); no.onclick = function(){ no.disabled = true; resolverPm(x, false); };
+        bb.appendChild(ok); bb.appendChild(no); bx.appendChild(bb); pc.appendChild(bx);
+      });
+      f.appendChild(pc);
+    }
+
+    var cal = el("section", "card sect"); cal.appendChild(el("h2", null, "Calendario"));
+    var ym = S.pmMes.split("-"), anio = Number(ym[0]), mes = Number(ym[1]) - 1;
+    var nav = el("div", "mes"); var pv = el("button", null, "‹"); pv.setAttribute("aria-label", "Mes anterior"); pv.onclick = function(){ var d = new Date(Date.UTC(anio, mes - 1, 1)); S.pmMes = d.toISOString().slice(0, 7); render(); };
+    var nx = el("button", null, "›"); nx.setAttribute("aria-label", "Mes siguiente"); nx.onclick = function(){ var d = new Date(Date.UTC(anio, mes + 1, 1)); S.pmMes = d.toISOString().slice(0, 7); render(); };
+    nav.appendChild(pv); nav.appendChild(el("b", null, MESES[mes] + " " + anio)); nav.appendChild(nx); cal.appendChild(nav);
+    var g = el("div", "cal"); ["L", "M", "M", "J", "V", "S", "D"].forEach(function(l){ g.appendChild(el("span", "h", l)); });
+    var primero = new Date(Date.UTC(anio, mes, 1)), off = (primero.getUTCDay() + 6) % 7, nd = new Date(Date.UTC(anio, mes + 1, 0)).getUTCDate();
+    for (var i = 0; i < off; i++) g.appendChild(el("span", "d off"));
+    var vivos = S.permisos.filter(function(x){ return pmEstado(x) !== "rechazado"; });
+    var colores = {}; var n = 0;
+    vivos.forEach(function(x){ if (!(x.uid in colores)) colores[x.uid] = n++ % 2; });
+    for (var dd = 1; dd <= nd; dd++){
+      var fd = anio + "-" + String(mes + 1).padStart(2, "0") + "-" + String(dd).padStart(2, "0"), dw = new Date(fd + "T12:00:00Z").getUTCDay();
+      var c = el("span", "d" + (fd === hoy ? " hoy" : "") + (dw === 0 || dw === 6 ? " fin" : "")); c.appendChild(el("span", null, String(dd)));
+      vivos.filter(function(x){ return x.desde <= fd && x.hasta >= fd; }).slice(0, 2).forEach(function(x){
+        c.appendChild(el("span", "b " + (pmEstado(x) === "pendiente" ? "p " : "") + (colores[x.uid] ? "w" : ""), iniciales(x.por)));
+      });
+      g.appendChild(c);
+    }
+    cal.appendChild(g);
+    cal.appendChild(el("p", "note", "Relleno: aprobado. Borde punteado: por aprobar."));
+    var fm = fuera(hoy); if (fm.length) cal.appendChild(el("p", "note warn", "Hoy con permiso: " + fm.map(function(x){ return x.por; }).join(", ")));
+    f.appendChild(cal);
+
+    var hi = el("section", "card sect"); hi.appendChild(el("h2", null, S.owner ? "Historial" : "Mis solicitudes"));
+    var mis = S.permisos.filter(function(x){ return S.owner || x.uid === S.uid; }).slice().sort(function(a, b){ return a.ts < b.ts ? 1 : -1; });
+    if (!mis.length) hi.appendChild(el("p", "sub", "Todavía no hay solicitudes."));
+    mis.slice(0, 40).forEach(function(x){
+      var e = pmEstado(x), bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, (S.owner ? (x.por || "") + " · " : "") + fmtD2(x.desde) + (x.hasta !== x.desde ? " al " + fmtD2(x.hasta) : "") + (x.medio ? " · medio día (" + x.medio + ")" : "")));
+      wo.appendChild(el("span", "chip " + (e === "aprobado" ? "ok" : e === "rechazado" ? "warn" : "idle"), e === "aprobado" ? "Aprobado" : e === "rechazado" ? "Rechazado" : "Por aprobar")); bx.appendChild(wo);
+      bx.appendChild(el("p", "sub", x.tipo + " · " + nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día" : " días") + (x.motivo ? " · " + x.motivo : "")));
+      var r = S.pres[x.id]; bx.appendChild(el("p", "note", "Pedido el " + fmtFH.format(new Date(x.ts)) + (r && r.ts ? " · " + (e === "aprobado" ? "aprobado" : "rechazado") + " el " + fmtFH.format(new Date(r.ts)) + (r.por ? " por " + r.por : "") : "")));
+      if (e === "pendiente" && x.uid === S.uid){ var cb = el("button", "small", "Cancelar solicitud"); cb.onclick = async function(){ cb.disabled = true; try { await S.db.doc("permisos/" + x.id).delete(); toast("Solicitud cancelada"); } catch (err){ cb.disabled = false; toast("No se pudo cancelar."); } }; bx.appendChild(cb); }
+      hi.appendChild(bx);
+    });
+    f.appendChild(hi); return f;
+  }
+
+  var ICON = {
+    home: "M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10",
+    trabajo: "M9 4h6v3H9zM7 5.500H5V21h14V5.500h-2M9 14.500l2 2 4-4.500",
+    aplic: "M9 3h6M10 3v6.500L4.800 19a2 2 0 0 0 1.800 3h10.800a2 2 0 0 0 1.800-3L14 9.500V3M7.500 15h9",
+    riego: "M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z",
+    campo: "M12 21V11M12 11C6 11 4 7 4 3.500c6 0 8 3 8 7.500zM12 16c5 0 8-3 8-7.500-5 0-8 3-8 7.500z",
+    personal: "M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM20 20v-1a4 4 0 0 0-3-3.800M15.500 4.300a3.500 3.500 0 0 1 0 6.400",
+    calendario: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
+    caja: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
+    alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
+    permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5"
+  };
+  function ico(name){
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
+    s.setAttribute("stroke-width", "1.9"); s.setAttribute("stroke-linecap", "round"); s.setAttribute("stroke-linejoin", "round"); s.setAttribute("aria-hidden", "true");
+    var pa = document.createElementNS("http://www.w3.org/2000/svg", "path"); pa.setAttribute("d", ICON[name] || ""); s.appendChild(pa); return s;
+  }
+  function arte(){
+    var NS = "http://www.w3.org/2000/svg", s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", "0 0 400 150"); s.setAttribute("preserveAspectRatio", "xMidYMax slice"); s.setAttribute("aria-hidden", "true");
+    function n(tag, a, parent){ var e = document.createElementNS(NS, tag); Object.keys(a).forEach(function(k){ e.setAttribute(k, a[k]); }); (parent || s).appendChild(e); return e; }
+    n("circle", { cx: 338, cy: 40, r: 15, fill: "#E4B91C" });
+    n("circle", { cx: 338, cy: 40, r: 26, fill: "#E4B91C", "fill-opacity": ".16" });
+    n("path", { d: "M0 70 C50 48 96 60 150 52 S270 36 330 50 S380 54 400 46 L400 150 L0 150Z", fill: "#fff", "fill-opacity": ".06" });
+    n("path", { d: "M0 88 C70 70 130 82 200 74 S330 64 400 76 L400 150 L0 150Z", fill: "#fff", "fill-opacity": ".07" });
+    var vx = 200, vy = 80;
+    for (var k = -5; k <= 5; k++){
+      var xb = vx + k * 92;
+      n("line", { x1: vx, y1: vy, x2: xb, y2: 150, stroke: "#fff", "stroke-opacity": ".09", "stroke-width": 1 });
+      for (var t = 0.12; t <= 1.01; t += 0.17){
+        var x = vx + (xb - vx) * t, y = vy + (150 - vy) * t, r = 2.4 + 11 * t;
+        n("circle", { cx: x, cy: y - r * .55, r: r, fill: "#A8D68C", "fill-opacity": (0.28 + 0.6 * t).toFixed(2) });
+        n("rect", { x: x - 0.8 * (t + .3), y: y - r * .1, width: 1.6 * (t + .3), height: r * .7, fill: "#0E2616", "fill-opacity": ".55" });
+      }
+    }
+    return s;
+  }
+  function portada(titulo, sub){
+    var t = el("div", "hero-top"); t.appendChild(arte());
+    var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
+  }
+  var PH = { campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"] };
+  function ph(key){
+    var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
+    var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
+  }
+  var NAV = [["home", "Inicio"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
+  function iconKey(k){ return k === "home" ? "home" : k; }
+  function buildNav(){
+    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" ? "" : S.screen, hy = fecha();
+    var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
+    nav.replaceChildren();
+    NAV.forEach(function(x){
+      var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
+      var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
+      if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
+      b.appendChild(w); b.appendChild(el("span", null, x[1]));
+      b.onclick = function(){ S.screen = x[0]; render(); };
+      nav.appendChild(b);
+    });
+  }
+  function iniciales(n){ var p = String(n || "?").trim().split(/\s+/); return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase(); }
+  document.addEventListener("click", function(ev){
+    var t = ev.target; if (t && t.classList && t.classList.contains("sheet")){ var c = t.querySelector(".sfoot button:not(.primary)") || t.querySelector(".sfoot button"); if (c) c.click(); }
+  });
+
+  function buildName(){
+    var c = el("section", "hero");
+    c.appendChild(portada("Bienvenida al campo", "Chincolco, Petorca"));
+    var b2 = el("div", "hero-body");
+    b2.appendChild(el("p", "sub", "Escribe tu nombre una sola vez. Así Diego sabrá quién registra cada llegada y cada trabajo."));
+    var fl = el("div", "field");
+    var l = el("label", null, "¿Cómo te llamas?"); l.htmlFor = "nombreInput";
+    var i = el("input"); i.type = "text"; i.id = "nombreInput"; i.maxLength = 40; i.autocomplete = "given-name"; i.placeholder = "Ej: Yolanda";
+    var b = el("button", "primary", "Guardar mi nombre");
+    b.onclick = async function(){
+      var n = i.value.trim(); if (!n){ toast("Escribe tu nombre primero."); i.focus(); return; }
+      b.disabled = true;
+      try { await S.db.doc("equipo/" + S.uid).set({ nombre: n, creado: new Date().toISOString() }); }
+      catch (err){ b.disabled = false; toast(err && err.code === "invalid_argument" ? "No tienes permiso para guardar. Avísale a Diego." : "No se pudo guardar. Intenta de nuevo."); }
+    };
+    fl.appendChild(l); fl.appendChild(i); b2.appendChild(fl); b2.appendChild(b); c.appendChild(b2); return c;
+  }
+
+  function buildHome(){
+    var now = Date.now(), e = estado(S.dias, now), wk = semana(S.dias, now);
+    var f = document.createDocumentFragment();
+
+    var hero = el("section", "hero");
+    hero.appendChild(portada("Hola, " + S.nombre, "Chincolco, Petorca"));
+    var hb = el("div", "hero-body");
+    var chip = el("span", "chip " + (e.st === "open" ? "ok" : "idle")); chip.appendChild(el("i")); chip.appendChild(document.createTextNode(e.st === "open" ? "En el campo" : e.st === "closed" ? "Jornada pausada" : "Sin registro hoy")); hb.appendChild(chip);
+    hb.appendChild(el("p", "big", e.st === "none" ? "Aún no registras tu llegada" : e.st === "open" ? "Llegaste a las " + hora(e.last.entrada) : "Saliste a las " + hora(e.last.salida)));
+    hb.appendChild(el("p", "sub", e.st === "none" ? "Toca Llegué cuando empieces a trabajar." : "Hoy llevas " + dur(e.min) + " trabajados."));
+    var btn = el("button", "primary " + (e.st === "open" ? "leave" : "arrive"), e.st === "open" ? "Me voy" : e.st === "closed" ? "Volví al campo" : "Llegué");
+    btn.onclick = function(){ pedir(e.st === "open" ? "out" : "in"); };
+    if (S.noWrite){ btn.disabled = true; hb.appendChild(el("p", "note warn", "Tu acceso no permite registrar. Avísale a Diego para que te invite como colaboradora.")); }
+    hb.appendChild(btn); hero.appendChild(hb); f.appendChild(hero);
+
+    var ph = pendHoy();
+    if (ph.length){
+      var pc = el("section", "card prio");
+      var hh = el("h2", "ch"); hh.appendChild(ico("calendario")); hh.appendChild(document.createTextNode("Hoy toca")); pc.appendChild(hh);
+      ph.slice(0, 3).forEach(function(x){
+        var bx = el("div", "asg"); bx.appendChild(el("b", null, tituloPlan(x) + " · " + x.sector));
+        var late = diasDesde(x.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasada desde el " + fmtD2(x.fecha) : "Para hoy") + (x.equipo ? " · " + x.equipo : "")));
+        if (x.notas) bx.appendChild(el("p", null, x.notas));
+        var go = el("button", "primary", "Hacerla ahora"); go.onclick = function(){ S.screen = "aplic"; render(); abrirAp(x); }; bx.appendChild(go); pc.appendChild(bx);
+      });
+      if (ph.length > 3){ var mas = el("button", null, "Ver las " + ph.length + " pendientes"); mas.onclick = function(){ S.screen = "aplic"; render(); }; pc.appendChild(mas); }
+      f.appendChild(pc);
+    }
+
+    var hy = fecha(), ws = weekStart(hy), nTr = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
+    var hTr = 0; S.trabajos.forEach(function(t){ if (t.fecha >= ws && t.fecha <= hy) hTr += t.horas || 0; });
+    var mRg = 0; S.riegos.forEach(function(r){ if (r.fecha >= ws && r.fecha <= hy) mRg += Number(r.m3) || 0; });
+    var haT = 0; S.cuarteles.forEach(function(c){ haT += Number(c.ha) || 0; });
+    var enCampo = Object.keys(S.team).filter(function(id){ return estado(S.team[id].dias, now).st === "open"; }).length;
+    var mods = [
+      ["trabajo", "Registrar trabajo", hTr ? nf(hTr, 1) + " h esta semana" : "Qué hiciste y dónde"],
+      ["aplic", "Aplicaciones", nTr ? nTr + (nTr === 1 ? " por hacer hoy" : " por hacer hoy") : "Productos, mezclas y bodega"],
+      ["riego", "Riego", mRg ? nf(mRg, 0) + " m³ esta semana" : "Horas y agua por sector"],
+      ["campo", "Mi campo", haT ? nf(haT, 2) + " ha en " + S.cuarteles.length + " sectores" : "Sectores y árboles"]
+    ];
+    var fHoy = fuera(hy), pPend = nPend();
+    mods.push(["permisos", "Permisos", S.owner && pPend ? pPend + (pPend === 1 ? " por aprobar" : " por aprobar") : fHoy.length ? fHoy.map(function(x){ return x.por; }).join(", ") + " con permiso hoy" : "Días libres y saldo"]);
+    if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
+    var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
+    var g = el("div", "tiles");
+    mods.forEach(function(t){
+      var b = el("button", "tile"); b.dataset.m = t[0]; b.type = "button";
+      var ti = el("span", "ti"); ti.appendChild(ico(t[0])); b.appendChild(ti);
+      b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
+      if (t[0] === "personal" || t[0] === "permisos") b.classList.add("wide");
+      b.onclick = function(){ S.screen = t[0]; render(); };
+      g.appendChild(b);
+    });
+    tiles.appendChild(g); f.appendChild(tiles);
+
+    var ay = el("section", "card sect"); ay.appendChild(el("h2", null, "Ayuda"));
+    ay.appendChild(el("p", "sub", "¿Algo no funciona o no sabes cómo seguir?"));
+    var bc = el("button", "primary", "Tengo un problema o una idea"); bc.onclick = abrirConsulta; ay.appendChild(bc);
+    var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
+    f.appendChild(ay);
+    if (S.owner){
+      var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });
+      var cc = el("section", "card sect"); cc.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
+      if (!abiertas.length) cc.appendChild(el("p", "sub", "No hay consultas pendientes."));
+      abiertas.slice(0, 10).forEach(function(x){
+        var bx = el("div", "asg"); var wo = el("div", "who"); wo.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo)); bx.appendChild(wo);
+        bx.appendChild(el("p", null, x.texto));
+        bx.appendChild(el("p", "note", fmtFH.format(new Date(x.ts)) + " · pantalla: " + (x.pantalla || "inicio") + (x.rol ? " · " + x.rol : "")));
+        var ok = el("button", "small", "Marcar como resuelta"); ok.onclick = async function(){ ok.disabled = true; try { await S.db.doc("consultas/" + x.id).update({ resuelta: true, resueltaTs: new Date().toISOString() }); } catch (err){ ok.disabled = false; toast("No se pudo actualizar."); } }; bx.appendChild(ok);
+        cc.appendChild(bx);
+      });
+      f.appendChild(cc);
+    }
+
+    var sem = el("section", "card sect"); sem.appendChild(el("h2", null, "Mi semana"));
+    var DL = ["L", "M", "M", "J", "V", "S", "D"], byDay = {}; wk.rows.forEach(function(x){ byDay[x.fecha] = x; });
+    var mx = 480, vals = [];
+    for (var d = 0; d < 7; d++){ var fd = addDays(ws, d), rr = byDay[fd], m = rr ? mins(rr.tramos, fd === hy ? now : null) : 0; vals.push([fd, m]); if (m > mx) mx = m; }
+    var chart = el("div", "week"); chart.setAttribute("role", "img"); chart.setAttribute("aria-label", "Horas trabajadas por día de esta semana");
+    vals.forEach(function(v, k){
+      var c = el("div", "wd" + (v[0] === hy ? " on" : "") + (v[1] ? "" : " none") + (v[0] > hy ? " fut" : ""));
+      var bar = el("div", "bar"); if (v[1]) bar.appendChild(el("span", "hv", nf(v[1] / 60, 1)));
+      var col = el("div", "col"); col.style.height = v[1] ? Math.max(8, Math.round(v[1] / mx * 76)) + "px" : "5px"; bar.appendChild(col); c.appendChild(bar);
+      c.appendChild(el("span", "dl", DL[k])); chart.appendChild(c);
+    });
+    sem.appendChild(chart);
+    var tot = el("div", "total"); tot.appendChild(el("span", null, "Total semana")); tot.appendChild(el("span", null, dur(wk.total))); sem.appendChild(tot);
+    if (wk.rows.length){
+      var dt = document.createElement("details"); dt.appendChild(el("summary", null, "Ver horarios"));
+      var rows = el("div", "rows");
+      wk.rows.forEach(function(x){
+        var r = el("div", "row"); r.appendChild(el("span", "l", dia(x.fecha)));
+        var t = (x.tramos || []).map(function(t){ return hora(t.entrada) + "–" + (t.salida ? hora(t.salida) : "…"); }).join("  ");
+        var abierto = (x.tramos || []).some(function(t){ return !t.salida; });
+        var rr2 = el("span", "r"); rr2.textContent = t + (abierto && x.fecha !== wk.hoy ? "  sin salida" : ""); r.appendChild(rr2); rows.appendChild(r);
+      });
+      dt.appendChild(rows); sem.appendChild(dt);
+    } else sem.appendChild(el("p", "note", "Todavía no hay registros esta semana."));
+    f.appendChild(sem);
+
+    if (S.manager){
+      var adm = el("section", "card sect"); adm.appendChild(el("h2", null, "Equipo hoy"));
+      var rs = el("div"); var ids = Object.keys(S.team);
+      if (!ids.length) rs.appendChild(el("p", "note", "Cuando cada persona escriba su nombre, aparecerá aquí."));
+      ids.forEach(function(id){
+        var m = S.team[id], es = estado(m.dias, now), w = semana(m.dias, now);
+        var r = el("div", "pp"); r.appendChild(el("span", "av", iniciales(m.nombre)));
+        var mid = el("div"); mid.style.minWidth = "0"; mid.appendChild(el("b", null, m.nombre || "Sin nombre"));
+        var d1 = el("p", "sub"); d1.appendChild(document.createTextNode("Hoy ")); d1.appendChild(el("b", null, dur(es.min))); mid.appendChild(d1); mid.appendChild(el("p", "sub", "Semana " + dur(w.total) + (w.sinSalida ? " · " + w.sinSalida + " sin salida" : ""))); r.appendChild(mid);
+        var cp = el("span", "chip " + (es.st === "open" ? "ok" : "idle"), es.st === "open" ? "Desde " + hora(es.last.entrada) : es.st === "closed" ? "Salió " + hora(es.last.salida) : "Sin registro"); r.appendChild(cp);
+        rs.appendChild(r);
+      });
+      adm.appendChild(rs); f.appendChild(adm);
+    }
+    return f;
+  }
+
+  function nf(n, d){ return Number(n).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  var editing = null;
+  function abrirEdit(c){
+    editing = c || {};
+    $("edTitle").textContent = c ? "Editar sector" : "Agregar sector";
+    $("edNombre").value = (c && c.nombre) || ""; $("edEsp").value = (c && c.especie) || "Nogal";
+    $("edVar").value = (c && c.variedad) || ""; $("edAnio").value = c && c.anio ? c.anio : "";
+    $("edHa").value = c && c.ha != null ? String(c.ha).replace(".", ",") : ""; $("edArb").value = c && c.arboles != null ? c.arboles : "";
+    $("editSheet").hidden = false; $("edNombre").focus();
+  }
+  $("edCancel").onclick = function(){ $("editSheet").hidden = true; };
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("editSheet").hidden) $("editSheet").hidden = true; });
+  $("edOk").onclick = async function(){
+    var nombre = $("edNombre").value.trim();
+    if (!nombre){ toast("Escribe el nombre del sector."); $("edNombre").focus(); return; }
+    function num(v){ var n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : null; }
+    var data = { nombre: nombre, especie: $("edEsp").value, variedad: $("edVar").value.trim(), anio: num($("edAnio").value), ha: num($("edHa").value), arboles: num($("edArb").value), orden: editing.orden || (S.cuarteles.length + 1) };
+    var b = $("edOk"); b.disabled = true;
+    try {
+      var ref = editing.id ? S.db.doc("cuarteles/" + editing.id) : S.db.collection("cuarteles").doc();
+      await ref.set(data); $("editSheet").hidden = true; toast("Sector guardado");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+
+  var ESTADOS = ["Sano", "Observación", "Plaga o enfermedad", "Falla o árbol muerto", "Poda", "Otro"];
+  var fmtFH = new Intl.DateTimeFormat("es-CL", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+  function chipEstado(e){ return e === "Sano" ? "ok" : (e === "Plaga o enfermedad" || e === "Falla o árbol muerto") ? "warn" : "idle"; }
+  function sectoresOrden(){ return S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }); }
+  function abrirArbol(){
+    var cs = sectoresOrden();
+    if (!cs.length){ toast("Aún no hay sectores cargados."); return; }
+    fill($("arSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }), S.filtroSector || cs[0].id);
+    fill($("arEstado"), ESTADOS, "Observación");
+    $("arHilera").value = ""; $("arArbol").value = ""; $("arTexto").value = "";
+    $("arbSheet").hidden = false; $("arHilera").focus();
+  }
+  $("arCancel").onclick = function(){ $("arbSheet").hidden = true; };
+  $("arOk").onclick = async function(){
+    var cu = S.cuarteles.filter(function(c){ return c.id === $("arSector").value; })[0];
+    var h = parseInt($("arHilera").value, 10), a = parseInt($("arArbol").value, 10);
+    if (!cu){ toast("Elige el sector."); return; }
+    if (!(h > 0) || !(a > 0)){ toast("Escribe el número de hilera y el de árbol."); return; }
+    var b = $("arOk"); b.disabled = true;
+    try {
+      await S.db.collection("arboles").add({ sectorId: cu.id, sector: cu.nombre, hilera: h, arbol: a, estado: $("arEstado").value, texto: $("arTexto").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      $("arbSheet").hidden = true; toast("Registro guardado");
+    } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function buildArboles(){
+    var c = el("section", "card sect"); c.appendChild(el("h2", null, "Registro árbol a árbol"));
+    c.appendChild(el("p", "sub", "Anota lo que ves en un árbol: sector, hilera, número y qué observas."));
+    var b = el("button", "primary", "Registrar un árbol"); b.onclick = abrirArbol; c.appendChild(b);
+    var cs = sectoresOrden();
+    var fld = el("div", "field"); var lb = el("label", null, "Ver registros de"); lb.htmlFor = "filtroSector";
+    var sel = el("select"); sel.id = "filtroSector";
+    fill(sel, [{ value: "", label: "Todos los sectores" }].concat(cs.map(function(x){ return { value: x.id, label: x.nombre }; })), S.filtroSector);
+    sel.onchange = function(){ S.filtroSector = sel.value; render(); };
+    fld.appendChild(lb); fld.appendChild(sel); c.appendChild(fld);
+    var obs = S.arboles.filter(function(o){ return !S.filtroSector || o.sectorId === S.filtroSector; });
+    var list = el("div");
+    if (!obs.length) list.appendChild(el("p", "note", "Todavía no hay registros."));
+    obs.slice(0, 30).forEach(function(o){
+      var box = el("div", "asg"); var who = el("div", "who");
+      who.appendChild(el("b", null, o.sector + " · hilera " + o.hilera + " · árbol " + o.arbol));
+      who.appendChild(el("span", "chip " + chipEstado(o.estado), o.estado)); box.appendChild(who);
+      if (o.texto) box.appendChild(el("p", null, o.texto));
+      box.appendChild(el("p", "note", fmtFH.format(new Date(o.ts)) + (o.por ? " · " + o.por : "")));
+      list.appendChild(box);
+    });
+    c.appendChild(list); return c;
+  }
+
+  var EQUIPOS = ["Bomba de espalda eléctrica (herbicidas)", "Bomba de espalda eléctrica (foliares)", "Tambor 200 L (herbicida)", "Fertirriego · tambor 200 L (fertilización)", "Manual (al voleo)", "Otro"];
+  var EQUIPO_CAP = { "Bomba de espalda eléctrica (herbicidas)": 20, "Bomba de espalda eléctrica (foliares)": 20, "Tambor 200 L (herbicida)": 200, "Fertirriego · tambor 200 L (fertilización)": 200 };
+  function sinHerbicida(eq){ return /foliares|fertiliz/i.test(eq); }
+  var NO_HERB = "Un herbicida no va en la bomba de foliares ni en el tambor de fertilización. Cambia el equipo.";
+  function addDays(f, n){ var d = new Date(f + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function numI(i){ var n = parseFloat(String(i.value).replace(",", ".")); return isFinite(n) ? n : null; }
+  function itemsDe(a){ return a.items && a.items.length ? a.items : (a.productoId ? [{ productoId: a.productoId, cantidad: a.cantidad }] : []); }
+  function stockDe(p){
+    var s = Number(p.stockInicial) || 0;
+    S.movimientos.forEach(function(m){ if (m.productoId === p.id) s += Number(m.cantidad) || 0; });
+    S.aplicaciones.forEach(function(a){ itemsDe(a).forEach(function(i){ if (i.productoId === p.id) s -= Number(i.cantidad) || 0; }); });
+    return s;
+  }
+  function restriccionesSector(cid, now){
+    var rein = null, cos = null, hoy = fecha(new Date(now));
+    S.aplicaciones.forEach(function(a){
+      if (a.sectorId && a.sectorId !== cid) return;
+      if (a.reingresoHasta && Date.parse(a.reingresoHasta) > now && (!rein || a.reingresoHasta > rein)) rein = a.reingresoHasta;
+      if (a.cosechaDesde && a.cosechaDesde > hoy && (!cos || a.cosechaDesde > cos)) cos = a.cosechaDesde;
+    });
+    return { rein: rein, cos: cos };
+  }
+  function prodOrden(){ return S.productos.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }); }
+  var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "directa", label: "Cantidad directa" }];
+  function prodById(id){ return S.productos.filter(function(p){ return p.id === id; })[0]; }
+  function pSel(){ return prodById($("apProd").value); }
+  function p2Sel(){ return $("apProd2").value ? prodById($("apProd2").value) : null; }
+  function secSel(){ return S.cuarteles.filter(function(c){ return c.id === $("apSector").value; })[0]; }
+  function menor(u){ return u === "L" ? "mL" : u === "kg" ? "g" : u; }
+  function mil(u){ return u === "L" || u === "kg" ? 1000 : 1; }
+  var man = { c1: false, c2: false, aw: false, tk: false };
+  function monto(modo, v, ha, aguaTot){
+    if (!(v > 0)) return null;
+    if (modo === "ha") return ha > 0 ? v * ha : null;
+    if (modo === "pct") return aguaTot > 0 ? v / 100 * aguaTot : null;
+    return null;
+  }
+  function refrescarAp(){
+    var p = pSel(), p2 = p2Sel(), cu = secSel(), out = [], av = [];
+    var m1 = $("apModo").value, m2 = $("apModo2").value;
+    $("ap2Box").hidden = !p2; $("ap2Hint").hidden = !!p2; $("apCant2F").hidden = !p2;
+    $("apDosisF").hidden = m1 === "directa"; $("apDosis2F").hidden = m2 === "directa";
+    $("apDosisL").textContent = m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("apDosis2L").textContent = m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("apCantLbl").textContent = "Producto principal usado (" + (p ? p.unidad : "") + ")";
+    $("apCant2Lbl").textContent = "Producto secundario usado (" + (p2 ? p2.unidad : "") + ")";
+    var ha = numI($("apHa")), aHa = numI($("apAgua"));
+    if (!man.aw && ha > 0 && aHa > 0) $("apAguaTot").value = String(Math.round(ha * aHa * 100) / 100).replace(".", ",");
+    var aguaTot = numI($("apAguaTot")), t = numI($("apTanque"));
+    var items = [[p, m1, numI($("apDosis")), "apCant", "c1", "Principal"], [p2, m2, numI($("apDosis2")), "apCant2", "c2", "Secundario"]];
+    items.forEach(function(it){
+      var pr = it[0]; if (!pr) return;
+      var q = monto(it[1], it[2], ha, aguaTot);
+      if (q != null){
+        out.push(it[5] + " · " + pr.nombre + ": " + nf(q, 2) + " " + pr.unidad + " en total");
+        if (aguaTot > 0) out.push("   equivale a " + nf(q / aguaTot * 100, 2) + " % de la mezcla");
+        if (t > 0 && aguaTot > 0){ var porTanque = q * t / aguaTot; out.push("   en cada estanque de " + nf(t, 0) + " L: " + nf(porTanque * mil(pr.unidad), 0) + " " + menor(pr.unidad)); }
+        if (!man[it[4]]) $(it[3]).value = String(Math.round(q * 1000) / 1000).replace(".", ",");
+      }
+    });
+    if (aguaTot > 0){ out.unshift("Agua total: " + nf(aguaTot, 1) + " L" + (t > 0 ? " (" + nf(aguaTot / t, 1) + " estanques de " + nf(t, 0) + " L)" : "")); }
+    [p, p2].forEach(function(pr){
+      if (!pr) return;
+      if (pr.alertaJovenes && cu && cu.anio && (new Date().getFullYear() - cu.anio) < 3) av.push(pr.nombre + ": árboles menores de 3 años en " + cu.nombre + ". Protege los troncos y evita todo contacto con el cultivo.");
+      if (pr.tipo === "Herbicida" && sinHerbicida($("apEquipo").value)) av.push("El herbicida va en la bomba de herbicidas o en el tambor de herbicida, no en foliares ni en fertilización.");
+      if (pr.reingresoH) av.push(pr.nombre + ": nadie entra al sector por " + pr.reingresoH + " horas después de aplicar.");
+    });
+    if (ha > 0 && aguaTot > 0) [p, p2].forEach(function(pr){
+      if (pr && pr.aguaLhaMin && (aguaTot / ha < pr.aguaLhaMin || aguaTot / ha > pr.aguaLhaMax)) av.push(pr.nombre + ": la etiqueta indica " + pr.aguaLhaMin + " a " + pr.aguaLhaMax + " L de agua por hectárea con bomba de espalda, y esta mezcla lleva " + nf(aguaTot / ha, 0) + " L/ha.");
+    });
+    if (p && p2 && p.id === p2.id) av.push("El producto principal y el secundario son el mismo.");
+    $("apAviso").textContent = av.join("\n"); $("apAviso").hidden = !av.length; $("apAviso").style.whiteSpace = "pre-line";
+    $("apCalc").textContent = out.join("\n"); $("apCalc").hidden = !out.length;
+  }
+  ["apProd", "apProd2", "apModo", "apModo2"].forEach(function(id){ $(id).onchange = refrescarAp; });
+  $("apEquipo").onchange = function(){ var cap = EQUIPO_CAP[$("apEquipo").value]; if (!man.tk) $("apTanque").value = cap ? String(cap) : ""; refrescarAp(); };
+  $("apSector").onchange = function(){ var cu = secSel(); $("apHa").value = cu && cu.ha ? String(cu.ha).replace(".", ",") : ""; refrescarAp(); };
+  ["apHa", "apDosis", "apDosis2", "apAgua"].forEach(function(id){ $(id).oninput = refrescarAp; });
+  $("apTanque").oninput = function(){ man.tk = true; refrescarAp(); };
+  $("apAguaTot").oninput = function(){ man.aw = true; refrescarAp(); };
+  $("apLlenar").onclick = function(){ var t = numI($("apTanque")); if (!(t > 0)){ toast("Escribe la capacidad del estanque o tambor."); return; } $("apAguaTot").value = String(t).replace(".", ","); man.aw = true; refrescarAp(); };
+  $("apCant").oninput = function(){ man.c1 = true; };
+  $("apCant2").oninput = function(){ man.c2 = true; };
+  var apPlan = null;
+  function abrirAp(plan){
+    apPlan = plan && plan.id ? plan : null;
+    if (!S.productos.length){ toast("Aún no hay productos en la bodega."); return; }
+    var po = prodOrden().map(function(p){ return { value: p.id, label: p.nombre }; });
+    fill($("apProd"), po); fill($("apProd2"), [{ value: "", label: "Ninguno" }].concat(po));
+    fill($("apModo"), MODOS, "ha"); fill($("apModo2"), MODOS, "pct");
+    fill($("apSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
+    fill($("apEquipo"), EQUIPOS);
+    ["apHa", "apDosis", "apDosis2", "apAgua", "apAguaTot", "apTanque", "apCant", "apCant2", "apNotas"].forEach(function(id){ $(id).value = ""; });
+    man = { c1: false, c2: false, aw: false, tk: false };
+    if (apPlan){
+      if (prodById(apPlan.productoId)) $("apProd").value = apPlan.productoId;
+      if (apPlan.productoId2 && prodById(apPlan.productoId2)) $("apProd2").value = apPlan.productoId2;
+      $("apSector").value = apPlan.sectorId || ""; $("apSector").onchange();
+      if (apPlan.equipo && EQUIPOS.indexOf(apPlan.equipo) >= 0) $("apEquipo").value = apPlan.equipo;
+      if (apPlan.modo){ $("apModo").value = apPlan.modo; if (apPlan.dosis) $("apDosis").value = String(apPlan.dosis).replace(".", ","); }
+      if (apPlan.modo2){ $("apModo2").value = apPlan.modo2; if (apPlan.dosis2) $("apDosis2").value = String(apPlan.dosis2).replace(".", ","); }
+      if (apPlan.aguaTotalL){ $("apAguaTot").value = String(apPlan.aguaTotalL).replace(".", ","); man.aw = true; }
+      if (apPlan.cantidad && (!apPlan.modo || apPlan.modo === "directa")){ $("apCant").value = String(apPlan.cantidad).replace(".", ","); man.c1 = true; }
+      if (apPlan.cantidad2 && apPlan.modo2 === "directa"){ $("apCant2").value = String(apPlan.cantidad2).replace(".", ","); man.c2 = true; }
+      if (apPlan.notas) $("apNotas").value = apPlan.notas;
+    }
+    $("apEquipo").onchange(); $("apSheet").hidden = false;
+  }
+  $("apCancel").onclick = function(){ $("apSheet").hidden = true; apPlan = null; };
+  $("apOk").onclick = async function(){
+    var p = pSel(), p2 = p2Sel(), cu = secSel(), eq = $("apEquipo").value;
+    if (!p) return;
+    if (p2 && p2.id === p.id){ toast("El producto secundario debe ser distinto del principal."); return; }
+    var lista = [{ p: p, cant: numI($("apCant")), modo: $("apModo").value, valor: numI($("apDosis")), rol: "Principal" }];
+    if (p2) lista.push({ p: p2, cant: numI($("apCant2")), modo: $("apModo2").value, valor: numI($("apDosis2")), rol: "Secundario" });
+    for (var k = 0; k < lista.length; k++){
+      var it = lista[k];
+      if (!(it.cant > 0)){ toast("Escribe cuánto usaste de " + it.p.nombre + "."); $(k ? "apCant2" : "apCant").focus(); return; }
+      if (it.p.tipo === "Herbicida" && sinHerbicida(eq)){ toast(NO_HERB); return; }
+      var st = stockDe(it.p);
+      if (it.cant > st + 1e-9){ toast("De " + it.p.nombre + " quedan " + nf(st, 2) + " " + it.p.unidad + " en bodega. Revisa la cantidad."); return; }
+    }
+    var now = new Date(), hoy = fecha(now), dias = null, rh = 0;
+    lista.forEach(function(it){
+      var car = it.p.carencias || {}, d = null;
+      if (cu){ if (car[cu.especie] != null) d = car[cu.especie]; }
+      else { var vals = Object.keys(car).map(function(q){ return car[q]; }); if (vals.length) d = Math.max.apply(null, vals); }
+      if (d != null && (dias == null || d > dias)) dias = d;
+      if (it.p.reingresoH && it.p.reingresoH > rh) rh = it.p.reingresoH;
+    });
+    var rein = rh ? new Date(now.getTime() + rh * 3600000).toISOString() : null;
+    var items = lista.map(function(it){ return { productoId: it.p.id, nombre: it.p.nombre, unidad: it.p.unidad, cantidad: it.cant, rol: it.rol, modo: it.modo, valor: it.valor }; });
+    var b = $("apOk"); b.disabled = true;
+    try {
+      var apRef = await S.db.collection("aplicaciones").add({ fecha: hoy, ts: now.toISOString(), items: items, productoId: p.id, producto: lista.map(function(it){ return it.p.nombre; }).join(" + "), unidad: p.unidad, cantidad: lista[0].cant, aguaTotalL: numI($("apAguaTot")), sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", ha: numI($("apHa")), equipo: eq, notas: $("apNotas").value.trim(), reingresoHasta: rein, cosechaDesde: dias != null ? addDays(hoy, dias) : null, uid: S.uid, por: S.nombre });
+      if (apPlan){ try { await S.db.doc("plan/" + apPlan.id).update({ estado: "hecha", aplicacionId: apRef && apRef.id || "", hechaPor: S.nombre, hechaTs: now.toISOString() }); } catch (e2){} apPlan = null; }
+      $("apSheet").hidden = true; toast("Aplicación registrada");
+    } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  var stProd = null;
+  function abrirStock(p){ stProd = p; $("stTitle").textContent = "Stock de " + p.nombre; $("stCantLbl").textContent = "Cantidad (" + p.unidad + ")"; $("stCant").value = ""; $("stSheet").hidden = false; $("stCant").focus(); }
+  $("stCancel").onclick = function(){ $("stSheet").hidden = true; };
+  $("stOk").onclick = async function(){
+    var n = numI($("stCant")); if (!n){ toast("Escribe la cantidad."); return; }
+    var m = $("stMotivo").value; if (m === "Pérdida o derrame") n = -Math.abs(n); else if (m === "Compra") n = Math.abs(n);
+    var b = $("stOk"); b.disabled = true;
+    var base = { productoId: stProd.id, producto: stProd.nombre, unidad: stProd.unidad, cantidad: n, motivo: m, ts: new Date().toISOString(), por: S.nombre, uid: S.uid };
+    try {
+      if (S.owner){ await S.db.collection("movimientos").add(Object.assign(base, { aprobadoPor: S.nombre })); toast("Stock actualizado"); }
+      else { await S.db.collection("solicitudes").add(Object.assign(base, { estado: "pendiente" })); toast("Enviado. Queda a la espera de que Diego lo autorice."); }
+      $("stSheet").hidden = true;
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+  async function resolverSol(s, ok){
+    try {
+      if (ok) await S.db.collection("movimientos").add({ productoId: s.productoId, producto: s.producto, unidad: s.unidad, cantidad: s.cantidad, motivo: s.motivo, ts: new Date().toISOString(), por: s.por, uid: s.uid, aprobadoPor: S.nombre, solicitudId: s.id });
+      await S.db.doc("solicitudes/" + s.id).update({ estado: ok ? "aprobada" : "rechazada", resueltaPor: S.nombre, resueltaTs: new Date().toISOString() });
+      toast(ok ? "Aprobado. Stock actualizado." : "Rechazado");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
+
+  function etiquetaDia(f){
+    var hy = fecha(), d = diasDesde(f);
+    if (d === 0) return "Hoy"; if (d === -1) return "Mañana"; if (d === 1) return "Ayer";
+    return fmtD2(f);
+  }
+  function plSel(id){ return $(id); }
+  function plSector(){ return S.cuarteles.filter(function(c){ return c.id === $("plSector").value; })[0]; }
+  function plProdSel(id){ return $(id).value ? prodById($(id).value) : null; }
+  function plCalcular(){
+    var cu = plSector(), ha = cu && cu.ha ? cu.ha : null, aguaTot = numI($("plAguaTot"));
+    var x = plProdSel("plProd"), x2 = plProdSel("plProd2"), m1 = $("plModo").value, m2 = $("plModo2").value;
+    var q1 = x ? (m1 === "directa" ? numI($("plCant")) : monto(m1, numI($("plDosis")), ha, aguaTot)) : null;
+    var q2 = x2 ? (m2 === "directa" ? numI($("plCant2")) : monto(m2, numI($("plDosis2")), ha, aguaTot)) : null;
+    return { x: x, x2: x2, q1: q1, q2: q2, m1: m1, m2: m2, ha: ha, aguaTot: aguaTot };
+  }
+  function plRefrescar(){
+    var c = plCalcular();
+    $("pl2Box").hidden = !c.x2; $("pl2Hint").hidden = !!c.x2;
+    $("plDosisF").hidden = c.m1 === "directa"; $("plCantF").hidden = c.m1 !== "directa";
+    $("plDosis2F").hidden = c.m2 === "directa"; $("plCant2F").hidden = c.m2 !== "directa";
+    $("plDosisL").textContent = c.m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("plDosis2L").textContent = c.m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("plCantLbl").textContent = "Cantidad del principal (" + (c.x ? c.x.unidad : "") + ")";
+    $("plCant2Lbl").textContent = "Cantidad del secundario (" + (c.x2 ? c.x2.unidad : "") + ")";
+    var out = [];
+    if (c.aguaTot > 0) out.push("Agua total: " + nf(c.aguaTot, 1) + " L");
+    if (c.x && c.q1 != null) out.push("Principal · " + c.x.nombre + ": " + nf(c.q1, 2) + " " + c.x.unidad);
+    if (c.x2 && c.q2 != null) out.push("Secundario · " + c.x2.nombre + ": " + nf(c.q2, 2) + " " + c.x2.unidad);
+    if ((c.m1 === "ha" || c.m2 === "ha") && !c.ha) out.push("La dosis por hectárea necesita un sector con superficie.");
+    $("plCalc").textContent = out.join("\n"); $("plCalc").hidden = !out.length;
+  }
+  ["plProd", "plProd2", "plModo", "plModo2", "plSector", "plEquipo"].forEach(function(id){ $(id).onchange = plRefrescar; });
+  ["plDosis", "plDosis2", "plCant", "plCant2", "plAguaTot"].forEach(function(id){ $(id).oninput = plRefrescar; });
+  $("plLlenar").onclick = function(){ var cap = EQUIPO_CAP[$("plEquipo").value]; if (!cap){ toast("Este equipo no tiene una capacidad definida. Escribe el agua total."); return; } $("plAguaTot").value = String(cap); plRefrescar(); };
+  function abrirPlan(){
+    if (!S.productos.length){ toast("Aún no hay productos en la bodega."); return; }
+    var po = prodOrden().map(function(x){ return { value: x.id, label: x.nombre }; });
+    fill($("plProd"), po); fill($("plProd2"), [{ value: "", label: "Ninguno" }].concat(po));
+    fill($("plModo"), MODOS, "ha"); fill($("plModo2"), MODOS, "pct");
+    fill($("plSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
+    fill($("plEquipo"), EQUIPOS);
+    $("plFecha").value = addDays(fecha(), 1); $("plFecha").min = fecha();
+    ["plDosis", "plDosis2", "plCant", "plCant2", "plAguaTot", "plNotas"].forEach(function(id){ $(id).value = ""; });
+    plRefrescar(); $("plSheet").hidden = false;
+  }
+  $("plCancel").onclick = function(){ $("plSheet").hidden = true; };
+  $("plOk").onclick = async function(){
+    var c = plCalcular(), x = c.x, x2 = c.x2, cu = plSector();
+    var fe = $("plFecha").value; if (!x || !fe){ toast("Elige el día y el producto."); return; }
+    var eq = $("plEquipo").value;
+    if (x2 && x2.id === x.id){ toast("El producto secundario debe ser distinto del principal."); return; }
+    if ((x.tipo === "Herbicida" || (x2 && x2.tipo === "Herbicida")) && sinHerbicida(eq)){ toast(NO_HERB); return; }
+    var b = $("plOk"); b.disabled = true;
+    try {
+      await S.db.collection("plan").add({ fecha: fe, productoId: x.id, producto: x.nombre, unidad: x.unidad, modo: c.m1, dosis: numI($("plDosis")), cantidad: c.q1,
+        productoId2: x2 ? x2.id : "", producto2: x2 ? x2.nombre : "", unidad2: x2 ? x2.unidad : "", modo2: x2 ? c.m2 : "", dosis2: x2 ? numI($("plDosis2")) : null, cantidad2: x2 ? c.q2 : null,
+        aguaTotalL: c.aguaTot, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", equipo: eq, notas: $("plNotas").value.trim(), estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      $("plSheet").hidden = true; toast("Aplicación agendada");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function dosisTxt(modo, val, cant, un){
+    if (modo === "ha" && val) return nf(val, 2) + " " + un + "/ha";
+    if (modo === "pct" && val) return nf(val, 2) + " %";
+    return cant != null ? nf(cant, 2) + " " + un : "";
+  }
+  function mezclaPlan(x){
+    var a = x.producto + " " + dosisTxt(x.modo, x.dosis, x.cantidad, x.unidad);
+    var s = x.producto2 ? " + " + x.producto2 + " " + dosisTxt(x.modo2, x.dosis2, x.cantidad2, x.unidad2 || "") : "";
+    return (a + s).replace(/\s+/g, " ").trim() + (x.aguaTotalL ? " · " + nf(x.aguaTotalL, 0) + " L de agua" : "");
+  }
+  function tituloPlan(x){ return x.producto2 ? x.producto + " + " + x.producto2 : x.producto; }
+  function pendHoy(){ var hy = fecha(); return S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }); }
+  function buildPlan(){
+    var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Calendario de aplicaciones"));
+    var pend = S.plan.filter(function(x){ return x.estado === "pendiente"; }).sort(function(a, b){ return a.fecha === b.fecha ? (a.ts < b.ts ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); });
+    if (!pend.length) sc.appendChild(el("p", "note", "No hay aplicaciones agendadas."));
+    var need = {}; pend.forEach(function(x){ need[x.productoId] = (need[x.productoId] || 0) + (Number(x.cantidad) || 0); if (x.productoId2) need[x.productoId2] = (need[x.productoId2] || 0) + (Number(x.cantidad2) || 0); });
+    var ultimo = "";
+    pend.forEach(function(x){
+      if (x.fecha !== ultimo){ ultimo = x.fecha; var late = diasDesde(x.fecha) > 0; var hd = el("p", late ? "note warn" : "sub", (late ? "Atrasada · " : "") + etiquetaDia(x.fecha)); hd.style.fontWeight = "700"; sc.appendChild(hd); }
+      var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, tituloPlan(x) + " · " + x.sector)); if (x.cantidad) w.appendChild(el("span", "chip idle", nf(x.cantidad, 2) + " " + x.unidad)); bx.appendChild(w);
+      var ml = mezclaPlan(x); if (x.modo || x.aguaTotalL) bx.appendChild(el("p", null, ml));
+      var det = [x.equipo, x.por ? "agendó " + x.por : null].filter(Boolean).join(" · "); if (det) bx.appendChild(el("p", "sub", det));
+      if (x.notas) bx.appendChild(el("p", null, x.notas));
+      [x.productoId, x.productoId2].forEach(function(pid){
+        var pr = pid ? prodById(pid) : null;
+        if (pr && need[pid] > stockDe(pr) + 1e-9) bx.appendChild(el("p", "note warn", "Ojo: de " + pr.nombre + " hay " + nf(stockDe(pr), 2) + " " + pr.unidad + " en bodega y lo agendado suma " + nf(need[pid], 2) + " " + pr.unidad + "."));
+      });
+      var rs = restriccionesSector(x.sectorId, Date.now());
+      if (rs.rein) bx.appendChild(el("p", "note warn", "Este sector está en reingreso hasta " + fmtFH.format(new Date(rs.rein)) + "."));
+      var go = el("button", "primary", "Hacerla ahora"); go.onclick = function(){ abrirAp(x); }; bx.appendChild(go);
+      var del = el("button", "small", "Cancelar aplicación"); var armed = false;
+      del.onclick = async function(){
+        if (!armed){ armed = true; del.textContent = "Toca otra vez para cancelar"; setTimeout(function(){ armed = false; del.textContent = "Cancelar aplicación"; }, 4000); return; }
+        try { await S.db.doc("plan/" + x.id).update({ estado: "cancelada", canceladaPor: S.nombre }); toast("Cancelada"); } catch (err){ toast("No se pudo cancelar."); }
+      };
+      bx.appendChild(del); sc.appendChild(bx);
+    });
+    if (S.manager){ var nb = el("button", null, "Planificar aplicación"); nb.onclick = abrirPlan; sc.appendChild(nb); }
+    return sc;
+  }
+  function medida(v, sol){
+    if (sol) return v >= 1000 ? nf(v / 1000, 2) + " kg (" + nf(v, 0) + " g)" : nf(v, v < 10 ? 1 : 0) + " g";
+    return v >= 1000 ? nf(v / 1000, 2) + " L (" + nf(v, 0) + " mL)" : nf(v, v < 10 ? 1 : 0) + " mL";
+  }
+  function calcPct(){
+    var p = numI($("pcPct")), t = numI($("pcLitros"));
+    if (!(p > 0) || !(t > 0)){ $("pcOut").textContent = "Escribe los datos para ver el resultado."; return; }
+    var sol = $("pcTipo").value === "sol", l = $("pcUn").value === "mL" ? t / 1000 : t, dil = $("pcDil").value;
+    if (p > 100){ $("pcOut").textContent = "El porcentaje no puede pasar de 100."; return; }
+    var u = p * l * 10, porL = p * 10, ud = sol ? "g" : "mL";
+    var lineas = ["Producto necesario: " + medida(u, sol)];
+    if (sol) lineas.push("Mezcla total: " + nf(l, 2) + " L de " + dil + " (agrega el producto y completa hasta ese volumen)");
+    else lineas.push("Completar con " + dil + ": " + medida(l * 1000 - u, false) + "\nMezcla total: " + nf(l, 2) + " L");
+    lineas.push("Por cada litro de mezcla: " + nf(porL, 1) + " " + ud);
+    $("pcOut").textContent = lineas.join("\n");
+  }
+  ["pcPct", "pcLitros"].forEach(function(id){ $(id).oninput = calcPct; }); ["pcUn", "pcTipo", "pcDil"].forEach(function(id){ $(id).onchange = calcPct; });
+  $("pcCerrar").onclick = function(){ $("pcSheet").hidden = true; };
+  function abrirPct(){ $("pcPct").value = ""; $("pcLitros").value = ""; $("pcUn").value = "L"; $("pcTipo").value = "liq"; $("pcDil").selectedIndex = 0; calcPct(); $("pcSheet").hidden = false; $("pcPct").focus(); }
+
+  var M3H_HA = 22, DERECHO_SEM = 1210;
+  function demandaM3h(c){ return c && c.ha && c.especie !== "Limón" ? c.ha * M3H_HA : null; }
+  function rgSel(){ return S.cuarteles.filter(function(c){ return c.id === $("rgSector").value; })[0]; }
+  function rgEstim(){
+    var c = rgSel(), hr = parseFloat($("rgHoras").value), d = demandaM3h(c), t = $("rgCalc");
+    if (d){ t.textContent = "Estimado: " + nf(d * hr, 0) + " m³ (" + nf(d, 1) + " m³/h × " + nf(hr, 1) + " h)"; t.hidden = false; }
+    else { t.textContent = "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
+    return d ? d * hr : null;
+  }
+  $("rgSector").onchange = rgEstim; $("rgHoras").onchange = rgEstim;
+  function abrirRiego(){
+    var cs = sectoresOrden();
+    if (!cs.length){ toast("Aún no hay sectores cargados."); return; }
+    fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
+    var hoy = fecha(), ayer = addDays(hoy, -1), anteayer = addDays(hoy, -2);
+    fill($("rgFecha"), [{ value: hoy, label: "Hoy" }, { value: ayer, label: "Ayer" }, { value: anteayer, label: "Anteayer" }]);
+    var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
+    fill($("rgHoras"), hs, "3");
+    $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); $("rgSheet").hidden = false;
+  }
+  $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; };
+  $("rgOk").onclick = async function(){
+    var c = rgSel(); if (!c) return;
+    var hr = parseFloat($("rgHoras").value), med = numI($("rgM3")), est = rgEstim();
+    var m3 = med != null && med > 0 ? med : est;
+    var b = $("rgOk"); b.disabled = true;
+    try {
+      await S.db.collection("riegos").add({ fecha: $("rgFecha").value, ts: new Date().toISOString(), sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre });
+      $("rgSheet").hidden = true; toast("Riego registrado");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function diasDesde(f){ return Math.round((new Date(fecha() + "T12:00:00Z") - new Date(f + "T12:00:00Z")) / 86400000); }
+  function buildRiego(){
+    var f = document.createDocumentFragment();
+    f.appendChild(ph("riego"));
+    var reg = el("button", "primary", "Registrar riego"); reg.onclick = abrirRiego; f.appendChild(reg);
+    var hoy = fecha(), sem = weekStart(hoy), cs = sectoresOrden();
+    var mSem = 0, mHoy = 0, hSem = 0;
+    S.riegos.forEach(function(r){ if (r.fecha >= sem){ mSem += Number(r.m3) || 0; hSem += Number(r.horas) || 0; } if (r.fecha === hoy) mHoy += Number(r.m3) || 0; });
+    var res = el("section", "card sect"); res.appendChild(el("h2", null, "Agua de esta semana"));
+    var rows = el("div", "rows");
+    [["Hoy", nf(mHoy, 0) + " m³"], ["Esta semana", nf(mSem, 0) + " m³"], ["Horas de riego (semana)", nf(hSem, 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
+    res.appendChild(rows);
+    var pct = Math.min(100, mSem / DERECHO_SEM * 100);
+    var bar = el("div", "meter" + (mSem > DERECHO_SEM ? " over" : "")); var fil = el("i"); fil.style.width = pct + "%"; bar.appendChild(fil); res.appendChild(bar);
+    res.appendChild(el("p", mSem > DERECHO_SEM ? "note warn" : "note", nf(mSem / DERECHO_SEM * 100, 0) + " % del derecho semanal de agua (" + nf(DERECHO_SEM, 0) + " m³, a 2 L/s). Los m³ son estimados por horas de riego, salvo los que midas."));
+    f.appendChild(res);
+    var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Por sector"));
+    cs.forEach(function(c){
+      var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, c.nombre));
+      var last = S.riegos.filter(function(r){ return r.sectorId === c.id; }).sort(function(a, b){ return a.fecha < b.fecha ? 1 : -1; })[0];
+      var d = last ? diasDesde(last.fecha) : null;
+      w.appendChild(el("span", "chip idle", last ? (d <= 0 ? "Regado hoy" : d === 1 ? "Regado ayer" : "Hace " + d + " días") : "Sin riegos")); bx.appendChild(w);
+      var m = 0, hh = 0; S.riegos.forEach(function(r){ if (r.sectorId === c.id && r.fecha >= sem){ m += Number(r.m3) || 0; hh += Number(r.horas) || 0; } });
+      var det = [nf(hh, 1) + " h y " + nf(m, 0) + " m³ esta semana"];
+      if (c.ha && m) det.push(nf(m / c.ha / 10, 1) + " mm");
+      var dm = demandaM3h(c); if (dm) det.push("pide unos " + nf(dm, 1) + " m³/h");
+      bx.appendChild(el("p", "sub", det.join(" · "))); sc.appendChild(bx);
+    });
+    sc.appendChild(el("p", "note", "El caudal por sector (m³/h) es una referencia: 22 m³/h por hectárea de nogal con el goteo actual. Falta el marco de los limones y la placa de la bomba para afinarlo."));
+    f.appendChild(sc);
+    var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimos riegos"));
+    if (!S.riegos.length) l.appendChild(el("p", "note", "Todavía no hay riegos registrados."));
+    S.riegos.slice().sort(function(a, b){ return a.fecha === b.fecha ? (a.ts < b.ts ? 1 : -1) : (a.fecha < b.fecha ? 1 : -1); }).slice(0, 25).forEach(function(r){
+      var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, r.sector)); w.appendChild(el("span", "chip idle", nf(r.horas, 1) + " h")); bx.appendChild(w);
+      bx.appendChild(el("p", "sub", fmtD2(r.fecha) + (r.m3 ? " · " + nf(r.m3, 0) + " m³" + (r.medido ? " medidos" : " estimados") : "") + (r.por ? " · " + r.por : "")));
+      if (r.notas) bx.appendChild(el("p", null, r.notas));
+      if (S.owner || r.uid === S.uid){
+        var del = el("button", "small", "Anular"); var armed = false;
+        del.onclick = async function(){
+          if (!armed){ armed = true; del.textContent = "Toca otra vez para anular"; setTimeout(function(){ armed = false; del.textContent = "Anular"; }, 4000); return; }
+          try { await S.db.doc("riegos/" + r.id).delete(); toast("Riego anulado"); } catch (err){ toast("No se pudo anular."); }
+        };
+        bx.appendChild(del);
+      }
+      l.appendChild(bx);
+    });
+    f.appendChild(l); return f;
+  }
+  function buildAplic(){
+    var f = document.createDocumentFragment(), now = Date.now();
+    f.appendChild(ph("aplic"));
+    var bod = el("section", "card sect"); bod.appendChild(el("h2", null, "Bodega"));
+    if (!S.productos.length) bod.appendChild(el("p", "note", "Aún no hay productos cargados."));
+    prodOrden().forEach(function(p){
+      var box = el("div", "asg"); var who = el("div", "who"); who.appendChild(el("b", null, p.nombre)); who.appendChild(el("span", "chip idle", p.tipo || "Producto")); box.appendChild(who);
+      box.appendChild(el("p", "stock", nf(stockDe(p), 2) + " " + p.unidad + " en bodega"));
+      var det = [p.vence ? "Vence " + fmtD2(p.vence) : null, p.lote ? "Lote " + p.lote : null].filter(Boolean).join(" · "); if (det) box.appendChild(el("p", "note", det));
+      if (p.ficha && p.ficha.length){
+        var dt = document.createElement("details"); dt.appendChild(el("summary", null, "Ficha de la etiqueta"));
+        var rs = el("div", "rows"); p.ficha.forEach(function(x){ var r = el("div", "row"); r.style.display = "block"; r.appendChild(el("b", null, x.k)); r.appendChild(el("p", "sub", x.v)); rs.appendChild(r); });
+        dt.appendChild(rs); box.appendChild(dt);
+      }
+      if (S.manager){ var s = el("button", null, "Agregar o ajustar stock"); s.onclick = function(){ abrirStock(p); }; box.appendChild(s); }
+      bod.appendChild(box);
+    });
+    f.appendChild(bod);
+    f.appendChild(buildPlan());
+    var pend = S.solicitudes.filter(function(x){ return x.estado === "pendiente"; });
+    if (S.manager){
+      var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Cambios de stock por autorizar"));
+      if (!pend.length) sc.appendChild(el("p", "note", "No hay cambios pendientes."));
+      pend.forEach(function(x){
+        var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, x.producto)); w.appendChild(el("span", "chip idle", (x.cantidad > 0 ? "+" : "") + nf(x.cantidad, 2) + " " + x.unidad)); bx.appendChild(w);
+        bx.appendChild(el("p", "sub", x.motivo + " · pidió " + (x.por || "sin nombre") + " · " + fmtFH.format(new Date(x.ts))));
+        if (S.owner){ var ok = el("button", "primary", "Autorizar"); ok.onclick = function(){ resolverSol(x, true); }; bx.appendChild(ok); var no = el("button", null, "Rechazar"); no.onclick = function(){ resolverSol(x, false); }; bx.appendChild(no); }
+        else bx.appendChild(el("p", "note warn", "Esperando la autorización de Diego."));
+        sc.appendChild(bx);
+      });
+      var res = S.solicitudes.filter(function(x){ return x.estado !== "pendiente"; }).slice(0, 5);
+      res.forEach(function(x){ sc.appendChild(el("p", "note", (x.estado === "aprobada" ? "Aprobado" : "Rechazado") + ": " + x.producto + " " + (x.cantidad > 0 ? "+" : "") + nf(x.cantidad, 2) + " " + x.unidad + " (pidió " + (x.por || "") + ", resolvió " + (x.resueltaPor || "") + ")")); });
+      f.appendChild(sc);
+    }
+    var hist = S.movimientos.slice(0, 8);
+    if (hist.length){
+      var hc = el("section", "card sect"); hc.appendChild(el("h2", null, "Movimientos de stock"));
+      hist.forEach(function(x){ hc.appendChild(el("p", "note", fmtFH.format(new Date(x.ts)) + " · " + x.producto + " " + (x.cantidad > 0 ? "+" : "") + nf(x.cantidad, 2) + " " + x.unidad + " · " + x.motivo + " · " + (x.por || "") + (x.aprobadoPor ? " (autorizó " + x.aprobadoPor + ")" : ""))); });
+      f.appendChild(hc);
+    }
+    var pcb = el("button", null, "Calculadora de porcentaje"); pcb.onclick = abrirPct; f.appendChild(pcb);
+    var reg = el("button", "primary", "Registrar aplicación"); reg.onclick = function(){ abrirAp(null); }; f.appendChild(reg);
+    var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimas aplicaciones"));
+    if (!S.aplicaciones.length) l.appendChild(el("p", "note", "Todavía no hay aplicaciones registradas."));
+    S.aplicaciones.slice(0, 30).forEach(function(a){
+      var box = el("div", "asg"); var who = el("div", "who"); who.appendChild(el("b", null, a.producto + " · " + a.sector)); if (!a.items) who.appendChild(el("span", "chip idle", nf(a.cantidad, 2) + " " + a.unidad)); box.appendChild(who);
+      if (a.items) box.appendChild(el("p", "sub", a.items.map(function(i){ return i.nombre + " " + nf(i.cantidad, 2) + " " + i.unidad + (i.modo === "pct" && i.valor ? " (" + nf(i.valor, 2) + " %)" : i.modo === "ha" && i.valor ? " (" + nf(i.valor, 2) + " " + i.unidad + "/ha)" : ""); }).join(" + ") + (a.aguaTotalL ? " en " + nf(a.aguaTotalL, 0) + " L de agua" : "")));
+      var det = [a.equipo, a.ha ? nf(a.ha, 2) + " ha" : null, a.dosis ? nf(a.dosis, 2) + " por ha" : null].filter(Boolean).join(" · "); if (det) box.appendChild(el("p", "sub", det));
+      if (a.reingresoHasta && Date.parse(a.reingresoHasta) > now) box.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(a.reingresoHasta))));
+      if (a.cosechaDesde && a.cosechaDesde > fecha(new Date(now))) box.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(a.cosechaDesde)));
+      if (a.notas) box.appendChild(el("p", null, a.notas));
+      box.appendChild(el("p", "note", fmtFH.format(new Date(a.ts)) + (a.por ? " · " + a.por : ""))); l.appendChild(box);
+    });
+    f.appendChild(l); return f;
+  }
+  var fmtDD = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" });
+  function fmtD2(f){ return fmtDD.format(new Date(f + "T12:00:00Z")); }
+
+  var ACT = ["Desmalezado", "Riego", "Poda", "Fertilización", "Aplicación", "Cosecha", "Mantención", "Replante", "Otra"];
+  var MAQ = ["Sin máquina", "Desbrozadora Stihl FS250", "Desbrozadora Husqvarna", "Bomba de espalda eléctrica (herbicidas)", "Bomba de espalda eléctrica (foliares)", "Tambor 200 L (herbicida)", "Fertirriego · tambor 200 L (fertilización)", "Otra"];
+  function abrirTrabajo(){
+    fill($("trAct"), ACT); fill($("trMaq"), MAQ);
+    fill($("trSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
+    $("trHoras").value = ""; $("trQuienes").value = ""; $("trDetalle").value = "";
+    $("trSheet").hidden = false; $("trHoras").focus();
+  }
+  $("trCancel").onclick = function(){ $("trSheet").hidden = true; };
+  $("trOk").onclick = async function(){
+    var h = parseFloat($("trHoras").value.replace(",", "."));
+    if (!(h > 0) || h > 24){ toast("Escribe las horas de trabajo, entre 0,5 y 24."); $("trHoras").focus(); return; }
+    var cu = S.cuarteles.filter(function(c){ return c.id === $("trSector").value; })[0];
+    var b = $("trOk"); b.disabled = true;
+    try {
+      await S.db.collection("trabajos").add({ fecha: fecha(), actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: $("trQuienes").value.trim(), maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      $("trSheet").hidden = true; toast("Trabajo registrado");
+    } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function buildTrabajo(){
+    var f = document.createDocumentFragment();
+    f.appendChild(ph("trabajo"));
+    var hoy = fecha(), ws = weekStart(hoy), hHoy = 0, hSem = 0, porMaq = {};
+    S.trabajos.forEach(function(t){
+      if (t.fecha === hoy) hHoy += t.horas || 0;
+      if (t.fecha >= ws && t.fecha <= hoy){ hSem += t.horas || 0; if (t.maquina && t.maquina !== "Sin máquina") porMaq[t.maquina] = (porMaq[t.maquina] || 0) + (t.horas || 0); }
+    });
+    var c = el("section", "card sect"); c.appendChild(el("h2", null, "Esta semana"));
+    var rows = el("div", "rows");
+    [["Hoy", nf(hHoy, 1) + " h"], ["Esta semana", nf(hSem, 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
+    Object.keys(porMaq).forEach(function(m){ var r = el("div", "row"); r.appendChild(el("span", "l", m)); r.appendChild(el("span", "r", nf(porMaq[m], 1) + " h esta semana")); rows.appendChild(r); });
+    c.appendChild(rows);
+    var add = el("button", "primary", "Registrar trabajo realizado"); add.onclick = abrirTrabajo; c.appendChild(add);
+    f.appendChild(c);
+    var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimos registros"));
+    if (!S.trabajos.length) l.appendChild(el("p", "note", "Todavía no hay trabajos registrados."));
+    S.trabajos.slice(0, 30).forEach(function(t){
+      var box = el("div", "asg"); var who = el("div", "who");
+      who.appendChild(el("b", null, t.actividad + " · " + t.sector)); who.appendChild(el("span", "chip idle", nf(t.horas, 1) + " h")); box.appendChild(who);
+      var det = [t.maquina && t.maquina !== "Sin máquina" ? t.maquina : null, t.quienes ? "Con: " + t.quienes : null].filter(Boolean).join(" · ");
+      if (det) box.appendChild(el("p", "sub", det));
+      if (t.detalle) box.appendChild(el("p", null, t.detalle));
+      box.appendChild(el("p", "note", fmtFH.format(new Date(t.ts)) + (t.por ? " · " + t.por : "")));
+      l.appendChild(box);
+    });
+    f.appendChild(l); return f;
+  }
+
+  function buildCampo(){
+    var f = document.createDocumentFragment();
+    f.appendChild(ph("campo"));
+    var cs = S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); });
+    var nog = 0, lim = 0;
+    cs.forEach(function(c){ var h = Number(c.ha) || 0; if (c.especie === "Limón") lim += h; else nog += h; });
+    var sum = el("section", "card sect"); sum.appendChild(el("h2", null, "Superficie plantada"));
+    var rows = el("div", "rows");
+    [["Nogal", nog], ["Limón", lim]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", nf(x[1], 2) + " ha")); rows.appendChild(r); });
+    sum.appendChild(rows);
+    var tot = el("div", "total"); tot.appendChild(el("span", null, "Total medido")); tot.appendChild(el("span", null, nf(nog + lim, 2) + " ha")); sum.appendChild(tot);
+    var faltan = cs.filter(function(c){ return c.ha == null; }).length;
+    sum.appendChild(el("p", "note", "Superficies medidas en Google Earth. No incluyen el huerto, las bodegas ni los caminos." + (faltan ? " Faltan las superficies de " + faltan + (faltan === 1 ? " sector." : " sectores.") : "")));
+    f.appendChild(sum);
+    f.appendChild(buildArboles());
+    if (!cs.length) f.appendChild(el("p", "note", "Aún no hay sectores cargados."));
+    cs.forEach(function(c){
+      var card = el("section", "card cua"); var h = el("div", "head"); h.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
+      h.appendChild(el("h3", null, c.nombre || "Sin nombre")); card.appendChild(h);
+      var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); card.appendChild(el("p", "sub", det)); if (c.nota) card.appendChild(el("p", "note", c.nota));
+      var rs = el("div", "rows");
+      function fila(k, v){ var r = el("div", "row"); r.appendChild(el("span", "l", k)); r.appendChild(el("span", "r", v)); rs.appendChild(r); }
+      fila("Superficie", c.ha != null ? nf(c.ha, 2) + " ha" : "por registrar");
+      fila("Árboles", c.arboles != null ? nf(c.arboles, 0) : "por registrar");
+      if (c.arboles != null && c.ha) fila("Densidad", nf(c.arboles / c.ha, 0) + " árboles/ha");
+      var rst = restriccionesSector(c.id, Date.now());
+      if (rst.rein) card.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
+      if (rst.cos) card.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
+      card.appendChild(rs);
+      if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; card.appendChild(e); }
+      f.appendChild(card);
+    });
+    if (S.owner){ var a = el("button", "primary", "Agregar sector"); a.onclick = function(){ abrirEdit(null); }; f.appendChild(a); }
+    return f;
+  }
+
+  var FUNC = ["Riego","Poda","Control de malezas","Aplicaciones","Fertilización","Cosecha","Maquinaria","Mantención","Supervisión","Otra"];
+  var JORN = ["Horario fijo (contrato)","Por pedido (a trato)","Completa","Media jornada","Por tarea","Por día (temporero)"];
+  function fill(sel, list, val){
+    sel.replaceChildren();
+    list.forEach(function(x){ var o = el("option", null, x.label || x); o.value = x.value != null ? x.value : x; sel.appendChild(o); });
+    if (val != null) sel.value = val;
+  }
+  var jUnsub = null;
+  function subJornada(){
+    if (jUnsub) jUnsub();
+    S.jFecha = fecha();
+    jUnsub = S.db.doc("jornadas/" + S.jFecha).onSnapshot(function(s){ S.jornada = s.exists ? s.data() : null; render(); }, function(){});
+  }
+  function asignaciones(){ var hoy = fecha(); return S.jornada && S.jornada.fecha === hoy ? (S.jornada.asignaciones || []).map(function(a){ return Object.assign({}, a); }) : []; }
+  async function guardarAsg(arr){
+    var hoy = fecha();
+    try { await S.db.doc("jornadas/" + hoy).set({ fecha: hoy, asignaciones: arr }); return true; }
+    catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return false; }
+  }
+
+  var perEd = null;
+  function abrirPersona(p){
+    perEd = p || {};
+    $("peTitle").textContent = p ? "Editar persona" : "Agregar persona";
+    $("peNombre").value = (p && p.nombre) || "";
+    fill($("peFunc"), FUNC, (p && p.funcion) || FUNC[0]); fill($("peJorn"), JORN, (p && p.jornada) || JORN[0]);
+    $("perSheet").hidden = false; $("peNombre").focus();
+  }
+  $("peCancel").onclick = function(){ $("perSheet").hidden = true; };
+  $("peOk").onclick = async function(){
+    var nombre = $("peNombre").value.trim();
+    if (!nombre){ toast("Escribe el nombre de la persona."); $("peNombre").focus(); return; }
+    var b = $("peOk"); b.disabled = true;
+    try {
+      var ref = perEd.id ? S.db.doc("personal/" + perEd.id) : S.db.collection("personal").doc();
+      await ref.set({ nombre: nombre, funcion: $("peFunc").value, jornada: $("peJorn").value });
+      $("perSheet").hidden = true; toast("Persona guardada");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+
+  function prefillAsg(){
+    var p = S.personal.filter(function(x){ return x.id === $("asPersona").value; })[0];
+    if (p){ $("asFunc").value = p.funcion || FUNC[0]; $("asJorn").value = p.jornada || JORN[0]; }
+  }
+  $("asPersona").onchange = prefillAsg;
+  function abrirAsg(){
+    if (!S.personal.length){ toast("Primero agrega a la persona al directorio."); abrirPersona(null); return; }
+    fill($("asPersona"), S.personal.map(function(p){ return { value: p.id, label: p.nombre }; }));
+    fill($("asFunc"), FUNC); fill($("asJorn"), JORN);
+    fill($("asCuartel"), [{ value: "", label: "Todo el campo" }].concat(S.cuarteles.map(function(c){ return { value: c.id, label: c.nombre }; })));
+    $("asHorario").value = ""; prefillAsg(); $("asgSheet").hidden = false;
+  }
+  $("asCancel").onclick = function(){ $("asgSheet").hidden = true; };
+  $("asOk").onclick = async function(){
+    var p = S.personal.filter(function(x){ return x.id === $("asPersona").value; })[0];
+    if (!p) return;
+    var cur = asignaciones();
+    if (cur.some(function(a){ return a.pid === p.id; })){ toast(p.nombre + " ya está en la lista de hoy."); return; }
+    var cu = S.cuarteles.filter(function(c){ return c.id === $("asCuartel").value; })[0];
+    cur.push({ pid: p.id, nombre: p.nombre, funcion: $("asFunc").value, jornada: $("asJorn").value, cuartel: cu ? cu.nombre : "Todo el campo", horario: $("asHorario").value.trim(), hi: null, hs: null });
+    var b = $("asOk"); b.disabled = true;
+    if (await guardarAsg(cur)){ $("asgSheet").hidden = true; toast(p.nombre + " agregada a hoy"); }
+    b.disabled = false;
+  };
+
+  function buildPersonal(){
+    var f = document.createDocumentFragment();
+    f.appendChild(ph("personal"));
+    var asg = asignaciones(), now = Date.now();
+    var activos = asg.filter(function(a){ return a.hi && !a.hs; }).length;
+    var c = el("section", "card sect");
+    c.appendChild(el("h2", null, "Quién trabaja hoy"));
+    c.appendChild(el("p", "sub", fmtL.format(new Date()) + " · " + activos + " en el campo, " + asg.length + " en la lista"));
+    var list = el("div");
+    if (!asg.length) list.appendChild(el("p", "note", "Nadie en la lista todavía. Agrega a quienes trabajan hoy, con su función y su jornada."));
+    asg.forEach(function(a, i){
+      var box = el("div", "asg"); var who = el("div", "who"); who.appendChild(el("b", null, a.nombre));
+      who.appendChild(el("span", "chip " + (a.hi && !a.hs ? "ok" : "idle"), a.hs ? "Salió " + hora(a.hs) : a.hi ? "Desde " + hora(a.hi) : "Por llegar"));
+      box.appendChild(who);
+      box.appendChild(el("p", "sub", [a.funcion, a.jornada, a.cuartel, a.horario].filter(Boolean).join(" · ")));
+      if (a.hi) box.appendChild(el("p", "note", "Trabajado: " + dur(mins([{ entrada: a.hi, salida: a.hs || null }], now))));
+      var btns = el("div", "btns");
+      if (!a.hi){ var l = el("button", null, "Llegó"); l.onclick = async function(){ var arr = asignaciones(); arr[i].hi = new Date().toISOString(); await guardarAsg(arr); }; btns.appendChild(l); }
+      else if (!a.hs){ var s = el("button", null, "Salió"); s.onclick = async function(){ var arr = asignaciones(); arr[i].hs = new Date().toISOString(); await guardarAsg(arr); }; btns.appendChild(s); }
+      var q = el("button", null, "Quitar"); q.onclick = async function(){ var arr = asignaciones(); arr.splice(i, 1); await guardarAsg(arr); }; btns.appendChild(q);
+      box.appendChild(btns); list.appendChild(box);
+    });
+    c.appendChild(list);
+    var add = el("button", "primary", "Agregar a hoy"); add.onclick = abrirAsg; c.appendChild(add);
+    f.appendChild(c);
+
+    var d = el("section", "card sect"); d.appendChild(el("h2", null, "Personal del campo"));
+    var rows = el("div", "rows");
+    if (!S.personal.length) rows.appendChild(el("p", "note", "Aún no hay personas en el directorio."));
+    S.personal.forEach(function(p){
+      var r = el("div", "row"); var l = el("span", "l"); l.appendChild(el("b", null, p.nombre)); l.appendChild(document.createElement("br")); l.appendChild(el("span", "note", [p.funcion, p.jornada].filter(Boolean).join(" · ")));
+      var e = el("button", null, "Editar"); e.style.minHeight = "44px"; e.onclick = function(){ abrirPersona(p); };
+      r.appendChild(l); r.appendChild(e); rows.appendChild(r);
+    });
+    d.appendChild(rows);
+    var np = el("button", null, "Agregar persona al directorio"); np.onclick = function(){ abrirPersona(null); }; d.appendChild(np);
+    f.appendChild(d);
+    return f;
+  }
+
+  var lastScreen = "";
+  function render(){
+    $("fechaHoy").textContent = fmtL.format(new Date());
+    var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
+    $("nav").hidden = !listo; if (listo) buildNav();
+    if (S.screen !== lastScreen){ lastScreen = S.screen; try { window.scrollTo(0, 0); } catch (e0) {} }
+    if (!S.db) return setView("nodb", msg("Abre esta página desde Claude", "Necesita tu sesión iniciada para guardar los registros del campo."));
+    if (!S.uid) return setView("noid", msg("No pude identificarte", "Pídele a Diego que te invite de nuevo y abre el enlace desde ese correo."));
+    if (!S.okEq || !S.okDias) return setView("loading", msg("Cargando…", "Un momento."));
+    if (!S.nombre) return setView("name", buildName);
+    if (!S.guiaVista){ S.guiaVista = true; abrirGuia(false); }
+    if (S.screen === "permisos") return setView("permisos", buildPermisos);
+    if (S.screen === "campo") return setView("campo", buildCampo);
+    if (S.screen === "trabajo") return setView("trabajo", buildTrabajo);
+    if (S.screen === "aplic") return setView("aplic", buildAplic);
+    if (S.screen === "riego") return setView("riego", buildRiego);
+    if (S.screen === "personal" && S.manager) return setView("personal", buildPersonal);
+    setView("home", buildHome);
+  }
+
+  async function boot(){
+    render();
+    var c = window.claude;
+    if (!c || !c.use) return;
+    var res = await Promise.all([c.use("db"), c.use("user")]);
+    var db = res[0], user = res[1];
+    if (!db || !user) return render();
+    S.uid = await user.id(); S.owner = await user.isOwner(); S.manager = await user.canEdit(); S.db = db;
+    if (!S.uid) return render();
+    db.doc("equipo/" + S.uid).onSnapshot(function(s){
+      S.okEq = true; var d = s.exists ? s.data() : null; S.nombre = d && d.nombre ? d.nombre : ""; render();
+    }, function(){ S.okEq = true; render(); });
+    db.collection("asistencia/" + S.uid + "/dias").orderBy("fecha", "desc").limit(31).onSnapshot(function(s){
+      S.okDias = true; S.dias = s.docs.map(function(d){ return d.data(); }); render();
+    }, function(){ S.okDias = true; render(); });
+    db.collection("arboles").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
+      S.arboles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("productos").onSnapshot(function(s){
+      S.productos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("aplicaciones").orderBy("ts", "desc").limit(1000).onSnapshot(function(s){
+      S.aplicaciones = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("permisos").orderBy("ts", "desc").limit(500).onSnapshot(function(s){
+      S.permisos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("permisos_res").onSnapshot(function(s){
+      S.pres = {}; s.docs.forEach(function(d){ S.pres[d.id] = d.data(); }); render();
+    }, function(){});
+    db.collection("saldos").onSnapshot(function(s){
+      S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
+    }, function(){});
+    if (S.owner) db.collection("consultas").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
+      S.consultas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    if (S.manager) db.collection("solicitudes").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
+      S.solicitudes = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("plan").orderBy("fecha", "desc").limit(300).onSnapshot(function(s){
+      S.plan = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("riegos").orderBy("ts", "desc").limit(1000).onSnapshot(function(s){
+      S.riegos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("movimientos").orderBy("ts", "desc").limit(1000).onSnapshot(function(s){
+      S.movimientos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("trabajos").orderBy("ts", "desc").limit(150).onSnapshot(function(s){
+      S.trabajos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("cuarteles").onSnapshot(function(s){
+      S.cuarteles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    if (S.manager){
+      db.collection("personal").orderBy("nombre").limit(200).onSnapshot(function(s){
+        S.personal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+      }, function(){});
+      subJornada();
+    }
+    if (S.manager){
+      db.collection("equipo").onSnapshot(function(s){
+        s.docs.forEach(function(d){
+          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre;
+          if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(14).onSnapshot(function(q){
+            t.dias = q.docs.map(function(x){ return x.data(); }); render();
+          }, function(){});
+        });
+        render();
+      }, function(){});
+    }
+    setInterval(function(){
+      if (S.manager && S.jFecha !== fecha()) subJornada();
+      if (S.view === "home" || S.view === "personal") render();
+    }, 30000);
+  }
+  boot();
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator){
+  var hadSW = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", function(){ if (hadSW && !window.__recargado){ window.__recargado = true; location.reload(); } });
+  window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+}
+</script>
+</body></html>

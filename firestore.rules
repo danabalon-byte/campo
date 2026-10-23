@@ -1,0 +1,42 @@
+rules_version = '2';
+// Reglas de seguridad de Control del Campo.
+// Dueño: anabalondiego@gmail.com. Los demás se autorizan en el documento config/roles (campos "admins" y "members", con correos en minúsculas).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signed() { return request.auth != null && request.auth.token.email_verified == true; }
+    function mail() { return request.auth.token.email.lower(); }
+    function rolesDoc() { return get(/databases/$(database)/documents/config/roles).data; }
+    function hasRoles() { return exists(/databases/$(database)/documents/config/roles); }
+    function isOwner() { return signed() && mail() == 'anabalondiego@gmail.com'; }
+    function isAdmin() { return isOwner() || (signed() && hasRoles() && mail() in rolesDoc().get('admins', [])); }
+    function isMember() { return isAdmin() || (signed() && hasRoles() && mail() in rolesDoc().get('members', [])); }
+
+    match /config/{doc} {
+      allow read: if isMember();
+      allow write: if isOwner();
+    }
+    // Asistencia: cada persona escribe la suya; el administrador y el dueño ven y corrigen todas.
+    match /asistencia/{uid}/{rest=**} {
+      allow read, write: if isAdmin() || (isMember() && request.auth.uid == uid);
+    }
+    match /equipo/{uid} {
+      allow read: if isMember();
+      allow write: if isOwner() || (isMember() && request.auth.uid == uid);
+    }
+    match /cuarteles/{d} { allow read: if isMember(); allow write: if isOwner(); }
+    match /productos/{d} { allow read: if isMember(); allow write: if isOwner(); }
+    match /movimientos/{d} { allow read: if isMember(); allow write: if isOwner(); }
+    match /permisos_res/{d} { allow read: if isMember(); allow write: if isOwner(); }
+    match /saldos/{d} { allow read: if isMember(); allow write: if isOwner(); }
+    match /personal/{d=**} { allow read, write: if isAdmin(); }
+    match /jornadas/{d=**} { allow read, write: if isAdmin(); }
+    match /solicitudes/{d} { allow read, write: if isAdmin(); }
+    match /arboles/{d} { allow read, write: if isMember(); }
+    match /trabajos/{d} { allow read, write: if isMember(); }
+    match /aplicaciones/{d} { allow read, write: if isMember(); }
+    match /riegos/{d} { allow read, write: if isMember(); }
+    match /plan/{d} { allow read, write: if isMember(); }
+    match /consultas/{d} { allow read, write: if isMember(); }
+    match /permisos/{d} { allow read, write: if isMember(); }
+  }
+}

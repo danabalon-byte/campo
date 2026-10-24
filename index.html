@@ -12,7 +12,7 @@
   --wood:#7A5A3B; --wood-bg:#EEE4D6;
   --slate:#4F5E68; --slate-bg:#E2E7EA;
   --ok-bg:#D9E9D0; --ok-fg:#27472A; --idle-bg:#E6E3D6; --idle-fg:#5F5238;
-  --alert:#B1472A; --alert-bg:#F6E0D7;
+  --alert:#9C3A20; --alert-bg:#F6E0D7; --on-alert:#FFFFFF;
   --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-display:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
 }
@@ -25,7 +25,7 @@
     --wood:#D4B087; --wood-bg:#33291E;
     --slate:#A9B7BF; --slate-bg:#25303A;
     --ok-bg:#1F3A22; --ok-fg:#B4DDA9; --idle-bg:#312D20; --idle-fg:#D8C397;
-    --alert:#EE9068; --alert-bg:#3B2419;
+    --alert:#EE9068; --alert-bg:#3B2419; --on-alert:#2A1208;
     color-scheme:dark;
   }
 }
@@ -37,7 +37,7 @@
   --wood:#D4B087; --wood-bg:#33291E;
   --slate:#A9B7BF; --slate-bg:#25303A;
   --ok-bg:#1F3A22; --ok-fg:#B4DDA9; --idle-bg:#312D20; --idle-fg:#D8C397;
-  --alert:#EE9068; --alert-bg:#3B2419;
+  --alert:#EE9068; --alert-bg:#3B2419; --on-alert:#2A1208;
   color-scheme:dark;
 }
 [hidden]{display:none !important}
@@ -56,8 +56,8 @@ p{margin:0}
 .top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:12px 10px}
 .mark{flex:none; width:34px; height:34px; color:var(--accent)}
 .top h1{font-size:19px; line-height:1.1; font-weight:700}
-.top .where{font-size:13px; color:var(--muted)}
-.top .date{margin-left:auto; text-align:right; font-size:13.5px; color:var(--muted); min-width:0}
+.top .where{font-size:14px; color:var(--muted)}
+.top .date{margin-left:auto; text-align:right; font-size:14.5px; color:var(--muted); min-width:0}
 .top .date::first-letter{text-transform:uppercase}
 .card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; min-width:0}
 #app{display:grid; gap:16px; min-width:0}
@@ -112,7 +112,7 @@ button[disabled]{cursor:default; opacity:.55}
 .tile[data-m=aplic]{--mc:var(--lemon-fg); --mb:var(--lemon-bg)}
 .tile[data-m=riego]{--mc:var(--water); --mb:var(--water-bg)}
 .tile[data-m=campo]{--mc:var(--wood); --mb:var(--wood-bg)}
-.tile[data-m=personal],.tile[data-m=permisos]{--mc:var(--slate); --mb:var(--slate-bg)}
+.tile[data-m=personal],.tile[data-m=permisos],.tile[data-m=horarios]{--mc:var(--slate); --mb:var(--slate-bg)}
 .tile .ti{width:40px; height:40px; border-radius:12px; background:var(--mb); color:var(--mc); display:grid; place-items:center; margin-bottom:8px}
 .tile .ti svg{width:23px; height:23px}
 .tile b{font-family:var(--font-display); font-size:17px; line-height:1.15; font-weight:700}
@@ -124,11 +124,11 @@ button[disabled]{cursor:default; opacity:.55}
 .week{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; height:118px}
 .wd{display:grid; grid-template-rows:1fr auto; justify-items:center; gap:6px; min-width:0}
 .wd .bar{align-self:end; display:grid; justify-items:center; gap:3px; width:100%; min-height:0}
-.wd .hv{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.wd .hv{font-size:14px; color:var(--muted); font-variant-numeric:tabular-nums}
 .wd .col{width:100%; max-width:30px; border-radius:9px 9px 5px 5px; background:color-mix(in srgb,var(--accent) 58%,var(--surface))}
 .wd.on .col{background:var(--accent)}
 .wd.none .col{background:var(--surface-2); height:5px !important}
-.wd .dl{font-size:13px; color:var(--muted)}
+.wd .dl{font-size:14px; color:var(--muted)}
 .wd.on .dl{color:var(--fg); font-weight:700}
 .total{display:flex; justify-content:space-between; gap:12px; padding-top:10px; border-top:1px solid var(--line); font-weight:700; font-variant-numeric:tabular-nums}
 details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; align-items:center; color:var(--accent)}
@@ -167,7 +167,7 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 .ph[data-m=aplic]{--mc:var(--lemon-fg); --mb:var(--lemon-bg)}
 .ph[data-m=riego]{--mc:var(--water); --mb:var(--water-bg)}
 .ph[data-m=campo]{--mc:var(--wood); --mb:var(--wood-bg)}
-.ph[data-m=personal],.ph[data-m=permisos]{--mc:var(--slate); --mb:var(--slate-bg)}
+.ph[data-m=personal],.ph[data-m=permisos],.ph[data-m=horarios]{--mc:var(--slate); --mb:var(--slate-bg)}
 .ph .pi{flex:none; width:46px; height:46px; border-radius:14px; background:var(--mb); color:var(--mc); display:grid; place-items:center}
 .ph .pi svg{width:26px; height:26px}
 .ph h2{font-size:26px; line-height:1.05; font-weight:800; letter-spacing:-.02em}
@@ -182,7 +182,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 /* barra de pestañas */
 .nav{position:fixed; left:0; right:0; bottom:0; z-index:15; display:grid; grid-template-columns:repeat(5,1fr); gap:2px; background:var(--surface); border-top:1px solid var(--line);
   padding:8px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.nav button{display:grid; justify-items:center; gap:3px; min-height:58px; padding:6px 2px; background:transparent; color:var(--muted); font-size:12.5px; font-weight:700; border-radius:16px}
+.nav button{display:grid; justify-items:center; gap:3px; min-height:58px; padding:6px 2px; background:transparent; color:var(--muted); font-size:14px; font-weight:700; border-radius:16px}
 .nav .ni{width:54px; height:30px; border-radius:15px; display:grid; place-items:center}
 .nav .ni svg{width:23px; height:23px}
 .nav button[aria-current=page]{color:var(--fg)}
@@ -191,7 +191,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .nav button[data-s=riego][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
 .nav button[data-s=campo][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .nav .nb{position:relative}
-.nav .nb i{position:absolute; top:-4px; right:6px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--alert); color:#fff; font:700 11.5px/18px var(--font-body); text-align:center; font-style:normal}
+.nav .nb i{position:absolute; top:-6px; right:4px; min-width:20px; height:20px; padding:0 5px; border-radius:9px; background:var(--alert); color:var(--on-alert); font:700 14px/20px var(--font-body); text-align:center; font-style:normal}
 /* hojas inferiores */
 .sheet{position:fixed; inset:0; z-index:40; background:rgba(8,16,10,.55); display:flex; align-items:flex-end; justify-content:center; padding-inline:env(safe-area-inset-left,0px) env(safe-area-inset-right,0px)}
 .sheet .box{width:100%; max-width:560px; max-height:92vh; background:var(--surface); border-radius:26px 26px 0 0; display:flex; flex-direction:column; overflow:hidden}
@@ -205,21 +205,21 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .sfoot button:not(.primary){background:transparent; color:var(--muted); min-height:46px}
 .sheet .sub{font-size:17px}
 .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:4px}
-.cal .h{font-size:13px; color:var(--muted); text-align:center; padding-bottom:2px}
-.cal .d{min-height:50px; border-radius:10px; background:var(--surface-2); padding:4px 2px; display:grid; align-content:start; justify-items:center; gap:2px; font-size:13px; font-variant-numeric:tabular-nums}
+.cal .h{font-size:14px; color:var(--muted); text-align:center; padding-bottom:2px}
+.cal .d{min-height:50px; border-radius:10px; background:var(--surface-2); padding:4px 2px; display:grid; align-content:start; justify-items:center; gap:2px; font-size:14px; font-variant-numeric:tabular-nums}
 .cal .d.off{background:transparent}
 .cal .d.hoy{outline:2px solid var(--accent)}
 .cal .d.fin{opacity:.7}
-.cal .b{font:700 11.5px/1 var(--font-body); min-width:20px; text-align:center; padding:3px 4px; border-radius:7px; background:var(--accent); color:var(--on-accent)}
+.cal .b{font:700 13px/1 var(--font-body); min-width:22px; text-align:center; padding:3px 4px; border-radius:7px; background:var(--accent); color:var(--on-accent)}
 .cal .b.w{background:var(--wood); color:#fff}
 .cal .b.p{background:transparent; color:var(--fg); border:1.5px dashed var(--muted)}
 .mes{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .mes b{font-family:var(--font-display); font-size:18px; text-transform:capitalize}
-.mes button{min-height:44px; padding:6px 16px}
+.mes button{min-height:44px; min-width:48px; padding:6px 16px}
 .saldo{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center}
 .saldo div{background:var(--surface-2); border-radius:14px; padding:10px 4px}
 .saldo b{display:block; font:700 24px var(--font-display); font-variant-numeric:tabular-nums}
-.saldo small{font-size:13px; color:var(--muted)}
+.saldo small{font-size:14px; color:var(--muted)}
 .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(92px + env(safe-area-inset-bottom,0px)); z-index:50;
   background:var(--fg); color:var(--bg); padding:12px 18px; border-radius:14px; font-weight:700; max-width:calc(100% - 32px); text-align:center; box-shadow:0 8px 24px -8px rgba(0,0,0,.4)}
 @media (prefers-reduced-motion: no-preference){
@@ -278,12 +278,12 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     <div class="field"><label for="arHilera">Hilera</label><input type="text" id="arHilera" inputmode="numeric" maxlength="3" placeholder="Ej: 5"></div>
     <div class="field"><label for="arArbol">Árbol</label><input type="text" id="arArbol" inputmode="numeric" maxlength="3" placeholder="Ej: 10"></div>
     <div class="field"><label for="arEstado">Estado</label><select id="arEstado"></select></div>
-    <div class="field"><label for="arTexto">Qué observas</label><textarea id="arTexto" maxlength="400" placeholder="Ej: presenta agallas y descoloración en su follaje"></textarea></div>
     <div class="field"><label for="arFotoBtn">Foto (opcional)</label>
       <input type="file" id="arFoto" accept="image/*" hidden>
       <button type="button" id="arFotoBtn">Tomar o elegir una foto</button>
       <img id="arFotoVista" alt="Vista previa de la foto" hidden style="width:100%;border-radius:14px;margin-top:8px">
       <button type="button" class="link" id="arFotoQuitar" hidden>Quitar foto</button></div>
+    <div class="field"><label for="arTexto">Qué observas</label><textarea id="arTexto" maxlength="400" placeholder="Ej: presenta agallas y descoloración en su follaje"></textarea></div>
 </div>
 <div class="sfoot">    <button class="primary" id="arOk">Guardar registro</button>
     <button id="arCancel">Cancelar</button></div>
@@ -702,7 +702,6 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
         var g = el("div", "saldo");
         [["Del año", s.anual], ["Tomados", s.tom], ["Quedan", s.quedan]].forEach(function(c){ var d = el("div"); d.appendChild(el("b", null, nf(c[1], c[1] % 1 ? 1 : 0))); d.appendChild(el("small", null, c[0])); g.appendChild(d); });
         bx.appendChild(g);
-        if (s.prueba) bx.appendChild(el("p", "note", "Los 15 días son un valor de prueba, no los días reales disponibles." + (S.owner ? " Defínelos abajo." : "")));
         if (s.pen) bx.appendChild(el("p", "note", "Incluye " + nf(s.pen, s.pen % 1 ? 1 : 0) + " día(s) por aprobar."));
         if (s.quedan < 0) bx.appendChild(el("p", "note warn", "Pidió más días de los que tiene."));
       }
@@ -713,6 +712,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
       var ids = {}; ids[S.uid] = S.nombre; Object.keys(S.team).forEach(function(i){ ids[i] = S.team[i].nombre || "Sin nombre"; });
       Object.keys(ids).forEach(function(i){ sv.appendChild(filaSaldo(i, ids[i], true)); });
     } else sv.appendChild(filaSaldo(S.uid, S.nombre, false));
+    if (S.owner ? Object.keys(S.team).concat([S.uid]).some(function(i){ return saldoDe(i).prueba; }) : saldoDe(S.uid).prueba) sv.appendChild(el("p", "note", "Los 15 días son un valor de prueba, no los días reales disponibles." + (S.owner ? " Defínelos con «Definir días del año»." : "")));
     sv.appendChild(el("p", "note", "Vacaciones y permisos con goce descuentan del saldo. Los permisos sin goce no."));
     f.appendChild(sv);
 
@@ -770,6 +770,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
   }
 
   var ICON = {
+    horarios:"M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
     home: "M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10",
     trabajo: "M9 4h6v3H9zM7 5.500H5V21h14V5.500h-2M9 14.500l2 2 4-4.500",
     aplic: "M9 3h6M10 3v6.500L4.800 19a2 2 0 0 0 1.800 3h10.800a2 2 0 0 0 1.800-3L14 9.500V3M7.500 15h9",
@@ -811,7 +812,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"] };
+  var PH = { campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -819,7 +820,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
   var NAV = [["home", "Inicio"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
   function iconKey(k){ return k === "home" ? "home" : k; }
   function buildNav(){
-    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" ? "" : S.screen, hy = fecha();
+    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     nav.replaceChildren();
     NAV.forEach(function(x){
@@ -838,7 +839,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 
   function buildName(){
     var c = el("section", "hero");
-    c.appendChild(portada("Te damos la bienvenida al campo", "Chincolco, Petorca"));
+    c.appendChild(portada("Hola", "Te damos la bienvenida al campo"));
     var b2 = el("div", "hero-body");
     b2.appendChild(el("p", "sub", "Escribe tu nombre una sola vez. Así Diego sabrá quién registra cada llegada y cada trabajo."));
     var fl = el("div", "field");
@@ -896,6 +897,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     ];
     var fHoy = fuera(hy), pPend = nPend();
     mods.push(["permisos", "Permisos", S.owner && pPend ? pPend + (pPend === 1 ? " por aprobar" : " por aprobar") : fHoy.length ? fHoy.map(function(x){ return x.por; }).join(", ") + " con permiso hoy" : "Días libres y saldo"]);
+    if (S.owner) mods.push(["horarios", "Horarios del equipo", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo ahora" : " personas en el campo ahora") : "Quién está y cuándo entra y sale"]);
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
     var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
     var g = el("div", "tiles");
@@ -903,21 +905,19 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
       var b = el("button", "tile"); b.dataset.m = t[0]; b.type = "button";
       var ti = el("span", "ti"); ti.appendChild(ico(t[0])); b.appendChild(ti);
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
-      if (t[0] === "personal" || t[0] === "permisos") b.classList.add("wide");
+      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios") b.classList.add("wide");
       b.onclick = function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
     });
     tiles.appendChild(g); f.appendChild(tiles);
 
-    var ay = el("section", "card sect"); ay.appendChild(el("h2", null, "Ayuda"));
-    ay.appendChild(el("p", "sub", "¿Algo no funciona o no sabes cómo seguir?"));
+    var ay = el("section", "card sect"); ay.setAttribute("aria-label", "Ayuda");
     var bc = el("button", "primary", "Tengo un problema o una idea"); bc.onclick = abrirConsulta; ay.appendChild(bc);
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
     f.appendChild(ay);
     if (S.owner){
       var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });
       var cc = el("section", "card sect"); cc.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
-      if (!abiertas.length) cc.appendChild(el("p", "sub", "No hay consultas pendientes."));
       abiertas.slice(0, 10).forEach(function(x){
         var bx = el("div", "asg"); var wo = el("div", "who"); wo.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo)); bx.appendChild(wo);
         bx.appendChild(el("p", null, x.texto));
@@ -925,7 +925,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
         var ok = el("button", "small", "Marcar como resuelta"); ok.onclick = async function(){ ok.disabled = true; try { await S.db.doc("consultas/" + x.id).update({ resuelta: true, resueltaTs: new Date().toISOString() }); } catch (err){ ok.disabled = false; toast("No se pudo actualizar."); } }; bx.appendChild(ok);
         cc.appendChild(bx);
       });
-      f.appendChild(cc);
+      if (abiertas.length) f.appendChild(cc);
     }
 
     var sem = el("section", "card sect"); sem.appendChild(el("h2", null, "Mi semana"));
@@ -1064,7 +1064,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     var obs = S.arboles.filter(function(o){ return !S.filtroSector || o.sectorId === S.filtroSector; });
     var list = el("div");
     if (!obs.length) list.appendChild(el("p", "note", "Todavía no hay registros."));
-    obs.slice(0, 30).forEach(function(o){
+    obs.slice(0, S.verMasArb ? 30 : 5).forEach(function(o){
       var box = el("div", "asg"); var who = el("div", "who");
       who.appendChild(el("b", null, o.sector + " · hilera " + o.hilera + " · árbol " + o.arbol));
       who.appendChild(el("span", "chip " + chipEstado(o.estado), o.estado)); box.appendChild(who);
@@ -1086,7 +1086,9 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
       box.appendChild(el("p", "note", fmtFH.format(new Date(o.ts)) + (o.por ? " · " + o.por : "")));
       list.appendChild(box);
     });
-    c.appendChild(list); return c;
+    c.appendChild(list);
+    if (obs.length > 5){ var mas = el("button", "link", S.verMasArb ? "Ver solo los 5 últimos" : "Ver más registros (" + Math.min(obs.length, 30) + ")"); mas.onclick = function(){ S.verMasArb = !S.verMasArb; render(); }; c.appendChild(mas); }
+    return c;
   }
 
   var EQUIPOS = ["Bomba de espalda eléctrica (herbicidas)", "Bomba de espalda eléctrica (foliares)", "Tambor 200 L (herbicida)", "Fertirriego · tambor 200 L (fertilización)", "Manual (al voleo)", "Otro"];
@@ -1703,6 +1705,72 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     return f;
   }
 
+
+  // Solo para el dueño: quién está en el campo y a qué hora entra y sale cada persona, día por día.
+  function personasHor(){
+    var m = {};
+    function add(nombre){ var n = String(nombre || "").trim(), k = n.toLowerCase(); if (!k) return null; if (!m[k]) m[k] = { nombre: n, dias: {} }; return m[k]; }
+    Object.keys(S.team).forEach(function(id){ var t = S.team[id], p = add(t.nombre); if (!p) return; (t.dias || []).forEach(function(d){ p.dias[d.fecha] = (d.tramos || []).slice(); }); });
+    S.personal.forEach(function(x){ add(x.nombre); });
+    (S.jornHist || []).forEach(function(j){ (j.asignaciones || []).forEach(function(a){ var p = add(a.nombre); if (!p || !a.hi) return; if (!p.dias[j.fecha]) p.dias[j.fecha] = [{ entrada: a.hi, salida: a.hs || null }]; }); });
+    return Object.keys(m).map(function(k){ return m[k]; }).sort(function(a, b){ return a.nombre.localeCompare(b.nombre, "es"); });
+  }
+  function rangoSem(a, b){
+    var m = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "short" }), m1 = m.format(new Date(a + "T12:00:00Z")).replace(".", ""), m2 = m.format(new Date(b + "T12:00:00Z")).replace(".", "");
+    return m1 === m2 ? (+a.slice(8)) + "–" + (+b.slice(8)) + " " + m1 : (+a.slice(8)) + " " + m1 + " – " + (+b.slice(8)) + " " + m2;
+  }
+  function buildHorarios(){
+    var f = document.createDocumentFragment(); f.appendChild(ph("horarios"));
+    var now = Date.now(), hy = fecha(), ps = personasHor(), ws0 = weekStart(hy);
+    var c1 = el("section", "card sect"); c1.appendChild(el("h2", null, "En el campo ahora")); var n1 = 0;
+    ps.forEach(function(p){
+      var tr = p.dias[hy] || [], last = tr[tr.length - 1]; if (!last) return; n1++;
+      var r = el("div", "pp"); r.appendChild(el("span", "av", iniciales(p.nombre)));
+      var mid = el("div"); mid.style.minWidth = "0"; mid.appendChild(el("b", null, p.nombre)); mid.appendChild(el("p", "sub", "Hoy " + dur(mins(tr, now)))); r.appendChild(mid);
+      r.appendChild(el("span", "chip " + (last.salida ? "idle" : "ok"), last.salida ? "Salió " + hora(last.salida) : "Desde " + hora(last.entrada))); c1.appendChild(r);
+    });
+    if (!n1) c1.appendChild(el("p", "note", "Nadie ha registrado su llegada hoy."));
+    f.appendChild(c1);
+    if (!ps.length){ var c0 = el("section", "card sect"); c0.appendChild(el("p", "note", "Todavía no hay personas con registros.")); f.appendChild(c0); return f; }
+
+    var ws = S.horWs && S.horWs <= ws0 ? S.horWs : ws0, we = addDays(ws, 6);
+    var c3 = el("section", "card sect"); c3.appendChild(el("h2", null, "Resumen de la semana"));
+    c3.appendChild(el("p", "sub", "Semana del " + rangoSem(ws, we)));
+    var rs = el("div", "rows");
+    function totSem(p){ var d = 0, t = 0; for (var k = 0; k < 7; k++){ var fd = addDays(ws, k), tr = p.dias[fd]; if (tr && tr.length){ d++; t += mins(tr, fd === hy ? now : null); } } return { d: d, t: t }; }
+    ps.forEach(function(p){ var x = totSem(p), r = el("div", "row"); r.appendChild(el("span", "l", p.nombre)); r.appendChild(el("span", "r", x.d ? x.d + (x.d === 1 ? " día · " : " días · ") + dur(x.t) : "Sin registros")); rs.appendChild(r); });
+    c3.appendChild(rs);
+
+    var c2 = el("section", "card sect"); c2.appendChild(el("h2", null, "Horarios por persona"));
+    if (!S.horP || !ps.some(function(p){ return p.nombre.toLowerCase() === S.horP; })) S.horP = ps[0].nombre.toLowerCase();
+    var fld = el("div", "field"), lb = el("label", null, "Persona"), sel = el("select"); lb.htmlFor = "horPersona"; sel.id = "horPersona";
+    fill(sel, ps.map(function(p){ return { value: p.nombre.toLowerCase(), label: p.nombre }; }), S.horP);
+    sel.onchange = function(){ S.horP = sel.value; render(); };
+    fld.appendChild(lb); fld.appendChild(sel); c2.appendChild(fld);
+    var nav = el("div", "mes"), pv = el("button", null, "‹"), nx = el("button", null, "›");
+    pv.setAttribute("aria-label", "Semana anterior"); nx.setAttribute("aria-label", "Semana siguiente");
+    pv.onclick = function(){ S.horWs = addDays(ws, -7); render(); };
+    nx.disabled = ws >= ws0; nx.onclick = function(){ var n = addDays(ws, 7); S.horWs = n >= ws0 ? ws0 : n; render(); };
+    nav.appendChild(pv); nav.appendChild(el("b", null, rangoSem(ws, we))); nav.appendChild(nx); c2.appendChild(nav);
+    var P = ps.filter(function(p){ return p.nombre.toLowerCase() === S.horP; })[0], rows = el("div", "rows"), tot = 0, nd = 0;
+    for (var k = 0; k < 7; k++){
+      var fd = addDays(ws, k), tr = P.dias[fd] || [], r = el("div", "row"); r.appendChild(el("span", "l", dia(fd)));
+      var m = mins(tr, fd === hy ? now : null), abierto = tr.some(function(t){ return !t.salida; });
+      var txt = tr.length ? tr.map(function(t){ return hora(t.entrada) + "–" + (t.salida ? hora(t.salida) : "…"); }).join("  ") + " · " + dur(m) + (abierto && fd !== hy ? " · sin salida" : "") : "Sin registro";
+      var rr = el("span", "r", txt); rr.style.textAlign = "right"; if (!tr.length) rr.style.color = "var(--muted)";
+      if (tr.length){ nd++; tot += m; } r.appendChild(rr); rows.appendChild(r);
+    }
+    c2.appendChild(rows);
+    var tt = el("div", "total"); tt.appendChild(el("span", null, nd + (nd === 1 ? " día trabajado" : " días trabajados"))); tt.appendChild(el("span", null, dur(tot))); c2.appendChild(tt);
+    var ym = ws.slice(0, 7), md = 0, mt = 0;
+    Object.keys(P.dias).forEach(function(d){ if (d.slice(0, 7) === ym && P.dias[d].length){ md++; mt += mins(P.dias[d], d === hy ? now : null); } });
+    var mes = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "long" }).format(new Date(ym + "-15T12:00:00Z"));
+    c2.appendChild(el("p", "note", "En " + mes + ": " + md + (md === 1 ? " día" : " días") + " · " + dur(mt) + " (según lo registrado en la app)."));
+    f.appendChild(c2); f.appendChild(c3);
+    f.appendChild(el("p", "note", "Esta pantalla solo la ve el dueño."));
+    return f;
+  }
+
   var lastScreen = "";
   function render(){
     $("fechaHoy").textContent = fmtL.format(new Date());
@@ -1720,6 +1788,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     if (S.screen === "aplic") return setView("aplic", buildAplic);
     if (S.screen === "riego") return setView("riego", buildRiego);
     if (S.screen === "personal" && S.manager) return setView("personal", buildPersonal);
+    if (S.screen === "horarios" && S.owner) return setView("horarios", buildHorarios);
     setView("home", buildHome);
   }
 
@@ -1783,11 +1852,16 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
       }, function(){});
       subJornada();
     }
+    if (S.owner){
+      db.collection("jornadas").orderBy("fecha", "desc").limit(70).onSnapshot(function(s){
+        S.jornHist = s.docs.map(function(d){ return d.data(); }); render();
+      }, function(){});
+    }
     if (S.manager){
       db.collection("equipo").onSnapshot(function(s){
         s.docs.forEach(function(d){
           var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre;
-          if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(14).onSnapshot(function(q){
+          if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(S.owner ? 70 : 14).onSnapshot(function(q){
             t.dias = q.docs.map(function(x){ return x.data(); }); render();
           }, function(){});
         });

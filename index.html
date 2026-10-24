@@ -5,13 +5,13 @@
    barra de pestañas fija abajo para cambiar de módulo con un toque, módulos con color propio
    (trabajo = nogal, aplicaciones = limón, riego = agua del pozo, campo = madera de nogal), hojas inferiores con botón siempre visible. */
 :root{
-  --bg:#EDEFE8; --surface:#FAFBF7; --surface-2:#E2E8DB; --fg:#17231A; --muted:#566659; --line:#D2D9CA;
+  --bg:#F2EFE6; --surface:#FBF9F3; --surface-2:#E8E4D6; --fg:#1F261B; --muted:#5A5F4F; --line:#D9D3C0;
   --accent:#2C5234; --on-accent:#F7F9F2; --hero:#1E3B27; --on-hero:#F1F5EA; --focus:#E4B91C;
   --lemon:#E4B91C; --lemon-bg:#FAF0C6; --lemon-fg:#6B5400;
   --water:#27688A; --water-bg:#DAE9F1;
   --wood:#7A5A3B; --wood-bg:#EEE4D6;
   --slate:#4F5E68; --slate-bg:#E2E7EA;
-  --ok-bg:#D9E9D0; --ok-fg:#27472A; --idle-bg:#E6E3D6; --idle-fg:#5F5238;
+  --ok-bg:#DCE8CF; --ok-fg:#27472A; --idle-bg:#ECE6D3; --idle-fg:#5F5238;
   --alert:#9C3A20; --alert-bg:#F6E0D7; --on-alert:#FFFFFF;
   --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-display:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
@@ -229,6 +229,22 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
   @keyframes subir{from{transform:translateY(32px); opacity:.4}}
   @keyframes aparece{from{opacity:0; transform:translate(-50%,8px)}}
 }
+
+/* Textura de papel (muy suave) y relieve de tarjetas */
+body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2  0 0 0 0 .18  0 0 0 0 .1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.card,.tile{box-shadow:0 1px 0 rgba(60,50,20,.06), 0 6px 14px -8px rgba(60,50,20,.18)}
+button.primary{box-shadow:inset 0 -3px 0 rgba(0,0,0,.16)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body::after{display:none} :root:not([data-theme="light"]) .card,:root:not([data-theme="light"]) .tile{box-shadow:none}}
+:root[data-theme="dark"] body::after{display:none}
+:root[data-theme="dark"] .card,:root[data-theme="dark"] .tile{box-shadow:none}
+/* Modo Sol: letra más grande y más contraste para leer al aire libre */
+html.sol .wrap{zoom:1.15}
+html.sol{--muted:#3A4130; --line:#B7B09A; --fg:#0F150C}
+html.sol .note,html.sol .sub{color:var(--fg)}
+html.sol body{font-weight:500}
+@media (prefers-color-scheme: dark){html.sol:not([data-theme="light"]){--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}}
+html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 </style>
 
 <div class="wrap">
@@ -496,6 +512,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 (function(){
   var TZ = "America/Santiago";
   var $ = function(id){ return document.getElementById(id); };
+  try { if (localStorage.getItem("campo_sol") === "1") document.documentElement.classList.add("sol"); } catch (e0) {}
   var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
@@ -914,6 +931,10 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
     var ay = el("section", "card sect"); ay.setAttribute("aria-label", "Ayuda");
     var bc = el("button", "primary", "Tengo un problema o una idea"); bc.onclick = abrirConsulta; ay.appendChild(bc);
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
+    var on = document.documentElement.classList.contains("sol");
+    var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
+    bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
+    ay.appendChild(bs);
     f.appendChild(ay);
     if (S.owner){
       var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });

@@ -222,7 +222,14 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .saldo small{font-size:14px; color:var(--muted)}
 .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(92px + env(safe-area-inset-bottom,0px)); z-index:50;
   background:var(--fg); color:var(--bg); padding:12px 18px; border-radius:14px; font-weight:700; max-width:calc(100% - 32px); text-align:center; box-shadow:0 8px 24px -8px rgba(0,0,0,.4)}
+.toast .tick{width:22px; height:22px; vertical-align:-5px; margin-right:8px; fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round}
+.toast .tk-c{stroke:#8FD080; fill:rgba(143,208,128,.18)}
+.toast .tk-p{stroke:#8FD080}
+html.sol .toast{font-size:18px}
 @media (prefers-reduced-motion: no-preference){
+  .toast:not([hidden]) .tk-c{stroke-dasharray:63; stroke-dashoffset:63; animation:trazo .45s ease-out forwards}
+  .toast:not([hidden]) .tk-p{stroke-dasharray:20; stroke-dashoffset:20; animation:trazo .3s .25s ease-out forwards}
+  @keyframes trazo{to{stroke-dashoffset:0}}
   button{transition:transform .08s, background-color .15s}
   .sheet:not([hidden]) .box{animation:subir .24s ease-out}
   .toast:not([hidden]){animation:aparece .2s ease-out}
@@ -561,7 +568,16 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 
   var toastT;
   function toast(msg){
-    var t = $("toast"); t.textContent = msg; t.hidden = false;
+    var t = $("toast"); t.hidden = false; t.replaceChildren();
+    if (/(registrad|guardad|aprobad|cancelad|enviad|agregad|actualizad|listo)/i.test(msg)){
+      var NS = "http://www.w3.org/2000/svg", sv = document.createElementNS(NS, "svg");
+      sv.setAttribute("viewBox", "0 0 24 24"); sv.setAttribute("class", "tick"); sv.setAttribute("aria-hidden", "true");
+      var c1 = document.createElementNS(NS, "circle"); c1.setAttribute("cx", "12"); c1.setAttribute("cy", "12"); c1.setAttribute("r", "10"); c1.setAttribute("class", "tk-c");
+      var p1 = document.createElementNS(NS, "path"); p1.setAttribute("d", "M7 12.500l3.500 3.500L17 9"); p1.setAttribute("class", "tk-p");
+      sv.appendChild(c1); sv.appendChild(p1); t.appendChild(sv);
+      try { if (navigator.vibrate) navigator.vibrate(25); } catch (e0) {}
+    }
+    t.appendChild(document.createTextNode(msg));
     clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 3500);
   }
 
@@ -799,18 +815,44 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
     permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5"
   };
+  var ICON_F = {
+    horarios:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z",
+    home:"M5 10l7-6 7 6v10h-5v-6h-4v6H5z",
+    trabajo:"M5 5.500h14V21H5z",
+    aplic:"M7.500 15h9l2.500 4a2 2 0 0 1-1.600 3H6.600A2 2 0 0 1 5 19z",
+    riego:"M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z",
+    campo:"M12 11C6 11 4 7 4 3.500c6 0 8 3 8 7.500zM12 16c5 0 8-3 8-7.500-5 0-8 3-8 7.500z",
+    personal:"M10 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM4 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1z",
+    calendario:"M4 8.500h16V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z",
+    caja:"M3 7l9 4 9-4-9-4z",
+    alerta:"M12 4l9 16H3z",
+    permisos:"M5 4h14v17H5z"
+  };
   function ico(name){
     var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
     s.setAttribute("stroke-width", "1.9"); s.setAttribute("stroke-linecap", "round"); s.setAttribute("stroke-linejoin", "round"); s.setAttribute("aria-hidden", "true");
+    if (ICON_F[name]){ var pf = document.createElementNS("http://www.w3.org/2000/svg", "path"); pf.setAttribute("d", ICON_F[name]); pf.setAttribute("fill", "currentColor"); pf.setAttribute("fill-opacity", ".18"); pf.setAttribute("stroke", "none"); s.appendChild(pf); }
     var pa = document.createElementNS("http://www.w3.org/2000/svg", "path"); pa.setAttribute("d", ICON[name] || ""); s.appendChild(pa); return s;
   }
   function arte(){
     var NS = "http://www.w3.org/2000/svg", s = document.createElementNS(NS, "svg");
     s.setAttribute("viewBox", "0 0 400 150"); s.setAttribute("preserveAspectRatio", "xMidYMax slice"); s.setAttribute("aria-hidden", "true");
     function n(tag, a, parent){ var e = document.createElementNS(NS, tag); Object.keys(a).forEach(function(k){ e.setAttribute(k, a[k]); }); (parent || s).appendChild(e); return e; }
-    n("circle", { cx: 338, cy: 40, r: 15, fill: "#E4B91C" });
-    n("circle", { cx: 338, cy: 40, r: 26, fill: "#E4B91C", "fill-opacity": ".16" });
+    var h = new Date().getHours() + new Date().getMinutes() / 60, fase = h < 5.5 || h >= 21 ? "noche" : h < 9 ? "alba" : h < 18 ? "dia" : "ocaso";
+    var tinte = { noche: "#0B1B33", alba: "#F0A868", dia: "#8EC5D8", ocaso: "#E0724C" }[fase];
+    var df = n("defs", {}), lg = n("linearGradient", { id: "cielo", x1: 0, y1: 0, x2: 0, y2: 1 }, df);
+    n("stop", { offset: "0", "stop-color": tinte, "stop-opacity": fase === "noche" ? ".55" : ".32" }, lg); n("stop", { offset: "1", "stop-color": tinte, "stop-opacity": "0" }, lg);
+    n("rect", { x: 0, y: 0, width: 400, height: 150, fill: "url(#cielo)" });
+    if (fase === "noche"){
+      [[40,30],[90,60],[150,22],[230,48],[285,20],[370,70],[205,18],[120,40]].forEach(function(q, i){ n("circle", { cx: q[0], cy: q[1], r: i % 3 ? 1.1 : 1.7, fill: "#fff", "fill-opacity": ".7" }); });
+      n("circle", { cx: 338, cy: 40, r: 15, fill: "#F3EFD8" }); n("circle", { cx: 344, cy: 36, r: 13, fill: "#16304A" });
+      n("circle", { cx: 338, cy: 40, r: 26, fill: "#F3EFD8", "fill-opacity": ".08" });
+    } else {
+      var sx = fase === "alba" ? 262 : fase === "ocaso" ? 330 : 338, sy = fase === "dia" ? 40 : fase === "alba" ? 78 : 66, sc = fase === "ocaso" ? "#F28A4A" : fase === "alba" ? "#F5C463" : "#E4B91C";
+      n("circle", { cx: sx, cy: sy, r: 15, fill: sc });
+      n("circle", { cx: sx, cy: sy, r: 26, fill: sc, "fill-opacity": ".16" });
+    }
     n("path", { d: "M0 70 C50 48 96 60 150 52 S270 36 330 50 S380 54 400 46 L400 150 L0 150Z", fill: "#fff", "fill-opacity": ".06" });
     n("path", { d: "M0 88 C70 70 130 82 200 74 S330 64 400 76 L400 150 L0 150Z", fill: "#fff", "fill-opacity": ".07" });
     var vx = 200, vy = 80;

@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1E3B27"><meta name="mobile-web-app-capable" content="yes"><title>Control del Campo</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>html,body{margin:0;padding:0}img{max-width:100%}</style></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#F2EFE6" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0F1711" media="(prefers-color-scheme: dark)"><meta name="mobile-web-app-capable" content="yes"><title>Agrícola Borderío</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>html,body{margin:0;padding:0}img{max-width:100%}</style></head><body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700;800&display=swap">
 <style>
 /* Concepto: app de bolsillo para el campo. Una portada con hilera de nogales en perspectiva (lo único atrevido),
@@ -53,11 +53,11 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .wrap{max-width:540px; margin:0 auto; display:grid; gap:16px}
 h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0; letter-spacing:-.01em}
 p{margin:0}
-.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:12px 10px}
-.mark{flex:none; width:34px; height:34px; color:var(--accent)}
-.top h1{font-size:19px; line-height:1.1; font-weight:700}
-.top .where{font-size:14px; color:var(--muted)}
-.top .date{margin-left:auto; text-align:right; font-size:14.5px; color:var(--muted); min-width:0}
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:10px 8px}
+.mark{flex:none; width:28px; height:28px; color:var(--accent)}
+.top h1{font-size:16px; line-height:1.15; font-weight:700; letter-spacing:.01em}
+.top .where{font-size:12px; font-weight:400; letter-spacing:.02em; margin-top:2px; color:var(--muted)}
+.top .date{margin-left:auto; text-align:right; font-size:12px; font-weight:400; letter-spacing:.02em; white-space:nowrap; color:var(--muted); min-width:0}
 .top .date::first-letter{text-transform:uppercase}
 .card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; min-width:0}
 #app{display:grid; gap:16px; min-width:0}
@@ -273,7 +273,7 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 span.ag-ck{border-style:dashed}
 .ag-tx{min-width:0; flex:1} .ag-tx b{display:block; font-size:17px; line-height:1.25; overflow-wrap:anywhere}
 .ag-tx span{display:block; font-size:15px; color:var(--muted); margin-top:2px}
-.ag-pill{display:inline-block; font-size:13px; font-weight:700; padding:1px 9px; border-radius:99px; margin-right:6px; background:var(--idle-bg); color:var(--muted)}
+.ag-pill{display:inline-block; font-size:14px; font-weight:700; padding:1px 9px; border-radius:99px; margin-right:6px; background:var(--idle-bg); color:var(--muted)}
 .ag-pill.r{background:var(--water-bg); color:var(--water)} .ag-pill.a{background:var(--lemon-bg); color:var(--lemon-fg)}
 .ag-pill.w{background:var(--ok-bg); color:var(--ok-fg)} .ag-pill.p{background:var(--wood-bg); color:var(--wood)}
 .ag-q{flex:none; min-height:44px; padding:6px 10px; font-size:14px}
@@ -304,6 +304,17 @@ span.ag-ck{border-style:dashed}
 .ag-mic textarea,.ag-mic input{flex:1; min-width:0}
 .ag-mic button{flex:none; width:56px; min-height:56px; background:var(--lemon); color:#2A2100; font-size:24px; padding:0}
 .ag-mic button.on{background:var(--alert); color:var(--on-alert)}
+
+/* Sectores desplegables */
+.cua-t{display:flex; align-items:center; gap:12px; width:100%; min-height:60px; padding:2px 0; background:transparent; text-align:left; border-radius:14px; color:var(--fg)}
+.cua-t .tx{flex:1; min-width:0} .cua-t h3{margin:0}
+.cua-t .rs{display:block; font-size:15px; color:var(--muted); font-weight:400; margin-top:2px}
+.cua-t .chev{flex:none; width:26px; height:26px; color:var(--muted)}
+.cua-t[aria-expanded=true] .chev{transform:rotate(180deg)}
+.cua-body{margin-top:8px; padding-top:8px; border-top:1px solid var(--line)}
+.cua-alert{display:inline-block; font-size:14px; font-weight:700; padding:1px 9px; border-radius:99px; background:var(--alert-bg); color:var(--alert); margin-top:4px}
+.cua-all{display:flex; justify-content:flex-end; margin:4px 0}
+@media (prefers-reduced-motion: no-preference){ .cua-t .chev{transition:transform .2s} }
 </style>
 
 <div class="wrap">
@@ -312,7 +323,7 @@ span.ag-ck{border-style:dashed}
       <path d="M20 35V17"/><path d="M20 17c-7 0-11-4-11-10 7 0 11 4 11 10z"/><path d="M20 24c6 0 10-3.500 10-9-6 0-10 3.500-10 9z"/>
     </svg>
     <div style="min-width:0">
-      <h1>Control del Campo</h1>
+      <h1>Agr. Borderío</h1>
       <p class="where">Chincolco, Petorca</p>
     </div>
     <p class="date" id="fechaHoy"></p>
@@ -599,7 +610,20 @@ span.ag-ck{border-style:dashed}
   var TZ = "America/Santiago";
   var $ = function(id){ return document.getElementById(id); };
   try { if (localStorage.getItem("campo_sol") === "1") document.documentElement.classList.add("sol"); } catch (e0) {}
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false };
+  var TEMAS = ["auto", "light", "dark"], TEMA_TXT = { auto: "automática (según el teléfono)", light: "clara", dark: "nocturna" };
+  function temaGuardado(){ try { var t = localStorage.getItem("campo_tema"); return TEMAS.indexOf(t) >= 0 ? t : "auto"; } catch (e) { return "auto"; } }
+  function aplicarTema(t){
+    var h = document.documentElement;
+    if (t === "auto") h.removeAttribute("data-theme"); else h.setAttribute("data-theme", t);
+    Array.prototype.forEach.call(document.querySelectorAll('meta[name="theme-color"]'), function(m){
+      if (!m.hasAttribute("data-m")) m.setAttribute("data-m", m.getAttribute("media") || "");
+      if (!m.hasAttribute("data-c")) m.setAttribute("data-c", m.getAttribute("content"));
+      if (t === "auto"){ m.setAttribute("content", m.getAttribute("data-c")); if (m.getAttribute("data-m")) m.setAttribute("media", m.getAttribute("data-m")); }
+      else { m.removeAttribute("media"); m.setAttribute("content", t === "dark" ? "#0F1711" : "#F2EFE6"); }
+    });
+  }
+  aplicarTema(temaGuardado());
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{} };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -717,7 +741,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 2;
+  var GUIA_V = 4;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -730,11 +754,13 @@ span.ag-ck{border-style:dashed}
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
     ["Bodega", "En «Aplicar», «Bodega» muestra cuánto producto queda. Si falta o sobra, usa «Agregar o ajustar stock». Diego revisa y autoriza cada cambio.", 1, ""],
+    ["Sectores desplegables", "En «Campo», cada sector aparece cerrado, con su nombre y su superficie. Toca el nombre para abrir o cerrar su información. Con «Abrir todos los sectores» los abres todos de una vez. Si un sector tiene aviso de reingreso o carencia, lo ves en rojo aun con el sector cerrado.", 3, ""],
     ["Árboles y fotos", "En «Campo», el botón «Registrar un árbol» guarda la hilera, el número de árbol y lo que viste. Puedes agregar una foto con «Tomar o elegir una foto».", 2, ""],
     ["Permisos", "En «Inicio», el módulo «Permisos» sirve para «Pedir días libres», ver tu saldo y el calendario. Diego aprueba cada solicitud.", 2, ""],
     ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
     ["Horarios del equipo", "En «Inicio», el módulo «Horarios del equipo» muestra quién está en el campo y a qué hora entra y sale cada persona. Solo lo ves tú.", 2, "owner"],
     ["Letra grande para el sol", "En «Inicio», abajo, el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
+    ["Claro o nocturno", "En «Inicio», abajo, el botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Toca el botón hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
     ["Si algo falla", "En «Inicio», el botón «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -914,6 +940,7 @@ span.ag-ck{border-style:dashed}
     caja: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
     permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5",
+    chev: "M6 9l6 6 6-6",
     agenda: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM9 14.500l2 2 4-4.500"
   };
   var ICON_F = {
@@ -1086,6 +1113,10 @@ span.ag-ck{border-style:dashed}
     var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
     bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
     ay.appendChild(bs);
+    var tm = temaGuardado();
+    var bt = el("button", null, "Apariencia: " + TEMA_TXT[tm]); bt.id = "btnTema";
+    bt.onclick = function(){ var n = TEMAS[(TEMAS.indexOf(temaGuardado()) + 1) % TEMAS.length]; try { localStorage.setItem("campo_tema", n); } catch (e2) {} aplicarTema(n); render(); };
+    ay.appendChild(bt);
     f.appendChild(ay);
     if (S.owner){
       var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });
@@ -1765,21 +1796,34 @@ span.ag-ck{border-style:dashed}
     f.appendChild(sum);
     f.appendChild(buildArboles());
     if (!cs.length) f.appendChild(el("p", "note", "Aún no hay sectores cargados."));
+    if (cs.length > 1){
+      var todos = cs.every(function(c){ return S.cuaAb[c.id]; }), ta = el("button", "small", todos ? "Cerrar todos los sectores" : "Abrir todos los sectores");
+      ta.onclick = function(){ cs.forEach(function(c){ S.cuaAb[c.id] = !todos; }); render(); };
+      var tw = el("div", "cua-all"); tw.appendChild(ta); f.appendChild(tw);
+    }
     cs.forEach(function(c){
-      var card = el("section", "card cua"); var h = el("div", "head"); h.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
-      h.appendChild(el("h3", null, c.nombre || "Sin nombre")); card.appendChild(h);
-      var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); card.appendChild(el("p", "sub", det)); if (c.nota) card.appendChild(el("p", "note", c.nota));
+      var abierto = !!S.cuaAb[c.id], rst = restriccionesSector(c.id, Date.now());
+      var card = el("section", "card cua"), t = el("button", "cua-t"); t.type = "button"; t.setAttribute("aria-expanded", abierto ? "true" : "false"); t.setAttribute("aria-controls", "cua_" + c.id);
+      t.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
+      var tx = el("span", "tx"); tx.appendChild(el("h3", null, c.nombre || "Sin nombre"));
+      tx.appendChild(el("span", "rs", [c.especie, c.variedad, c.ha != null ? nf(c.ha, 2) + " ha" : null].filter(Boolean).join(" · ")));
+      if (rst.rein) tx.appendChild(el("span", "cua-alert", "No entrar hasta " + fmtFH.format(new Date(rst.rein))));
+      else if (rst.cos) tx.appendChild(el("span", "cua-alert", "Carencia hasta el " + fmtD2(rst.cos)));
+      t.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); t.appendChild(ch);
+      t.onclick = function(){ S.cuaAb[c.id] = !abierto; render(); };
+      card.appendChild(t);
+      var body = el("div", "cua-body"); body.id = "cua_" + c.id; body.hidden = !abierto;
+      var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); body.appendChild(el("p", "sub", det)); if (c.nota) body.appendChild(el("p", "note", c.nota));
       var rs = el("div", "rows");
       function fila(k, v){ var r = el("div", "row"); r.appendChild(el("span", "l", k)); r.appendChild(el("span", "r", v)); rs.appendChild(r); }
       fila("Superficie", c.ha != null ? nf(c.ha, 2) + " ha" : "por registrar");
       fila("Árboles", c.arboles != null ? nf(c.arboles, 0) : "por registrar");
       if (c.arboles != null && c.ha) fila("Densidad", nf(c.arboles / c.ha, 0) + " árboles/ha");
-      var rst = restriccionesSector(c.id, Date.now());
-      if (rst.rein) card.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
-      if (rst.cos) card.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
-      card.appendChild(rs);
-      if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; card.appendChild(e); }
-      f.appendChild(card);
+      if (rst.rein) body.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
+      if (rst.cos) body.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
+      body.appendChild(rs);
+      if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; body.appendChild(e); }
+      card.appendChild(body); f.appendChild(card);
     });
     if (S.owner){ var a = el("button", "primary", "Agregar sector"); a.onclick = function(){ abrirEdit(null); }; f.appendChild(a); }
     return f;
@@ -2208,8 +2252,9 @@ span.ag-ck{border-style:dashed}
     catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
+  function fechaCorta(d){ var p = {}; new Intl.DateTimeFormat("es-CL",{timeZone:TZ,weekday:"short",day:"numeric",month:"short"}).formatToParts(d).forEach(function(x){ p[x.type]=x.value; }); var w = (p.weekday||"").replace(".",""); var m = (p.month||"").replace(".",""); return w.charAt(0).toUpperCase()+w.slice(1) + " " + p.day + " " + m; }
   function render(){
-    $("fechaHoy").textContent = fmtL.format(new Date());
+    $("fechaHoy").textContent = fechaCorta(new Date());
     var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
     $("nav").hidden = !listo; if (listo) buildNav();
     if (S.screen !== lastScreen){ lastScreen = S.screen; try { window.scrollTo(0, 0); } catch (e0) {} }

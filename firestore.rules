@@ -31,6 +31,24 @@ service cloud.firestore {
     match /personal/{d=**} { allow read, write: if isAdmin(); }
     match /jornadas/{d=**} { allow read, write: if isAdmin(); }
     match /solicitudes/{d} { allow read, write: if isAdmin(); }
+    // Terceros y jornadas: el dueño ve todo; la encargada ve y registra solo lo que ella misma anotó (consultas con where uid == su cuenta).
+    function esMio() { return request.auth.uid == resource.data.uid; }
+    match /terceros/{d} {
+      allow read: if isOwner() || (isAdmin() && esMio());
+      allow create: if isOwner() || (isAdmin() && request.resource.data.uid == request.auth.uid);
+      allow update: if isOwner() || (isAdmin() && esMio() && request.resource.data.uid == request.auth.uid);
+      allow delete: if isOwner();
+    }
+    match /jornadasTerc/{d} {
+      allow read: if isOwner() || (isAdmin() && esMio());
+      allow create: if isOwner() || (isAdmin() && request.resource.data.uid == request.auth.uid);
+      allow update: if isOwner();
+      allow delete: if isOwner() || (isAdmin() && esMio());
+    }
+    // Valores, pagos y sábados acordados: solo el dueño.
+    match /tarifas/{d} { allow read, write: if isOwner(); }
+    match /abonos/{d} { allow read, write: if isOwner(); }
+    match /semanasT/{d} { allow read, write: if isOwner(); }
     match /arboles/{d} { allow read, write: if isMember(); }
     // Fotos de árboles: cualquiera del equipo puede subir y ver; solo el dueño puede borrar. Máximo ~400 KB por foto.
     match /fotos/{d} {

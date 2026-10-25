@@ -37,6 +37,14 @@
     s["riegos/r_demo2"] = { fecha: dia(-5), ts: iso(-5, 14), sectorId: "s3", sector: "Sector 3 nogal", horas: 2.5, m3: 31, por: "Colaboradora demo" };
     s["ideas/i_demo1"] = { texto: "Revisar el goteo de la hilera 4 del sector 2", tag: "Riego", estado: "abierta", ts: ago(30), uid: PERFILES.manager.uid, por: "Encargada demo" };
     s["consultas/c_demo1"] = { tipo: "Una idea", texto: "¿Podemos agregar el calendario de poda?", por: "Colaboradora demo", ts: ago(26), resuelta: false, pantalla: "inicio", rol: "colaboradora" };
+    s["terceros/t_demo1"] = { nombre: "Colaboradora externa (demo)", rol: "Colaborador", aCargo: "Yolanda", activo: true, uid: PERFILES.manager.uid, por: "Encargada demo", ts: ago(120) };
+    s["terceros/t_demo2"] = { nombre: "Practicante (demo)", rol: "Practicante", aCargo: "Agrícola", activo: true, uid: PERFILES.owner.uid, por: "Dueño demo", ts: ago(120) };
+    s["tarifas/t_demo1"] = { tid: "t_demo1", hist: [{ desde: "2000-01-01", j: 30000, m: 15000 }], honorarios: false, monto: 0, forma: "dia", por: "Dueño demo", ts: ago(120) };
+    s["tarifas/t_demo2"] = { tid: "t_demo2", hist: [], honorarios: true, monto: 300000, forma: "mes", por: "Dueño demo", ts: ago(120) };
+    s["jornadasTerc/j_demo1"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(2), tipo: "jornada", min: 504, dia: 504, labor: "Poda en el sector 3", aCargo: "Yolanda", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(50) };
+    s["jornadasTerc/j_demo2"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(1), tipo: "media", min: 252, dia: 504, labor: "Riego", aCargo: "Yolanda", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(26) };
+    s["jornadasTerc/j_demo3"] = { tid: "t_demo2", nombre: "Practicante (demo)", fecha: dia(1), tipo: "horas", min: 270, dia: 504, hi: "09:00", hs: "13:30", labor: "Registro de árboles", aCargo: "Agrícola", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(26) };
+    s["abonos/b_demo1"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", monto: 20000, fecha: dia(1), nota: "efectivo", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(24) };
     Object.keys(PERFILES).forEach(function (k) { s["equipo/" + PERFILES[k].uid] = { nombre: PERFILES[k].nombre, creado: ago(500) }; });
     [[-1, 8, 17], [-2, 8, 16], [-3, 9, 14]].forEach(function (x) {
       s["asistencia/" + PERFILES.manager.uid + "/dias/" + dia(x[0])] = { fecha: dia(x[0]), tramos: [{ entrada: iso(x[0], x[1] + 3), salida: iso(x[0], x[2] + 3), por: "Encargada demo" }] };

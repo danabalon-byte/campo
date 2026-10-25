@@ -175,8 +175,8 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 /* formularios */
 .field{display:grid; gap:6px}
 label{font-weight:700; font-size:16px}
-input[type=text],input[type=date],input[type=datetime-local],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
-input[type=text]:focus,input[type=date]:focus,input[type=datetime-local]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input[type=text],input[type=tel],input[type=date],input[type=datetime-local],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
+input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,input[type=datetime-local]:focus,select:focus,textarea:focus{border-color:var(--accent)}
 select{appearance:none; -webkit-appearance:none; padding-right:44px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23738575' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center}
 textarea{font-size:18px; min-height:92px; resize:vertical}
 /* barra de pestañas */
@@ -211,6 +211,25 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .cal .d.fer{background:var(--alert-bg)}
 .cal .d .n{font-weight:400}
 .cal .d.fer .n{color:var(--alert); font-weight:700; text-decoration:underline}
+.nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent); mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.nav.sc::-webkit-scrollbar{display:none}
+.nav.sc.fin{-webkit-mask-image:none; mask-image:none}
+.nav.sc button{flex:0 0 17.4%; min-width:62px; scroll-snap-align:start}
+.nav button[data-s=medidores][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
+.mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
+.mchips::-webkit-scrollbar{display:none}
+.mchips button{flex:none; min-height:48px; padding:0 18px; border-radius:99px; background:var(--surface-2); color:var(--fg); font-weight:700; border:1px solid var(--line)}
+.mchips button[aria-pressed=true]{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.mbig{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0}
+.mbig div{background:var(--surface-2); border-radius:14px; padding:10px; text-align:center}
+.mbig b{display:block; font-family:var(--font-display); font-size:22px; line-height:1.15}
+.mbig small{color:var(--muted); font-size:14px}
+.tile[data-m=medidores]{--mc:var(--water); --mb:var(--water-bg)}
+.ph[data-m=medidores]{--mc:var(--water); --mb:var(--water-bg)}
+.gt{display:grid; gap:8px}
+.gt .tg small{display:block; font-weight:400; font-size:14px; color:inherit; opacity:.85}
+.chip.inc{background:var(--lemon-bg); color:var(--lemon-fg)}
+.cum{font-size:14px; color:var(--muted)}
 .fl{display:grid; gap:6px; margin:4px 0 10px}
 .fl .row{display:flex; gap:10px; justify-content:space-between; font-size:15px}
 .fl .row b{color:var(--alert)}
@@ -557,7 +576,8 @@ span.ag-ck{border-style:dashed}
     <div class="field"><label for="trAct">¿Qué se hizo?</label><select id="trAct"></select></div>
     <div class="field"><label for="trSector">¿Dónde?</label><select id="trSector"></select></div>
     <div class="field"><label for="trHoras">Horas de trabajo</label><input type="text" id="trHoras" inputmode="decimal" maxlength="5" placeholder="Ej: 3,5"></div>
-    <div class="field"><label for="trQuienes">Quiénes trabajaron (opcional)</label><input type="text" id="trQuienes" maxlength="80" placeholder="Ej: Yolanda y Juan"></div>
+    <div class="field" id="trListaF" hidden><label id="trListaL">Quiénes trabajaron</label><div class="gt" id="trLista" role="group" aria-labelledby="trListaL"></div></div>
+    <div class="field"><label for="trQuienes" id="trQuienesL">Quiénes trabajaron (opcional)</label><input type="text" id="trQuienes" maxlength="80" placeholder="Ej: Yolanda y Juan"></div>
     <div class="field"><label for="trMaq">Máquina usada</label><select id="trMaq"></select></div>
     <div class="field"><label for="trDetalle">Detalle (opcional)</label><textarea id="trDetalle" maxlength="300" placeholder="Ej: se desmalezó la entrehilera de las hileras 1 a 10"></textarea></div>
 </div>
@@ -572,6 +592,10 @@ span.ag-ck{border-style:dashed}
     <div class="field"><label for="peNombre">Nombre</label><input type="text" id="peNombre" maxlength="40" placeholder="Ej: Juan Pérez"></div>
     <div class="field"><label for="peFunc">Función habitual</label><select id="peFunc"></select></div>
     <div class="field"><label for="peJorn">Tipo de jornada habitual</label><select id="peJorn"></select></div>
+    <div class="field"><label for="peNac">Fecha de nacimiento</label><input type="date" id="peNac"></div>
+    <div class="field"><label for="peTel">Teléfono</label><input type="tel" id="peTel" maxlength="20" inputmode="tel" placeholder="Ej: +56 9 1234 5678"></div>
+    <button type="button" class="tg" id="peEdad" aria-pressed="false"><span>Mostrar la edad en esta ficha</span><span class="st" id="peEdadSt">No</span></button>
+    <p class="note" id="peInfo" aria-live="polite"></p>
 </div>
 <div class="sfoot">    <button class="primary" id="peOk">Guardar</button>
     <button id="peCancel">Cancelar</button></div>
@@ -652,6 +676,10 @@ span.ag-ck{border-style:dashed}
     <div class="field"><label for="tcNombre">Nombre</label><input type="text" id="tcNombre" maxlength="40" placeholder="Ej: Corina"></div>
     <div class="field"><label for="tcRol">Tipo</label><select id="tcRol"><option>Colaborador</option><option>Practicante</option></select></div>
     <div class="field"><label for="tcCargo">A cargo de</label><select id="tcCargo"><option>Agrícola</option><option>Yolanda</option></select></div>
+    <div class="field"><label for="tcNac">Fecha de nacimiento</label><input type="date" id="tcNac"></div>
+    <div class="field"><label for="tcTel">Teléfono</label><input type="tel" id="tcTel" maxlength="20" inputmode="tel" placeholder="Ej: +56 9 1234 5678"></div>
+    <button type="button" class="tg" id="tcEdad" aria-pressed="false"><span>Mostrar la edad en esta ficha</span><span class="st" id="tcEdadSt">No</span></button>
+    <p class="note" id="tcInfo" aria-live="polite"></p>
     <div id="tcOwn" hidden>
       <div class="field"><label for="tcJ">Valor jornada completa ($)</label><input type="text" id="tcJ" inputmode="numeric" placeholder="Ej: 30000"></div>
       <div class="field"><label for="tcM">Valor media jornada ($)</label><input type="text" id="tcM" inputmode="numeric" placeholder="Vacío = la mitad"></div>
@@ -710,6 +738,44 @@ span.ag-ck{border-style:dashed}
     <button id="jcCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="mdSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+    <h2 id="mdTitle">Anotar lectura</h2>
+<div class="sbody">
+    <div class="field"><label for="mdFecha">Fecha de la lectura</label><input type="date" id="mdFecha"></div>
+    <div class="field"><label for="mdValor" id="mdValorL">Número que marca</label><input type="text" id="mdValor" inputmode="decimal" maxlength="14" placeholder="Ej: 178363,03"></div>
+    <p class="note" id="mdPrev"></p>
+    <div class="field"><label for="mdFotoBtn">Foto del medidor (opcional)</label>
+      <input type="file" id="mdFoto" accept="image/*" hidden>
+      <button type="button" id="mdFotoBtn">Tomar o elegir una foto</button>
+      <img id="mdFotoVista" alt="Vista previa de la foto del medidor" hidden style="width:100%;border-radius:14px;margin-top:8px">
+      <button type="button" class="link" id="mdFotoQuitar" hidden>Quitar foto</button></div>
+    <div class="field"><label for="mdNota">Nota (opcional)</label><input type="text" id="mdNota" maxlength="120" placeholder="Ej: medidor reiniciado"></div>
+    <p class="note warn" id="mdAviso" hidden></p>
+</div>
+<div class="sfoot">    <button class="primary" id="mdOk">Guardar lectura</button>
+    <button id="mdCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="mmSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mmTitle">
+    <h2 id="mmTitle">Agregar medidor</h2>
+<div class="sbody">
+    <div class="field"><label for="mmNombre">Nombre</label><input type="text" id="mmNombre" maxlength="40" placeholder="Ej: Pozo 2"></div>
+    <div class="field"><label for="mmTipo">¿Qué mide?</label><select id="mmTipo"><option value="agua">Agua extraída (se compara con el riego)</option><option value="luz">Electricidad (kWh)</option><option value="otro">Otra cosa</option></select></div>
+    <div class="field"><label for="mmUnidad">Unidad</label><select id="mmUnidad"><option>m³</option><option>kWh</option><option>L</option><option>h</option><option>unidades</option></select></div>
+    <div class="field"><label for="mmFrec">¿Cada cuánto se lee?</label><select id="mmFrec"><option value="semanal">Una vez por semana (lunes)</option><option value="diaria">Todos los días</option><option value="libre">Cuando se pueda</option></select></div>
+    <div class="field"><label for="mmDet">Detalle del medidor (opcional)</label><input type="text" id="mmDet" maxlength="160" placeholder="Ej: marca, número de serie, dónde está"></div>
+    <div id="mmLuz" hidden>
+      <div class="field"><label for="mmPot">Potencia de la bomba (kW)</label><input type="text" id="mmPot" inputmode="decimal" placeholder="Ej: 5,7"></div>
+      <div class="field" id="mmTarF"><label for="mmTar">Valor del kWh ($)</label><input type="text" id="mmTar" inputmode="numeric" placeholder="Ej: 160"></div>
+    </div>
+</div>
+<div class="sfoot">    <button class="primary" id="mmOk">Guardar medidor</button>
+    <button id="mmArch" hidden>Archivar medidor</button>
+    <button id="mmCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="firebase-config.js"></script>
@@ -734,7 +800,7 @@ span.ag-ck{border-style:dashed}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 } };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"" };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -852,11 +918,11 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 12;
+  var GUIA_V = 14;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
-    ["Barra de abajo", "Con los seis botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
+    ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final está «Medidores». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
     ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
     ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
     ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
@@ -885,6 +951,12 @@ span.ag-ck{border-style:dashed}
     ["Terceros y jornadas", "En «Inicio», el módulo «Terceros y jornadas» sirve para anotar a quienes trabajan en el campo sin usar la app, como colaboradores o practicantes. Con «Agregar tercero» los das de alta y con «Registrar jornada» anotas la fecha, si fue jornada completa, media jornada o por horas (hora de llegada y de salida), la labor y a cargo de quién. Cada registro queda con quién lo anotó y cuándo.", 10, "manager"],
     ["Varios días y «Vino»", "En «Registrar jornada», indica «Desde» y, en «Hasta cuándo», elige «Solo ese día», «Hasta una fecha» o «Total de días acordados»; se registra un día por cada día de lunes a sábado. Los días que aún no llegan quedan como «Acordada». Cuando el día pasa, la persona aparece en «Por confirmar» con los botones «Vino» y «No vino»: solo los días con «Vino» cuentan para las horas y el pago.", 11, "manager"],
     ["Pagos a terceros", "En «Terceros y jornadas», «Ficha» guarda el valor de la jornada, los honorarios y la forma de pago de cada persona; solo tú ves los valores. Cada persona muestra «Total a pagar», «Pagado» y «Falta pagar». «Registrar abono» anota un pago. Si alguien trabajó un sábado para completar la semana, activa «Sábado acordado antes». Si cambias un valor, lo ya trabajado conserva su valor anterior.", 10, "owner"],
+    ["Quiénes trabajaron", "En «Registrar trabajo realizado», «Quiénes trabajaron» ahora es una lista: toca a cada persona que trabajó. Bajo cada nombre ves si hoy tiene asistencia. Si marcas a alguien sin asistencia, o quien registra no tiene llegada, el trabajo queda «Pendiente» y no suma horas hasta que Diego lo revise.", 13, "manager"],
+    ["Revisar trabajos", "En «Trabajo», la tarjeta «Por revisar» muestra los trabajos pendientes con la razón. Toca «Autorizar» para que cuenten o «Rechazar». Tú no necesitas revisarte a ti mismo: lo que registras queda aprobado.", 13, "owner"],
+    ["Fichas y cumpleaños", "En «Personal», cada persona tiene «Fecha de nacimiento», «Teléfono» y el botón «Mostrar la edad en esta ficha». Si falta la fecha o el teléfono, la ficha queda «Incompleta». En «Alertas» aparece el cumpleaños el día, 3 días antes y 5 días antes.", 13, "manager"],
+    ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidores». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
+    ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
+    ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -1136,6 +1208,7 @@ span.ag-ck{border-style:dashed}
 
   var ICON = {
     horarios:"M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
+    medidores:"M4.500 17a8 8 0 1 1 15 0M12 17l3.500-5M12 17h.01M7 17h10",
     home: "M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10",
     trabajo: "M9 4h6v3H9zM7 5.500H5V21h14V5.500h-2M9 14.500l2 2 4-4.500",
     aplic: "M9 3h6M10 3v6.500L4.800 19a2 2 0 0 0 1.800 3h10.800a2 2 0 0 0 1.800-3L14 9.500V3M7.500 15h9",
@@ -1210,7 +1283,7 @@ span.ag-ck{border-style:dashed}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  var PH = { medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -1312,7 +1385,15 @@ span.ag-ck{border-style:dashed}
         acciones: [{ txt: "Hacerla ahora", pri: true, aria: "Hacer la aplicación atrasada de " + tituloPlan(x), fn: function(){ S.screen = "aplic"; render(); abrirAp(x); } }], ir: function(){ S.screen = "aplic"; render(); } });
     });
     if (S.manager) alertasStock().forEach(function(z){ out.push(z); });
+    if (S.manager) medPendientes().forEach(function(m){
+      out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
+    });
+    if (S.manager) cumplesProximos().forEach(function(c){
+      var nom = c.g.nombre.split(" ")[0], hoyC = c.dias === 0;
+      out.push({ sev: hoyC ? 2 : 4, titulo: hoyC ? "Hoy cumple años " + nom : "Cumple años " + nom + " en " + c.dias + " días", lineas: [["pm", "Cumpleaños", (hoyC ? "¡Salúdalo hoy!" : "para organizar el saludo") + " · " + fmtD2(c.fecha) + (c.edad != null ? " · " + c.edad + " años" : "")]], acciones: [], ir: function(){ S.screen = "personal"; render(); } });
+    });
     if (S.owner){
+      var nrv = S.trabajos.filter(function(t){ return t.rev === "pendiente"; }).length; if (nrv) out.push({ sev: 4, titulo: nrv === 1 ? "1 trabajo por revisar" : nrv + " trabajos por revisar", lineas: [["pm", "Trabajo", "sin asistencia; esperan tu revisión"]], acciones: [], ir: function(){ S.screen = "trabajo"; render(); } });
       var np2 = nPend(); if (np2) out.push({ sev: 4, titulo: np2 === 1 ? "1 permiso por aprobar" : np2 + " permisos por aprobar", lineas: [["pm", "Permisos", "esperan tu respuesta"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
       var nc = S.consultas.filter(function(x){ return !x.resuelta; }).length; if (nc) out.push({ sev: 4, titulo: nc === 1 ? "1 consulta sin resolver" : nc + " consultas sin resolver", lineas: [["pm", "Consultas", "del equipo"]], acciones: [], ir: function(){ var c = $("consCard"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); } });
     }
@@ -1321,8 +1402,8 @@ span.ag-ck{border-style:dashed}
   function buildNav(){
     var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
-    nav.replaceChildren();
-    NAV.forEach(function(x){
+    var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
+    NAV.concat(S.manager ? [["medidores", "Medidores"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -1332,6 +1413,10 @@ span.ag-ck{border-style:dashed}
       b.onclick = function(){ S.screen = x[0]; render(); };
       nav.appendChild(b);
     });
+    if (S.manager){
+      nav.scrollLeft = sl0; var cb = nav.querySelector("[aria-current=page]"); if (cb && !S.navVisto){ S.navVisto = true; nav.scrollLeft = Math.max(0, cb.offsetLeft - 8); }
+      var marca = function(){ nav.classList.toggle("fin", nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4); }; nav.onscroll = marca; marca();
+    }
   }
   function iniciales(n){ var p = String(n || "?").trim().split(/\s+/); return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase(); }
   document.addEventListener("click", function(ev){
@@ -1416,7 +1501,7 @@ span.ag-ck{border-style:dashed}
     }
 
     var hy = fecha(), ws = weekStart(hy), nTr = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
-    var hTr = 0; S.trabajos.forEach(function(t){ if (t.fecha >= ws && t.fecha <= hy) hTr += t.horas || 0; });
+    var hTr = 0; S.trabajos.forEach(function(t){ if (t.fecha >= ws && t.fecha <= hy && trVale(t)) hTr += t.horas || 0; });
     var mRg = 0; S.riegos.forEach(function(r){ if (r.fecha >= ws && r.fecha <= hy) mRg += Number(r.m3) || 0; });
     var haT = 0; S.cuarteles.forEach(function(c){ haT += Number(c.ha) || 0; });
     var enCampo = Object.keys(S.team).filter(function(id){ return estado(S.team[id].dias, now).st === "open"; }).length;
@@ -1434,6 +1519,7 @@ span.ag-ck{border-style:dashed}
       mods.push(["terceros", "Terceros y jornadas", nPorConf ? nPorConf + (nPorConf === 1 ? " jornada por confirmar" : " jornadas por confirmar") : S.owner ? "Jornadas, abonos y lo que falta pagar" : "Quién vino y cuánto tiempo trabajó"]);
     }
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
+    if (S.manager){ var nMl = medPendientes().length; mods.push(["medidores", "Medidores", nMl ? nMl + (nMl === 1 ? " lectura por anotar" : " lecturas por anotar") : "Pozo, tablero eléctrico y más"]); }
     mods.push(["consulta", "Tengo un problema o una idea", "Cuéntaselo a Diego"]);
     var av = avisosCampo();
     var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
@@ -1444,7 +1530,7 @@ span.ag-ck{border-style:dashed}
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
       if (t[0] === "campo" && av.length){ b.classList.add("tile-alerta"); }
       if (t[0] === "riego" && riegosAtrasados().length){ b.classList.add("tile-azul"); }
-      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "terceros" || t[0] === "consulta") b.classList.add("wide");
+      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "terceros" || t[0] === "medidores" || t[0] === "consulta") b.classList.add("wide");
       b.onclick = t[0] === "consulta" ? abrirConsulta : function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
     });
@@ -2082,10 +2168,251 @@ span.ag-ck{border-style:dashed}
 
   var ACT = ["Desmalezado", "Riego", "Poda", "Fertilización", "Aplicación", "Cosecha", "Mantención", "Replante", "Otra"];
   var MAQ = ["Sin máquina", "Desbrozadora Stihl FS250", "Desbrozadora Husqvarna", "Bomba de espalda eléctrica (herbicidas)", "Bomba de espalda eléctrica (foliares)", "Tambor 200 L (herbicida)", "Fertirriego · tambor 200 L (fertilización)", "Otra"];
+  /* ---- Medidores: caudalímetro del pozo, tablero eléctrico y los que se agreguen ----
+     medidores/{id}: nombre, tipo (agua|luz|otro), unidad, frec (semanal|diaria|libre), potKw (bomba), activo. lecturas/{id}: mid, fecha, valor, fotoId, nota, por, uid, ts.
+     El consumo es siempre la lectura menos la anterior. El valor del kWh vive en tarifas/med_<id> (solo el dueño). */
+  var UMBRAL_AGUA = 0.15;
+  function leeNum(t){
+    var x = String(t || "").trim().replace(/\s/g, ""); if (!x) return null;
+    if (x.indexOf(",") >= 0) x = x.replace(/\./g, "").replace(",", ".");
+    else if (/^\d{1,3}(\.\d{3})+$/.test(x)) x = x.replace(/\./g, "");
+    var n = Number(x); return isFinite(n) ? n : null;
+  }
+  function fmtNum(n, d){ return Number(n).toLocaleString("es-CL", { minimumFractionDigits: d == null ? 0 : d, maximumFractionDigits: d == null ? 2 : d }); }
+  function medidoresAct(){ return S.medidores.filter(function(m){ return m.activo !== false; }).sort(function(a, b){ return (a.orden || 99) - (b.orden || 99); }); }
+  function medLect(mid){ return S.lecturas.filter(function(l){ return l.mid === mid; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (String(a.ts) < String(b.ts) ? -1 : 1); }); }
+  function difDias(a, b){ return Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 86400000); }
+  function medPendientes(){
+    var hy = fecha(), ws = weekStart(hy);
+    return medidoresAct().filter(function(m){
+      if (m.frec === "libre") return false;
+      var L = medLect(m.id), ult = L.length ? L[L.length - 1].fecha : "";
+      return m.frec === "diaria" ? ult < hy : ult < ws;
+    });
+  }
+  function riegoEntre(a, b){
+    var m3 = 0, h = 0; S.riegos.forEach(function(r){ if (r.fecha > a && r.fecha <= b){ m3 += Number(r.m3) || 0; h += Number(r.horas) || 0; } }); return { m3: m3, h: h };
+  }
+  function periodoMed(m, a, b){
+    var cons = b.valor - a.valor, dias = Math.max(1, difDias(a.fecha, b.fecha)), o = { a: a, b: b, cons: cons, dias: dias, prom: cons / dias };
+    var rg = riegoEntre(a.fecha, b.fecha); o.rg = rg;
+    if (m.tipo === "agua"){ o.dif = cons - rg.m3; o.pct = cons > 0 ? Math.abs(o.dif) / cons : 0; }
+    if (m.tipo === "luz" && m.potKw){ o.bomba = rg.h * Number(m.potKw); o.resto = cons - o.bomba; if (rg.m3 > 0) o.kwhm3 = cons / rg.m3; }
+    return o;
+  }
+  var mdEd = null, mdFotoD = null, mdForzar = false, mmEd = null, quitarL = null;
+  function abrirLectura(m){
+    mdEd = m; mdFotoD = null; mdForzar = false;
+    $("mdTitle").textContent = "Anotar lectura · " + m.nombre; $("mdFecha").value = fecha(); $("mdFecha").max = fecha(); $("mdValor").value = ""; $("mdNota").value = "";
+    $("mdValorL").textContent = "Número que marca (" + (m.unidad || "") + ")"; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura";
+    $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Tomar o elegir una foto";
+    var L = medLect(m.id), u = L[L.length - 1]; $("mdPrev").textContent = u ? "Lectura anterior: " + fmtNum(u.valor, 2) + " " + (m.unidad || "") + " el " + fmtD2(u.fecha) + "." : "Es la primera lectura: sirve como punto de partida.";
+    $("mdSheet").hidden = false; $("mdValor").focus();
+  }
+  $("mdCancel").onclick = function(){ $("mdSheet").hidden = true; };
+  $("mdFotoBtn").onclick = function(){ $("mdFoto").click(); };
+  $("mdFotoQuitar").onclick = function(){ mdFotoD = null; $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Tomar o elegir una foto"; };
+  $("mdFoto").onchange = async function(){
+    var f = this.files && this.files[0]; this.value = ""; if (!f) return;
+    try { mdFotoD = await comprimirFoto(f); $("mdFotoVista").src = mdFotoD; $("mdFotoVista").hidden = false; $("mdFotoQuitar").hidden = false; $("mdFotoBtn").textContent = "Cambiar la foto"; }
+    catch (err){ mdFotoD = null; toast("No se pudo leer la foto. Prueba con otra."); }
+  };
+  $("mdValor").oninput = $("mdFecha").onchange = function(){ mdForzar = false; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura"; };
+  $("mdOk").onclick = async function(){
+    var m = mdEd, v = leeNum($("mdValor").value), f = $("mdFecha").value;
+    if (!f || f > fecha()){ toast("Revisa la fecha: no puede ser futura."); return; }
+    if (v == null || v < 0){ toast("Escribe el número que marca el medidor."); $("mdValor").focus(); return; }
+    var L = medLect(m.id), ant = L.filter(function(l){ return l.fecha <= f; }).pop(), sig = L.filter(function(l){ return l.fecha > f; })[0];
+    if (!mdForzar && ((ant && v < ant.valor) || (sig && v > sig.valor))){
+      mdForzar = true; $("mdAviso").textContent = ant && v < ant.valor ? "Es menor que la lectura anterior (" + fmtNum(ant.valor, 2) + "). ¿Se reinició el medidor o hay un error al escribir? Si es correcto, toca «Guardar igual»." : "Es mayor que una lectura posterior (" + fmtNum(sig.valor, 2) + "). Revisa el número o la fecha. Si es correcto, toca «Guardar igual».";
+      $("mdAviso").hidden = false; $("mdOk").textContent = "Guardar igual"; return;
+    }
+    var b = $("mdOk"); b.disabled = true;
+    try {
+      var fotoId = "";
+      if (mdFotoD){
+        try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: mdFotoD, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotoId = fr.id; }
+        catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
+      }
+      await S.db.collection("lecturas").add({ mid: m.id, nombre: m.nombre, fecha: f, valor: v, unidad: m.unidad || "", fotoId: fotoId, nota: $("mdNota").value.trim(), uid: S.uid, por: S.nombre, ts: new Date().toISOString() });
+      $("mdSheet").hidden = true; toast("Lectura guardada");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function pintaMm(){ var luz = $("mmTipo").value === "luz"; $("mmLuz").hidden = !luz; $("mmTarF").hidden = !S.owner; }
+  $("mmTipo").onchange = function(){ if ($("mmTipo").value === "luz") $("mmUnidad").value = "kWh"; else if ($("mmTipo").value === "agua") $("mmUnidad").value = "m³"; pintaMm(); };
+  function abrirMedidor(m){
+    mmEd = m || null; $("mmTitle").textContent = m ? "Editar medidor" : "Agregar medidor";
+    $("mmNombre").value = m ? m.nombre : ""; $("mmTipo").value = m ? m.tipo || "otro" : "otro"; $("mmUnidad").value = m ? m.unidad || "unidades" : "unidades"; $("mmFrec").value = m ? m.frec || "libre" : "semanal";
+    $("mmDet").value = m && m.detalle ? m.detalle : ""; $("mmPot").value = m && m.potKw ? String(m.potKw).replace(".", ",") : ""; var tf = m && S.tarifas["med_" + m.id]; $("mmTar").value = tf && tf.kwh ? String(tf.kwh) : "";
+    $("mmArch").hidden = !m; pintaMm(); $("mmSheet").hidden = false; $("mmNombre").focus();
+  }
+  $("mmCancel").onclick = function(){ $("mmSheet").hidden = true; };
+  $("mmArch").onclick = async function(){
+    if (!mmEd) return; try { await S.db.doc("medidores/" + mmEd.id).update({ activo: false }); $("mmSheet").hidden = true; S.medSel = ""; toast("Medidor archivado"); } catch (err){ toast("No se pudo guardar."); }
+  };
+  $("mmOk").onclick = async function(){
+    var nombre = $("mmNombre").value.trim(); if (!nombre){ toast("Escribe el nombre del medidor."); $("mmNombre").focus(); return; }
+    var b = $("mmOk"); b.disabled = true;
+    try {
+      var ref = mmEd ? S.db.doc("medidores/" + mmEd.id) : S.db.collection("medidores").doc(), tipo = $("mmTipo").value;
+      var doc = { detalle: $("mmDet").value.trim(), nombre: nombre, tipo: tipo, unidad: $("mmUnidad").value, frec: $("mmFrec").value, activo: true, orden: mmEd ? (mmEd.orden || 9) : (S.medidores.length + 1) };
+      var pot = leeNum($("mmPot").value); if (tipo === "luz" && pot > 0) doc.potKw = pot;
+      await ref.set(doc);
+      if (S.owner && tipo === "luz") await S.db.doc("tarifas/med_" + ref.id).set({ kwh: leePesos($("mmTar").value), por: S.nombre, ts: new Date().toISOString() });
+      $("mmSheet").hidden = true; S.medSel = ref.id; toast("Medidor guardado");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+  /* Una sola vez: deja creados el caudalímetro del pozo y el tablero eléctrico */
+  async function sembrarMedidores(){
+    try {
+      var f = await S.db.doc("config/semillaMedidores").get(); if (f.exists) return;
+      await S.db.doc("medidores/m_pozo").set({ nombre: "Caudalímetro del pozo", tipo: "agua", unidad: "m³", frec: "semanal", activo: true, orden: 1, detalle: "Tecnidro DN 50. Los dígitos negros son m³ y las dos esferas rojas, décimas y centésimas." });
+      await S.db.doc("medidores/m_luz").set({ nombre: "Tablero eléctrico", tipo: "luz", unidad: "kWh", frec: "semanal", potKw: 5.7, activo: true, orden: 2, detalle: "Schlumberger E2Y6, trifásico 4 hilos, conexión directa 20(120) A, nº 020516896. La lectura se anota tal cual, sin factor." });
+      await S.db.doc("config/semillaMedidores").set({ ts: new Date().toISOString(), por: S.nombre });
+    } catch (err){}
+  }
+  function chipPct(p){ return p <= UMBRAL_AGUA ? "ok" : "warn"; }
+  function buildMedidores(){
+    var f = document.createDocumentFragment(); f.appendChild(ph("medidores"));
+    var ms = medidoresAct();
+    if (!ms.some(function(m){ return m.id === S.medSel; })) S.medSel = ms.length ? ms[0].id : "";
+    var ch = el("div", "mchips"); ch.setAttribute("role", "group"); ch.setAttribute("aria-label", "Elige un medidor");
+    ms.forEach(function(m){ var b = el("button", null, m.nombre); b.type = "button"; b.setAttribute("aria-pressed", m.id === S.medSel ? "true" : "false"); b.onclick = function(){ S.medSel = m.id; render(); }; ch.appendChild(b); });
+    if (S.owner){ var nb = el("button", null, "+ Agregar medidor"); nb.type = "button"; nb.onclick = function(){ abrirMedidor(null); }; ch.appendChild(nb); }
+    f.appendChild(ch);
+    var m = ms.filter(function(x){ return x.id === S.medSel; })[0];
+    if (!m){ var v = el("section", "card sect"); v.appendChild(el("p", "note", S.owner ? "Todavía no hay medidores. Toca «+ Agregar medidor»." : "Todavía no hay medidores. Avísale a Diego.")); f.appendChild(v); return f; }
+    var L = medLect(m.id), u = L[L.length - 1], un = m.unidad || "";
+    var c = el("section", "card sect"); c.appendChild(el("h2", null, m.nombre));
+    c.appendChild(el("p", "sub", u ? "Última lectura: " + fmtD2(u.fecha) + " · " + fmtNum(u.valor, 2) + " " + un : "Todavía no hay lecturas."));
+    if (m.detalle) c.appendChild(el("p", "note", m.detalle));
+    if (medPendientes().some(function(x){ return x.id === m.id; })) c.appendChild(el("p", "note warn", m.frec === "diaria" ? "Hoy falta la lectura." : "Esta semana falta la lectura (se anota los lunes)."));
+    var per = []; for (var i = 1; i < L.length; i++) per.push(periodoMed(m, L[i - 1], L[i]));
+    var pu = per[per.length - 1], pa = per[per.length - 2];
+    if (!pu){ if (u) c.appendChild(el("p", "note", "Con la próxima lectura se calcula el consumo.")); }
+    else {
+      var g = el("div", "mbig");
+      function cel(b, s){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s)); g.appendChild(d); }
+      cel(fmtNum(pu.cons, 1) + " " + un, "en " + pu.dias + (pu.dias === 1 ? " día" : " días"));
+      cel(fmtNum(pu.prom, 1) + " " + un, "promedio por día");
+      c.appendChild(g);
+      if (pa){ var cv = pa.prom > 0 ? (pu.prom - pa.prom) / pa.prom : 0; c.appendChild(el("p", null, "")).appendChild(el("span", "chip " + (Math.abs(cv) <= 0.15 ? "ok" : "idle"), (cv >= 0 ? "+" : "") + fmtNum(cv * 100, 0) + " % por día vs. el período anterior")); }
+      if (m.tipo === "agua"){
+        var g2 = el("div", "mbig"); function cel2(b, s){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s)); g2.appendChild(d); }
+        cel2(fmtNum(pu.rg.m3, 1) + " m³", "riego registrado"); cel2((pu.dif >= 0 ? "" : "−") + fmtNum(Math.abs(pu.dif), 1) + " m³", pu.dif >= 0 ? "no explicado por riegos" : "riego sobre lo extraído"); c.appendChild(g2);
+        c.appendChild(el("p", null, "")).appendChild(el("span", "chip " + chipPct(pu.pct), "Diferencia: " + fmtNum(pu.pct * 100, 0) + " %"));
+        c.appendChild(el("p", "note", pu.pct <= UMBRAL_AGUA ? "El riego registrado explica lo extraído." : pu.dif > 0 ? "Se extrajo más agua de la que explican los riegos anotados: revisa si faltan riegos por registrar o si hay una fuga." : "Los riegos anotados suman más que lo extraído: revisa los caudales usados en la estimación."));
+      }
+      if (m.tipo === "luz"){
+        var det = [];
+        if (pu.bomba != null) det.push("Bomba (" + fmtNum(pu.rg.h, 1) + " h de riego × " + fmtNum(m.potKw, 1) + " kW): ≈ " + fmtNum(pu.bomba, 0) + " kWh. Resto del campo: ≈ " + fmtNum(Math.max(0, pu.resto), 0) + " kWh.");
+        if (pu.kwhm3 != null) det.push(fmtNum(pu.kwhm3, 2) + " kWh por m³ de riego registrado.");
+        var tf = S.tarifas["med_" + m.id]; if (S.owner && tf && tf.kwh) det.push("Gasto estimado del período: " + pesos(pu.cons * tf.kwh) + " (a " + pesos(tf.kwh) + " el kWh).");
+        det.forEach(function(t){ c.appendChild(el("p", "note", t)); });
+      }
+    }
+    var bl = el("button", "primary", "Anotar lectura"); bl.onclick = function(){ abrirLectura(m); }; c.appendChild(bl);
+    if (S.owner){ var be = el("button", "link", "Editar medidor"); be.onclick = function(){ abrirMedidor(m); }; c.appendChild(be); }
+    f.appendChild(c);
+    var h = el("section", "card sect"); h.appendChild(el("h2", null, "Lecturas"));
+    if (!L.length) h.appendChild(el("p", "note", "Aún no hay lecturas."));
+    L.slice().reverse().slice(0, S.verMasMed ? 40 : 8).forEach(function(l){
+      var idx = L.indexOf(l), pr = idx > 0 ? L[idx - 1] : null, bx = el("div", "asg"), wo = el("div", "who");
+      wo.appendChild(el("b", null, fmtD2(l.fecha) + " · " + fmtNum(l.valor, 2) + " " + un));
+      if (pr) wo.appendChild(el("span", "chip idle", "+" + fmtNum(l.valor - pr.valor, 1) + " " + un)); bx.appendChild(wo);
+      if (l.nota) bx.appendChild(el("p", "sub", l.nota));
+      bx.appendChild(el("p", "note", (l.por || "") + " · " + fmtFH.format(new Date(l.ts))));
+      if (l.fotoId){
+        var vb = el("button", "link", "Ver foto"), im = el("img"); im.alt = "Foto del medidor"; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;
+        vb.onclick = async function(){
+          if (!im.hidden){ im.hidden = true; vb.textContent = "Ver foto"; return; }
+          vb.textContent = "Cargando…";
+          try { var d = fotosCache[l.fotoId]; if (!d){ var sn = await S.db.doc("fotos/" + l.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[l.fotoId] = d; }
+            if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; } im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; }
+          catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
+        };
+        bx.appendChild(vb); bx.appendChild(im);
+      }
+      if (S.owner){
+        var q = el("button", "small", quitarL === l.id ? "Confirmar" : "Quitar");
+        q.onclick = async function(){ if (quitarL !== l.id){ quitarL = l.id; render(); return; } quitarL = null; try { await S.db.doc("lecturas/" + l.id).delete(); toast("Lectura quitada"); } catch (err){ toast("No se pudo quitar."); } };
+        bx.appendChild(q);
+      }
+      h.appendChild(bx);
+    });
+    if (L.length > 8){ var mas = el("button", "link", S.verMasMed ? "Ver solo las 8 últimas" : "Ver más lecturas"); mas.onclick = function(){ S.verMasMed = !S.verMasMed; render(); }; h.appendChild(mas); }
+    f.appendChild(h); return f;
+  }
+
+  /* ---- Gente del campo: equipo con la app, directorio de personal y terceros ---- */
+  function norm(x){ return String(x || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim(); }
+  function mismaPersona(a, b){
+    var x = norm(a).split(" ").filter(Boolean), y = norm(b).split(" ").filter(Boolean); if (!x.length || !y.length) return false;
+    var c = x.length <= y.length ? [x, y] : [y, x];
+    return c[0].every(function(t){ return c[1].some(function(u){ return u === t; }); });
+  }
+  function gente(){
+    var out = [];
+    S.personal.forEach(function(p){ out.push({ nombre: p.nombre, rec: p, col: "personal", id: p.id }); });
+    visiblesT().forEach(function(t){
+      var o = out.filter(function(g){ return mismaPersona(g.nombre, t.nombre); })[0];
+      if (o) o.ter = t; else out.push({ nombre: t.nombre, rec: t, col: "terceros", id: t.id });
+    });
+    out.forEach(function(g){ g.nac = g.rec.nac || (g.ter && g.ter.nac) || ""; g.tel = g.rec.tel || (g.ter && g.ter.tel) || ""; g.mEdad = !!(g.rec.mostrarEdad || (g.ter && g.ter.mostrarEdad)); });
+    return out;
+  }
+  function asistenciaHoy(g){
+    var hy = fecha(), res = { ok: false, txt: "Sin llegada hoy" };
+    Object.keys(S.team).forEach(function(id){
+      var t = S.team[id]; if (res.ok || !mismaPersona(t.nombre, g.nombre)) return;
+      var d = (t.dias || []).filter(function(x){ return x.fecha === hy; })[0];
+      if (d && d.tramos && d.tramos.length){ res.ok = true; res.txt = "Llegó " + hora(d.tramos[0].entrada); }
+    });
+    var ter = g.ter || (g.col === "terceros" ? g.rec : null);
+    if (!res.ok && ter){
+      var j = S.jterc.filter(function(r){ return r.tid === ter.id && r.fecha === hy && r.estado !== "no_vino" && autOk(r); })[0];
+      if (j){ res.ok = true; res.txt = "Jornada de hoy registrada"; } else res.txt = "Sin jornada hoy";
+    }
+    return res;
+  }
+  function incompleta(g){ return !g.nac || !String(g.tel || "").trim(); }
+  /* próximo cumpleaños: fecha ISO y días que faltan (el 29 de febrero se celebra el 28 en años no bisiestos) */
+  function proxCumple(nac, hoy){
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(nac || "")) return null;
+    var y = Number(hoy.slice(0, 4)), md = nac.slice(5);
+    function en(yy){ var m = md; if (m === "02-29" && !(yy % 4 === 0 && (yy % 100 !== 0 || yy % 400 === 0))) m = "02-28"; return yy + "-" + m; }
+    var f = en(y); if (f < hoy) f = en(y + 1);
+    return { fecha: f, dias: Math.round((Date.parse(f + "T12:00:00Z") - Date.parse(hoy + "T12:00:00Z")) / 86400000) };
+  }
+  function edadEn(nac, f){ var a = Number(f.slice(0, 4)) - Number(nac.slice(0, 4)); if (f.slice(5) < nac.slice(5)) a--; return a; }
+  var AVISO_CUMPLE = [0, 3, 5];
+  function cumplesProximos(){
+    var hy = fecha(), out = [];
+    gente().forEach(function(g){
+      if (S.nombre && mismaPersona(g.nombre, S.nombre)) return;
+      var c = proxCumple(g.nac, hy); if (!c || AVISO_CUMPLE.indexOf(c.dias) < 0) return;
+      out.push({ g: g, fecha: c.fecha, dias: c.dias, edad: g.mEdad ? edadEn(g.nac, c.fecha) : null });
+    });
+    return out.sort(function(a, b){ return a.dias - b.dias; });
+  }
+  function trVale(t){ return t.rev !== "pendiente" && t.rev !== "no"; }
+  var trG = [], trSel = {};
+  function pintaTrLista(){
+    var box = $("trLista"); box.replaceChildren();
+    trG.forEach(function(g, i){
+      var a = asistenciaHoy(g), b = el("button", "tg"); b.type = "button"; b.setAttribute("aria-pressed", trSel[i] ? "true" : "false");
+      var l = el("span"); l.appendChild(document.createTextNode(g.nombre)); l.appendChild(el("small", null, a.txt)); b.appendChild(l); b.appendChild(el("span", "st", trSel[i] ? "Sí" : "No"));
+      b.onclick = function(){ trSel[i] = !trSel[i]; pintaTrLista(); };
+      box.appendChild(b);
+    });
+  }
   function abrirTrabajo(){
     fill($("trAct"), ACT); fill($("trMaq"), MAQ);
     fill($("trSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     $("trHoras").value = ""; $("trQuienes").value = ""; $("trDetalle").value = "";
+    trG = S.manager ? gente() : []; trSel = {}; $("trListaF").hidden = !trG.length; $("trQuienesL").textContent = trG.length ? "Otros que trabajaron (opcional)" : "Quiénes trabajaron (opcional)"; pintaTrLista();
     $("trSheet").hidden = false; $("trHoras").focus();
   }
   $("trCancel").onclick = function(){ $("trSheet").hidden = true; };
@@ -2093,18 +2420,33 @@ span.ag-ck{border-style:dashed}
     var h = parseFloat($("trHoras").value.replace(",", "."));
     if (!(h > 0) || h > 24){ toast("Escribe las horas de trabajo, entre 0,5 y 24."); $("trHoras").focus(); return; }
     var cu = S.cuarteles.filter(function(c){ return c.id === $("trSector").value; })[0];
+    var hy = fecha(), sel = trG.filter(function(g, i){ return trSel[i]; }), otros = $("trQuienes").value.trim(), motivos = [];
+    if (S.manager && !S.owner){
+      var yo = S.team[S.uid], d0 = yo && (yo.dias || []).filter(function(x){ return x.fecha === hy; })[0];
+      if (!(d0 && d0.tramos && d0.tramos.length)) motivos.push("Quien registra (" + S.nombre + ") no tiene llegada hoy");
+      sel.forEach(function(g){ var a = asistenciaHoy(g); if (!a.ok) motivos.push(g.nombre + ": " + a.txt.toLowerCase()); });
+      if (otros) motivos.push("Otros sin verificar: " + otros);
+    }
+    var quienes = sel.map(function(g){ return g.nombre; }).concat(otros ? [otros] : []).join(", ");
     var b = $("trOk"); b.disabled = true;
     try {
-      await S.db.collection("trabajos").add({ fecha: fecha(), actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: $("trQuienes").value.trim(), maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
-      $("trSheet").hidden = true; toast("Trabajo registrado");
+      var doc = { fecha: hy, actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: quienes, maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
+      if (motivos.length){ doc.rev = "pendiente"; doc.motivos = motivos; }
+      await S.db.collection("trabajos").add(doc);
+      $("trSheet").hidden = true; toast(motivos.length ? "Quedó pendiente: Diego debe revisarlo" : "Trabajo registrado");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
+  async function revisarTr(t, v){
+    try { await S.db.doc("trabajos/" + t.id).update({ rev: v, revPor: S.nombre, revTs: new Date().toISOString() }); toast(v === "ok" ? "Trabajo autorizado" : "Trabajo rechazado"); }
+    catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
   function buildTrabajo(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("trabajo"));
     var hoy = fecha(), ws = weekStart(hoy), hHoy = 0, hSem = 0, porMaq = {};
     S.trabajos.forEach(function(t){
+      if (!trVale(t)) return;
       if (t.fecha === hoy) hHoy += t.horas || 0;
       if (t.fecha >= ws && t.fecha <= hoy){ hSem += t.horas || 0; if (t.maquina && t.maquina !== "Sin máquina") porMaq[t.maquina] = (porMaq[t.maquina] || 0) + (t.horas || 0); }
     });
@@ -2115,11 +2457,28 @@ span.ag-ck{border-style:dashed}
     c.appendChild(rows);
     var add = el("button", "primary", "Registrar trabajo realizado"); add.onclick = abrirTrabajo; c.appendChild(add);
     f.appendChild(c);
+    var pr = S.trabajos.filter(function(t){ return t.rev === "pendiente" && (S.owner || t.uid === S.uid); });
+    if (pr.length){
+      var rv = el("section", "card sect prio"); rv.appendChild(el("h2", null, (S.owner ? "Por revisar (" : "Pendientes de Diego (") + pr.length + ")"));
+      pr.forEach(function(t){
+        var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, t.actividad + " · " + t.sector)); wo.appendChild(el("span", "chip idle", nf(t.horas, 1) + " h")); bx.appendChild(wo);
+        if (t.quienes) bx.appendChild(el("p", "sub", "Con: " + t.quienes));
+        (t.motivos || []).forEach(function(m){ bx.appendChild(el("p", "note warn", m)); });
+        bx.appendChild(el("p", "note", fmtFH.format(new Date(t.ts)) + (t.por ? " · " + t.por : "") + (S.owner ? "" : " · aún no cuenta en los totales")));
+        if (S.owner){
+          var bb = el("div", "btns"), a1 = el("button", "primary", "Autorizar"), a2 = el("button", "small", "Rechazar");
+          a1.onclick = function(){ revisarTr(t, "ok"); }; a2.onclick = function(){ revisarTr(t, "no"); };
+          bb.appendChild(a1); bb.appendChild(a2); bx.appendChild(bb);
+        }
+        rv.appendChild(bx);
+      });
+      f.appendChild(rv);
+    }
     var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimos registros"));
     if (!S.trabajos.length) l.appendChild(el("p", "note", "Todavía no hay trabajos registrados."));
     S.trabajos.slice(0, 30).forEach(function(t){
       var box = el("div", "asg"); var who = el("div", "who");
-      who.appendChild(el("b", null, t.actividad + " · " + t.sector)); who.appendChild(el("span", "chip idle", nf(t.horas, 1) + " h")); box.appendChild(who);
+      who.appendChild(el("b", null, t.actividad + " · " + t.sector)); who.appendChild(el("span", "chip " + (t.rev === "pendiente" ? "warn" : "idle"), t.rev === "pendiente" ? "Pendiente" : t.rev === "no" ? "Rechazado" : nf(t.horas, 1) + " h")); box.appendChild(who);
       var det = [t.maquina && t.maquina !== "Sin máquina" ? t.maquina : null, t.quienes ? "Con: " + t.quienes : null].filter(Boolean).join(" · ");
       if (det) box.appendChild(el("p", "sub", det));
       if (t.detalle) box.appendChild(el("p", null, t.detalle));
@@ -2207,11 +2566,33 @@ span.ag-ck{border-style:dashed}
     catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return false; }
   }
 
+  /* Una sola vez: deja listado al equipo base (el dueño puede editarlo o quitarlo después) */
+  async function sembrarPersonal(){
+    try {
+      var f = await S.db.doc("config/semillaPersonal").get(); if (f.exists) return;
+      var base = [["p_yolanda", "Yolanda Veas R.", "Supervisión", "Horario fijo (contrato)"], ["p_corina", "Corina Ibarra", "Otra", "Por pedido (a trato)"], ["p_diego", "Diego Anabalón", "Supervisión", "Completa"]];
+      for (var i = 0; i < base.length; i++){
+        var b = base[i]; if (S.personal.some(function(p){ return mismaPersona(p.nombre, b[1]); })) continue;
+        await S.db.doc("personal/" + b[0]).set({ nombre: b[1], funcion: b[2], jornada: b[3], nac: "", tel: "", mostrarEdad: false });
+      }
+      await S.db.doc("config/semillaPersonal").set({ ts: new Date().toISOString(), por: S.nombre });
+    } catch (err){}
+  }
   var perEd = null;
+  function pintaEdad(px, on){ $(px + "Edad").setAttribute("aria-pressed", on ? "true" : "false"); $(px + "EdadSt").textContent = on ? "Sí" : "No"; }
+  function infoNac(px){
+    var nac = $(px + "Nac").value, on = $(px + "Edad").getAttribute("aria-pressed") === "true", c = proxCumple(nac, fecha()), n = $(px + "Info");
+    if (!c){ n.textContent = "Sin fecha de nacimiento: la ficha queda «Incompleta»."; return; }
+    n.textContent = "Cumple años el " + fmtD2(c.fecha).replace(/ \d{4}$/, "") + (on ? " · edad actual: " + edadEn(nac, fecha()) + " años." : ".");
+  }
+  ["pe", "tc"].forEach(function(px){
+    $(px + "Edad").onclick = function(){ pintaEdad(px, $(px + "Edad").getAttribute("aria-pressed") !== "true"); infoNac(px); };
+    $(px + "Nac").onchange = function(){ infoNac(px); };
+  });
   function abrirPersona(p){
     perEd = p || {};
     $("peTitle").textContent = p ? "Editar persona" : "Agregar persona";
-    $("peNombre").value = (p && p.nombre) || "";
+    $("peNombre").value = (p && p.nombre) || ""; $("peNac").value = (p && p.nac) || ""; $("peTel").value = (p && p.tel) || ""; pintaEdad("pe", !!(p && p.mostrarEdad)); infoNac("pe");
     fill($("peFunc"), FUNC, (p && p.funcion) || FUNC[0]); fill($("peJorn"), JORN, (p && p.jornada) || JORN[0]);
     $("perSheet").hidden = false; $("peNombre").focus();
   }
@@ -2222,7 +2603,7 @@ span.ag-ck{border-style:dashed}
     var b = $("peOk"); b.disabled = true;
     try {
       var ref = perEd.id ? S.db.doc("personal/" + perEd.id) : S.db.collection("personal").doc();
-      await ref.set({ nombre: nombre, funcion: $("peFunc").value, jornada: $("peJorn").value });
+      await ref.set({ nombre: nombre, funcion: $("peFunc").value, jornada: $("peJorn").value, nac: $("peNac").value || "", tel: $("peTel").value.trim(), mostrarEdad: $("peEdad").getAttribute("aria-pressed") === "true" });
       $("perSheet").hidden = true; toast("Persona guardada");
     } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
     b.disabled = false;
@@ -2283,7 +2664,7 @@ span.ag-ck{border-style:dashed}
     var rows = el("div", "rows");
     if (!S.personal.length) rows.appendChild(el("p", "note", "Aún no hay personas en el directorio."));
     S.personal.forEach(function(p){
-      var r = el("div", "row"); var l = el("span", "l"); l.appendChild(el("b", null, p.nombre)); l.appendChild(document.createElement("br")); l.appendChild(el("span", "note", [p.funcion, p.jornada].filter(Boolean).join(" · ")));
+      var r = el("div", "row"); var l = el("span", "l"); l.appendChild(el("b", null, p.nombre)); l.appendChild(document.createElement("br")); l.appendChild(el("span", "note", [p.funcion, p.jornada].filter(Boolean).join(" · "))); var gg = gente().filter(function(g){ return g.col === "personal" && g.id === p.id; })[0]; if (gg){ var pc = proxCumple(gg.nac, fecha()); if (pc) { l.appendChild(document.createElement("br")); l.appendChild(el("span", "cum", "Cumple el " + fmtD2(pc.fecha).replace(/ \d{4}$/, ""))); } if (incompleta(gg)){ l.appendChild(document.createElement("br")); l.appendChild(el("span", "chip inc", "Incompleta")); } }
       var e = el("button", null, "Editar"); e.style.minHeight = "44px"; e.onclick = function(){ abrirPersona(p); };
       r.appendChild(l); r.appendChild(e); rows.appendChild(r);
     });
@@ -2357,6 +2738,7 @@ span.ag-ck{border-style:dashed}
     tcEd = t || null;
     $("tcTitle").textContent = t ? "Editar tercero" : "Agregar tercero";
     $("tcNombre").value = t ? t.nombre || "" : ""; $("tcRol").value = t && t.rol ? t.rol : "Colaborador"; $("tcCargo").value = t && t.aCargo ? t.aCargo : "Agrícola";
+    $("tcNac").value = (t && t.nac) || ""; $("tcTel").value = (t && t.tel) || ""; pintaEdad("tc", !!(t && t.mostrarEdad)); infoNac("tc");
     $("tcOwn").hidden = !S.owner;
     if (S.owner){
       var tf = (t && S.tarifas[t.id]) || {}, v = t ? tarifaVig(t.id, fecha()) : null;
@@ -2373,7 +2755,7 @@ span.ag-ck{border-style:dashed}
     try {
       var ref = tcEd ? S.db.doc("terceros/" + tcEd.id) : S.db.collection("terceros").doc();
       var base = tcEd ? { uid: tcEd.uid, por: tcEd.por, ts: tcEd.ts } : { uid: S.uid, por: S.nombre, ts: iso };
-      await ref.set(Object.assign(base, { nombre: nombre, rol: $("tcRol").value, aCargo: $("tcCargo").value, activo: true, editadoPor: S.nombre, editadoTs: iso }));
+      await ref.set(Object.assign(base, { nombre: nombre, rol: $("tcRol").value, aCargo: $("tcCargo").value, activo: true, nac: $("tcNac").value || "", tel: $("tcTel").value.trim(), mostrarEdad: $("tcEdad").getAttribute("aria-pressed") === "true", editadoPor: S.nombre, editadoTs: iso }));
       if (S.owner){
         var id = ref.id, old = S.tarifas[id] || {}, hist = (old.hist || []).slice(), j = leePesos($("tcJ").value), mTxt = $("tcM").value.trim(), m = mTxt ? leePesos(mTxt) : Math.round(j / 2), last = hist[hist.length - 1];
         if (!last || last.j !== j || last.m !== m){
@@ -2483,6 +2865,7 @@ span.ag-ck{border-style:dashed}
     var r = resumenT(t), c = el("section", "card sect"), who = el("div", "who");
     who.style.display = "flex"; who.style.justifyContent = "space-between"; who.style.alignItems = "center"; who.style.gap = "10px";
     who.appendChild(el("b", null, t.nombre)); who.appendChild(el("span", "chip idle", t.rol || "Colaborador")); c.appendChild(who);
+    if (!t.nac || !String(t.tel || "").trim()){ var pe0 = gente().filter(function(g){ return g.ter && g.ter.id === t.id; })[0]; if (!pe0 || incompleta(pe0)) c.appendChild(el("p", null, "")).appendChild(el("span", "chip inc", "Ficha incompleta")); }
     c.appendChild(el("p", "sub", "A cargo de: " + (t.aCargo || "Agrícola") + (S.owner && r.tf.forma ? " · pago por " + FORMAS[r.tf.forma] : "")));
     var wk = semanaT(t.id, ws), sm = semMin();
     c.appendChild(el("p", "note", "Esta semana: " + dur(wk.min) + " de " + dur(sm)));
@@ -2656,7 +3039,7 @@ span.ag-ck{border-style:dashed}
       out.push({ k: "riego", titulo: "Riego " + r.sector, sub: nf(r.horas || 0, 1) + " h" + (r.por ? " · " + r.por : ""), hecho: true, mom: momDe(r.ts) });
     });
     S.trabajos.forEach(function(t){
-      if (t.fecha !== f) return;
+      if (t.fecha !== f || !trVale(t)) return;
       out.push({ k: "trabajo", titulo: t.actividad + " · " + t.sector, sub: nf(t.horas || 0, 1) + " h" + (t.por ? " · " + t.por : ""), hecho: true, mom: momDe(t.ts) });
     });
     S.tareas.forEach(function(t){
@@ -2905,6 +3288,7 @@ span.ag-ck{border-style:dashed}
     if (S.screen === "personal" && S.manager) return setView("personal", buildPersonal);
     if (S.screen === "horarios" && S.owner) return setView("horarios", buildHorarios);
     if (S.screen === "terceros" && S.manager) return setView("terceros", buildTerceros);
+    if (S.screen === "medidores" && S.manager) return setView("medidores", buildMedidores);
     setView("home", buildHome);
   }
 
@@ -2982,8 +3366,11 @@ span.ag-ck{border-style:dashed}
     if (S.manager){
       db.collection("personal").orderBy("nombre").limit(200).onSnapshot(function(s){
         S.personal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+        if (S.owner && !S.semillaP){ S.semillaP = true; sembrarPersonal(); }
       }, function(){});
       subJornada();
+      db.collection("medidores").onSnapshot(function(s){ S.medidores = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); if (S.owner && !S.semillaM){ S.semillaM = true; sembrarMedidores(); } }, function(){});
+      db.collection("lecturas").orderBy("fecha", "desc").limit(400).onSnapshot(function(s){ S.lecturas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     }
     if (S.owner){
       db.collection("jornadas").orderBy("fecha", "desc").limit(70).onSnapshot(function(s){

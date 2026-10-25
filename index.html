@@ -175,8 +175,8 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 /* formularios */
 .field{display:grid; gap:6px}
 label{font-weight:700; font-size:16px}
-input[type=text],input[type=date],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
-input[type=text]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input[type=text],input[type=date],input[type=datetime-local],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
+input[type=text]:focus,input[type=date]:focus,input[type=datetime-local]:focus,select:focus,textarea:focus{border-color:var(--accent)}
 select{appearance:none; -webkit-appearance:none; padding-right:44px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23738575' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center}
 textarea{font-size:18px; min-height:92px; resize:vertical}
 /* barra de pestañas */
@@ -315,7 +315,14 @@ span.ag-ck{border-style:dashed}
 .cua-alert{display:inline-block; font-size:14px; font-weight:700; padding:1px 9px; border-radius:99px; background:var(--alert-bg); color:var(--alert); margin-top:4px}
 .cua-all{display:flex; justify-content:flex-end; margin:4px 0}
 @media (prefers-reduced-motion: no-preference){ .cua-t .chev{transition:transform .2s} }
-.ua{padding:6px 14px} .ua summary{list-style:none; gap:12px; color:var(--fg); min-height:60px} .ua summary::-webkit-details-marker{display:none} .ua summary b{font-family:var(--font-display); font-size:17px; flex:1} .ua summary .ti{width:40px;height:40px;border-radius:12px;background:var(--slate-bg);color:var(--slate);display:grid;place-items:center} .ua summary .ti svg{width:23px;height:23px} .ua summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin-right:6px;transition:transform .15s} .ua[open] summary::after{transform:rotate(-135deg)} .ua .sect{padding:4px 0 10px}.cua-t .ti{width:40px;height:40px;border-radius:12px;background:var(--wood-bg);color:var(--wood);display:grid;place-items:center;flex:none} .cua-t .ti svg{width:23px;height:23px} .sec-r{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 4px;box-shadow:none;color:var(--fg)} .sec-r:first-child{border-top:0} .sec-r .tx{flex:1;display:grid;gap:1px;min-width:0} .sec-r .tx b{font-family:var(--font-display);font-size:17px} .sec-r .rs{font-size:14px;color:var(--muted);font-weight:400;display:block} .sec-r .chev{flex:none;width:24px;height:24px;color:var(--muted)} .sec-r .chev{transition:transform .15s} .sec-r.on .chev{transform:rotate(180deg)}  .sec-d{background:var(--bg);border-radius:14px;padding:12px 14px;margin:2px 0 10px;display:grid;gap:8px}</style>
+.ua{padding:6px 14px} .ua summary{list-style:none; gap:12px; color:var(--fg); min-height:60px} .ua summary::-webkit-details-marker{display:none} .ua summary b{font-family:var(--font-display); font-size:17px; flex:1} .ua summary .ti{width:40px;height:40px;border-radius:12px;background:var(--slate-bg);color:var(--slate);display:grid;place-items:center} .ua summary .ti svg{width:23px;height:23px} .ua summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin-right:6px;transition:transform .15s} .ua[open] summary::after{transform:rotate(-135deg)} .ua .sect{padding:4px 0 10px}.cua-t .ti{width:40px;height:40px;border-radius:12px;background:var(--wood-bg);color:var(--wood);display:grid;place-items:center;flex:none} .cua-t .ti svg{width:23px;height:23px} .sec-r{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 4px;box-shadow:none;color:var(--fg)} .sec-r:first-child{border-top:0} .sec-r .tx{flex:1;display:grid;gap:1px;min-width:0} .sec-r .tx b{font-family:var(--font-display);font-size:17px} .sec-r .rs{font-size:14px;color:var(--muted);font-weight:400;display:block} .sec-r .chev{flex:none;width:24px;height:24px;color:var(--muted)} .sec-r .chev{transition:transform .15s} .sec-r.on .chev{transform:rotate(180deg)}  .sec-d{background:var(--bg);border-radius:14px;padding:12px 14px;margin:2px 0 10px;display:grid;gap:8px}.nav button.hay-alerta:not([aria-current=page]) .ni{background:var(--alert-bg); color:var(--alert)} .nav button.hay-alerta .nb i{background:var(--alert)} .nav button.hay-aviso:not([aria-current=page]) .ni{background:var(--lemon-bg); color:var(--lemon-fg)} .nav button.hay-aviso .nb i{background:var(--lemon-fg); color:var(--lemon-bg)}
+.tile.tile-alerta{border-color:var(--alert)} .tile.tile-alerta{--mc:var(--alert); --mb:var(--alert-bg)} .tile.tile-alerta small{color:var(--alert); font-weight:700}
+.alerta-campo{background:var(--alert-bg); border:1.5px solid var(--alert); border-radius:20px; padding:14px; display:grid; gap:8px} .alerta-campo.suave{background:var(--lemon-bg); border-color:var(--lemon-fg)}
+.ac-h{display:flex; align-items:center; gap:10px} .ac-h h2{font-size:17px; color:var(--alert)} .alerta-campo.suave .ac-h h2{color:var(--lemon-fg)} .ac-h .ti{width:36px; height:36px; border-radius:11px; background:var(--alert); color:var(--on-alert); display:grid; place-items:center} .alerta-campo.suave .ac-h .ti{background:var(--lemon-fg); color:var(--lemon-bg)} .ac-h .ti svg{width:21px; height:21px}
+.ac-w{display:grid; gap:6px} .ac-rv{justify-self:start} .ac-l{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:3px} .av-b{border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:12px; display:grid; gap:10px}
+.ac-r{display:flex; align-items:center; gap:10px; width:100%; min-height:56px; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:8px 12px; color:var(--fg)} .ac-r .tx{flex:1; display:grid; min-width:0} .ac-r b{font-family:var(--font-display); font-size:16px} .ac-r small{font-size:14px; color:var(--muted)} .ac-r .chev{width:22px; height:22px; color:var(--muted); transform:rotate(-90deg)}
+.ac-t{font-size:14px; font-weight:700; padding:4px 9px; border-radius:9px; flex:none} .ac-t.rein{background:var(--alert); color:var(--on-alert)} .ac-t.cos{background:var(--lemon-bg); color:var(--lemon-fg); border:1px solid var(--lemon-fg)}
+</style>
 
 <div class="wrap">
   <header class="top">
@@ -339,6 +346,17 @@ span.ag-ck{border-style:dashed}
 </div>
 <div class="sfoot">    <button class="primary" id="sheetOk">Sí, registrar</button>
     <button id="sheetCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="avSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="avTitle">
+    <h2 id="avTitle">Revisar avisos</h2>
+<div class="sbody">
+    <p class="note" id="avInfo">Si te equivocaste al registrar una aplicación, corrige aquí los plazos. Esto no cambia el stock del producto.</p>
+    <div id="avLista"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="avOk">Guardar cambios</button>
+    <button id="avCancel">Cancelar</button></div>
   </div>
 </div>
 <div class="sheet" id="editSheet" hidden>
@@ -741,7 +759,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 6;
+  var GUIA_V = 7;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -762,6 +780,8 @@ span.ag-ck{border-style:dashed}
     ["Letra grande para el sol", "En «Inicio», abajo, abre la casilla «Uso y apariencia». Ahí el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
     ["Claro o nocturno", "En «Inicio», abajo, abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
     ["Dónde quedó la guía", "En «Inicio», abajo, la casilla «Uso y apariencia» reúne la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
+    ["Avisos de reingreso y carencia", "Después de aplicar un producto, «Inicio» muestra la tarjeta «Atención en el campo» con cada sector afectado: «No entrar» (hasta cuándo no se debe entrar) y «Carencia» (hasta cuándo no se puede cosechar). El ícono de «Campo» se pinta de rojo con el número de sectores. Los avisos se apagan solos cuando vence el plazo. Toca el sector para ver su información.", 7, ""],
+    ["Corregir un aviso", "Si te equivocaste al registrar una aplicación, en la tarjeta «Atención en el campo» toca «Revisar» en el sector. Cambia la fecha de «No entrar hasta» o «No cosechar antes del», o quita el aviso, y toca «Guardar cambios». No cambia el stock del producto.", 7, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -1011,6 +1031,52 @@ span.ag-ck{border-style:dashed}
   }
   var NAV = [["home", "Inicio"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
   function iconKey(k){ return k === "home" ? "home" : k; }
+  function avisosCampo(){
+    var now = Date.now(), out = [];
+    S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }).forEach(function(c){
+      var r = restriccionesSector(c.id, now);
+      if (r.rein || r.cos) out.push({ id: c.id, nombre: c.nombre || "Sector", rein: r.rein, cos: r.cos });
+    });
+    return out;
+  }
+  function tzLocal(d){ var p = {}; new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(d).forEach(function(x){ p[x.type] = x.value; }); return p.year + "-" + p.month + "-" + p.day + "T" + (p.hour === "24" ? "00" : p.hour) + ":" + p.minute; }
+  function chileAIso(v){ var t = Date.parse(v + ":00Z"); if (isNaN(t)) return null; var diff = Date.parse(tzLocal(new Date(t)) + ":00Z") - t; return new Date(t - diff).toISOString(); }
+  var avEd = [];
+  function abrirAvisos(cid, nombre){
+    var now = Date.now(), hoy = fecha(new Date(now)); avEd = [];
+    S.aplicaciones.forEach(function(a){
+      if (a.sectorId && a.sectorId !== cid) return;
+      var rein = a.reingresoHasta && Date.parse(a.reingresoHasta) > now, cos = a.cosechaDesde && a.cosechaDesde > hoy;
+      if (rein || cos) avEd.push({ id: a.id, a: a });
+    });
+    $("avTitle").textContent = "Avisos de " + nombre;
+    var L = $("avLista"); L.replaceChildren();
+    if (!avEd.length) L.appendChild(el("p", "note", "Este sector ya no tiene avisos vigentes."));
+    avEd.forEach(function(x, i){
+      var a = x.a, bx = el("div", "av-b");
+      bx.appendChild(el("b", null, (a.producto || "Aplicación") + " · " + fmtFH.format(new Date(a.ts))));
+      var f1 = el("div", "field"); var l1 = el("label", null, "No entrar hasta"); l1.htmlFor = "avR" + i; var i1 = el("input"); i1.type = "datetime-local"; i1.id = "avR" + i; i1.value = a.reingresoHasta && Date.parse(a.reingresoHasta) > now ? tzLocal(new Date(a.reingresoHasta)) : ""; f1.appendChild(l1); f1.appendChild(i1);
+      var q1 = el("button", "small", "Quitar aviso de reingreso"); q1.type = "button"; q1.onclick = function(){ i1.value = ""; }; f1.appendChild(q1); bx.appendChild(f1);
+      var f2 = el("div", "field"); var l2 = el("label", null, "No cosechar antes del"); l2.htmlFor = "avC" + i; var i2 = el("input"); i2.type = "date"; i2.id = "avC" + i; i2.value = a.cosechaDesde && a.cosechaDesde > hoy ? a.cosechaDesde : ""; f2.appendChild(l2); f2.appendChild(i2);
+      var q2 = el("button", "small", "Quitar carencia"); q2.type = "button"; q2.onclick = function(){ i2.value = ""; }; f2.appendChild(q2); bx.appendChild(f2);
+      L.appendChild(bx);
+    });
+    $("avOk").hidden = !avEd.length; $("avSheet").hidden = false;
+  }
+  $("avCancel").onclick = function(){ $("avSheet").hidden = true; };
+  $("avOk").onclick = async function(){
+    var b = $("avOk"); b.disabled = true;
+    try {
+      for (var i = 0; i < avEd.length; i++){
+        var v1 = $("avR" + i).value, v2 = $("avC" + i).value, a = avEd[i].a;
+        var rein = v1 ? chileAIso(v1) : null, cos = v2 || null;
+        if (rein === (a.reingresoHasta || null) && cos === (a.cosechaDesde || null)) continue;
+        await S.db.doc("aplicaciones/" + avEd[i].id).update({ reingresoHasta: rein, cosechaDesde: cos, avisoEditado: { por: S.nombre, ts: new Date().toISOString() } });
+      }
+      $("avSheet").hidden = true; toast("Avisos actualizados");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
   function buildNav(){
     var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
@@ -1019,6 +1085,7 @@ span.ag-ck{border-style:dashed}
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
+      var avc = x[0] === "campo" ? avisosCampo() : []; if (avc.length){ b.classList.add(avc.some(function(z){ return z.rein; }) ? "hay-alerta" : "hay-aviso"); w.appendChild(el("i", null, String(avc.length))); b.setAttribute("aria-label", "Campo, " + avc.length + (avc.length === 1 ? " sector con aviso" : " sectores con aviso")); }
       b.appendChild(w); b.appendChild(el("span", null, x[1]));
       b.onclick = function(){ S.screen = x[0]; render(); };
       nav.appendChild(b);
@@ -1092,19 +1159,38 @@ span.ag-ck{border-style:dashed}
       ["trabajo", "Registrar trabajo", hTr ? nf(hTr, 1) + " h esta semana" : "Qué hiciste y dónde"],
       ["aplic", "Aplicaciones", nTr ? nTr + (nTr === 1 ? " por hacer hoy" : " por hacer hoy") : "Productos, mezclas y bodega"],
       ["riego", "Riego", mRg ? nf(mRg, 0) + " m³ esta semana" : "Horas y agua por sector"],
-      ["campo", "Mi campo", haT ? nf(haT, 2) + " ha en " + S.cuarteles.length + " sectores" : "Sectores y árboles"]
+      ["campo", "Mi campo", avisosCampo().length ? avisosCampo().length + (avisosCampo().length === 1 ? " sector con aviso" : " sectores con aviso") : haT ? nf(haT, 2) + " ha en " + S.cuarteles.length + " sectores" : "Sectores y árboles"]
     ];
     var fHoy = fuera(hy), pPend = nPend();
     mods.push(["permisos", "Permisos", S.owner && pPend ? pPend + (pPend === 1 ? " por aprobar" : " por aprobar") : fHoy.length ? fHoy.map(function(x){ return x.por; }).join(", ") + " con permiso hoy" : "Días libres y saldo"]);
     if (S.owner) mods.push(["horarios", "Horarios del equipo", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo ahora" : " personas en el campo ahora") : "Quién está y cuándo entra y sale"]);
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
     mods.push(["consulta", "Tengo un problema o una idea", "Cuéntaselo a Diego"]);
+    var av = avisosCampo();
+    if (av.length){
+      var ab = el("section", "alerta-campo" + (av.some(function(z){ return z.rein; }) ? "" : " suave")); ab.setAttribute("role", "alert");
+      var ah = el("div", "ac-h"); var ai = el("span", "ti"); ai.appendChild(ico("alerta")); ah.appendChild(ai); ah.appendChild(el("h2", null, av.length === 1 ? "Atención en el campo" : "Atención en el campo (" + av.length + " sectores)")); ab.appendChild(ah);
+      av.forEach(function(z){
+        var w = el("div", "ac-w");
+        var r = el("button", "ac-r"); r.type = "button";
+        var tx = el("span", "tx"); tx.appendChild(el("b", null, z.nombre));
+        if (z.rein){ var l1 = el("small", "ac-l"); l1.appendChild(el("span", "ac-t rein", "No entrar")); l1.appendChild(document.createTextNode(" hasta el " + fmtFH.format(new Date(z.rein)))); tx.appendChild(l1); }
+        if (z.cos){ var l2 = el("small", "ac-l"); l2.appendChild(el("span", "ac-t cos", "Carencia")); l2.appendChild(document.createTextNode(" no cosechar antes del " + fmtD2(z.cos))); tx.appendChild(l2); }
+        r.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); r.appendChild(ch);
+        r.onclick = function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = z.id; render(); };
+        w.appendChild(r);
+        if (S.owner){ var rv = el("button", "small ac-rv", "Revisar"); rv.type = "button"; rv.setAttribute("aria-label", "Revisar avisos de " + z.nombre); rv.onclick = function(){ abrirAvisos(z.id, z.nombre); }; w.appendChild(rv); }
+        ab.appendChild(w);
+      });
+      f.appendChild(ab);
+    }
     var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
     var g = el("div", "tiles");
     mods.forEach(function(t){
       var b = el("button", "tile"); b.dataset.m = t[0]; b.type = "button";
       var ti = el("span", "ti"); ti.appendChild(ico(t[0])); b.appendChild(ti);
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
+      if (t[0] === "campo" && av.length){ b.classList.add("tile-alerta"); }
       if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "consulta") b.classList.add("wide");
       b.onclick = t[0] === "consulta" ? abrirConsulta : function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
@@ -1836,7 +1922,7 @@ span.ag-ck{border-style:dashed}
         if (rst.rein) d.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
         if (rst.cos) d.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
         d.appendChild(rs);
-        if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; d.appendChild(e); }
+        if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; d.appendChild(e); if (rst.rein || rst.cos){ var e2 = el("button", "small", "Revisar avisos"); e2.onclick = function(){ abrirAvisos(c.id, c.nombre); }; d.appendChild(e2); } }
         body.appendChild(d);
       }
     });
@@ -2383,7 +2469,9 @@ span.ag-ck{border-style:dashed}
 <script>
 if ("serviceWorker" in navigator){
   var hadSW = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener("controllerchange", function(){ if (hadSW && !window.__recargado){ window.__recargado = true; location.reload(); } });
+  function hayForm(){ var a = document.activeElement; return !!document.querySelector(".sheet:not([hidden])") || !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); }
+  function recargar(){ if (hayForm()) { setTimeout(recargar, 2500); } else { location.reload(); } }
+  navigator.serviceWorker.addEventListener("controllerchange", function(){ if (hadSW && !window.__recargado){ window.__recargado = true; recargar(); } });
   window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 }
 </script>

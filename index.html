@@ -319,9 +319,15 @@ span.ag-ck{border-style:dashed}
 .tile.tile-alerta{border-color:var(--alert)} .tile.tile-alerta{--mc:var(--alert); --mb:var(--alert-bg)} .tile.tile-alerta small{color:var(--alert); font-weight:700}
 .alerta-campo{background:var(--alert-bg); border:1.5px solid var(--alert); border-radius:20px; padding:14px; display:grid; gap:8px} .alerta-campo.suave{background:var(--lemon-bg); border-color:var(--lemon-fg)}
 .ac-h{display:flex; align-items:center; gap:10px} .ac-h h2{font-size:17px; color:var(--alert)} .alerta-campo.suave .ac-h h2{color:var(--lemon-fg)} .ac-h .ti{width:36px; height:36px; border-radius:11px; background:var(--alert); color:var(--on-alert); display:grid; place-items:center} .alerta-campo.suave .ac-h .ti{background:var(--lemon-fg); color:var(--lemon-bg)} .ac-h .ti svg{width:21px; height:21px}
-.ac-w{display:grid; gap:6px} .ac-rv{justify-self:start} .ac-l{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:3px} .av-b{border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:12px; display:grid; gap:10px}
+.ac-w{display:grid; gap:6px} .ac-l{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:3px} .av-b{border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:12px; display:grid; gap:10px}
 .ac-r{display:flex; align-items:center; gap:10px; width:100%; min-height:56px; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:8px 12px; color:var(--fg)} .ac-r .tx{flex:1; display:grid; min-width:0} .ac-r b{font-family:var(--font-display); font-size:16px} .ac-r small{font-size:14px; color:var(--muted)} .ac-r .chev{width:22px; height:22px; color:var(--muted); transform:rotate(-90deg)}
 .ac-t{font-size:14px; font-weight:700; padding:4px 9px; border-radius:9px; flex:none} .ac-t.rein{background:var(--alert); color:var(--on-alert)} .ac-t.cos{background:var(--lemon-bg); color:var(--lemon-fg); border:1px solid var(--lemon-fg)}
+.alerta-campo.info{background:var(--water-bg); border-color:var(--water)} .alerta-campo.info .ac-h h2{color:var(--water)} .alerta-campo.info .ac-h .ti{background:var(--water); color:var(--bg)}
+.alerta-campo.neutra{background:var(--slate-bg); border-color:var(--slate)} .alerta-campo.neutra .ac-h h2{color:var(--slate)} .alerta-campo.neutra .ac-h .ti{background:var(--slate); color:var(--bg)}
+.ac-t.rg{background:var(--water); color:var(--bg)} .ac-t.pm{background:var(--slate-bg); color:var(--slate); border:1px solid var(--slate)}
+.ac-ac{display:flex; flex-wrap:wrap; gap:8px} .ac-ac button{flex:0 1 auto} .ac-pri{background:var(--accent); color:var(--on-accent,#fff)}
+.nav button.hay-azul:not([aria-current=page]) .ni{background:var(--water-bg); color:var(--water)} .nav button.hay-azul .nb i{background:var(--water); color:var(--bg)}
+.tile.tile-azul{border-color:var(--water)} .tile.tile-azul small{color:var(--water); font-weight:700}
 </style>
 
 <div class="wrap">
@@ -352,7 +358,7 @@ span.ag-ck{border-style:dashed}
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="avTitle">
     <h2 id="avTitle">Revisar avisos</h2>
 <div class="sbody">
-    <p class="note" id="avInfo">Si te equivocaste al registrar una aplicación, corrige aquí los plazos. Esto no cambia el stock del producto.</p>
+    <p class="note" id="avInfo">Si te equivocaste, corrige aquí los plazos (no cambia el stock) o anula la aplicación (el stock del producto se recupera).</p>
     <div id="avLista"></div>
 </div>
 <div class="sfoot">    <button class="primary" id="avOk">Guardar cambios</button>
@@ -759,7 +765,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 7;
+  var GUIA_V = 8;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -780,8 +786,9 @@ span.ag-ck{border-style:dashed}
     ["Letra grande para el sol", "En «Inicio», abajo, abre la casilla «Uso y apariencia». Ahí el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
     ["Claro o nocturno", "En «Inicio», abajo, abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
     ["Dónde quedó la guía", "En «Inicio», abajo, la casilla «Uso y apariencia» reúne la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
-    ["Avisos de reingreso y carencia", "Después de aplicar un producto, «Inicio» muestra la tarjeta «Atención en el campo» con cada sector afectado: «No entrar» (hasta cuándo no se debe entrar) y «Carencia» (hasta cuándo no se puede cosechar). El ícono de «Campo» se pinta de rojo con el número de sectores. Los avisos se apagan solos cuando vence el plazo. Toca el sector para ver su información.", 7, ""],
-    ["Corregir un aviso", "Si te equivocaste al registrar una aplicación, en la tarjeta «Atención en el campo» toca «Revisar» en el sector. Cambia la fecha de «No entrar hasta» o «No cosechar antes del», o quita el aviso, y toca «Guardar cambios». No cambia el stock del producto.", 7, "owner"],
+    ["Alertas en Inicio", "Si algo necesita atención, «Inicio» muestra la tarjeta «Alertas» justo bajo tu saludo, con lo más importante primero: «No entrar» (hasta cuándo no se debe entrar a un sector tras una aplicación), «Carencia» (hasta cuándo no se puede cosechar) y «Riego atrasado» (un riego programado que ya pasó y no se registró). Se ven las 3 primeras; toca el botón «Ver las» (con el número) para ver todas. Se apagan solas cuando vence el plazo o se hace la tarea. Los íconos de «Campo» y «Riego» muestran un número cuando tienen alertas.", 8, ""],
+    ["Riego atrasado", "En «Alertas», toca «Ya lo regué» para registrar el riego con el sector y las horas ya puestos. Si registras un riego en «Riego» para un sector que tenía uno atrasado, la app cierra esa tarea sola y te lo avisa.", 8, ""],
+    ["Corregir alertas", "En «Alertas», toca «Revisar» en un sector con aviso de reingreso o carencia para corregir los plazos o usar «Anular esta aplicación» si te equivocaste (el stock del producto se recupera). En un riego atrasado puedes usar «Pasar a hoy» o «Descartar».", 8, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -1059,6 +1066,17 @@ span.ag-ck{border-style:dashed}
       var q1 = el("button", "small", "Quitar aviso de reingreso"); q1.type = "button"; q1.onclick = function(){ i1.value = ""; }; f1.appendChild(q1); bx.appendChild(f1);
       var f2 = el("div", "field"); var l2 = el("label", null, "No cosechar antes del"); l2.htmlFor = "avC" + i; var i2 = el("input"); i2.type = "date"; i2.id = "avC" + i; i2.value = a.cosechaDesde && a.cosechaDesde > hoy ? a.cosechaDesde : ""; f2.appendChild(l2); f2.appendChild(i2);
       var q2 = el("button", "small", "Quitar carencia"); q2.type = "button"; q2.onclick = function(){ i2.value = ""; }; f2.appendChild(q2); bx.appendChild(f2);
+      var an = el("button", "small", "Anular esta aplicación"); an.type = "button"; var armed = false;
+      an.onclick = async function(){
+        if (!armed){ armed = true; an.textContent = "Toca otra vez para anular"; setTimeout(function(){ armed = false; an.textContent = "Anular esta aplicación"; }, 4000); return; }
+        try {
+          await S.db.doc("aplicaciones/" + x.id).delete();
+          var pl = S.plan.filter(function(q){ return q.aplicacionId === x.id; })[0];
+          if (pl){ try { await S.db.doc("plan/" + pl.id).update({ estado: "pendiente", aplicacionId: "" }); } catch (e5){} }
+          $("avSheet").hidden = true; toast("Aplicación anulada. El stock se recuperó.");
+        } catch (err){ toast("No se pudo anular."); }
+      };
+      bx.appendChild(an);
       L.appendChild(bx);
     });
     $("avOk").hidden = !avEd.length; $("avSheet").hidden = false;
@@ -1077,6 +1095,31 @@ span.ag-ck{border-style:dashed}
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
+  function riegosAtrasados(){ var hy = fecha(); return S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.fecha && t.fecha < hy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }); }
+  function alertasHome(){
+    var out = [];
+    avisosCampo().forEach(function(z){
+      var lineas = [];
+      if (z.rein) lineas.push(["rein", "No entrar", "hasta el " + fmtFH.format(new Date(z.rein))]);
+      if (z.cos) lineas.push(["cos", "Carencia", "no cosechar antes del " + fmtD2(z.cos)]);
+      var acc = S.owner ? [{ txt: "Revisar", aria: "Revisar avisos de " + z.nombre, fn: function(){ abrirAvisos(z.id, z.nombre); } }] : [];
+      out.push({ sev: z.rein ? 1 : 2, titulo: z.nombre, lineas: lineas, acciones: acc, ir: function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = z.id; render(); } });
+    });
+    riegosAtrasados().forEach(function(t){
+      var d = diasDesde(t.fecha), h = t.horas ? nf(t.horas, 1) + " h programadas" : "";
+      var acc = [{ txt: "Ya lo regué", pri: true, aria: "Registrar el riego atrasado de " + (t.sector || "sector"), fn: function(){ riegoDeTarea(t); } }];
+      if (S.owner){
+        acc.push({ txt: "Pasar a hoy", aria: "Reprogramar para hoy el riego de " + (t.sector || "sector"), fn: async function(){ try { await S.db.doc("tareas/" + t.id).update({ fecha: fecha() }); toast("Riego pasado a hoy"); } catch (e){ toast("No se pudo guardar."); } } });
+        acc.push({ txt: "Descartar", doble: true, aria: "Descartar el riego de " + (t.sector || "sector"), fn: async function(){ try { await S.db.doc("tareas/" + t.id).delete(); toast("Riego descartado"); } catch (e){ toast("No se pudo descartar."); } } });
+      }
+      out.push({ sev: 3, titulo: t.sector || "Riego", lineas: [["rg", "Riego atrasado", (d === 1 ? "desde ayer" : "desde hace " + d + " días") + " (" + fmtD2(t.fecha) + ")" + (h ? " · " + h : "")]], acciones: acc, ir: function(){ S.screen = "agenda"; S.agVista = "dia"; S.agFecha = t.fecha; render(); } });
+    });
+    if (S.owner){
+      var np2 = nPend(); if (np2) out.push({ sev: 4, titulo: np2 === 1 ? "1 permiso por aprobar" : np2 + " permisos por aprobar", lineas: [["pm", "Permisos", "esperan tu respuesta"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
+      var nc = S.consultas.filter(function(x){ return !x.resuelta; }).length; if (nc) out.push({ sev: 4, titulo: nc === 1 ? "1 consulta sin resolver" : nc + " consultas sin resolver", lineas: [["pm", "Consultas", "del equipo"]], acciones: [], ir: function(){ var c = $("consCard"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); } });
+    }
+    return out.sort(function(a, b){ return a.sev - b.sev; });
+  }
   function buildNav(){
     var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
@@ -1085,6 +1128,7 @@ span.ag-ck{border-style:dashed}
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
+      if (x[0] === "riego"){ var nr = riegosAtrasados().length; if (nr){ b.classList.add("hay-azul"); w.appendChild(el("i", null, String(nr))); b.setAttribute("aria-label", "Riego, " + nr + (nr === 1 ? " atrasado" : " atrasados")); } }
       var avc = x[0] === "campo" ? avisosCampo() : []; if (avc.length){ b.classList.add(avc.some(function(z){ return z.rein; }) ? "hay-alerta" : "hay-aviso"); w.appendChild(el("i", null, String(avc.length))); b.setAttribute("aria-label", "Campo, " + avc.length + (avc.length === 1 ? " sector con aviso" : " sectores con aviso")); }
       b.appendChild(w); b.appendChild(el("span", null, x[1]));
       b.onclick = function(){ S.screen = x[0]; render(); };
@@ -1128,6 +1172,29 @@ span.ag-ck{border-style:dashed}
     btn.onclick = function(){ pedir(e.st === "open" ? "out" : "in"); };
     if (S.noWrite){ btn.disabled = true; hb.appendChild(el("p", "note warn", "Tu acceso no permite registrar. Avísale a Diego para que te invite como colaboradora.")); }
     hb.appendChild(btn); hero.appendChild(hb); f.appendChild(hero);
+    var al = alertasHome();
+    if (al.length){
+      var sevMax = al.reduce(function(m, z){ return Math.min(m, z.sev); }, 9);
+      var ab = el("section", "alerta-campo " + (sevMax === 1 ? "" : sevMax === 2 ? "suave" : sevMax === 3 ? "info" : "neutra")); ab.id = "alertasCard"; ab.setAttribute("role", "alert");
+      var ah = el("div", "ac-h"); var ai = el("span", "ti"); ai.appendChild(ico("alerta")); ah.appendChild(ai); ah.appendChild(el("h2", null, "Alertas (" + al.length + ")")); ab.appendChild(ah);
+      var ver = S.alAb ? al : al.slice(0, 3);
+      ver.forEach(function(z){
+        var w = el("div", "ac-w");
+        var r = el("button", "ac-r"); r.type = "button";
+        var tx = el("span", "tx"); tx.appendChild(el("b", null, z.titulo));
+        z.lineas.forEach(function(ln){ var l1 = el("small", "ac-l"); l1.appendChild(el("span", "ac-t " + ln[0], ln[1])); l1.appendChild(document.createTextNode(" " + ln[2])); tx.appendChild(l1); });
+        r.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); r.appendChild(ch);
+        r.onclick = z.ir; w.appendChild(r);
+        if (z.acciones && z.acciones.length){
+          var ac = el("div", "ac-ac");
+          z.acciones.forEach(function(x){ var bt = el("button", "small" + (x.pri ? " ac-pri" : ""), x.txt); bt.type = "button"; if (x.aria) bt.setAttribute("aria-label", x.aria); var armed = false; bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez para confirmar"; setTimeout(function(){ armed = false; bt.textContent = x.txt; }, 4000); return; } x.fn(); }; ac.appendChild(bt); });
+          w.appendChild(ac);
+        }
+        ab.appendChild(w);
+      });
+      if (al.length > 3){ var mas = el("button", "small", S.alAb ? "Ver menos" : "Ver las " + al.length + " alertas"); mas.id = "alMas"; mas.onclick = function(){ S.alAb = !S.alAb; render(); }; ab.appendChild(mas); }
+      f.appendChild(ab);
+    }
 
     var evh = eventosDia(fecha()).filter(function(e){ return !e.nc; });
     if (evh.length){
@@ -1158,7 +1225,7 @@ span.ag-ck{border-style:dashed}
     var mods = [
       ["trabajo", "Registrar trabajo", hTr ? nf(hTr, 1) + " h esta semana" : "Qué hiciste y dónde"],
       ["aplic", "Aplicaciones", nTr ? nTr + (nTr === 1 ? " por hacer hoy" : " por hacer hoy") : "Productos, mezclas y bodega"],
-      ["riego", "Riego", mRg ? nf(mRg, 0) + " m³ esta semana" : "Horas y agua por sector"],
+      ["riego", "Riego", riegosAtrasados().length ? riegosAtrasados().length + (riegosAtrasados().length === 1 ? " riego atrasado" : " riegos atrasados") : mRg ? nf(mRg, 0) + " m³ esta semana" : "Horas y agua por sector"],
       ["campo", "Mi campo", avisosCampo().length ? avisosCampo().length + (avisosCampo().length === 1 ? " sector con aviso" : " sectores con aviso") : haT ? nf(haT, 2) + " ha en " + S.cuarteles.length + " sectores" : "Sectores y árboles"]
     ];
     var fHoy = fuera(hy), pPend = nPend();
@@ -1167,23 +1234,6 @@ span.ag-ck{border-style:dashed}
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
     mods.push(["consulta", "Tengo un problema o una idea", "Cuéntaselo a Diego"]);
     var av = avisosCampo();
-    if (av.length){
-      var ab = el("section", "alerta-campo" + (av.some(function(z){ return z.rein; }) ? "" : " suave")); ab.setAttribute("role", "alert");
-      var ah = el("div", "ac-h"); var ai = el("span", "ti"); ai.appendChild(ico("alerta")); ah.appendChild(ai); ah.appendChild(el("h2", null, av.length === 1 ? "Atención en el campo" : "Atención en el campo (" + av.length + " sectores)")); ab.appendChild(ah);
-      av.forEach(function(z){
-        var w = el("div", "ac-w");
-        var r = el("button", "ac-r"); r.type = "button";
-        var tx = el("span", "tx"); tx.appendChild(el("b", null, z.nombre));
-        if (z.rein){ var l1 = el("small", "ac-l"); l1.appendChild(el("span", "ac-t rein", "No entrar")); l1.appendChild(document.createTextNode(" hasta el " + fmtFH.format(new Date(z.rein)))); tx.appendChild(l1); }
-        if (z.cos){ var l2 = el("small", "ac-l"); l2.appendChild(el("span", "ac-t cos", "Carencia")); l2.appendChild(document.createTextNode(" no cosechar antes del " + fmtD2(z.cos))); tx.appendChild(l2); }
-        r.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); r.appendChild(ch);
-        r.onclick = function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = z.id; render(); };
-        w.appendChild(r);
-        if (S.owner){ var rv = el("button", "small ac-rv", "Revisar"); rv.type = "button"; rv.setAttribute("aria-label", "Revisar avisos de " + z.nombre); rv.onclick = function(){ abrirAvisos(z.id, z.nombre); }; w.appendChild(rv); }
-        ab.appendChild(w);
-      });
-      f.appendChild(ab);
-    }
     var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
     var g = el("div", "tiles");
     mods.forEach(function(t){
@@ -1191,6 +1241,7 @@ span.ag-ck{border-style:dashed}
       var ti = el("span", "ti"); ti.appendChild(ico(t[0])); b.appendChild(ti);
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
       if (t[0] === "campo" && av.length){ b.classList.add("tile-alerta"); }
+      if (t[0] === "riego" && riegosAtrasados().length){ b.classList.add("tile-azul"); }
       if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "consulta") b.classList.add("wide");
       b.onclick = t[0] === "consulta" ? abrirConsulta : function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
@@ -1199,7 +1250,7 @@ span.ag-ck{border-style:dashed}
 
     if (S.owner){
       var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });
-      var cc = el("section", "card sect"); cc.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
+      var cc = el("section", "card sect"); cc.id = "consCard"; cc.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
       abiertas.slice(0, 10).forEach(function(x){
         var bx = el("div", "asg"); var wo = el("div", "who"); wo.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo)); bx.appendChild(wo);
         bx.appendChild(el("p", null, x.texto));
@@ -1701,8 +1752,10 @@ span.ag-ck{border-style:dashed}
     var b = $("rgOk"); b.disabled = true;
     try {
       var rref = await S.db.collection("riegos").add({ fecha: $("rgFecha").value, ts: new Date().toISOString(), sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea ? rgTarea.id : "" });
+      var cerrada = null;
+      if (!rgTarea){ var rf = $("rgFecha").value; var cand = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id && t.fecha && t.fecha <= rf; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; })[0]; if (cand){ try { await S.db.doc("tareas/" + cand.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: new Date().toISOString(), riegoId: rref && rref.id || "", horasReal: hr }); cerrada = cand; } catch (e4){} } }
       if (rgTarea){ try { await S.db.doc("tareas/" + rgTarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: new Date().toISOString(), riegoId: rref && rref.id || "", horasReal: hr }); } catch (e3){} rgTarea = null; }
-      $("rgSheet").hidden = true; toast("Riego registrado");
+      $("rgSheet").hidden = true; toast(cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado");
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };

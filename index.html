@@ -714,25 +714,46 @@ span.ag-ck{border-style:dashed}
     } catch (err){ toast("No se pudo enviar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
+  /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
+     REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
+     así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
+  var GUIA_V = 2;
   var GUIA = [
-    ["Bienvenida", "Esta app te sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve."],
-    ["Llegué y Me voy", "En Inicio, el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice Me voy). Si sales a almorzar, usa Me voy y luego Volví al campo."],
-    ["Barra de abajo", "Con los cinco botones de abajo cambias de pantalla: Inicio, Trabajo, Aplicar, Riego y Campo. El número rojo en Aplicar avisa cuántas aplicaciones tocan hoy."],
-    ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca Hacerla ahora y todo viene cargado."],
-    ["Bodega", "En Aplicar, Bodega muestra cuánto producto queda. Si falta o sobra, usa Agregar o ajustar stock. Diego revisa y autoriza cada cambio."],
-    ["Si algo falla", "En Inicio, el botón Tengo un problema o una idea le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico."]
+    ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
+    ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
+    ["Barra de abajo", "Con los seis botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
+    ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
+    ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
+    ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
+    ["Ideas y notas", "En «Agenda», vista «Ideas», el botón «Nueva nota» guarda recordatorios con una etiqueta (Riego, Plagas, Bodega, Compras u Otro). Puedes escribir o tocar el micrófono para dictar. Cuando se resuelve, toca el círculo de la nota.", 2, ""],
+    ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
+    ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
+    ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
+    ["Bodega", "En «Aplicar», «Bodega» muestra cuánto producto queda. Si falta o sobra, usa «Agregar o ajustar stock». Diego revisa y autoriza cada cambio.", 1, ""],
+    ["Árboles y fotos", "En «Campo», el botón «Registrar un árbol» guarda la hilera, el número de árbol y lo que viste. Puedes agregar una foto con «Tomar o elegir una foto».", 2, ""],
+    ["Permisos", "En «Inicio», el módulo «Permisos» sirve para «Pedir días libres», ver tu saldo y el calendario. Diego aprueba cada solicitud.", 2, ""],
+    ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
+    ["Horarios del equipo", "En «Inicio», el módulo «Horarios del equipo» muestra quién está en el campo y a qué hora entra y sale cada persona. Solo lo ves tú.", 2, "owner"],
+    ["Letra grande para el sol", "En «Inicio», abajo, el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
+    ["Si algo falla", "En «Inicio», el botón «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
-  var guI = 0;
+  window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
+  var guI = 0, guPasos = GUIA, guNov = false;
   function pintarGuia(){
-    var g = GUIA[guI]; $("guTitle").textContent = g[0]; $("guTexto").textContent = g[1]; $("guPaso").textContent = "Paso " + (guI + 1) + " de " + GUIA.length;
-    $("guOk").textContent = guI === GUIA.length - 1 ? "Entendido" : "Siguiente";
+    var g = guPasos[guI]; $("guTitle").textContent = (guNov ? "Novedad: " : "") + g[0]; $("guTexto").textContent = g[1]; $("guPaso").textContent = (guNov ? "Novedad " : "Paso ") + (guI + 1) + " de " + guPasos.length;
+    $("guOk").textContent = guI === guPasos.length - 1 ? "Entendido" : "Siguiente";
   }
+  function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   function abrirGuia(manual){
-    if (!manual){ try { if (localStorage.getItem("guia1")) return; } catch (e){ } }
+    var visto = guiaVista();
+    if (!manual && visto >= GUIA_V) return;
+    guNov = !manual && visto > 0;
+    guPasos = GUIA.filter(function(g){ return (!g[3] || (g[3] === "owner" ? S.owner : S.manager)) && (!guNov || g[2] > visto); });
+    if (!guPasos.length){ cerrarGuia(); return; }
     guI = 0; pintarGuia(); $("guSheet").hidden = false;
   }
-  function cerrarGuia(){ $("guSheet").hidden = true; try { localStorage.setItem("guia1", "1"); } catch (e){ } }
-  $("guOk").onclick = function(){ if (guI < GUIA.length - 1){ guI++; pintarGuia(); } else cerrarGuia(); };
+  function cerrarGuia(){ $("guSheet").hidden = true; try { localStorage.setItem("guia_v", String(GUIA_V)); localStorage.setItem("guia1", "1"); } catch (e){ } }
+  $("guOk").onclick = function(){ if (guI < guPasos.length - 1){ guI++; pintarGuia(); } else cerrarGuia(); };
   $("guCancel").onclick = cerrarGuia;
 
 

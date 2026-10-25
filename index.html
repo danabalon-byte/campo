@@ -328,6 +328,7 @@ span.ag-ck{border-style:dashed}
 .ac-ac{display:flex; flex-wrap:wrap; gap:8px} .ac-ac button{flex:0 1 auto} .ac-pri{background:var(--accent); color:var(--on-accent,#fff)}
 .nav button.hay-azul:not([aria-current=page]) .ni{background:var(--water-bg); color:var(--water)} .nav button.hay-azul .nb i{background:var(--water); color:var(--bg)}
 .tile.tile-azul{border-color:var(--water)} .tile.tile-azul small{color:var(--water); font-weight:700}
+.ac-t.st{background:var(--lemon-bg); color:var(--lemon-fg); border:1px solid var(--lemon-fg)} .ac-t.ap{background:var(--water); color:var(--bg)}
 </style>
 
 <div class="wrap">
@@ -628,6 +629,7 @@ span.ag-ck{border-style:dashed}
 
 <script src="firebase-config.js"></script>
 <script src="seed.js"></script>
+<script src="demo.js"></script>
 <script src="app-bundle.js"></script>
 <script>
 (function(){
@@ -711,11 +713,11 @@ span.ag-ck{border-style:dashed}
   async function marcar(tipo){
     var now = new Date(), iso = now.toISOString(), hoy = fecha(now);
     var e = estado(S.dias, now.getTime());
-    var tr = e.tr.map(function(t){ return { entrada: t.entrada, salida: t.salida || null }; });
-    if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null }); }
-    else { if (e.st !== "open") return; tr[tr.length - 1].salida = iso; }
+    var tr = e.tr.map(function(t){ return Object.assign({}, t, { entrada: t.entrada, salida: t.salida || null }); });
+    if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null, por: S.nombre, uid: S.uid, regTs: iso }); }
+    else { if (e.st !== "open") return; tr[tr.length - 1].salida = iso; tr[tr.length - 1].salidaPor = S.nombre; tr[tr.length - 1].salidaUid = S.uid; }
     try {
-      await S.db.doc("asistencia/" + S.uid + "/dias/" + hoy).set({ fecha: hoy, tramos: tr });
+      await S.db.doc("asistencia/" + S.uid + "/dias/" + hoy).set({ fecha: hoy, tramos: tr, actualizadoPor: S.nombre, actualizadoTs: iso });
       toast(tipo === "in" ? "Llegada registrada a las " + hora(iso) : "Salida registrada a las " + hora(iso));
     } catch (err) {
       if (err && err.code === "invalid_argument"){ S.noWrite = true; render(); toast("No tienes permiso para registrar. Avísale a Diego."); }
@@ -765,7 +767,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 8;
+  var GUIA_V = 9;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -787,6 +789,7 @@ span.ag-ck{border-style:dashed}
     ["Claro o nocturno", "En «Inicio», abajo, abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
     ["Dónde quedó la guía", "En «Inicio», abajo, la casilla «Uso y apariencia» reúne la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
     ["Alertas en Inicio", "Si algo necesita atención, «Inicio» muestra la tarjeta «Alertas» justo bajo tu saludo, con lo más importante primero: «No entrar» (hasta cuándo no se debe entrar a un sector tras una aplicación), «Carencia» (hasta cuándo no se puede cosechar) y «Riego atrasado» (un riego programado que ya pasó y no se registró). Se ven las 3 primeras; toca el botón «Ver las» (con el número) para ver todas. Se apagan solas cuando vence el plazo o se hace la tarea. Los íconos de «Campo» y «Riego» muestran un número cuando tienen alertas.", 8, ""],
+    ["Stock y aplicaciones en las alertas", "En «Alertas» aparece «Stock bajo» cuando un producto llega al 15 % o menos de lo ingresado, y «No alcanza» cuando lo agendado supera lo que hay en bodega. También aparece «Aplicación atrasada» para una aplicación agendada que ya pasó de fecha; toca «Hacerla ahora». Al agendar, la app avisa si el stock no alcanza. «Hoy toca» muestra solo lo de hoy.", 9, "manager"],
     ["Riego atrasado", "En «Alertas», toca «Ya lo regué» para registrar el riego con el sector y las horas ya puestos. Si registras un riego en «Riego» para un sector que tenía uno atrasado, la app cierra esa tarea sola y te lo avisa.", 8, ""],
     ["Corregir alertas", "En «Alertas», toca «Revisar» en un sector con aviso de reingreso o carencia para corregir los plazos o usar «Anular esta aplicación» si te equivocaste (el stock del producto se recupera). En un riego atrasado puedes usar «Pasar a hoy» o «Descartar».", 8, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
@@ -1096,6 +1099,19 @@ span.ag-ck{border-style:dashed}
     b.disabled = false;
   };
   function riegosAtrasados(){ var hy = fecha(); return S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.fecha && t.fecha < hy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }); }
+  function necesidadPlan(){ var need = {}; S.plan.filter(function(x){ return x.estado === "pendiente"; }).forEach(function(x){ need[x.productoId] = (need[x.productoId] || 0) + (Number(x.cantidad) || 0); if (x.productoId2) need[x.productoId2] = (need[x.productoId2] || 0) + (Number(x.cantidad2) || 0); }); return need; }
+  function totalIngresado(p){ var t = Number(p.stockInicial) || 0; S.movimientos.forEach(function(m){ if (m.productoId === p.id && Number(m.cantidad) > 0) t += Number(m.cantidad); }); return t; }
+  function alertasStock(){
+    var need = necesidadPlan(), out = [];
+    prodOrden().forEach(function(p){
+      var st = stockDe(p), tot = totalIngresado(p), lineas = [];
+      if (tot > 0 && st <= tot * 0.15 + 1e-9) lineas.push(["st", st <= 1e-9 ? "Sin stock" : "Stock bajo", "queda " + nf(st, 2) + " " + p.unidad + " de " + nf(tot, 2) + " ingresados (" + nf(Math.max(0, st) / tot * 100, 0) + " %)"]);
+      if (need[p.id] && need[p.id] > st + 1e-9) lineas.push(["st", "No alcanza", "lo agendado suma " + nf(need[p.id], 2) + " " + p.unidad + " y hay " + nf(st, 2)]);
+      if (lineas.length) out.push({ sev: 2, titulo: p.nombre, lineas: lineas, acciones: S.manager ? [{ txt: "Agregar o ajustar stock", fn: function(){ S.screen = "aplic"; render(); abrirStock(p); } }] : [], ir: function(){ S.screen = "aplic"; render(); } });
+    });
+    return out;
+  }
+  function aplicacionesAtrasadas(){ var hy = fecha(); return S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha && x.fecha < hy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }); }
   function alertasHome(){
     var out = [];
     avisosCampo().forEach(function(z){
@@ -1114,6 +1130,12 @@ span.ag-ck{border-style:dashed}
       }
       out.push({ sev: 3, titulo: t.sector || "Riego", lineas: [["rg", "Riego atrasado", (d === 1 ? "desde ayer" : "desde hace " + d + " días") + " (" + fmtD2(t.fecha) + ")" + (h ? " · " + h : "")]], acciones: acc, ir: function(){ S.screen = "agenda"; S.agVista = "dia"; S.agFecha = t.fecha; render(); } });
     });
+    aplicacionesAtrasadas().forEach(function(x){
+      var d = diasDesde(x.fecha);
+      out.push({ sev: 3, titulo: tituloPlan(x) + " · " + x.sector, lineas: [["ap", "Aplicación atrasada", (d === 1 ? "desde ayer" : "desde hace " + d + " días") + " (" + fmtD2(x.fecha) + ")" + (x.equipo ? " · " + x.equipo : "")]],
+        acciones: [{ txt: "Hacerla ahora", pri: true, aria: "Hacer la aplicación atrasada de " + tituloPlan(x), fn: function(){ S.screen = "aplic"; render(); abrirAp(x); } }], ir: function(){ S.screen = "aplic"; render(); } });
+    });
+    if (S.manager) alertasStock().forEach(function(z){ out.push(z); });
     if (S.owner){
       var np2 = nPend(); if (np2) out.push({ sev: 4, titulo: np2 === 1 ? "1 permiso por aprobar" : np2 + " permisos por aprobar", lineas: [["pm", "Permisos", "esperan tu respuesta"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
       var nc = S.consultas.filter(function(x){ return !x.resuelta; }).length; if (nc) out.push({ sev: 4, titulo: nc === 1 ? "1 consulta sin resolver" : nc + " consultas sin resolver", lineas: [["pm", "Consultas", "del equipo"]], acciones: [], ir: function(){ var c = $("consCard"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); } });
@@ -1203,7 +1225,7 @@ span.ag-ck{border-style:dashed}
       var bar2 = el("div", "ag-bar"), bi2 = el("i"); bi2.style.width = Math.round(100 * hh2 / evh.length) + "%"; bar2.appendChild(bi2); ag.appendChild(bar2);
       var ab = el("button", null, "Abrir la agenda"); ab.onclick = function(){ S.screen = "agenda"; S.agVista = "dia"; S.agFecha = fecha(); render(); }; ag.appendChild(ab); f.appendChild(ag);
     }
-    var ph = pendHoy();
+    var ph = pendHoy().filter(function(x){ return x.fecha === fecha(); });
     if (ph.length){
       var pc = el("section", "card prio");
       var hh = el("h2", "ch"); hh.appendChild(ico("calendario")); hh.appendChild(document.createTextNode("Hoy toca")); pc.appendChild(hh);
@@ -1658,7 +1680,8 @@ span.ag-ck{border-style:dashed}
       await S.db.collection("plan").add({ fecha: fe, productoId: x.id, producto: x.nombre, unidad: x.unidad, modo: c.m1, dosis: numI($("plDosis")), cantidad: c.q1,
         productoId2: x2 ? x2.id : "", producto2: x2 ? x2.nombre : "", unidad2: x2 ? x2.unidad : "", modo2: x2 ? c.m2 : "", dosis2: x2 ? numI($("plDosis2")) : null, cantidad2: x2 ? c.q2 : null,
         aguaTotalL: c.aguaTot, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", equipo: eq, notas: $("plNotas").value.trim(), estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
-      $("plSheet").hidden = true; toast("Aplicación agendada");
+      var avs = []; var need0 = necesidadPlan(); [[x, c.q1], [x2, c.q2]].forEach(function(q){ if (q[0]){ var tot = (need0[q[0].id] || 0) + (Number(q[1]) || 0), st0 = stockDe(q[0]); if (tot > st0 + 1e-9) avs.push("de " + q[0].nombre + " hay " + nf(st0, 2) + " " + q[0].unidad + " y lo agendado suma " + nf(tot, 2)); } });
+      $("plSheet").hidden = true; toast(avs.length ? "Aplicación agendada. Ojo: " + avs.join("; ") + "." : "Aplicación agendada");
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };

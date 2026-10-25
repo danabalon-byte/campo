@@ -44,6 +44,7 @@
     s["jornadasTerc/j_demo1"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(2), tipo: "jornada", min: 504, dia: 504, labor: "Poda en el sector 3", aCargo: "Yolanda", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(50) };
     s["jornadasTerc/j_demo2"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(1), tipo: "media", min: 252, dia: 504, labor: "Riego", aCargo: "Yolanda", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(26) };
     s["jornadasTerc/j_demo3"] = { tid: "t_demo2", nombre: "Practicante (demo)", fecha: dia(1), tipo: "horas", min: 270, dia: 504, hi: "09:00", hs: "13:30", labor: "Registro de árboles", aCargo: "Agrícola", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(26) };
+    s["jornadasTerc/j_demo4"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(0), tipo: "jornada", min: 504, dia: 504, labor: "Poda en el sector 2", aCargo: "Yolanda", estado: "acordada", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(30) };
     s["abonos/b_demo1"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", monto: 20000, fecha: dia(1), nota: "efectivo", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(24) };
     Object.keys(PERFILES).forEach(function (k) { s["equipo/" + PERFILES[k].uid] = { nombre: PERFILES[k].nombre, creado: ago(500) }; });
     [[-1, 8, 17], [-2, 8, 16], [-3, 9, 14]].forEach(function (x) {

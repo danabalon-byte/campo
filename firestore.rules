@@ -42,7 +42,7 @@ service cloud.firestore {
     match /jornadasTerc/{d} {
       allow read: if isOwner() || (isAdmin() && esMio());
       allow create: if isOwner() || (isAdmin() && request.resource.data.uid == request.auth.uid);
-      allow update: if isOwner();
+      allow update: if isOwner() || (isAdmin() && esMio() && request.resource.data.uid == request.auth.uid);
       allow delete: if isOwner() || (isAdmin() && esMio());
     }
     // Valores, pagos y sábados acordados: solo el dueño.

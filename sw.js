@@ -1,4 +1,4 @@
-const CACHE = "campo-9e339ec6";
+const CACHE = "campo-c29571d9";
 const SHELL = ["./", "./index.html", "./app-bundle.js", "./seed.js", "./demo.js", "./firebase-config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });

@@ -315,7 +315,7 @@ span.ag-ck{border-style:dashed}
 .cua-alert{display:inline-block; font-size:14px; font-weight:700; padding:1px 9px; border-radius:99px; background:var(--alert-bg); color:var(--alert); margin-top:4px}
 .cua-all{display:flex; justify-content:flex-end; margin:4px 0}
 @media (prefers-reduced-motion: no-preference){ .cua-t .chev{transition:transform .2s} }
-.ua{padding:6px 14px} .ua summary{list-style:none; gap:12px; color:var(--fg); min-height:60px} .ua summary::-webkit-details-marker{display:none} .ua summary b{font-family:var(--font-display); font-size:17px; flex:1} .ua summary .ti{width:40px;height:40px;border-radius:12px;background:var(--slate-bg);color:var(--slate);display:grid;place-items:center} .ua summary .ti svg{width:23px;height:23px} .ua summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin-right:6px;transition:transform .15s} .ua[open] summary::after{transform:rotate(-135deg)} .ua .sect{padding:4px 0 10px}</style>
+.ua{padding:6px 14px} .ua summary{list-style:none; gap:12px; color:var(--fg); min-height:60px} .ua summary::-webkit-details-marker{display:none} .ua summary b{font-family:var(--font-display); font-size:17px; flex:1} .ua summary .ti{width:40px;height:40px;border-radius:12px;background:var(--slate-bg);color:var(--slate);display:grid;place-items:center} .ua summary .ti svg{width:23px;height:23px} .ua summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin-right:6px;transition:transform .15s} .ua[open] summary::after{transform:rotate(-135deg)} .ua .sect{padding:4px 0 10px}.cua-t .ti{width:40px;height:40px;border-radius:12px;background:var(--wood-bg);color:var(--wood);display:grid;place-items:center;flex:none} .cua-t .ti svg{width:23px;height:23px} .sec-r{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 4px;box-shadow:none;color:var(--fg)} .sec-r:first-child{border-top:0} .sec-r .tx{flex:1;display:grid;gap:1px;min-width:0} .sec-r .tx b{font-family:var(--font-display);font-size:17px} .sec-r .rs{font-size:14px;color:var(--muted);font-weight:400;display:block} .sec-r .chev{flex:none;width:24px;height:24px;color:var(--muted)} .sec-r .chev{transition:transform .15s} .sec-r.on .chev{transform:rotate(180deg)}  .sec-d{background:var(--bg);border-radius:14px;padding:12px 14px;margin:2px 0 10px;display:grid;gap:8px}</style>
 
 <div class="wrap">
   <header class="top">
@@ -741,7 +741,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 5;
+  var GUIA_V = 6;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -754,7 +754,7 @@ span.ag-ck{border-style:dashed}
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
     ["Bodega", "En «Aplicar», «Bodega» muestra cuánto producto queda. Si falta o sobra, usa «Agregar o ajustar stock». Diego revisa y autoriza cada cambio.", 1, ""],
-    ["Sectores desplegables", "En «Campo», cada sector aparece cerrado, con su nombre y su superficie. Toca el nombre para abrir o cerrar su información. Con «Abrir todos los sectores» los abres todos de una vez. Si un sector tiene aviso de reingreso o carencia, lo ves en rojo aun con el sector cerrado.", 3, ""],
+    ["Sectores en una casilla", "En «Campo», todos los sectores están reunidos en la casilla «Sectores». Tócala para abrir la lista y toca un sector para ver su información: superficie, árboles, densidad y avisos. Solo se abre uno a la vez. Si algún sector tiene aviso de reingreso o carencia, la casilla cerrada lo indica.", 6, ""],
     ["Árboles y fotos", "En «Campo», el botón «Registrar un árbol» guarda la hilera, el número de árbol y lo que viste. Puedes agregar una foto con «Tomar o elegir una foto».", 2, ""],
     ["Permisos", "En «Inicio», el módulo «Permisos» sirve para «Pedir días libres», ver tu saldo y el calendario. Diego aprueba cada solicitud.", 2, ""],
     ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
@@ -1803,35 +1803,44 @@ span.ag-ck{border-style:dashed}
     f.appendChild(sum);
     f.appendChild(buildArboles());
     if (!cs.length) f.appendChild(el("p", "note", "Aún no hay sectores cargados."));
-    if (cs.length > 1){
-      var todos = cs.every(function(c){ return S.cuaAb[c.id]; }), ta = el("button", "small", todos ? "Cerrar todos los sectores" : "Abrir todos los sectores");
-      ta.onclick = function(){ cs.forEach(function(c){ S.cuaAb[c.id] = !todos; }); render(); };
-      var tw = el("div", "cua-all"); tw.appendChild(ta); f.appendChild(tw);
-    }
+    var totHa = cs.reduce(function(a, c){ return a + (Number(c.ha) || 0); }, 0);
+    var card = el("section", "card cua"), abierto = !!S.sectAb;
+    var t = el("button", "cua-t"); t.type = "button"; t.id = "sectTit"; t.setAttribute("aria-expanded", abierto ? "true" : "false");
+    var ti0 = el("span", "ti"); ti0.appendChild(ico("campo")); t.appendChild(ti0);
+    var tx = el("span", "tx"); tx.appendChild(el("h3", null, "Sectores"));
+    tx.appendChild(el("span", "rs", cs.length + (cs.length === 1 ? " sector · " : " sectores · ") + nf(totHa, 2) + " ha"));
+    var nAv = cs.filter(function(c){ var r0 = restriccionesSector(c.id, Date.now()); return r0.rein || r0.cos; }).length;
+    if (nAv && !abierto) tx.appendChild(el("span", "cua-alert", nAv + (nAv === 1 ? " sector con aviso" : " sectores con aviso")));
+    t.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); t.appendChild(ch);
+    t.onclick = function(){ S.sectAb = !abierto; render(); }; card.appendChild(t);
+    var body = el("div", "cua-body"); body.hidden = !abierto;
     cs.forEach(function(c){
-      var abierto = !!S.cuaAb[c.id], rst = restriccionesSector(c.id, Date.now());
-      var card = el("section", "card cua"), t = el("button", "cua-t"); t.type = "button"; t.setAttribute("aria-expanded", abierto ? "true" : "false"); t.setAttribute("aria-controls", "cua_" + c.id);
-      t.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
-      var tx = el("span", "tx"); tx.appendChild(el("h3", null, c.nombre || "Sin nombre"));
-      tx.appendChild(el("span", "rs", [c.especie, c.variedad, c.ha != null ? nf(c.ha, 2) + " ha" : null].filter(Boolean).join(" · ")));
-      if (rst.rein) tx.appendChild(el("span", "cua-alert", "No entrar hasta " + fmtFH.format(new Date(rst.rein))));
-      else if (rst.cos) tx.appendChild(el("span", "cua-alert", "Carencia hasta el " + fmtD2(rst.cos)));
-      t.appendChild(tx); var ch = el("span", "chev"); ch.appendChild(ico("chev")); t.appendChild(ch);
-      t.onclick = function(){ S.cuaAb[c.id] = !abierto; render(); };
-      card.appendChild(t);
-      var body = el("div", "cua-body"); body.id = "cua_" + c.id; body.hidden = !abierto;
-      var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); body.appendChild(el("p", "sub", det)); if (c.nota) body.appendChild(el("p", "note", c.nota));
-      var rs = el("div", "rows");
-      function fila(k, v){ var r = el("div", "row"); r.appendChild(el("span", "l", k)); r.appendChild(el("span", "r", v)); rs.appendChild(r); }
-      fila("Superficie", c.ha != null ? nf(c.ha, 2) + " ha" : "por registrar");
-      fila("Árboles", c.arboles != null ? nf(c.arboles, 0) : "por registrar");
-      if (c.arboles != null && c.ha) fila("Densidad", nf(c.arboles / c.ha, 0) + " árboles/ha");
-      if (rst.rein) body.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
-      if (rst.cos) body.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
-      body.appendChild(rs);
-      if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; body.appendChild(e); }
-      card.appendChild(body); f.appendChild(card);
+      var sel = S.sectSel === c.id, rst = restriccionesSector(c.id, Date.now());
+      var r = el("button", "sec-r" + (sel ? " on" : "")); r.type = "button"; r.setAttribute("aria-expanded", sel ? "true" : "false");
+      r.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
+      var rt = el("span", "tx"); rt.appendChild(el("b", null, c.nombre || "Sin nombre"));
+      rt.appendChild(el("span", "rs", [c.especie, c.variedad, c.ha != null ? nf(c.ha, 2) + " ha" : null].filter(Boolean).join(" · ")));
+      if (rst.rein) rt.appendChild(el("span", "cua-alert", "No entrar hasta " + fmtFH.format(new Date(rst.rein))));
+      else if (rst.cos) rt.appendChild(el("span", "cua-alert", "Carencia hasta el " + fmtD2(rst.cos)));
+      r.appendChild(rt); var c2 = el("span", "chev"); c2.appendChild(ico("chev")); r.appendChild(c2);
+      r.onclick = function(){ S.sectSel = sel ? null : c.id; render(); };
+      body.appendChild(r);
+      if (sel){
+        var d = el("div", "sec-d");
+        var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); d.appendChild(el("p", "sub", det)); if (c.nota) d.appendChild(el("p", "note", c.nota));
+        var rs = el("div", "rows");
+        function fila(k, v){ var rr = el("div", "row"); rr.appendChild(el("span", "l", k)); rr.appendChild(el("span", "r", v)); rs.appendChild(rr); }
+        fila("Superficie", c.ha != null ? nf(c.ha, 2) + " ha" : "por registrar");
+        fila("Árboles", c.arboles != null ? nf(c.arboles, 0) : "por registrar");
+        if (c.arboles != null && c.ha) fila("Densidad", nf(c.arboles / c.ha, 0) + " árboles/ha");
+        if (rst.rein) d.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(rst.rein)) + " (reingreso tras aplicación)"));
+        if (rst.cos) d.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(rst.cos) + " (carencia)"));
+        d.appendChild(rs);
+        if (S.owner){ var e = el("button", "small", "Editar"); e.onclick = function(){ abrirEdit(c); }; d.appendChild(e); }
+        body.appendChild(d);
+      }
     });
+    card.appendChild(body); f.appendChild(card);
     if (S.owner){ var a = el("button", "primary", "Agregar sector"); a.onclick = function(){ abrirEdit(null); }; f.appendChild(a); }
     return f;
   }

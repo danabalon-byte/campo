@@ -661,7 +661,11 @@ span.ag-ck{border-style:dashed}
     <h2 id="jtTitle">Registrar jornada</h2>
 <div class="sbody">
     <div class="field"><label for="jtPersona">Persona</label><select id="jtPersona"></select></div>
-    <div class="field"><label for="jtFecha">Fecha</label><input type="date" id="jtFecha"></div>
+    <div class="field"><label for="jtFecha">Desde</label><input type="date" id="jtFecha"></div>
+    <div class="field"><label for="jtRango">Hasta cuándo</label><select id="jtRango"><option value="uno">Solo ese día</option><option value="hasta">Hasta una fecha</option><option value="n">Total de días acordados</option></select></div>
+    <div class="field" id="jtHastaF" hidden><label for="jtHasta">Hasta</label><input type="date" id="jtHasta"></div>
+    <div class="field" id="jtNF" hidden><label for="jtN">Total de días (lunes a viernes)</label><input type="text" id="jtN" inputmode="numeric" placeholder="Ej: 5"></div>
+    <p class="note" id="jtPrev" hidden></p>
     <div class="field"><label for="jtTipo">Tiempo trabajado</label><select id="jtTipo"><option value="jornada">Jornada completa</option><option value="media">Media jornada</option><option value="horas">Por horas (llegada y salida)</option></select></div>
     <div id="jtHoras" hidden>
       <div class="field"><label for="jtHi">Hora de llegada</label><input type="time" id="jtHi"></div>
@@ -840,7 +844,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 10;
+  var GUIA_V = 11;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -866,6 +870,7 @@ span.ag-ck{border-style:dashed}
     ["Riego atrasado", "En «Alertas», toca «Ya lo regué» para registrar el riego con el sector y las horas ya puestos. Si registras un riego en «Riego» para un sector que tenía uno atrasado, la app cierra esa tarea sola y te lo avisa.", 8, ""],
     ["Corregir alertas", "En «Alertas», toca «Revisar» en un sector con aviso de reingreso o carencia para corregir los plazos o usar «Anular esta aplicación» si te equivocaste (el stock del producto se recupera). En un riego atrasado puedes usar «Pasar a hoy» o «Descartar».", 8, "owner"],
     ["Terceros y jornadas", "En «Inicio», el módulo «Terceros y jornadas» sirve para anotar a quienes trabajan en el campo sin usar la app, como colaboradores o practicantes. Con «Agregar tercero» los das de alta y con «Registrar jornada» anotas la fecha, si fue jornada completa, media jornada o por horas (hora de llegada y de salida), la labor y a cargo de quién. Cada registro queda con quién lo anotó y cuándo.", 10, "manager"],
+    ["Varios días y «Vino»", "En «Registrar jornada», indica «Desde» y, en «Hasta cuándo», elige «Solo ese día», «Hasta una fecha» o «Total de días acordados»; se registra un día por cada día de lunes a viernes. Los días que aún no llegan quedan como «Acordada». Cuando el día pasa, la persona aparece en «Por confirmar» con los botones «Vino» y «No vino»: solo los días con «Vino» cuentan para las horas y el pago.", 11, "manager"],
     ["Pagos a terceros", "En «Terceros y jornadas», «Ficha» guarda el valor de la jornada, los honorarios y la forma de pago de cada persona; solo tú ves los valores. Cada persona muestra «Total a pagar», «Pagado» y «Falta pagar». «Registrar abono» anota un pago. Si alguien trabajó un sábado para completar la semana, activa «Sábado acordado antes». Si cambias un valor, lo ya trabajado conserva su valor anterior.", 10, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
@@ -1329,7 +1334,10 @@ span.ag-ck{border-style:dashed}
     var fHoy = fuera(hy), pPend = nPend();
     mods.push(["permisos", "Permisos", S.owner && pPend ? pPend + (pPend === 1 ? " por aprobar" : " por aprobar") : fHoy.length ? fHoy.map(function(x){ return x.por; }).join(", ") + " con permiso hoy" : "Días libres y saldo"]);
     if (S.owner) mods.push(["horarios", "Horarios del equipo", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo ahora" : " personas en el campo ahora") : "Quién está y cuándo entra y sale"]);
-    if (S.manager) mods.push(["terceros", "Terceros y jornadas", S.owner ? "Jornadas, abonos y lo que falta pagar" : "Quién vino y cuánto tiempo trabajó"]);
+    if (S.manager){
+      var nPorConf = S.jterc.filter(function(x){ return x.estado === "acordada" && x.fecha <= hy && (S.owner || x.uid === S.uid); }).length;
+      mods.push(["terceros", "Terceros y jornadas", nPorConf ? nPorConf + (nPorConf === 1 ? " jornada por confirmar" : " jornadas por confirmar") : S.owner ? "Jornadas, abonos y lo que falta pagar" : "Quién vino y cuánto tiempo trabajó"]);
+    }
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
     mods.push(["consulta", "Tengo un problema o una idea", "Cuéntaselo a Diego"]);
     var av = avisosCampo();
@@ -2204,6 +2212,16 @@ span.ag-ck{border-style:dashed}
   function visiblesT(){
     return S.terceros.filter(function(t){ return t.activo !== false && (S.owner || t.uid === S.uid); }).sort(function(a, b){ return String(a.nombre).localeCompare(String(b.nombre), "es"); });
   }
+  function vale(r){ return r.estado !== "acordada" && r.estado !== "no_vino"; }
+  function laborable(f){ var w = new Date(f + "T12:00:00Z").getUTCDay(); return w >= 1 && w <= 5; }
+  function diasTramo(desde, modo, hasta, n){
+    if (!desde) return null;
+    if (modo === "uno") return [desde];
+    var out = [], d = desde, g = 0;
+    if (modo === "hasta"){ if (!hasta || hasta < desde) return null; while (d <= hasta && g++ < 120){ if (laborable(d)) out.push(d); d = addDays(d, 1); } }
+    else { if (!(n >= 1)) return null; while (out.length < n && g++ < 200){ if (laborable(d)) out.push(d); d = addDays(d, 1); } }
+    return out;
+  }
   function recsT(tid){ return S.jterc.filter(function(r){ return r.tid === tid && (S.owner || r.uid === S.uid); }).sort(function(a, b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.ts < b.ts ? 1 : -1); }); }
   function tarifaVig(tid, f){
     var t = S.tarifas[tid]; if (!t || !t.hist || !t.hist.length) return null;
@@ -2219,15 +2237,16 @@ span.ag-ck{border-style:dashed}
   }
   function resumenT(t){
     var recs = recsT(t.id), tf = S.tarifas[t.id] || {}, dev = 0;
-    recs.forEach(function(r){ dev += valorRec(r); });
+    var est = 0, nAc = 0;
+    recs.forEach(function(r){ if (vale(r)) dev += valorRec(r); else if (r.estado === "acordada"){ est += valorRec(r); nAc++; } });
     var total = tf.honorarios ? Number(tf.monto) || 0 : dev, pag = 0;
     S.abonos.forEach(function(a){ if (a.tid === t.id) pag += Number(a.monto) || 0; });
-    return { recs: recs, tf: tf, total: total, pagado: pag, falta: total - pag };
+    return { recs: recs, tf: tf, total: total, pagado: pag, falta: total - pag, estim: est, nAcordadas: nAc };
   }
   function semanaT(tid, ws){
     var we = addDays(ws, 6), min = 0, sab = 0;
     recsT(tid).forEach(function(r){
-      if (r.fecha < ws || r.fecha > we) return;
+      if (r.fecha < ws || r.fecha > we || !vale(r)) return;
       min += Number(r.min) || 0;
       if (new Date(r.fecha + "T12:00:00Z").getUTCDay() === 6) sab += Number(r.min) || 0;
     });
@@ -2272,38 +2291,67 @@ span.ag-ck{border-style:dashed}
     b.disabled = false;
   };
 
-  function jtVista(){ $("jtHoras").hidden = $("jtTipo").value !== "horas"; }
-  $("jtTipo").onchange = jtVista;
+  function jtTramo(){
+    var m = $("jtRango").value; return diasTramo($("jtFecha").value, m, $("jtHasta").value, Number(String($("jtN").value).replace(/\D/g, "")));
+  }
+  function jtVista(){
+    $("jtHoras").hidden = $("jtTipo").value !== "horas"; $("jtHastaF").hidden = $("jtRango").value !== "hasta"; $("jtNF").hidden = $("jtRango").value !== "n";
+    var d = jtTramo(), pv = $("jtPrev");
+    if (!d || !d.length || $("jtRango").value === "uno"){ pv.hidden = true; return; }
+    var fut = d.filter(function(x){ return x > fecha(); }).length;
+    pv.textContent = "Se registrarán " + d.length + (d.length === 1 ? " día" : " días") + " (lunes a viernes): " + dia(d[0]) + (d.length > 1 ? " al " + dia(d[d.length - 1]) : "") + "." + (fut ? " " + fut + (fut === 1 ? " queda" : " quedan") + " como «Acordada» hasta que confirmes que vino." : "");
+    pv.hidden = false;
+  }
+  ["jtTipo", "jtRango", "jtFecha", "jtHasta", "jtN"].forEach(function(id){ $(id).onchange = jtVista; });
+  $("jtN").oninput = jtVista;
   $("jtPersona").onchange = function(){ var t = S.terceros.filter(function(x){ return x.id === $("jtPersona").value; })[0]; if (t && t.aCargo) $("jtCargo").value = t.aCargo; };
   function abrirJt(t){
     var l = visiblesT();
     if (!l.length){ toast("Primero agrega al tercero."); abrirTc(null); return; }
     fill($("jtPersona"), l.map(function(x){ return { value: x.id, label: x.nombre }; }), t ? t.id : l[0].id);
-    $("jtFecha").value = fecha(); $("jtFecha").max = fecha(); $("jtTipo").value = "jornada"; $("jtHi").value = ""; $("jtHs").value = ""; $("jtLabor").value = "";
+    $("jtFecha").value = fecha(); $("jtFecha").removeAttribute("max"); $("jtRango").value = "uno"; $("jtHasta").value = ""; $("jtN").value = ""; $("jtTipo").value = "jornada"; $("jtHi").value = ""; $("jtHs").value = ""; $("jtLabor").value = "";
     $("jtPersona").onchange(); jtVista(); $("jtSheet").hidden = false;
   }
   $("jtCancel").onclick = function(){ $("jtSheet").hidden = true; };
   $("jtOk").onclick = async function(){
     var t = S.terceros.filter(function(x){ return x.id === $("jtPersona").value; })[0]; if (!t) return;
-    var f = $("jtFecha").value, tipo = $("jtTipo").value, hi = $("jtHi").value, hs = $("jtHs").value, labor = $("jtLabor").value.trim(), min;
-    if (!f || f > fecha()){ toast("Indica una fecha de hoy o anterior."); return; }
+    var f = $("jtFecha").value, tipo = $("jtTipo").value, hi = $("jtHi").value, hs = $("jtHs").value, labor = $("jtLabor").value.trim(), min, hy = fecha();
+    if (!f){ toast("Indica desde qué fecha."); return; }
+    if (f > addDays(hy, 120)){ toast("Esa fecha queda demasiado lejos."); return; }
+    var modo = $("jtRango").value, dias = jtTramo();
+    if (modo === "hasta" && !$("jtHasta").value){ toast("Indica hasta qué fecha."); return; }
+    if (modo === "hasta" && $("jtHasta").value < f){ toast("«Hasta» debe ser después de «Desde»."); return; }
+    if (modo === "n" && !(Number(String($("jtN").value).replace(/\D/g, "")) >= 1)){ toast("Escribe el total de días."); $("jtN").focus(); return; }
+    if (!dias || !dias.length){ toast("No hay días de trabajo en ese tramo (se cuentan lunes a viernes)."); return; }
+    if (dias.length > 31){ toast("Máximo 31 días por vez."); return; }
     if (tipo === "horas"){
       if (!hi || !hs){ toast("Indica la hora de llegada y la de salida."); return; }
       min = (Number(hs.slice(0, 2)) * 60 + Number(hs.slice(3))) - (Number(hi.slice(0, 2)) * 60 + Number(hi.slice(3)));
       if (min <= 0){ toast("La salida debe ser después de la llegada."); return; }
       if (!labor){ toast("Anota la actividad realizada."); $("jtLabor").focus(); return; }
     } else min = tipo === "jornada" ? minDia() : minMedia();
-    var dup = recsT(t.id).some(function(r){ return r.fecha === f && r.tipo !== "horas" && tipo !== "horas"; });
-    if (dup && !confirmaDup){ confirmaDup = true; toast("Ya hay una jornada ese día. Toca «Guardar jornada» de nuevo si es otra."); return; }
-    confirmaDup = false;
+    var ya = recsT(t.id).filter(function(r){ return r.estado !== "no_vino" && r.tipo !== "horas"; }).map(function(r){ return r.fecha; });
+    var nuevos = tipo === "horas" ? dias : dias.filter(function(x){ return ya.indexOf(x) < 0; }), omit = dias.length - nuevos.length;
+    if (!nuevos.length){ toast("Esos días ya estaban registrados."); return; }
     var b = $("jtOk"); b.disabled = true;
     try {
-      await S.db.collection("jornadasTerc").add({ tid: t.id, nombre: t.nombre, fecha: f, tipo: tipo, min: min, dia: minDia(), hi: tipo === "horas" ? hi : null, hs: tipo === "horas" ? hs : null, labor: labor, aCargo: $("jtCargo").value, por: S.nombre, uid: S.uid, ts: new Date().toISOString() });
-      $("jtSheet").hidden = true; toast("Jornada registrada");
+      var iso = new Date().toISOString();
+      await Promise.all(nuevos.map(function(x){
+        return S.db.collection("jornadasTerc").add({ tid: t.id, nombre: t.nombre, fecha: x, tipo: tipo, min: min, dia: minDia(), hi: tipo === "horas" ? hi : null, hs: tipo === "horas" ? hs : null, labor: labor, aCargo: $("jtCargo").value, estado: x > hy ? "acordada" : "confirmada", por: S.nombre, uid: S.uid, ts: iso });
+      }));
+      $("jtSheet").hidden = true;
+      var fut = nuevos.filter(function(x){ return x > hy; }).length;
+      toast(nuevos.length === 1 && !fut ? "Jornada registrada" : nuevos.length + " jornadas registradas" + (fut ? " (" + fut + " acordadas)" : "") + (omit ? ", " + omit + " ya existían" : ""));
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
-  var confirmaDup = false;
+  async function marcarVino(lista, estado){
+    var iso = new Date().toISOString();
+    try {
+      await Promise.all(lista.map(function(x){ return S.db.doc("jornadasTerc/" + x.id).update({ estado: estado, confirmadoPor: S.nombre, confirmadoTs: iso }); }));
+      toast(estado === "confirmada" ? (lista.length === 1 ? "Jornada confirmada" : lista.length + " jornadas confirmadas") : "Anotado: no vino");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
 
   var abEd = null;
   function abrirAb(t){
@@ -2338,6 +2386,19 @@ span.ag-ck{border-style:dashed}
     var wk = semanaT(t.id, ws), sm = semMin();
     c.appendChild(el("p", "note", "Esta semana: " + dur(wk.min) + " de " + dur(sm)));
     var hb = el("div", "hb"), hi = el("i"); hi.style.width = Math.min(100, Math.round(100 * wk.min / sm)) + "%"; hb.appendChild(hi); hb.setAttribute("role", "img"); hb.setAttribute("aria-label", Math.min(100, Math.round(100 * wk.min / sm)) + " por ciento de la jornada semanal"); c.appendChild(hb);
+    var hyT = fecha(), pend = r.recs.filter(function(x){ return x.estado === "acordada" && x.fecha <= hyT; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; });
+    var fut = r.recs.filter(function(x){ return x.estado === "acordada" && x.fecha > hyT; });
+    if (pend.length){
+      c.appendChild(el("p", "note warn", "Por confirmar: " + pend.length + (pend.length === 1 ? " jornada ya pasó" : " jornadas ya pasaron") + ". ¿Vino?"));
+      pend.slice(0, 6).forEach(function(x){
+        var row = el("div", "t-rec"); row.appendChild(el("span", null, dia(x.fecha) + " · " + (TIPOS_T[x.tipo] || x.tipo) + (x.labor ? " · " + x.labor : "")));
+        var bb = el("div", "btns"), v = el("button", "small", "Vino"), nv = el("button", "small", "No vino");
+        v.onclick = function(){ marcarVino([x], "confirmada"); }; nv.onclick = function(){ marcarVino([x], "no_vino"); };
+        bb.appendChild(v); bb.appendChild(nv); row.appendChild(bb); c.appendChild(row);
+      });
+      if (pend.length > 1){ var todos = el("button", "small", "Vinieron todos (" + pend.length + ")"); todos.onclick = function(){ marcarVino(pend, "confirmada"); }; c.appendChild(todos); }
+    }
+    if (fut.length) c.appendChild(el("p", "note", "Acordadas próximas: " + fut.length + (fut.length === 1 ? " jornada" : " jornadas") + " (" + dia(fut.map(function(x){ return x.fecha; }).sort()[0]) + " en adelante)"));
     if (wk.sab && !wk.acordado) c.appendChild(el("p", "note warn", "Trabajó un sábado sin acuerdo previo." + (S.owner ? " Si estaba acordado, actívalo abajo." : " Avísale a Diego.")));
     if (S.owner){
       var tg = el("button", "tg"); tg.type = "button"; tg.setAttribute("aria-pressed", wk.acordado ? "true" : "false");
@@ -2349,6 +2410,7 @@ span.ag-ck{border-style:dashed}
         var row = el("div", "row" + x[2]), l = el("span", "l"); l.appendChild(el("b", null, x[0])); var rr = el("span", "r"); rr.appendChild(el("b", null, x[1])); row.appendChild(l); row.appendChild(rr); rows.appendChild(row);
       });
       c.appendChild(rows);
+      if (!r.tf.honorarios && r.nAcordadas) c.appendChild(el("p", "note", "Acordadas sin confirmar: " + r.nAcordadas + (r.nAcordadas === 1 ? " jornada" : " jornadas") + ", unos " + pesos(r.estim) + " más si todas vienen."));
       if (r.tf.honorarios) c.appendChild(el("p", "note", "Con honorarios: el total es el monto acordado."));
       else if (!r.tf.hist) c.appendChild(el("p", "note warn", "Falta el valor de la jornada. Toca «Ficha» para ingresarlo."));
     }
@@ -2360,7 +2422,7 @@ span.ag-ck{border-style:dashed}
     if (r.recs.length){
       c.appendChild(el("p", "note", "Últimos registros"));
       r.recs.slice(0, 5).forEach(function(x){
-        var row = el("div", "t-rec"), tx = el("span", null, dia(x.fecha) + " · " + (TIPOS_T[x.tipo] || x.tipo) + (x.tipo === "horas" ? " (" + x.hi + "–" + x.hs + ")" : "") + (x.labor ? " · " + x.labor : "") + " · lo anotó " + (x.por || "—"));
+        var row = el("div", "t-rec"), tx = el("span", null, dia(x.fecha) + " · " + (TIPOS_T[x.tipo] || x.tipo) + (x.tipo === "horas" ? " (" + x.hi + "–" + x.hs + ")" : "") + (x.labor ? " · " + x.labor : "") + (x.estado === "acordada" ? " · Acordada" : x.estado === "no_vino" ? " · No vino" : "") + " · lo anotó " + (x.por || "—"));
         row.appendChild(tx);
         var q = el("button", "small", quitarT === x.id ? "Confirmar" : "Quitar");
         q.onclick = async function(){

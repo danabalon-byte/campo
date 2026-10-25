@@ -435,6 +435,7 @@ span.ag-ck{border-style:dashed}
     <div class="field"><label for="tkTitulo">¿Qué hay que hacer?</label><div class="ag-mic"><input type="text" id="tkTitulo" maxlength="120" placeholder="Ej: Regar sector 2"><button type="button" id="tkMic" aria-label="Dictar" hidden>🎤</button></div></div>
     <div class="field"><label for="tkTipo">Tipo</label><select id="tkTipo"></select></div>
     <div class="field"><label for="tkSector">Sector</label><select id="tkSector"></select></div>
+    <div class="field" id="tkHorasF"><label for="tkHoras">Horas de riego programadas</label><select id="tkHoras"></select></div>
     <div class="field"><label for="tkFecha">Día</label><input type="date" id="tkFecha"></div>
     <div class="field"><label for="tkMomento">¿Cuándo?</label><select id="tkMomento"></select></div>
     <div class="field"><label for="tkQuien">¿Quién lo hace?</label><select id="tkQuien"></select></div>
@@ -1537,6 +1538,7 @@ span.ag-ck{border-style:dashed}
   }
   $("rgSector").onchange = rgEstim; $("rgHoras").onchange = rgEstim;
   function abrirRiego(){
+    rgTarea = null; $("rgTitle").textContent = "Registrar riego";
     var cs = sectoresOrden();
     if (!cs.length){ toast("Aún no hay sectores cargados."); return; }
     fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
@@ -1546,14 +1548,15 @@ span.ag-ck{border-style:dashed}
     fill($("rgHoras"), hs, "3");
     $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); $("rgSheet").hidden = false;
   }
-  $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; };
+  $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; };
   $("rgOk").onclick = async function(){
     var c = rgSel(); if (!c) return;
     var hr = parseFloat($("rgHoras").value), med = numI($("rgM3")), est = rgEstim();
     var m3 = med != null && med > 0 ? med : est;
     var b = $("rgOk"); b.disabled = true;
     try {
-      await S.db.collection("riegos").add({ fecha: $("rgFecha").value, ts: new Date().toISOString(), sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre });
+      var rref = await S.db.collection("riegos").add({ fecha: $("rgFecha").value, ts: new Date().toISOString(), sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea ? rgTarea.id : "" });
+      if (rgTarea){ try { await S.db.doc("tareas/" + rgTarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: new Date().toISOString(), riegoId: rref && rref.id || "", horasReal: hr }); } catch (e3){} rgTarea = null; }
       $("rgSheet").hidden = true; toast("Riego registrado");
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
@@ -1566,14 +1569,26 @@ span.ag-ck{border-style:dashed}
     var hoy = fecha(), sem = weekStart(hoy), cs = sectoresOrden();
     var mSem = 0, mHoy = 0, hSem = 0;
     S.riegos.forEach(function(r){ if (r.fecha >= sem){ mSem += Number(r.m3) || 0; hSem += Number(r.horas) || 0; } if (r.fecha === hoy) mHoy += Number(r.m3) || 0; });
+    var mes = hoy.slice(0, 7), hMes = 0, hTot = 0, hProg = 0, progPend = [];
+    S.riegos.forEach(function(r){ var h = Number(r.horas) || 0; hTot += h; if (r.fecha.slice(0, 7) === mes) hMes += h; });
+    S.tareas.forEach(function(t){ if (t.tipo !== "riego") return; if (t.fecha >= sem && t.fecha <= addDays(sem, 6)) hProg += Number(t.horas) || 0; if (t.estado !== "hecha") progPend.push(t); });
     var res = el("section", "card sect"); res.appendChild(el("h2", null, "Agua de esta semana"));
     var rows = el("div", "rows");
-    [["Hoy", nf(mHoy, 0) + " m³"], ["Esta semana", nf(mSem, 0) + " m³"], ["Horas de riego (semana)", nf(hSem, 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
+    [["Hoy", nf(mHoy, 0) + " m³"], ["Esta semana", nf(mSem, 0) + " m³"], ["Horas de riego (semana)", nf(hSem, 1) + " h"], ["Horas programadas (semana)", nf(hProg, 1) + " h"], ["Horas de riego (este mes)", nf(hMes, 1) + " h"], ["Horas de riego (total)", nf(hTot, 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
     res.appendChild(rows);
     var pct = Math.min(100, mSem / DERECHO_SEM * 100);
     var bar = el("div", "meter" + (mSem > DERECHO_SEM ? " over" : "")); var fil = el("i"); fil.style.width = pct + "%"; bar.appendChild(fil); res.appendChild(bar);
     res.appendChild(el("p", mSem > DERECHO_SEM ? "note warn" : "note", nf(mSem / DERECHO_SEM * 100, 0) + " % del derecho semanal de agua (" + nf(DERECHO_SEM, 0) + " m³, a 2 L/s). Los m³ son estimados por horas de riego, salvo los que midas."));
     f.appendChild(res);
+    if (progPend.length){
+      var pg = el("section", "card sect"); pg.appendChild(el("h2", null, "Riegos programados"));
+      progPend.sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; }).slice(0, 8).forEach(function(t){
+        var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
+        var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.quien ? " · " + t.quien : "")));
+        var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go); pg.appendChild(bx);
+      });
+      f.appendChild(pg);
+    }
     var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Por sector"));
     cs.forEach(function(c){
       var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, c.nombre));
@@ -1939,6 +1954,7 @@ span.ag-ck{border-style:dashed}
     });
     S.riegos.forEach(function(r){
       if (r.fecha !== f) return;
+      if (r.tareaId && S.tareas.some(function(t){ return t.id === r.tareaId; })) return;
       out.push({ k: "riego", titulo: "Riego " + r.sector, sub: nf(r.horas || 0, 1) + " h" + (r.por ? " · " + r.por : ""), hecho: true, mom: momDe(r.ts) });
     });
     S.trabajos.forEach(function(t){
@@ -1947,7 +1963,7 @@ span.ag-ck{border-style:dashed}
     });
     S.tareas.forEach(function(t){
       if (t.fecha !== f) return;
-      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: t.quien || "", hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true });
+      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: [t.tipo === "riego" && t.horas ? (t.estado === "hecha" && t.horasReal != null ? "Programado " + nf(t.horas, 1) + " h · regado " + nf(t.horasReal, 1) + " h" : "Programado " + nf(t.horas, 1) + " h") : "", t.quien || ""].filter(Boolean).join(" · "), hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true });
     });
     fuera(f).forEach(function(x){ out.push({ k: "perm", titulo: "Permiso · " + (x.por || "—"), sub: x.medio ? "medio día (" + x.medio + ")" : "", hecho: false, mom: "perm", nc: true }); });
     out.sort(function(a, b){ return (MOMOR[a.mom] - MOMOR[b.mom]) || ((a.hecho ? 1 : 0) - (b.hecho ? 1 : 0)); });
@@ -1961,7 +1977,17 @@ span.ag-ck{border-style:dashed}
     var b = el("button", null, "›"); b.type = "button"; b.setAttribute("aria-label", "Siguiente"); b.onclick = next;
     n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
   }
+  var rgTarea = null;
+  function riegoDeTarea(t){
+    abrirRiego(); if ($("rgSheet").hidden) return;
+    rgTarea = t;
+    if (t.sectorId && Array.prototype.some.call($("rgSector").options, function(o){ return o.value === t.sectorId; })) $("rgSector").value = t.sectorId;
+    var hv = String(t.horas || 3); if (Array.prototype.some.call($("rgHoras").options, function(o){ return o.value === hv; })) $("rgHoras").value = hv;
+    if (Array.prototype.some.call($("rgFecha").options, function(o){ return o.value === t.fecha; })) $("rgFecha").value = t.fecha;
+    rgEstim(); $("rgTitle").textContent = "Registrar el riego programado";
+  }
   async function marcarTarea(t){
+    if (t.tipo === "riego" && t.estado !== "hecha"){ riegoDeTarea(t); return; }
     try {
       var nuevo = t.estado === "hecha" ? "pendiente" : "hecha";
       await S.db.doc("tareas/" + t.id).update({ estado: nuevo, hechaPor: nuevo === "hecha" ? S.nombre : "", hechaTs: nuevo === "hecha" ? new Date().toISOString() : "" });
@@ -1971,7 +1997,8 @@ span.ag-ck{border-style:dashed}
   function filaEv(ev){
     var r = el("div", "ag-t" + (ev.hecho ? " done" : ""));
     var ck;
-    if (ev.tarea){ ck = el("button", "ag-ck", ev.hecho ? "✓" : ""); ck.type = "button"; ck.setAttribute("aria-label", ev.hecho ? "Marcar como pendiente" : "Marcar como hecha"); ck.onclick = function(){ marcarTarea(ev.tarea); }; }
+    if (ev.tarea && ev.tarea.tipo === "riego" && ev.hecho){ ck = el("span", "ag-ck", "✓"); ck.setAttribute("aria-hidden", "true"); }
+    else if (ev.tarea){ ck = el("button", "ag-ck", ev.hecho ? "✓" : ""); ck.type = "button"; ck.setAttribute("aria-label", ev.hecho ? "Marcar como pendiente" : (ev.tarea.tipo === "riego" ? "Registrar este riego" : "Marcar como hecha")); ck.onclick = function(){ marcarTarea(ev.tarea); }; }
     else if (ev.plan && !ev.hecho){ ck = el("button", "ag-ck", ""); ck.type = "button"; ck.setAttribute("aria-label", "Hacer esta aplicación ahora"); ck.onclick = function(){ abrirAp(ev.plan); }; }
     else { ck = el("span", "ag-ck", ev.hecho ? "✓" : ""); ck.setAttribute("aria-hidden", "true"); }
     r.appendChild(ck);
@@ -1995,6 +2022,8 @@ span.ag-ck{border-style:dashed}
     var evs = eventosDia(f), cuenta = evs.filter(function(e){ return !e.nc; }), hechas = cuenta.filter(function(e){ return e.hecho; }).length;
     var pc = el("section", "card sect"); pc.appendChild(el("h2", null, cuenta.length ? hechas + " de " + cuenta.length + (cuenta.length === 1 ? " tarea hecha" : " tareas hechas") : "Sin tareas este día"));
     var bar = el("div", "ag-bar"); var bi = el("i"); bi.style.width = (cuenta.length ? Math.round(100 * hechas / cuenta.length) : 0) + "%"; bar.appendChild(bi); bar.setAttribute("role", "img"); bar.setAttribute("aria-label", cuenta.length ? Math.round(100 * hechas / cuenta.length) + " por ciento hecho" : "Sin tareas"); pc.appendChild(bar);
+    var hp = 0, hr2 = 0; S.tareas.forEach(function(t){ if (t.fecha === f && t.tipo === "riego") hp += Number(t.horas) || 0; }); S.riegos.forEach(function(r){ if (r.fecha === f) hr2 += Number(r.horas) || 0; });
+    if (hp || hr2) pc.appendChild(el("p", "sub", "Riego del día: " + nf(hp, 1) + " h programadas · " + nf(hr2, 1) + " h regadas"));
     if (S.manager){ var add = el("button", "primary", "Agendar tarea"); add.onclick = function(){ abrirTarea(f); }; pc.appendChild(add); }
     c.appendChild(pc);
     if (!evs.length) c.appendChild(el("p", "note", "No hay nada agendado ni registrado este día."));
@@ -2028,7 +2057,11 @@ span.ag-ck{border-style:dashed}
     c.appendChild(sec);
     var sc = el("div", "ag-sc");
     [[tot ? Math.round(100 * ok / tot) + " %" : "—", "de lo agendado, cumplido"], [String(hechas), "tareas hechas"], [String(atras), "atrasadas"]].forEach(function(x){ var d = el("div"); d.appendChild(el("b", null, x[0])); d.appendChild(el("small", null, x[1])); sc.appendChild(d); });
-    c.appendChild(sc); return c;
+    c.appendChild(sc);
+    var hp2 = 0, hr3 = 0; S.tareas.forEach(function(t){ if (t.fecha >= ws && t.fecha <= we && t.tipo === "riego") hp2 += Number(t.horas) || 0; }); S.riegos.forEach(function(r){ if (r.fecha >= ws && r.fecha <= we) hr3 += Number(r.horas) || 0; });
+    var rr = el("section", "card sect"); rr.appendChild(el("h2", null, "Riego de la semana"));
+    var rw = el("div", "rows"); [["Horas programadas", nf(hp2, 1) + " h"], ["Horas regadas", nf(hr3, 1) + " h"], ["Faltan por regar", nf(Math.max(0, hp2 - hr3), 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rw.appendChild(r); });
+    rr.appendChild(rw); c.appendChild(rr); return c;
   }
   function agMes(){
     var c = document.createDocumentFragment(), hy = fecha();
@@ -2113,22 +2146,31 @@ span.ag-ck{border-style:dashed}
       } catch (e1){ rec = null; btn.classList.remove("on"); toast("El dictado no está disponible ahora."); }
     };
   }
+  function tkTipoCambio(){
+    var rg = $("tkTipo").value === "riego"; $("tkHorasF").style.display = rg ? "" : "none";
+    $("tkTitulo").placeholder = rg ? "Opcional: si lo dejas vacío dice «Riego» y el sector" : "Ej: Revisar goteros";
+  }
   function abrirTarea(f){
     fill($("tkTipo"), [{ value: "riego", label: "Riego" }, { value: "trabajo", label: "Trabajo" }, { value: "aplic", label: "Aplicación (recordatorio)" }, { value: "otra", label: "Otra" }]);
     fill($("tkSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     fill($("tkMomento"), [{ value: "man", label: "En la mañana" }, { value: "tar", label: "En la tarde" }, { value: "dia", label: "Cualquier hora del día" }], "dia");
     var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(i){ if (S.team[i].nombre) nombres[S.team[i].nombre] = 1; });
     fill($("tkQuien"), [{ value: "", label: "Sin asignar" }, { value: "Todo el equipo", label: "Todo el equipo" }].concat(Object.keys(nombres).sort().map(function(n){ return { value: n, label: n }; })));
+    var hs = []; for (var i = 1; i <= 32; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
+    fill($("tkHoras"), hs, "3"); $("tkTipo").onchange = tkTipoCambio; tkTipoCambio();
     $("tkTitulo").value = ""; $("tkFecha").value = f || fecha(); $("tkSheet").hidden = false; dictado($("tkMic"), $("tkTitulo")); $("tkTitulo").focus();
   }
   $("tkCancel").onclick = function(){ $("tkSheet").hidden = true; };
   $("tkOk").onclick = async function(){
-    var t = $("tkTitulo").value.trim(), f = $("tkFecha").value;
+    var t = $("tkTitulo").value.trim(), f = $("tkFecha").value, esRg = $("tkTipo").value === "riego";
+    var cu = S.cuarteles.filter(function(c){ return c.id === $("tkSector").value; })[0];
+    if (esRg && !cu){ toast("Elige el sector que se va a regar."); $("tkSector").focus(); return; }
+    if (esRg && t.length < 3) t = "Riego " + cu.nombre;
     if (t.length < 3){ toast("Escribe qué hay que hacer."); $("tkTitulo").focus(); return; }
     if (!/^\d{4}-\d{2}-\d{2}$/.test(f)){ toast("Elige el día."); return; }
-    var cu = S.cuarteles.filter(function(c){ return c.id === $("tkSector").value; })[0], b = $("tkOk"); b.disabled = true;
+    var b = $("tkOk"); b.disabled = true;
     try {
-      await S.db.collection("tareas").add({ fecha: f, titulo: t, tipo: $("tkTipo").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", momento: $("tkMomento").value, quien: $("tkQuien").value, estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      await S.db.collection("tareas").add({ fecha: f, titulo: t, tipo: $("tkTipo").value, horas: esRg ? parseFloat($("tkHoras").value) : null, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", momento: $("tkMomento").value, quien: $("tkQuien").value, estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
       $("tkSheet").hidden = true; S.agFecha = f; S.agVista = "dia"; toast("Tarea agendada"); render();
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;

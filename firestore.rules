@@ -32,6 +32,20 @@ service cloud.firestore {
     match /jornadas/{d=**} { allow read, write: if isAdmin(); }
     match /solicitudes/{d} { allow read, write: if isAdmin(); }
     match /arboles/{d} { allow read, write: if isMember(); }
+    // Fotos de árboles: cualquiera del equipo puede subir y ver; solo el dueño puede borrar. Máximo ~400 KB por foto.
+    match /fotos/{d} {
+      allow read: if isMember();
+      allow create: if isMember() && request.resource.data.data.size() < 400000;
+      allow update, delete: if isOwner();
+    }
+    // Agenda: las tareas las agenda y quita la administración; cualquiera del equipo las marca como hechas.
+    match /tareas/{d} {
+      allow read: if isMember();
+      allow create, delete: if isAdmin();
+      allow update: if isMember();
+    }
+    // Libreta de ideas y recordatorios del equipo.
+    match /ideas/{d} { allow read, write: if isMember(); }
     match /trabajos/{d} { allow read, write: if isMember(); }
     match /aplicaciones/{d} { allow read, write: if isMember(); }
     match /riegos/{d} { allow read, write: if isMember(); }

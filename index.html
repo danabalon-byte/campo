@@ -252,6 +252,58 @@ html.sol .note,html.sol .sub{color:var(--fg)}
 html.sol body{font-weight:500}
 @media (prefers-color-scheme: dark){html.sol:not([data-theme="light"]){--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}}
 html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
+
+/* Agenda */
+.nav{grid-template-columns:repeat(6,1fr); gap:0}
+.nav .ni{width:46px}
+.ph[data-m=agenda]{--mc:var(--accent); --mb:var(--ok-bg)}
+.ag-seg{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; background:var(--surface-2); border-radius:16px; padding:4px; margin:12px 0}
+.ag-seg button{min-height:46px; border-radius:12px; background:transparent; color:var(--muted); font-weight:700; font-size:16px; padding:4px 2px}
+.ag-seg button.on{background:var(--surface); color:var(--fg); box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.ag-nav{display:grid; grid-template-columns:52px 1fr 52px; gap:8px; align-items:center; margin:4px 0 10px}
+.ag-nav button{min-height:48px; font-size:22px; padding:0}
+.ag-nav .mid{min-height:48px; font-size:16px; font-weight:700}
+.ag-bar{height:12px; border-radius:9px; background:var(--surface-2); overflow:hidden; margin:8px 0 4px}
+.ag-bar i{display:block; height:100%; background:var(--accent); border-radius:9px; transition:width .3s}
+.ag-h{margin:14px 2px 6px; font:700 15px var(--font-display); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.ag-t{display:flex; gap:12px; align-items:center; background:var(--surface); border-radius:20px; padding:10px 12px; margin-bottom:9px; box-shadow:0 1px 0 rgba(60,50,20,.06), 0 6px 14px -8px rgba(60,50,20,.18)}
+.ag-t.done .ag-tx{opacity:.62} .ag-t.done .ag-tx b{text-decoration:line-through}
+.ag-ck{flex:none; width:44px; height:44px; min-height:44px; padding:0; border-radius:50%; border:2.5px solid var(--line); background:transparent; display:grid; place-items:center; font-size:22px; color:#fff; font-weight:700}
+.ag-t.done .ag-ck{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+span.ag-ck{border-style:dashed}
+.ag-tx{min-width:0; flex:1} .ag-tx b{display:block; font-size:17px; line-height:1.25; overflow-wrap:anywhere}
+.ag-tx span{display:block; font-size:15px; color:var(--muted); margin-top:2px}
+.ag-pill{display:inline-block; font-size:13px; font-weight:700; padding:1px 9px; border-radius:99px; margin-right:6px; background:var(--idle-bg); color:var(--muted)}
+.ag-pill.r{background:var(--water-bg); color:var(--water)} .ag-pill.a{background:var(--lemon-bg); color:var(--lemon-fg)}
+.ag-pill.w{background:var(--ok-bg); color:var(--ok-fg)} .ag-pill.p{background:var(--wood-bg); color:var(--wood)}
+.ag-q{flex:none; min-height:44px; padding:6px 10px; font-size:14px}
+.ag-day{display:grid; grid-template-columns:56px 1fr; gap:10px; padding:10px 0; border-top:1px dashed var(--line)}
+.ag-day>button{min-height:56px; padding:2px; display:grid; align-content:center; justify-items:center; line-height:1.1; background:transparent}
+.ag-day>button small{font-size:13px; color:var(--muted); text-transform:uppercase; font-weight:700}
+.ag-day>button b{font:800 22px var(--font-display)}
+.ag-day.hoy>button{background:var(--accent); color:var(--on-accent)} .ag-day.hoy>button small{color:var(--on-accent)}
+.ag-ev{display:flex; justify-content:space-between; gap:8px; border-radius:11px; padding:6px 10px; margin-bottom:5px; font-size:15px; border-left:5px solid var(--line); background:var(--idle-bg)}
+.ag-ev.r{border-color:var(--water); background:var(--water-bg)} .ag-ev.a{border-color:var(--lemon-fg); background:var(--lemon-bg)}
+.ag-ev.w{border-color:var(--ok-fg); background:var(--ok-bg)} .ag-ev.p{border-color:var(--wood); background:var(--wood-bg); border-left-style:dashed}
+.ag-ev em{font-style:normal; font-weight:700; flex:none}
+.ag-ev.done span{text-decoration:line-through; opacity:.7}
+.ag-sc{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; text-align:center}
+.ag-sc div{background:var(--surface-2); border-radius:16px; padding:10px 4px}
+.ag-sc b{display:block; font:800 26px var(--font-display); color:var(--accent)} .ag-sc small{font-size:14px; color:var(--muted)}
+.ag-mes{display:grid; grid-template-columns:repeat(7,1fr); gap:2px; margin:0 -8px}
+.ag-mes .dn{text-align:center; font-weight:700; font-size:14px; color:var(--muted); padding:4px 0}
+.ag-mes button{min-height:52px; padding:2px; display:grid; align-content:center; justify-items:center; gap:3px; border-radius:12px; background:var(--surface); font-size:16px; font-weight:700}
+.ag-mes button.hoy{background:var(--accent); color:var(--on-accent)}
+.ag-mes .pts{display:flex; gap:3px; height:8px}
+.ag-mes .pts i{width:7px; height:7px; border-radius:50%; background:var(--muted)}
+.ag-mes .pts i.r{background:var(--water)} .ag-mes .pts i.a{background:var(--lemon-fg)} .ag-mes .pts i.w{background:var(--ok-fg)} .ag-mes .pts i.p{background:var(--wood)}
+.ag-chips{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+.ag-chips button{min-height:44px; padding:6px 14px; border-radius:99px; font-size:15px}
+.ag-chips button[aria-pressed=true]{background:var(--accent); color:var(--on-accent)}
+.ag-mic{display:flex; gap:8px; align-items:stretch}
+.ag-mic textarea,.ag-mic input{flex:1; min-width:0}
+.ag-mic button{flex:none; width:56px; min-height:56px; background:var(--lemon); color:#2A2100; font-size:24px; padding:0}
+.ag-mic button.on{background:var(--alert); color:var(--on-alert)}
 </style>
 
 <div class="wrap">
@@ -374,6 +426,32 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 </div>
 <div class="sfoot">    <button class="primary" id="plOk">Guardar en el calendario</button>
     <button id="plCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="tkSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="tkTitle">
+    <h2 id="tkTitle">Agendar tarea</h2>
+<div class="sbody">
+    <div class="field"><label for="tkTitulo">¿Qué hay que hacer?</label><div class="ag-mic"><input type="text" id="tkTitulo" maxlength="120" placeholder="Ej: Regar sector 2"><button type="button" id="tkMic" aria-label="Dictar" hidden>🎤</button></div></div>
+    <div class="field"><label for="tkTipo">Tipo</label><select id="tkTipo"></select></div>
+    <div class="field"><label for="tkSector">Sector</label><select id="tkSector"></select></div>
+    <div class="field"><label for="tkFecha">Día</label><input type="date" id="tkFecha"></div>
+    <div class="field"><label for="tkMomento">¿Cuándo?</label><select id="tkMomento"></select></div>
+    <div class="field"><label for="tkQuien">¿Quién lo hace?</label><select id="tkQuien"></select></div>
+</div>
+<div class="sfoot">    <button class="primary" id="tkOk">Agendar</button>
+    <button id="tkCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="idSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="idTitle">
+    <h2 id="idTitle">Nueva nota</h2>
+<div class="sbody">
+    <div class="field"><label for="idTexto">¿Qué quieres anotar?</label><div class="ag-mic"><textarea id="idTexto" maxlength="300" placeholder="Escribe o toca el micrófono para dictar"></textarea><button type="button" id="idMic" aria-label="Dictar" hidden>🎤</button></div></div>
+    <div class="field"><label for="idTagSel">Etiqueta</label><select id="idTagSel"></select></div>
+</div>
+<div class="sfoot">    <button class="primary" id="idOk">Guardar nota</button>
+    <button id="idCancel">Cancelar</button></div>
   </div>
 </div>
 <div class="sheet" id="rgSheet" hidden>
@@ -520,7 +598,7 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
   var TZ = "America/Santiago";
   var $ = function(id){ return document.getElementById(id); };
   try { if (localStorage.getItem("campo_sol") === "1") document.documentElement.classList.add("sol"); } catch (e0) {}
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -569,7 +647,7 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
   var toastT;
   function toast(msg){
     var t = $("toast"); t.hidden = false; t.replaceChildren();
-    if (/(registrad|guardad|aprobad|cancelad|enviad|agregad|actualizad|listo)/i.test(msg)){
+    if (/(registrad|guardad|aprobad|cancelad|enviad|agregad|agendad|actualizad|listo)/i.test(msg)){
       var NS = "http://www.w3.org/2000/svg", sv = document.createElementNS(NS, "svg");
       sv.setAttribute("viewBox", "0 0 24 24"); sv.setAttribute("class", "tick"); sv.setAttribute("aria-hidden", "true");
       var c1 = document.createElementNS(NS, "circle"); c1.setAttribute("cx", "12"); c1.setAttribute("cy", "12"); c1.setAttribute("r", "10"); c1.setAttribute("class", "tk-c");
@@ -813,7 +891,8 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     calendario: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
     caja: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
-    permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5"
+    permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5",
+    agenda: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM9 14.500l2 2 4-4.500"
   };
   var ICON_F = {
     horarios:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z",
@@ -826,7 +905,8 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     calendario:"M4 8.500h16V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z",
     caja:"M3 7l9 4 9-4-9-4z",
     alerta:"M12 4l9 16H3z",
-    permisos:"M5 4h14v17H5z"
+    permisos:"M5 4h14v17H5z",
+    agenda:"M4 8.500h16V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z"
   };
   function ico(name){
     var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -871,12 +951,12 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"] };
+  var PH = { agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
   }
-  var NAV = [["home", "Inicio"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
+  var NAV = [["home", "Inicio"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
   function iconKey(k){ return k === "home" ? "home" : k; }
   function buildNav(){
     var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" ? "" : S.screen, hy = fecha();
@@ -929,6 +1009,13 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     if (S.noWrite){ btn.disabled = true; hb.appendChild(el("p", "note warn", "Tu acceso no permite registrar. Avísale a Diego para que te invite como colaboradora.")); }
     hb.appendChild(btn); hero.appendChild(hb); f.appendChild(hero);
 
+    var evh = eventosDia(fecha()).filter(function(e){ return !e.nc; });
+    if (evh.length){
+      var hh2 = evh.filter(function(e){ return e.hecho; }).length, ag = el("section", "card sect");
+      ag.appendChild(el("h2", null, "Agenda de hoy: " + hh2 + " de " + evh.length));
+      var bar2 = el("div", "ag-bar"), bi2 = el("i"); bi2.style.width = Math.round(100 * hh2 / evh.length) + "%"; bar2.appendChild(bi2); ag.appendChild(bar2);
+      var ab = el("button", null, "Abrir la agenda"); ab.onclick = function(){ S.screen = "agenda"; S.agVista = "dia"; S.agFecha = fecha(); render(); }; ag.appendChild(ab); f.appendChild(ag);
+    }
     var ph = pendHoy();
     if (ph.length){
       var pc = el("section", "card prio");
@@ -1835,6 +1922,229 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
   }
 
   var lastScreen = "";
+
+  /* ---- Agenda: día, semana, mes e ideas ---- */
+  var TK = { riego: ["Riego", "r"], aplic: ["Aplicación", "a"], trabajo: ["Trabajo", "w"], otra: ["Otra", "o"], perm: ["Permiso", "p"] };
+  var MOM = { man: "Mañana", tar: "Tarde", dia: "Durante el día", perm: "Ausencias" };
+  var MOMOR = { man: 0, tar: 1, dia: 2, perm: 3 };
+  var IDEA_TAGS = ["Riego", "Plagas", "Bodega", "Compras", "Otro"];
+  var fmtMes = new Intl.DateTimeFormat("es-CL", { timeZone: TZ, month: "long", year: "numeric" });
+  var fmtDM = new Intl.DateTimeFormat("es-CL", { timeZone: TZ, day: "numeric", month: "long" });
+  function momDe(ts){ return parseInt(hora(ts), 10) < 13 ? "man" : "tar"; }
+  function eventosDia(f){
+    var out = [];
+    S.plan.forEach(function(x){
+      if (x.fecha !== f || x.estado === "cancelada") return;
+      out.push({ k: "aplic", titulo: tituloPlan(x) + " · " + x.sector, sub: x.equipo || "", hecho: x.estado === "hecha", mom: "dia", plan: x, plani: true });
+    });
+    S.riegos.forEach(function(r){
+      if (r.fecha !== f) return;
+      out.push({ k: "riego", titulo: "Riego " + r.sector, sub: nf(r.horas || 0, 1) + " h" + (r.por ? " · " + r.por : ""), hecho: true, mom: momDe(r.ts) });
+    });
+    S.trabajos.forEach(function(t){
+      if (t.fecha !== f) return;
+      out.push({ k: "trabajo", titulo: t.actividad + " · " + t.sector, sub: nf(t.horas || 0, 1) + " h" + (t.por ? " · " + t.por : ""), hecho: true, mom: momDe(t.ts) });
+    });
+    S.tareas.forEach(function(t){
+      if (t.fecha !== f) return;
+      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: t.quien || "", hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true });
+    });
+    fuera(f).forEach(function(x){ out.push({ k: "perm", titulo: "Permiso · " + (x.por || "—"), sub: x.medio ? "medio día (" + x.medio + ")" : "", hecho: false, mom: "perm", nc: true }); });
+    out.sort(function(a, b){ return (MOMOR[a.mom] - MOMOR[b.mom]) || ((a.hecho ? 1 : 0) - (b.hecho ? 1 : 0)); });
+    return out;
+  }
+  function etiquetaLarga(f){ return fmtL.format(new Date(f + "T12:00:00Z")); }
+  function agNav(prev, mid, next, midClick){
+    var n = el("div", "ag-nav");
+    var a = el("button", null, "‹"); a.type = "button"; a.setAttribute("aria-label", "Anterior"); a.onclick = prev;
+    var m = el("button", "mid", mid.charAt(0).toUpperCase() + mid.slice(1)); m.type = "button"; if (midClick) m.onclick = midClick; else m.disabled = true;
+    var b = el("button", null, "›"); b.type = "button"; b.setAttribute("aria-label", "Siguiente"); b.onclick = next;
+    n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
+  }
+  async function marcarTarea(t){
+    try {
+      var nuevo = t.estado === "hecha" ? "pendiente" : "hecha";
+      await S.db.doc("tareas/" + t.id).update({ estado: nuevo, hechaPor: nuevo === "hecha" ? S.nombre : "", hechaTs: nuevo === "hecha" ? new Date().toISOString() : "" });
+      toast(nuevo === "hecha" ? "Listo: tarea hecha" : "Tarea vuelta a pendiente");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+  }
+  function filaEv(ev){
+    var r = el("div", "ag-t" + (ev.hecho ? " done" : ""));
+    var ck;
+    if (ev.tarea){ ck = el("button", "ag-ck", ev.hecho ? "✓" : ""); ck.type = "button"; ck.setAttribute("aria-label", ev.hecho ? "Marcar como pendiente" : "Marcar como hecha"); ck.onclick = function(){ marcarTarea(ev.tarea); }; }
+    else if (ev.plan && !ev.hecho){ ck = el("button", "ag-ck", ""); ck.type = "button"; ck.setAttribute("aria-label", "Hacer esta aplicación ahora"); ck.onclick = function(){ abrirAp(ev.plan); }; }
+    else { ck = el("span", "ag-ck", ev.hecho ? "✓" : ""); ck.setAttribute("aria-hidden", "true"); }
+    r.appendChild(ck);
+    var tx = el("div", "ag-tx"); tx.appendChild(el("b", null, ev.titulo));
+    var sp = el("span"); sp.appendChild(el("i", "ag-pill " + TK[ev.k][1], TK[ev.k][0]));
+    var extra = ev.sub; if (ev.plan && !ev.hecho) extra = (extra ? extra + " · " : "") + "toca el círculo para hacerla";
+    if (extra) sp.appendChild(document.createTextNode(extra)); tx.appendChild(sp); r.appendChild(tx);
+    if (ev.tarea && S.manager){
+      var q = el("button", "ag-q small", "Quitar"); q.type = "button"; var armed = false;
+      q.onclick = async function(){
+        if (!armed){ armed = true; q.textContent = "¿Seguro?"; setTimeout(function(){ armed = false; q.textContent = "Quitar"; }, 3500); return; }
+        try { await S.db.doc("tareas/" + ev.tarea.id).delete(); toast("Tarea quitada"); } catch (err){ toast("No se pudo quitar."); }
+      };
+      r.appendChild(q);
+    }
+    return r;
+  }
+  function agDia(){
+    var c = document.createDocumentFragment(), f = S.agFecha, hy = fecha();
+    c.appendChild(agNav(function(){ S.agFecha = addDays(f, -1); render(); }, f === hy ? "Hoy · " + fmtDM.format(new Date(f + "T12:00:00Z")) : etiquetaLarga(f), function(){ S.agFecha = addDays(f, 1); render(); }, f === hy ? null : function(){ S.agFecha = hy; render(); }));
+    var evs = eventosDia(f), cuenta = evs.filter(function(e){ return !e.nc; }), hechas = cuenta.filter(function(e){ return e.hecho; }).length;
+    var pc = el("section", "card sect"); pc.appendChild(el("h2", null, cuenta.length ? hechas + " de " + cuenta.length + (cuenta.length === 1 ? " tarea hecha" : " tareas hechas") : "Sin tareas este día"));
+    var bar = el("div", "ag-bar"); var bi = el("i"); bi.style.width = (cuenta.length ? Math.round(100 * hechas / cuenta.length) : 0) + "%"; bar.appendChild(bi); bar.setAttribute("role", "img"); bar.setAttribute("aria-label", cuenta.length ? Math.round(100 * hechas / cuenta.length) + " por ciento hecho" : "Sin tareas"); pc.appendChild(bar);
+    if (S.manager){ var add = el("button", "primary", "Agendar tarea"); add.onclick = function(){ abrirTarea(f); }; pc.appendChild(add); }
+    c.appendChild(pc);
+    if (!evs.length) c.appendChild(el("p", "note", "No hay nada agendado ni registrado este día."));
+    ["man", "tar", "dia", "perm"].forEach(function(m){
+      var g = evs.filter(function(e){ return e.mom === m; }); if (!g.length) return;
+      c.appendChild(el("h3", "ag-h", MOM[m])); g.forEach(function(e){ c.appendChild(filaEv(e)); });
+    });
+    return c;
+  }
+  function agSemana(){
+    var c = document.createDocumentFragment(), hy = fecha(), ws = weekStart(S.agFecha), we = addDays(ws, 6);
+    c.appendChild(agNav(function(){ S.agFecha = addDays(ws, -7); render(); }, "Del " + fmtDM.format(new Date(ws + "T12:00:00Z")) + " al " + fmtDM.format(new Date(we + "T12:00:00Z")), function(){ S.agFecha = addDays(ws, 7); render(); }, weekStart(hy) === ws ? null : function(){ S.agFecha = hy; render(); }));
+    var sec = el("section", "card sect"), tot = 0, ok = 0, atras = 0, hechas = 0;
+    for (var i = 0; i < 7; i++){
+      (function(d){
+        var evs = eventosDia(d), row = el("div", "ag-day" + (d === hy ? " hoy" : ""));
+        var b = el("button", null); b.type = "button"; b.setAttribute("aria-label", "Ver el " + etiquetaLarga(d));
+        b.appendChild(el("small", null, dia(d).split(" ")[0].replace(".", ""))); b.appendChild(el("b", null, String(Number(d.slice(8)))));
+        b.onclick = function(){ S.agFecha = d; S.agVista = "dia"; render(); };
+        var col = el("div");
+        if (!evs.length) col.appendChild(el("p", "sub", "Sin actividad"));
+        evs.slice(0, 4).forEach(function(e){ var v = el("div", "ag-ev " + TK[e.k][1] + (e.hecho ? " done" : "")); v.appendChild(el("span", null, e.titulo)); v.appendChild(el("em", null, e.hecho ? "✓" : "")); col.appendChild(v); });
+        if (evs.length > 4){ var mm = el("button", "small", "+" + (evs.length - 4) + " más"); mm.type = "button"; mm.onclick = b.onclick; col.appendChild(mm); }
+        row.appendChild(b); row.appendChild(col); sec.appendChild(row);
+        evs.forEach(function(e){
+          if (!e.nc && e.hecho) hechas++;
+          if (e.plani && d <= hy){ tot++; if (e.hecho) ok++; else if (d < hy) atras++; }
+        });
+      })(addDays(ws, i));
+    }
+    c.appendChild(sec);
+    var sc = el("div", "ag-sc");
+    [[tot ? Math.round(100 * ok / tot) + " %" : "—", "de lo agendado, cumplido"], [String(hechas), "tareas hechas"], [String(atras), "atrasadas"]].forEach(function(x){ var d = el("div"); d.appendChild(el("b", null, x[0])); d.appendChild(el("small", null, x[1])); sc.appendChild(d); });
+    c.appendChild(sc); return c;
+  }
+  function agMes(){
+    var c = document.createDocumentFragment(), hy = fecha();
+    var y = Number(S.agMes.slice(0, 4)), m = Number(S.agMes.slice(5, 7)) - 1;
+    function ir(n){ var d = new Date(Date.UTC(y, m + n, 1, 12)); S.agMes = d.toISOString().slice(0, 7); render(); }
+    c.appendChild(agNav(function(){ ir(-1); }, fmtMes.format(new Date(Date.UTC(y, m, 1, 12))), function(){ ir(1); }, S.agMes === hy.slice(0, 7) ? null : function(){ S.agMes = hy.slice(0, 7); render(); }));
+    var g = el("div", "ag-mes");
+    ["L", "M", "M", "J", "V", "S", "D"].forEach(function(l){ g.appendChild(el("div", "dn", l)); });
+    var off = (new Date(Date.UTC(y, m, 1, 12)).getUTCDay() + 6) % 7, dim = new Date(Date.UTC(y, m + 1, 0, 12)).getUTCDate();
+    for (var i = 0; i < off; i++) g.appendChild(el("div"));
+    for (var n = 1; n <= dim; n++){
+      (function(n){
+        var iso = S.agMes + "-" + String(n).padStart(2, "0"), evs = eventosDia(iso), b = el("button", iso === hy ? "hoy" : null); b.type = "button";
+        b.appendChild(el("span", null, String(n))); var pts = el("span", "pts"), vis = {};
+        evs.forEach(function(e){ if (!vis[e.k] && Object.keys(vis).length < 4){ vis[e.k] = 1; pts.appendChild(el("i", TK[e.k][1])); } });
+        b.appendChild(pts); b.setAttribute("aria-label", etiquetaLarga(iso) + ", " + evs.length + (evs.length === 1 ? " actividad" : " actividades"));
+        b.onclick = function(){ S.agFecha = iso; S.agVista = "dia"; render(); }; g.appendChild(b);
+      })(n);
+    }
+    c.appendChild(g);
+    var lg = el("p", "note", "Azul: riego · Amarillo: aplicación · Verde: trabajo · Café: permiso. Toca un día para verlo."); c.appendChild(lg);
+    return c;
+  }
+  function agIdeas(){
+    var c = document.createDocumentFragment();
+    var top = el("section", "card sect"); top.appendChild(el("h2", null, "Libreta del campo"));
+    top.appendChild(el("p", "sub", "Anota cosas para no olvidarlas: un gotero suelto, algo por comprar, un árbol raro."));
+    var nb = el("button", "primary", "Nueva nota"); nb.onclick = abrirIdea; top.appendChild(nb); c.appendChild(top);
+    var ch = el("div", "ag-chips"); ["Todas"].concat(IDEA_TAGS).forEach(function(t){ var b = el("button", null, t); b.type = "button"; b.setAttribute("aria-pressed", S.idTag === t ? "true" : "false"); b.onclick = function(){ S.idTag = t; render(); }; ch.appendChild(b); }); c.appendChild(ch);
+    var vis = S.ideas.filter(function(x){ return S.idTag === "Todas" || x.tag === S.idTag; });
+    var abiertas = vis.filter(function(x){ return x.estado !== "resuelta"; }), res = vis.filter(function(x){ return x.estado === "resuelta"; });
+    if (!abiertas.length) c.appendChild(el("p", "note", "No hay notas pendientes" + (S.idTag === "Todas" ? "." : " con esa etiqueta.")));
+    function fila(x){
+      var r = el("div", "ag-t" + (x.estado === "resuelta" ? " done" : ""));
+      var ck = el("button", "ag-ck", x.estado === "resuelta" ? "✓" : ""); ck.type = "button"; ck.setAttribute("aria-label", x.estado === "resuelta" ? "Volver a pendiente" : "Marcar como resuelta");
+      ck.onclick = async function(){ try { var nv = x.estado === "resuelta" ? "abierta" : "resuelta"; await S.db.doc("ideas/" + x.id).update({ estado: nv, resueltaPor: nv === "resuelta" ? S.nombre : "" }); if (nv === "resuelta") toast("Listo: nota resuelta"); } catch (err){ toast("No se pudo guardar."); } };
+      r.appendChild(ck);
+      var tx = el("div", "ag-tx"); tx.appendChild(el("b", null, x.texto)); var sp = el("span");
+      sp.appendChild(el("i", "ag-pill " + ({ Riego: "r", Plagas: "a", Bodega: "p", Compras: "w" }[x.tag] || ""), x.tag || "Otro"));
+      sp.appendChild(document.createTextNode((x.por || "") + (x.ts ? " · " + fmtD2(fecha(new Date(x.ts))) : ""))); tx.appendChild(sp); r.appendChild(tx);
+      if (S.manager || x.uid === S.uid){
+        var q = el("button", "ag-q small", "Quitar"); q.type = "button"; var armed = false;
+        q.onclick = async function(){ if (!armed){ armed = true; q.textContent = "¿Seguro?"; setTimeout(function(){ armed = false; q.textContent = "Quitar"; }, 3500); return; } try { await S.db.doc("ideas/" + x.id).delete(); toast("Nota quitada"); } catch (err){ toast("No se pudo quitar."); } };
+        r.appendChild(q);
+      }
+      return r;
+    }
+    abiertas.forEach(function(x){ c.appendChild(fila(x)); });
+    if (res.length){
+      var tg = el("button", null, (S.idRes ? "Ocultar" : "Ver") + " resueltas (" + res.length + ")"); tg.type = "button"; tg.onclick = function(){ S.idRes = !S.idRes; render(); }; c.appendChild(tg);
+      if (S.idRes) res.forEach(function(x){ c.appendChild(fila(x)); });
+    }
+    return c;
+  }
+  function buildAgenda(){
+    var f = document.createDocumentFragment(), hy = fecha();
+    if (!S.agFecha) S.agFecha = hy; if (!S.agMes) S.agMes = hy.slice(0, 7);
+    f.appendChild(ph("agenda"));
+    var seg = el("div", "ag-seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Vista");
+    [["dia", "Día"], ["semana", "Semana"], ["mes", "Mes"], ["ideas", "Ideas"]].forEach(function(x){
+      var b = el("button", S.agVista === x[0] ? "on" : null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", S.agVista === x[0] ? "true" : "false");
+      b.onclick = function(){ S.agVista = x[0]; render(); }; seg.appendChild(b);
+    });
+    f.appendChild(seg);
+    f.appendChild(S.agVista === "semana" ? agSemana() : S.agVista === "mes" ? agMes() : S.agVista === "ideas" ? agIdeas() : agDia());
+    return f;
+  }
+
+  /* dictado por voz (si el teléfono lo permite) */
+  function dictado(btn, campo){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR){ btn.hidden = true; return; }
+    btn.hidden = false; var rec = null;
+    btn.onclick = function(){
+      if (rec){ try { rec.stop(); } catch (e0) {} return; }
+      try {
+        rec = new SR(); rec.lang = "es-CL"; rec.interimResults = false; rec.maxAlternatives = 1;
+        rec.onresult = function(ev){ var t = ev.results[0] && ev.results[0][0] ? ev.results[0][0].transcript : ""; if (t){ campo.value = (campo.value ? campo.value.trim() + " " : "") + t.charAt(0).toUpperCase() + t.slice(1); } };
+        rec.onerror = function(ev){ toast(ev && ev.error === "not-allowed" ? "Permite el micrófono en el teléfono para dictar." : "No pude escucharte. Intenta de nuevo."); };
+        rec.onend = function(){ rec = null; btn.classList.remove("on"); };
+        btn.classList.add("on"); rec.start();
+      } catch (e1){ rec = null; btn.classList.remove("on"); toast("El dictado no está disponible ahora."); }
+    };
+  }
+  function abrirTarea(f){
+    fill($("tkTipo"), [{ value: "riego", label: "Riego" }, { value: "trabajo", label: "Trabajo" }, { value: "aplic", label: "Aplicación (recordatorio)" }, { value: "otra", label: "Otra" }]);
+    fill($("tkSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
+    fill($("tkMomento"), [{ value: "man", label: "En la mañana" }, { value: "tar", label: "En la tarde" }, { value: "dia", label: "Cualquier hora del día" }], "dia");
+    var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(i){ if (S.team[i].nombre) nombres[S.team[i].nombre] = 1; });
+    fill($("tkQuien"), [{ value: "", label: "Sin asignar" }, { value: "Todo el equipo", label: "Todo el equipo" }].concat(Object.keys(nombres).sort().map(function(n){ return { value: n, label: n }; })));
+    $("tkTitulo").value = ""; $("tkFecha").value = f || fecha(); $("tkSheet").hidden = false; dictado($("tkMic"), $("tkTitulo")); $("tkTitulo").focus();
+  }
+  $("tkCancel").onclick = function(){ $("tkSheet").hidden = true; };
+  $("tkOk").onclick = async function(){
+    var t = $("tkTitulo").value.trim(), f = $("tkFecha").value;
+    if (t.length < 3){ toast("Escribe qué hay que hacer."); $("tkTitulo").focus(); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f)){ toast("Elige el día."); return; }
+    var cu = S.cuarteles.filter(function(c){ return c.id === $("tkSector").value; })[0], b = $("tkOk"); b.disabled = true;
+    try {
+      await S.db.collection("tareas").add({ fecha: f, titulo: t, tipo: $("tkTipo").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", momento: $("tkMomento").value, quien: $("tkQuien").value, estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      $("tkSheet").hidden = true; S.agFecha = f; S.agVista = "dia"; toast("Tarea agendada"); render();
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function abrirIdea(){
+    fill($("idTagSel"), IDEA_TAGS, S.idTag !== "Todas" ? S.idTag : "Otro");
+    $("idTexto").value = ""; $("idSheet").hidden = false; dictado($("idMic"), $("idTexto")); $("idTexto").focus();
+  }
+  $("idCancel").onclick = function(){ $("idSheet").hidden = true; };
+  $("idOk").onclick = async function(){
+    var t = $("idTexto").value.trim(); if (t.length < 3){ toast("Escribe la nota."); $("idTexto").focus(); return; }
+    var b = $("idOk"); b.disabled = true;
+    try { await S.db.collection("ideas").add({ texto: t, tag: $("idTagSel").value, estado: "abierta", ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); $("idSheet").hidden = true; toast("Nota guardada"); }
+    catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
   function render(){
     $("fechaHoy").textContent = fmtL.format(new Date());
     var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
@@ -1846,6 +2156,7 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     if (!S.nombre) return setView("name", buildName);
     if (!S.guiaVista){ S.guiaVista = true; abrirGuia(false); }
     if (S.screen === "permisos") return setView("permisos", buildPermisos);
+    if (S.screen === "agenda") return setView("agenda", buildAgenda);
     if (S.screen === "campo") return setView("campo", buildCampo);
     if (S.screen === "trabajo") return setView("trabajo", buildTrabajo);
     if (S.screen === "aplic") return setView("aplic", buildAplic);
@@ -1896,6 +2207,12 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
     }, function(){});
     db.collection("plan").orderBy("fecha", "desc").limit(300).onSnapshot(function(s){
       S.plan = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("tareas").orderBy("fecha", "desc").limit(400).onSnapshot(function(s){
+      S.tareas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("ideas").orderBy("ts", "desc").limit(300).onSnapshot(function(s){
+      S.ideas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
     }, function(){});
     db.collection("riegos").orderBy("ts", "desc").limit(1000).onSnapshot(function(s){
       S.riegos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();

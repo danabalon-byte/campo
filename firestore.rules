@@ -41,8 +41,11 @@ service cloud.firestore {
     }
     match /jornadasTerc/{d} {
       allow read: if isOwner() || (isAdmin() && esMio());
-      allow create: if isOwner() || (isAdmin() && request.resource.data.uid == request.auth.uid);
-      allow update: if isOwner() || (isAdmin() && esMio() && request.resource.data.uid == request.auth.uid);
+      // Una encargada no puede autorizar feriados: solo puede crear con aut "pendiente" (o sin aut) y no puede cambiarlo.
+      allow create: if isOwner() || (isAdmin() && request.resource.data.uid == request.auth.uid
+        && (!('aut' in request.resource.data) || request.resource.data.aut == 'pendiente'));
+      allow update: if isOwner() || (isAdmin() && esMio() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.get('aut', null) == resource.data.get('aut', null));
       allow delete: if isOwner() || (isAdmin() && esMio());
     }
     // Valores, pagos y sábados acordados: solo el dueño.

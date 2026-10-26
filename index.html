@@ -368,7 +368,79 @@ span.ag-ck{border-style:dashed}
 .t-rec button{flex:none}
 .row.fp .r b{color:var(--alert)}
 .gl p{margin:8px 0; font-size:15px; line-height:1.45}
+/* ---- Modo escritorio (solo dueño, pantallas anchas): barra lateral + centro de control ---- */
+.pcbar,.cmdk{display:none}
+html.pc body{padding:0; margin:0}
+.chip.lem{background:var(--lemon-bg); color:var(--lemon-fg)}
+.chip.wat{background:var(--water-bg); color:var(--water)}
+html.pc .wrap{max-width:none; margin:0 0 0 252px; padding:0 26px 30px; display:block}
+html.pc .top{display:none}
+html.pc .pcbar{display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:9; margin:0 -26px 18px; padding:12px 26px; background:var(--surface); border-bottom:1px solid var(--line)}
+html.pc .pcbar h2{font-size:22px; line-height:1; margin:0}
+html.pc .pcbar .sp{flex:1}
+.pcsearch{display:flex; align-items:center; gap:8px; width:300px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--muted); font-size:14px; text-align:left}
+.pcsearch kbd{margin-left:auto; font:12px var(--font-body); border:1px solid var(--line); border-radius:5px; padding:0 6px}
+.pcsearch svg{width:16px; height:16px}
+.pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
+.pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
+.pcsync.off{color:var(--alert)}.pcsync.off i{background:var(--alert)}
+html.pc .nav{position:fixed; inset:0 auto 0 0; width:252px; z-index:15; display:flex; flex-direction:column; gap:2px; padding:16px 12px 12px; background:var(--surface-2); border-top:0; border-right:1px solid var(--line); overflow-y:auto}
+html.pc .nav .pcmarca{display:flex; align-items:center; gap:10px; padding:0 8px 14px}
+html.pc .nav .pcmarca .lg{width:34px; height:34px; border-radius:10px; background:var(--hero); color:var(--lemon); display:grid; place-items:center; flex:none}
+html.pc .nav .pcmarca .lg svg{width:22px; height:22px}
+html.pc .nav .pcmarca b{display:block; font:700 17px/1.1 var(--font-display)}
+html.pc .nav .pcmarca small{color:var(--muted); font-size:12px}
+html.pc .nav .pcg{font-size:12px; font-weight:700; color:var(--muted); padding:14px 10px 4px}
+html.pc .nav .pcn{display:flex; align-items:center; gap:10px; min-height:0; padding:8px 10px; width:100%; border-radius:9px; background:transparent; color:var(--fg); font-size:15px; font-weight:400; text-align:left; justify-items:initial}
+html.pc .nav .pcn svg{width:19px; height:19px; flex:none}
+html.pc .nav .pcn:hover{background:color-mix(in srgb,var(--fg) 7%,transparent)}
+html.pc .nav .pcn[aria-current=page]{background:var(--accent); color:var(--on-accent); font-weight:700}
+html.pc .nav .pcn kbd{margin-left:auto; font:12px var(--font-body); color:var(--muted)}
+html.pc .nav .pcn[aria-current=page] kbd{color:color-mix(in srgb,var(--on-accent) 70%,transparent)}
+html.pc .nav .pcn .nb2{margin-left:auto; min-width:20px; padding:0 6px; border-radius:10px; background:var(--alert); color:var(--on-alert); font-size:12px; font-weight:700; text-align:center}
+html.pc .nav .pcyo{margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px 8px 2px; border-top:1px solid var(--line)}
+html.pc .nav .pcyo .av{width:32px; height:32px; border-radius:50%; background:var(--wood); color:#fff; display:grid; place-items:center; font:700 13px var(--font-display); flex:none}
+html.pc .nav .pcyo small{display:block; color:var(--muted)}
+html.pc #app{display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:16px; align-items:start}
+html.pc #app > .ph{display:none}
+html.pc #app > .mchips, html.pc #app > .alerta-campo, html.pc #app > .cc{grid-column:1/-1}
+html.pc .sheet{align-items:center}
+html.pc .sheet .box{border-radius:20px; max-height:88vh}
+html.pc button:not(:disabled), html.pc summary, html.pc select{cursor:pointer}
+.cc{display:grid; gap:16px}
+.cc-hero{background:var(--hero); color:var(--on-hero); border-radius:14px; padding:18px 22px; display:flex; align-items:center; gap:26px}
+.cc-hero small{color:color-mix(in srgb,var(--on-hero) 72%,transparent); font-size:14px}
+.cc-hero h2{font-size:28px; line-height:1.1; margin:2px 0 0}
+.cc-hero .k{display:flex; gap:28px; margin-left:auto}
+.cc-hero .k b{display:block; font:700 28px/1 var(--font-display)}
+.cc-hero .k small{font-size:13px}
+.cc-cols{display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:16px; align-items:start}
+.cc-cols .card h2{display:flex; align-items:center; gap:8px; margin-bottom:10px}
+.cc-cols .card h2 .c{margin-left:auto; font:400 13px var(--font-body); color:var(--muted)}
+.cc-r{display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line)}
+.cc-r:first-of-type{border-top:0}
+.cc-r .t{flex:1; min-width:0}.cc-r .t b{display:block}.cc-r .t small{display:block; color:var(--muted)}
+.cc-r .t.go{cursor:pointer}
+.cc-r .t.go:hover b{text-decoration:underline}
+.cc-r button.small{flex:none}
+.cc-sec{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.cc-sc{border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--bg); text-align:left; display:block; width:100%}
+.cc-sc b{display:block; font:700 15px var(--font-display)}.cc-sc small{display:block; color:var(--muted)}
+.cc-sc .chip{margin-top:6px}
+.cc-barras{display:flex; gap:8px; align-items:flex-end; height:84px; padding-top:6px}
+.cc-barras i{flex:1; background:var(--water); border-radius:4px 4px 0 0; display:block; min-height:3px}
+.cc-dias{display:flex; gap:8px; color:var(--muted); font-size:12px; margin-top:4px}.cc-dias span{flex:1; text-align:center}
+.cmdk{position:fixed; inset:0; z-index:50; background:rgba(8,16,10,.5); align-items:flex-start; justify-content:center; padding-top:14vh}
+html.pc .cmdk:not([hidden]){display:flex}
+.cmdk .cb{width:min(560px,92vw); background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.cmdk input{width:100%; border:0; border-bottom:1px solid var(--line); border-radius:0; padding:16px 18px; font-size:17px; background:transparent; color:var(--fg)}
+.cmdk ul{list-style:none; margin:0; padding:6px; max-height:50vh; overflow-y:auto}
+.cmdk li button{display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border-radius:9px; background:transparent; color:var(--fg); font-size:15px; text-align:left}
+.cmdk li button svg{width:18px; height:18px; flex:none}
+.cmdk li button[aria-selected=true]{background:var(--ok-bg); color:var(--ok-fg)}
+.cmdk li button kbd{margin-left:auto; font:12px var(--font-body); color:var(--muted)}
 </style>
+
 
 <div class="wrap">
   <header class="top">
@@ -381,9 +453,15 @@ span.ag-ck{border-style:dashed}
     </div>
     <p class="date" id="fechaHoy"></p>
   </header>
+  <div class="pcbar" id="pcbar"><h2 id="pcTitulo"></h2><span class="sp"></span>
+    <button type="button" class="pcsearch" id="pcBuscar" aria-label="Buscar o ir a… (Comando K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><span>Buscar o ir a…</span><kbd>⌘K</kbd></button>
+    <span class="pcsync" id="pcSync" role="status"><i></i><span>Sincronizado</span></span></div>
   <main id="app" aria-live="polite"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Módulos" hidden></nav>
+<div class="cmdk" id="cmdk" hidden><div class="cb" role="dialog" aria-modal="true" aria-label="Buscar o ir a">
+  <input type="text" id="cmdkIn" role="combobox" aria-expanded="true" aria-controls="cmdkLista" aria-label="Buscar o ir a" placeholder="Escribe una sección: riego, cosecha, permisos…" autocomplete="off">
+  <ul id="cmdkLista" role="listbox"></ul></div></div>
 <div class="sheet" id="sheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <h2 id="sheetTitle"></h2>
@@ -1048,7 +1126,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 17;
+  var GUIA_V = 18;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1088,6 +1166,7 @@ span.ag-ck{border-style:dashed}
     ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
+    ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
     ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
@@ -3997,10 +4076,138 @@ span.ag-ck{border-style:dashed}
     b.disabled = false;
   };
   function fechaCorta(d){ var p = {}; new Intl.DateTimeFormat("es-CL",{timeZone:TZ,weekday:"short",day:"numeric",month:"short"}).formatToParts(d).forEach(function(x){ p[x.type]=x.value; }); var w = (p.weekday||"").replace(".",""); var m = (p.month||"").replace(".",""); return w.charAt(0).toUpperCase()+w.slice(1) + " " + p.day + " " + m; }
+
+  /* ---- Modo escritorio (solo dueño, ≥ 1100 px): barra lateral, búsqueda ⌘K y Centro de control ---- */
+  var PC = false;
+  var PC_ITEMS = [
+    ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Agenda", "2"], ["Resumen", "trabajo", "Trabajos", "3"],
+    ["Campo", "riego", "Riego", "4"], ["Campo", "aplic", "Aplicaciones y stock", "5"], ["Campo", "cosecha", "Cosecha y bodega", "6"], ["Campo", "medidores", "Medidores", "7"], ["Campo", "campo", "Mi campo", "8"],
+    ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""]
+  ];
+  function pcTitulo(k){ var r = PC_ITEMS.filter(function(x){ return x[1] === k; })[0]; return r ? r[2] : "Centro de control"; }
+  function pcSync(){
+    var on = !!(S.owner && window.innerWidth >= 1100);
+    PC = on; document.documentElement.classList.toggle("pc", on);
+    if (!on) return;
+    $("pcTitulo").textContent = pcTitulo(S.screen);
+    var off = navigator.onLine === false, sy = $("pcSync"); sy.classList.toggle("off", off); sy.lastChild.textContent = off ? "Sin conexión: se guardará al volver" : "Sincronizado";
+  }
+  function pcIr(k){ S.screen = k; if (k === "agenda"){ S.agVista = "dia"; S.agFecha = fecha(); } render(); }
+  function buildNavPC(){
+    var nav = $("nav"), hy = fecha(), sl0 = nav.scrollTop; nav.replaceChildren(); nav.classList.remove("sc");
+    var m = el("div", "pcmarca"), lg = el("span", "lg"); lg.appendChild(ico("campo")); m.appendChild(lg); var tt = el("div"); tt.appendChild(el("b", null, "Agr. Borderío")); tt.appendChild(el("small", null, "Chincolco, Petorca")); m.appendChild(tt); nav.appendChild(m);
+    var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length, nr = riegosAtrasados().length, na = avisosCampo().length, npm = nPend(), nml = medPendientes().length;
+    var badge = { aplic: np, riego: nr, campo: na, permisos: npm, medidores: nml }, grupo = "";
+    PC_ITEMS.forEach(function(x){
+      if (x[0] !== grupo){ grupo = x[0]; nav.appendChild(el("div", "pcg", grupo)); }
+      var b = el("button", "pcn"); b.type = "button"; b.dataset.s = x[1]; if (S.screen === x[1] || (x[1] === "home" && !PC_ITEMS.some(function(y){ return y[1] === S.screen; }))) b.setAttribute("aria-current", "page");
+      b.appendChild(ico(x[1])); b.appendChild(el("span", null, x[2]));
+      var n = badge[x[1]] || 0;
+      if (n){ var bg = el("span", "nb2", String(n)); b.appendChild(bg); b.setAttribute("aria-label", x[2] + ", " + n + (n === 1 ? " aviso" : " avisos")); }
+      else if (x[3]){ b.appendChild(el("kbd", null, "⌥" + x[3])); b.setAttribute("aria-keyshortcuts", "Alt+" + x[3]); }
+      b.onclick = function(){ pcIr(x[1]); }; nav.appendChild(b);
+    });
+    var yo = el("div", "pcyo"); yo.appendChild(el("span", "av", iniciales(S.nombre))); var yt = el("div"); yt.appendChild(el("b", null, S.nombre || "")); yt.appendChild(el("small", null, "Dueño")); yo.appendChild(yt); nav.appendChild(yo);
+    nav.scrollTop = sl0;
+  }
+  /* búsqueda ⌘K */
+  var cmSel = 0, cmLista = [];
+  function cmPinta(){
+    var q = $("cmdkIn").value.trim().toLowerCase(), ul = $("cmdkLista"); ul.replaceChildren();
+    cmLista = PC_ITEMS.filter(function(x){ return !q || x[2].toLowerCase().indexOf(q) >= 0 || x[1].indexOf(q) >= 0 || x[0].toLowerCase().indexOf(q) >= 0; });
+    if (cmSel >= cmLista.length) cmSel = 0;
+    cmLista.forEach(function(x, i){
+      var li = el("li"), b = el("button"); b.type = "button"; b.setAttribute("role", "option"); b.setAttribute("aria-selected", i === cmSel ? "true" : "false"); b.appendChild(ico(x[1])); b.appendChild(el("span", null, x[2]));
+      if (x[3]) b.appendChild(el("kbd", null, "⌥" + x[3])); b.onclick = function(){ cmCierra(); pcIr(x[1]); }; li.appendChild(b); ul.appendChild(li);
+    });
+    if (!cmLista.length){ var e0 = el("li"); e0.appendChild(el("p", "note", "No hay una sección con ese nombre.")); ul.appendChild(e0); }
+  }
+  function cmAbre(){ if (!PC) return; $("cmdk").hidden = false; $("cmdkIn").value = ""; cmSel = 0; cmPinta(); $("cmdkIn").focus(); }
+  function cmCierra(){ $("cmdk").hidden = true; }
+  $("pcBuscar").onclick = cmAbre;
+  $("cmdkIn").oninput = function(){ cmSel = 0; cmPinta(); };
+  $("cmdk").addEventListener("click", function(ev){ if (ev.target === $("cmdk")) cmCierra(); });
+  document.addEventListener("keydown", function(ev){
+    if (!PC) return;
+    if ((ev.metaKey || ev.ctrlKey) && !ev.altKey && ev.key.toLowerCase() === "k"){ ev.preventDefault(); if ($("cmdk").hidden) cmAbre(); else cmCierra(); return; }
+    if (!$("cmdk").hidden){
+      if (ev.key === "Escape"){ cmCierra(); }
+      else if (ev.key === "ArrowDown"){ ev.preventDefault(); cmSel = Math.min(cmSel + 1, cmLista.length - 1); cmPinta(); }
+      else if (ev.key === "ArrowUp"){ ev.preventDefault(); cmSel = Math.max(cmSel - 1, 0); cmPinta(); }
+      else if (ev.key === "Enter" && cmLista[cmSel]){ ev.preventDefault(); var k = cmLista[cmSel][1]; cmCierra(); pcIr(k); }
+      return;
+    }
+    var t = ev.target, tag = t && t.tagName; if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (document.querySelector(".sheet:not([hidden])")) return;
+    if (ev.altKey && !ev.metaKey && !ev.ctrlKey && /^Digit[0-9]$/.test(ev.code)){
+      var d = ev.code.slice(5), it = PC_ITEMS.filter(function(x){ return x[3] === d; })[0]; if (it){ ev.preventDefault(); pcIr(it[1]); }
+    }
+  });
+  var rzT = null; window.addEventListener("resize", function(){ clearTimeout(rzT); rzT = setTimeout(function(){ var n = !!(S.owner && window.innerWidth >= 1100); if (n !== PC) render(); }, 150); });
+  window.addEventListener("online", function(){ pcSync(); }); window.addEventListener("offline", function(){ pcSync(); });
+
+  /* Centro de control */
+  function ccCard(tit, cuenta){ var c = el("section", "card sect"), h = el("h2", null, tit); if (cuenta != null) h.appendChild(el("span", "c", String(cuenta))); c.appendChild(h); return c; }
+  var CC_K = { aplic: ["Aplicar", "lem"], riego: ["Riego", "wat"], trabajo: ["Trabajo", "ok"], otra: ["Tarea", "idle"], perm: ["Permiso", "idle"] };
+  function buildCentro(){
+    var hy = fecha(), root = el("div", "cc");
+    var al = alertasHome(), ev = eventosDia(hy).filter(function(e){ return !e.nc; }), porHacer = ev.filter(function(e){ return !e.hecho; });
+    var porAut = nPend() + S.trabajos.filter(function(t){ return t.rev === "pendiente"; }).length + S.cosechas.filter(function(c){ return c.rev === "pendiente"; }).length, nSt = alertasStock().length;
+    var hero = el("div", "cc-hero"), hl = el("div"); hl.appendChild(el("small", null, etiquetaLarga(hy).replace(/^./, function(c){ return c.toUpperCase(); })));
+    hl.appendChild(el("h2", null, al.length ? (al.length === 1 ? "Hoy hay 1 cosa que atender" : "Hoy hay " + al.length + " cosas que atender") : "Todo al día, " + (S.nombre || "").split(" ")[0])); hero.appendChild(hl);
+    var k = el("div", "k"); [[porAut, "por autorizar"], [porHacer.length, "toca hoy"], [nSt, "stock bajo"]].forEach(function(x){ var d = el("div"); d.appendChild(el("b", null, String(x[0]))); d.appendChild(el("small", null, x[1])); k.appendChild(d); }); hero.appendChild(k); root.appendChild(hero);
+    var cols = el("div", "cc-cols");
+    /* columna 1: necesita tu decisión */
+    var c1 = ccCard("Necesita tu decisión", al.length);
+    if (!al.length) c1.appendChild(el("p", "note", "No hay nada pendiente. Las alertas y las cosas por autorizar aparecen aquí."));
+    al.slice(0, S.ccTodas ? 99 : 8).forEach(function(z){
+      var r = el("div", "cc-r"), l0 = z.lineas[0] || ["pm", "", ""], ch = el("span", "chip " + (z.sev === 1 ? "warn" : z.sev === 2 ? "lem" : z.sev === 3 ? "wat" : "idle"), l0[1] || "Aviso"); r.appendChild(ch);
+      var t = el("div", "t go"); t.setAttribute("role", "button"); t.tabIndex = 0; t.onclick = z.ir; t.onkeydown = function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); z.ir(); } };
+      t.appendChild(el("b", null, z.titulo)); z.lineas.forEach(function(ln){ t.appendChild(el("small", null, ln[2])); }); r.appendChild(t);
+      (z.acciones || []).slice(0, 2).forEach(function(x){ var bt = el("button", "small" + (x.pri ? " ac-pri" : ""), x.txt); bt.type = "button"; if (x.aria) bt.setAttribute("aria-label", x.aria); var armed = false;
+        bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez"; setTimeout(function(){ armed = false; bt.textContent = x.txt; }, 4000); return; } x.fn(); }; r.appendChild(bt); });
+      c1.appendChild(r);
+    });
+    if (al.length > 8){ var mb = el("button", "small", S.ccTodas ? "Ver menos" : "Ver las " + al.length); mb.onclick = function(){ S.ccTodas = !S.ccTodas; render(); }; c1.appendChild(mb); }
+    cols.appendChild(c1);
+    /* columna 2: hoy toca, esta semana, agua */
+    var c2 = ccCard("Hoy toca", porHacer.length);
+    if (!ev.length) c2.appendChild(el("p", "note", "No hay nada agendado para hoy."));
+    ev.forEach(function(e){ var r = el("div", "cc-r"), kk = CC_K[e.k] || CC_K.otra; r.appendChild(el("span", "chip " + (e.hecho ? "ok" : kk[1]), e.hecho ? "Hecho" : kk[0])); var t = el("div", "t"); t.appendChild(el("b", null, e.titulo)); if (e.sub) t.appendChild(el("small", null, e.sub)); r.appendChild(t); c2.appendChild(r); });
+    var sem = [], i;
+    for (i = 1; i <= 6; i++){ var f = addDays(hy, i); eventosDia(f).filter(function(e){ return !e.hecho && !e.nc; }).forEach(function(e){ sem.push([f, e.titulo]); }); if (esFeriado(f)) sem.push([f, "Feriado: " + FERIADOS[f]]); }
+    var h2 = el("h2", null, "Esta semana"); h2.style.marginTop = "14px"; c2.appendChild(h2);
+    if (!sem.length) c2.appendChild(el("p", "note", "No hay nada programado en los próximos días."));
+    sem.slice(0, 6).forEach(function(x){ var r = el("div", "cc-r"), t = el("div", "t"); t.appendChild(el("b", null, etiquetaLarga(x[0]).replace(/^./, function(c){ return c.toUpperCase(); }).split(",")[0] + " " + Number(x[0].slice(8)))); t.appendChild(el("small", null, x[1])); r.appendChild(t); c2.appendChild(r); });
+    var ws = weekStart(hy), vals = [], tot = 0; for (i = 0; i < 7; i++){ var fd = addDays(ws, i), m3 = 0; S.riegos.forEach(function(r){ if (r.fecha === fd) m3 += Number(r.m3) || 0; }); vals.push(m3); tot += m3; }
+    var h3 = el("h2", null, "Agua regada esta semana"); h3.style.marginTop = "14px"; h3.appendChild(el("span", "c", nf(tot, 0) + " m³")); c2.appendChild(h3);
+    var mx = Math.max.apply(null, vals.concat([1])), bars = el("div", "cc-barras"), dias = el("div", "cc-dias");
+    vals.forEach(function(v, j){ var bi = el("i"); bi.style.height = Math.max(3, Math.round(80 * v / mx)) + "px"; bi.title = nf(v, 0) + " m³"; bars.appendChild(bi); dias.appendChild(el("span", null, "LMMJVSD".charAt(j))); });
+    c2.appendChild(bars); c2.appendChild(dias); cols.appendChild(c2);
+    /* columna 3: estado del campo, medidores y bodega */
+    var c3 = ccCard("Estado del campo"), grid = el("div", "cc-sec"), now = Date.now();
+    S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }).forEach(function(c){
+      var rs = restriccionesSector(c.id, now), b = el("button", "cc-sc"); b.type = "button"; b.onclick = function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = c.id; render(); };
+      b.appendChild(el("b", null, c.nombre || "Sector")); b.appendChild(el("small", null, (c.especie || "") + (c.ha ? " · " + nf(c.ha, 2) + " ha" : "")));
+      var ult = ""; S.aplicaciones.forEach(function(a){ if ((!a.sectorId || a.sectorId === c.id) && a.fecha > ult) ult = a.fecha; });
+      if (ult) b.appendChild(el("small", null, "Última aplicación hace " + diasDesde(ult) + " días"));
+      b.appendChild(el("span", "chip " + (rs.rein ? "warn" : rs.cos ? "lem" : "ok"), rs.rein ? "No entrar hasta " + fmtFH.format(new Date(rs.rein)) : rs.cos ? "Carencia hasta " + fmtD2(rs.cos) : "Libre")); grid.appendChild(b);
+    });
+    if (!S.cuarteles.length) c3.appendChild(el("p", "note", "Aún no hay sectores. Créalos en «Mi campo»."));
+    c3.appendChild(grid);
+    var h4 = el("h2", null, "Medidores y bodega"); h4.style.marginTop = "14px"; c3.appendChild(h4);
+    var pend = {}; medPendientes().forEach(function(m){ pend[m.id] = 1; });
+    medidoresAct().forEach(function(m){ var L = medLect(m.id), r = el("div", "cc-r"), t = el("div", "t"); t.appendChild(el("b", null, m.nombre)); t.appendChild(el("small", null, L.length ? "Última lectura: " + fmtD2(L[L.length - 1].fecha) : "Sin lecturas todavía")); r.appendChild(t); r.appendChild(el("span", "chip " + (pend[m.id] ? "warn" : "ok"), pend[m.id] ? "Falta lectura" : "Al día")); c3.appendChild(r); });
+    var sal = bodSaldos(), kC = 0, kP = 0; sal.forEach(function(x){ if (x.producto === "cascara"){ if (x.lugar !== LUG_PARTIR) kC += x.kg; } else kP += x.kg; });
+    var rb = el("div", "cc-r"), tb = el("div", "t"), cu = bodCuadre(); tb.appendChild(el("b", null, "Nuez con cáscara guardada")); tb.appendChild(el("small", null, Math.abs(cu.dif) <= 1 ? "Bodega cuadra con cosecha" : "Faltan " + nf(cu.dif, 0) + " kg por ubicar en la bodega")); rb.appendChild(tb); rb.appendChild(el("b", null, nf(kC, 0) + " kg")); c3.appendChild(rb);
+    if (kP > 0){ var rp = el("div", "cc-r"), tp = el("div", "t"); tp.appendChild(el("b", null, "Pulpa guardada")); rp.appendChild(tp); rp.appendChild(el("b", null, nf(kP, 0) + " kg")); c3.appendChild(rp); }
+    cols.appendChild(c3); root.appendChild(cols); return root;
+  }
   function render(){
+    pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
     var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
-    $("nav").hidden = !listo; if (listo) buildNav();
+    $("nav").hidden = !listo; if (listo) (PC ? buildNavPC() : buildNav());
     if (S.screen !== lastScreen){ lastScreen = S.screen; try { window.scrollTo(0, 0); } catch (e0) {} }
     if (!S.db) return setView("nodb", msg("Abre esta página desde Claude", "Necesita tu sesión iniciada para guardar los registros del campo."));
     if (!S.uid) return setView("noid", msg("No pude identificarte", "Pídele a Diego que te invite de nuevo y abre el enlace desde ese correo."));
@@ -4018,6 +4225,7 @@ span.ag-ck{border-style:dashed}
     if (S.screen === "terceros" && S.manager) return setView("terceros", buildTerceros);
     if (S.screen === "medidores" && S.manager) return setView("medidores", buildMedidores);
     if (S.screen === "cosecha" && S.manager) return setView("cosecha", buildCosecha);
+    if (PC) return setView("homepc", buildCentro);
     setView("home", buildHome);
   }
 

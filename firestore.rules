@@ -86,6 +86,13 @@ service cloud.firestore {
       allow update: if isOwner() || (isAdmin() && request.resource.data.get('rev', null) == resource.data.get('rev', null));
       allow delete: if isOwner();
     }
+    // Bodega de nueces (kilos): la ven y anotan el dueño y la encargada; solo el dueño corrige o borra. Ventas y fotos de guías: solo el dueño.
+    match /bodega/{d} {
+      allow read, create: if isAdmin();
+      allow update, delete: if isOwner();
+    }
+    match /ventas/{d} { allow read, write: if isOwner(); }
+    match /ventasFotos/{d} { allow read, write: if isOwner(); }
     // Medidores y lecturas (pozo, tablero eléctrico): administran el dueño y la encargada; solo el dueño crea medidores y borra lecturas.
     match /medidores/{d} { allow read: if isAdmin(); allow write: if isOwner(); }
     match /lecturas/{d} {

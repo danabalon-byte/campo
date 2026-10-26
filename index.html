@@ -111,7 +111,8 @@ button[disabled]{cursor:default; opacity:.55}
 .tile{--mc:var(--accent); --mb:var(--ok-bg); display:grid; grid-template-rows:auto 1fr auto; align-content:start; gap:2px; justify-items:start; text-align:left; background:var(--surface); border:1px solid var(--line); color:var(--fg); min-height:118px; padding:14px; border-radius:20px}
 .tile[data-m=aplic]{--mc:var(--lemon-fg); --mb:var(--lemon-bg)}
 .tile[data-m=riego]{--mc:var(--water); --mb:var(--water-bg)}
-.tile[data-m=campo]{--mc:var(--wood); --mb:var(--wood-bg)}
+.tile[data-m=campo],.tile[data-m=cosecha]{--mc:var(--wood); --mb:var(--wood-bg)}
+.ph[data-m=cosecha]{--mc:var(--wood); --mb:var(--wood-bg)}
 .tile[data-m=personal],.tile[data-m=permisos],.tile[data-m=horarios],.tile[data-m=consulta]{--mc:var(--slate); --mb:var(--slate-bg)}
 .tile .ti{width:40px; height:40px; border-radius:12px; background:var(--mb); color:var(--mc); display:grid; place-items:center; margin-bottom:8px}
 .tile .ti svg{width:23px; height:23px}
@@ -216,6 +217,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .nav.sc.fin{-webkit-mask-image:none; mask-image:none}
 .nav.sc button{flex:0 0 17.4%; min-width:62px; scroll-snap-align:start}
 .nav button[data-s=medidores][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
+.nav button[data-s=cosecha][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
 .mchips::-webkit-scrollbar{display:none}
 .mchips button{flex:none; min-height:48px; padding:0 18px; border-radius:99px; background:var(--surface-2); color:var(--fg); font-weight:700; border:1px solid var(--line)}
@@ -738,6 +740,40 @@ span.ag-ck{border-style:dashed}
     <button id="jcCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="csSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="csTitle">
+    <h2 id="csTitle">Registrar cosecha</h2>
+<div class="sbody">
+    <div class="field"><label for="csFecha">Fecha de la cosecha</label><input type="date" id="csFecha"></div>
+    <div class="field"><label for="csSector">Sector</label><select id="csSector"></select></div>
+    <div class="field"><label for="csKg">Kilos</label><input type="text" id="csKg" inputmode="decimal" maxlength="9" placeholder="Ej: 850"></div>
+    <div class="field" id="csMedF"><label for="csMed">¿Cómo se pesó?</label><select id="csMed"><option value="seco">Seco, kilos finales (como se mide desde este año)</option><option value="dia">Al día, con cáscara verde (como se medía antes)</option></select></div>
+    <div class="field" id="csListaF" hidden><label id="csListaL">Quiénes cosecharon</label><div class="gt" id="csLista" role="group" aria-labelledby="csListaL"></div></div>
+    <div class="field"><label for="csOtros" id="csOtrosL">Quiénes cosecharon (opcional)</label><input type="text" id="csOtros" maxlength="80" placeholder="Ej: cuadrilla de Juan"></div>
+    <div class="field"><label for="csDestino">Destino (opcional)</label><select id="csDestino"><option value="">Sin indicar</option><option>Venta</option><option>Guardado</option><option>Semilla</option><option>Consumo</option><option>Merma</option></select></div>
+    <div class="field"><label for="csNota">Observaciones (opcional)</label><input type="text" id="csNota" maxlength="160" placeholder="Ej: calibre grande, algo de humedad"></div>
+    <div class="field"><label for="csFotoBtn">Foto (opcional)</label>
+      <input type="file" id="csFoto" accept="image/*" hidden>
+      <button type="button" id="csFotoBtn">Tomar o elegir una foto</button>
+      <img id="csFotoVista" alt="Vista previa de la foto de la cosecha" hidden style="width:100%;border-radius:14px;margin-top:8px">
+      <button type="button" class="link" id="csFotoQuitar" hidden>Quitar foto</button></div>
+    <p class="note warn" id="csAviso" hidden></p>
+</div>
+<div class="sfoot">    <button class="primary" id="csOk">Guardar cosecha</button>
+    <button id="csCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="ctSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="ctTitle">
+    <h2 id="ctTitle">Inicio de temporada</h2>
+<div class="sbody">
+    <div class="field"><label for="ctMes">La temporada de cosecha parte en</label><select id="ctMes"></select></div>
+    <p class="note">Por defecto es marzo: la temporada va de marzo a febrero. Las cosechas ya registradas se reagrupan solas.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="ctOk">Guardar</button>
+    <button id="ctCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="mdSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
     <h2 id="mdTitle">Anotar lectura</h2>
@@ -800,7 +836,7 @@ span.ag-ck{border-style:dashed}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"" };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0 };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -918,11 +954,11 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 14;
+  var GUIA_V = 15;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
-    ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final está «Medidores». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
+    ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final están «Medidores» y «Cosecha». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
     ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
     ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
     ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
@@ -949,12 +985,14 @@ span.ag-ck{border-style:dashed}
     ["Riego atrasado", "En «Alertas», toca «Ya lo regué» para registrar el riego con el sector y las horas ya puestos. Si registras un riego en «Riego» para un sector que tenía uno atrasado, la app cierra esa tarea sola y te lo avisa.", 8, ""],
     ["Corregir alertas", "En «Alertas», toca «Revisar» en un sector con aviso de reingreso o carencia para corregir los plazos o usar «Anular esta aplicación» si te equivocaste (el stock del producto se recupera). En un riego atrasado puedes usar «Pasar a hoy» o «Descartar».", 8, "owner"],
     ["Terceros y jornadas", "En «Inicio», el módulo «Terceros y jornadas» sirve para anotar a quienes trabajan en el campo sin usar la app, como colaboradores o practicantes. Con «Agregar tercero» los das de alta y con «Registrar jornada» anotas la fecha, si fue jornada completa, media jornada o por horas (hora de llegada y de salida), la labor y a cargo de quién. Cada registro queda con quién lo anotó y cuándo.", 10, "manager"],
-    ["Varios días y «Vino»", "En «Registrar jornada», indica «Desde» y, en «Hasta cuándo», elige «Solo ese día», «Hasta una fecha» o «Total de días acordados»; se registra un día por cada día de lunes a sábado. Los días que aún no llegan quedan como «Acordada». Cuando el día pasa, la persona aparece en «Por confirmar» con los botones «Vino» y «No vino»: solo los días con «Vino» cuentan para las horas y el pago.", 11, "manager"],
+    ["Varios días y «Vino»", "En «Registrar jornada», indica «Desde» y, en «Hasta cuándo», elige «Solo ese día», «Hasta una fecha» o «Total de días acordados»; se registra un día por cada día de lunes a sábado. Los días que aún no llegan quedan como «Acordada». Cuando el día pasa, la persona aparece en «Por confirmar» con los botones «Vino» y «No vino»: solo los días con «Vino» cuentan para las horas trabajadas.", 11, "manager"],
     ["Pagos a terceros", "En «Terceros y jornadas», «Ficha» guarda el valor de la jornada, los honorarios y la forma de pago de cada persona; solo tú ves los valores. Cada persona muestra «Total a pagar», «Pagado» y «Falta pagar». «Registrar abono» anota un pago. Si alguien trabajó un sábado para completar la semana, activa «Sábado acordado antes». Si cambias un valor, lo ya trabajado conserva su valor anterior.", 10, "owner"],
     ["Quiénes trabajaron", "En «Registrar trabajo realizado», «Quiénes trabajaron» ahora es una lista: toca a cada persona que trabajó. Bajo cada nombre ves si hoy tiene asistencia. Si marcas a alguien sin asistencia, o quien registra no tiene llegada, el trabajo queda «Pendiente» y no suma horas hasta que Diego lo revise.", 13, "manager"],
     ["Revisar trabajos", "En «Trabajo», la tarjeta «Por revisar» muestra los trabajos pendientes con la razón. Toca «Autorizar» para que cuenten o «Rechazar». Tú no necesitas revisarte a ti mismo: lo que registras queda aprobado.", 13, "owner"],
     ["Fichas y cumpleaños", "En «Personal», cada persona tiene «Fecha de nacimiento», «Teléfono» y el botón «Mostrar la edad en esta ficha». Si falta la fecha o el teléfono, la ficha queda «Incompleta». En «Alertas» aparece el cumpleaños el día, 3 días antes y 5 días antes.", 13, "manager"],
     ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidores». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
+    ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
+    ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
@@ -1209,6 +1247,7 @@ span.ag-ck{border-style:dashed}
 
   var ICON = {
     horarios:"M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
+    cosecha:"M4 10h16l-1.500 9a2 2 0 0 1-2 1.700h-9a2 2 0 0 1-2-1.700L4 10zM8 10l3-6M16 10l-3-6",
     medidores:"M4.500 17a8 8 0 1 1 15 0M12 17l3.500-5M12 17h.01M7 17h10",
     home: "M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10",
     trabajo: "M9 4h6v3H9zM7 5.500H5V21h14V5.500h-2M9 14.500l2 2 4-4.500",
@@ -1284,7 +1323,7 @@ span.ag-ck{border-style:dashed}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  var PH = { cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -1389,6 +1428,7 @@ span.ag-ck{border-style:dashed}
     if (S.manager) medPendientes().forEach(function(m){
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
     });
+    if (S.owner){ var nrc = S.cosechas.filter(function(c){ return c.rev === "pendiente"; }).length; if (nrc) out.push({ sev: 4, titulo: nrc === 1 ? "1 cosecha por revisar" : nrc + " cosechas por revisar", lineas: [["pm", "Cosecha", "sin asistencia verificada; esperan tu revisión"]], acciones: [], ir: function(){ S.screen = "cosecha"; render(); } }); }
     if (S.manager) cumplesProximos().forEach(function(c){
       var nom = c.g.nombre.split(" ")[0], hoyC = c.dias === 0;
       out.push({ sev: hoyC ? 2 : 4, titulo: hoyC ? "Hoy cumple años " + nom : "Cumple años " + nom + " en " + c.dias + " días", lineas: [["pm", "Cumpleaños", (hoyC ? "¡Salúdalo hoy!" : "para organizar el saludo") + " · " + fmtD2(c.fecha) + (c.edad != null ? " · " + c.edad + " años" : "")]], acciones: [], ir: function(){ S.screen = "personal"; render(); } });
@@ -1404,7 +1444,7 @@ span.ag-ck{border-style:dashed}
     var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
-    NAV.concat(S.manager ? [["medidores", "Medidores"]] : []).forEach(function(x){
+    NAV.concat(S.manager ? [["medidores", "Medidores"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -1521,6 +1561,7 @@ span.ag-ck{border-style:dashed}
     }
     if (S.manager) mods.unshift(["personal", "Personal", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo" : " personas en el campo") : "Quién trabaja hoy y qué función cumple"]);
     if (S.manager){ var nMl = medPendientes().length; mods.push(["medidores", "Medidores", nMl ? nMl + (nMl === 1 ? " lectura por anotar" : " lecturas por anotar") : "Pozo, tablero eléctrico y más"]); }
+    if (S.manager){ var nCo = cosAct(cosTemp()).length, kgCo = 0; cosAct(cosTemp()).forEach(function(c){ kgCo += Number(c.kg) || 0; }); mods.push(["cosecha", "Cosecha", nCo ? nf(kgCo, 0) + " kg registrados esta temporada" : "Kilos por sector y temporada"]); }
     mods.push(["consulta", "Tengo un problema o una idea", "Cuéntaselo a Diego"]);
     var av = avisosCampo();
     var tiles = el("section", "sect"); tiles.appendChild(el("h2", null, "Módulos"));
@@ -1531,7 +1572,7 @@ span.ag-ck{border-style:dashed}
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
       if (t[0] === "campo" && av.length){ b.classList.add("tile-alerta"); }
       if (t[0] === "riego" && riegosAtrasados().length){ b.classList.add("tile-azul"); }
-      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "terceros" || t[0] === "medidores" || t[0] === "consulta") b.classList.add("wide");
+      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "terceros" || t[0] === "medidores" || t[0] === "cosecha" || t[0] === "consulta") b.classList.add("wide");
       b.onclick = t[0] === "consulta" ? abrirConsulta : function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
     });
@@ -2344,6 +2385,225 @@ span.ag-ck{border-style:dashed}
       h.appendChild(bx);
     });
     if (L.length > 8){ var mas = el("button", "link", S.verMasMed ? "Ver solo las 8 últimas" : "Ver más lecturas"); mas.onclick = function(){ S.verMasMed = !S.verMasMed; render(); }; h.appendChild(mas); }
+    f.appendChild(h); return f;
+  }
+
+
+  /* ---- Cosecha: kilos por sector y temporada (marzo a febrero por defecto) ----
+     cosechas/{id}: fecha, sectorId, sector, esp (Nogal|Limón), kg, medida (seco = kilos finales | dia = al día, con cáscara verde), destino, quienes, nota, fotoId, rev (pendiente|ok|no), motivos, uid, por, ts.
+     config/cosecha: { mesInicio } (1 a 12, por defecto 3). Los nogales de temporadas anteriores se midieron «al día»; desde esta temporada se mide seco: no se mezclan al comparar. */
+  var MESES_C = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  function cosMesIni(){ var m = Number((S.cosconf || {}).mesInicio); return m >= 1 && m <= 12 ? m : 3; }
+  function cosTempDe(f){ var y = Number(f.slice(0, 4)), m = Number(f.slice(5, 7)); return m >= cosMesIni() ? y : y - 1; }
+  function cosTemp(){ return cosTempDe(fecha()); }
+  function cosEtiq(k){ return cosMesIni() === 1 ? String(k) : k + "–" + String(k + 1).slice(2); }
+  function cosVale(c){ return c.rev !== "pendiente" && c.rev !== "no"; }
+  function cosAct(k){ return S.cosechas.filter(function(c){ return cosVale(c) && (k == null || cosTempDe(c.fecha) === k); }); }
+  function esLimon(c){ return /lim/i.test(String(c && (c.especie || c.esp) || "")); }
+  function asistenciaEn(g, f){
+    var res = { ok: false, txt: "Sin asistencia ese día" };
+    Object.keys(S.team).forEach(function(id){
+      var t = S.team[id]; if (res.ok || !mismaPersona(t.nombre, g.nombre)) return;
+      var d = (t.dias || []).filter(function(x){ return x.fecha === f; })[0];
+      if (d && d.tramos && d.tramos.length){ res.ok = true; res.txt = "Con asistencia"; }
+    });
+    var ter = g.ter || (g.col === "terceros" ? g.rec : null);
+    if (!res.ok && ter){
+      var j = S.jterc.filter(function(r){ return r.tid === ter.id && r.fecha === f && r.estado !== "no_vino" && autOk(r); })[0];
+      if (j){ res.ok = true; res.txt = "Con jornada registrada"; } else res.txt = "Sin jornada ese día";
+    }
+    return res;
+  }
+  var csG = [], csSel = {}, csFotoD = null, csForzar = false, quitarC = null;
+  function pintaCsLista(){
+    var box = $("csLista"); box.replaceChildren(); var f = $("csFecha").value || fecha();
+    csG.forEach(function(g, i){
+      var a = asistenciaEn(g, f), b = el("button", "tg"); b.type = "button"; b.setAttribute("aria-pressed", csSel[i] ? "true" : "false");
+      var l = el("span"); l.appendChild(document.createTextNode(g.nombre)); l.appendChild(el("small", null, a.txt)); b.appendChild(l); b.appendChild(el("span", "st", csSel[i] ? "Sí" : "No"));
+      b.onclick = function(){ csSel[i] = !csSel[i]; pintaCsLista(); };
+      box.appendChild(b);
+    });
+  }
+  function csCuartel(){ return S.cuarteles.filter(function(c){ return c.id === $("csSector").value; })[0]; }
+  function pintaCsMed(){ var c = csCuartel(); $("csMedF").hidden = !c || esLimon(c); }
+  function csReset(){ csForzar = false; $("csAviso").hidden = true; $("csOk").textContent = "Guardar cosecha"; }
+  function abrirCosecha(){
+    var cs = sectoresOrden(); if (!cs.length){ toast("Primero crea un sector en «Campo»."); return; }
+    fill($("csSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
+    $("csFecha").value = fecha(); $("csFecha").max = fecha(); $("csKg").value = ""; $("csOtros").value = ""; $("csNota").value = ""; $("csDestino").value = ""; $("csMed").value = "seco";
+    csFotoD = null; $("csFotoVista").hidden = true; $("csFotoQuitar").hidden = true; $("csFotoBtn").textContent = "Tomar o elegir una foto"; csReset();
+    csG = gente(); csSel = {}; $("csListaF").hidden = !csG.length; $("csOtrosL").textContent = csG.length ? "Otros que cosecharon (opcional)" : "Quiénes cosecharon (opcional)";
+    pintaCsMed(); pintaCsLista(); $("csSheet").hidden = false; $("csKg").focus();
+  }
+  $("csCancel").onclick = function(){ $("csSheet").hidden = true; };
+  $("csSector").onchange = function(){ pintaCsMed(); csReset(); };
+  $("csFecha").onchange = function(){ pintaCsLista(); csReset(); };
+  $("csKg").oninput = $("csMed").onchange = csReset;
+  $("csFotoBtn").onclick = function(){ $("csFoto").click(); };
+  $("csFotoQuitar").onclick = function(){ csFotoD = null; $("csFotoVista").hidden = true; $("csFotoQuitar").hidden = true; $("csFotoBtn").textContent = "Tomar o elegir una foto"; };
+  $("csFoto").onchange = async function(){
+    var f = this.files && this.files[0]; this.value = ""; if (!f) return;
+    try { csFotoD = await comprimirFoto(f); $("csFotoVista").src = csFotoD; $("csFotoVista").hidden = false; $("csFotoQuitar").hidden = false; $("csFotoBtn").textContent = "Cambiar la foto"; }
+    catch (err){ csFotoD = null; toast("No se pudo leer la foto. Prueba con otra."); }
+  };
+  $("csOk").onclick = async function(){
+    var f = $("csFecha").value, kg = leeNum($("csKg").value), cu = csCuartel();
+    if (!cu){ toast("Elige el sector."); return; }
+    if (!f || f > fecha()){ toast("Revisa la fecha: no puede ser futura."); return; }
+    if (kg == null || !(kg > 0) || kg > 200000){ toast("Escribe los kilos cosechados."); $("csKg").focus(); return; }
+    var lim = esLimon(cu), medida = lim ? "dia" : $("csMed").value, esp = lim ? "Limón" : "Nogal";
+    var prev = cosAct().filter(function(c){ return c.sectorId === cu.id && c.medida === medida; });
+    if (!csForzar && prev.length >= 3){
+      var prom = prev.reduce(function(a, c){ return a + (Number(c.kg) || 0); }, 0) / prev.length;
+      if (kg > prom * 3){ csForzar = true; $("csAviso").textContent = "Es mucho más que lo habitual en este sector (promedio de " + prev.length + " registros: " + fmtNum(prom, 0) + " kg). ¿Escribiste de más? Si es correcto, toca «Guardar igual»."; $("csAviso").hidden = false; $("csOk").textContent = "Guardar igual"; return; }
+    }
+    var sel = csG.filter(function(g, i){ return csSel[i]; }), otros = $("csOtros").value.trim(), motivos = [];
+    if (S.manager && !S.owner){
+      var yo = S.team[S.uid], d0 = yo && (yo.dias || []).filter(function(x){ return x.fecha === f; })[0];
+      if (!(d0 && d0.tramos && d0.tramos.length)) motivos.push("Quien registra (" + S.nombre + ") no tiene asistencia el " + fmtD2(f));
+      sel.forEach(function(g){ var a = asistenciaEn(g, f); if (!a.ok) motivos.push(g.nombre + ": " + a.txt.toLowerCase()); });
+      if (otros) motivos.push("Otros sin verificar: " + otros);
+    }
+    var b = $("csOk"); b.disabled = true;
+    try {
+      var fotoId = "";
+      if (csFotoD){
+        try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: csFotoD, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotoId = fr.id; }
+        catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
+      }
+      var doc = { fecha: f, sectorId: cu.id, sector: cu.nombre, esp: esp, kg: kg, medida: medida, destino: $("csDestino").value, quienes: sel.map(function(g){ return g.nombre; }).concat(otros ? [otros] : []).join(", "), nota: $("csNota").value.trim(), fotoId: fotoId, ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
+      if (motivos.length){ doc.rev = "pendiente"; doc.motivos = motivos; }
+      await S.db.collection("cosechas").add(doc);
+      S.cosSel = cosTempDe(f); $("csSheet").hidden = true; toast(motivos.length ? "Quedó pendiente: Diego debe revisarlo" : "Cosecha registrada");
+    } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  /* historial anual de nogal (dato de Diego, sin sector ni fecha exacta): se carga una sola vez, medido «al día» */
+  var HIST_COS = [[2023, 300], [2024, 800], [2025, 1800]];
+  async function sembrarCosechas(){
+    try {
+      var f = await S.db.doc("config/semillaCosechas").get(); if (f.exists) return;
+      for (var i = 0; i < HIST_COS.length; i++){
+        await S.db.doc("cosechas/h_" + HIST_COS[i][0]).set({ fecha: HIST_COS[i][0] + (HIST_COS[i][0] === 2025 ? "-04-30" : "-04-15"), sectorId: "", sector: "Todo el campo", esp: "Nogal", kg: HIST_COS[i][1], medida: "dia", nota: "Dato anual sin sector ni fecha exacta (fecha referencial)", ts: new Date().toISOString(), uid: S.uid, por: "Historial de Diego" });
+      }
+      await S.db.doc("config/semillaCosechas").set({ ts: new Date().toISOString(), por: S.nombre });
+    } catch (err){}
+  }
+  async function revisarCo(c, v){
+    try { await S.db.doc("cosechas/" + c.id).update({ rev: v, revPor: S.nombre, revTs: new Date().toISOString() }); toast(v === "ok" ? "Cosecha autorizada" : "Cosecha rechazada"); }
+    catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
+  function abrirTemp(){
+    fill($("ctMes"), MESES_C.map(function(m, i){ return { value: String(i + 1), label: m.charAt(0).toUpperCase() + m.slice(1) }; }), String(cosMesIni()));
+    $("ctMes").value = String(cosMesIni()); $("ctSheet").hidden = false;
+  }
+  $("ctCancel").onclick = function(){ $("ctSheet").hidden = true; };
+  $("ctOk").onclick = async function(){
+    try { await S.db.doc("config/cosecha").set({ mesInicio: Number($("ctMes").value), por: S.nombre, ts: new Date().toISOString() }); S.cosSel = 0; $("ctSheet").hidden = true; toast("Inicio de temporada guardado"); }
+    catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  };
+  function buildCosecha(){
+    var f = document.createDocumentFragment(); f.appendChild(ph("cosecha"));
+    var hoyT = cosTemp(), ks = {}; ks[hoyT] = 1; cosAct().forEach(function(c){ ks[cosTempDe(c.fecha)] = 1; });
+    var keys = Object.keys(ks).map(Number).sort(function(a, b){ return b - a; });
+    if (!S.cosSel || !ks[S.cosSel]) S.cosSel = hoyT;
+    var sk = S.cosSel;
+    var ch = el("div", "mchips"); ch.setAttribute("role", "group"); ch.setAttribute("aria-label", "Elige una temporada");
+    keys.forEach(function(k){ var b = el("button", null, "Temporada " + cosEtiq(k)); b.type = "button"; b.setAttribute("aria-pressed", k === sk ? "true" : "false"); b.onclick = function(){ S.cosSel = k; render(); }; ch.appendChild(b); });
+    f.appendChild(ch);
+    var c0 = el("section", "card sect"); c0.appendChild(el("h2", null, "Temporada " + cosEtiq(sk)));
+    c0.appendChild(el("p", "sub", "De " + MESES_C[cosMesIni() - 1] + " a " + MESES_C[(cosMesIni() + 10) % 12] + "."));
+    var add = el("button", "primary", "Registrar cosecha"); add.onclick = abrirCosecha; c0.appendChild(add);
+    if (S.owner){ var ib = el("button", "link", "Inicio de temporada: " + MESES_C[cosMesIni() - 1]); ib.onclick = abrirTemp; c0.appendChild(ib); }
+    f.appendChild(c0);
+    var recs = cosAct(sk), prevRecs = cosAct(sk - 1);
+    var res = el("section", "card sect"); res.appendChild(el("h2", null, "Resumen por sector"));
+    if (!recs.length) res.appendChild(el("p", "note", "Todavía no hay cosechas en esta temporada. Toca «Registrar cosecha»."));
+    var tot = { seco: 0, dia: 0, lim: 0 };
+    var cuIds = {}, nogCu = sectoresOrden().filter(function(c){ return !esLimon(c); }); S.cuarteles.forEach(function(c){ cuIds[c.id] = 1; });
+    var todo = { id: "", nombre: "Todo el campo", especie: "Nogal", ha: nogCu.reduce(function(a, c){ return a + (Number(c.ha) || 0); }, 0), arboles: nogCu.length && nogCu.every(function(c){ return Number(c.arboles) > 0; }) ? nogCu.reduce(function(a, c){ return a + Number(c.arboles); }, 0) : 0 };
+    var enGrupo = function(arr, cu){ return arr.filter(function(c){ return cu.id === "" ? !cuIds[c.sectorId] : c.sectorId === cu.id; }); };
+    sectoresOrden().concat([todo]).forEach(function(cu){
+      var rs = enGrupo(recs, cu); if (!rs.length) return;
+      var lim = esLimon(cu), seco = 0, dia = 0, kgT = 0;
+      rs.forEach(function(c){ var k = Number(c.kg) || 0; kgT += k; if (lim) tot.lim += k; else if (c.medida === "seco"){ seco += k; tot.seco += k; } else { dia += k; tot.dia += k; } });
+      var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, cu.nombre)); wo.appendChild(el("span", "chip idle", (lim ? "Limón" : "Nogal") + " · " + rs.length + (rs.length === 1 ? " registro" : " registros"))); bx.appendChild(wo);
+      var base = lim ? kgT : (seco > 0 ? seco : dia), medTxt = lim ? "" : (seco > 0 ? " (seco)" : " (al día, con cáscara verde)");
+      if (lim) bx.appendChild(el("p", null, nf(kgT, 0) + " kg"));
+      else { if (seco > 0) bx.appendChild(el("p", null, nf(seco, 0) + " kg secos")); if (dia > 0) bx.appendChild(el("p", null, nf(dia, 0) + " kg al día (con cáscara verde)")); }
+      var ha = Number(cu.ha) || 0, arb = Number(cu.arboles) || 0;
+      bx.appendChild(el("p", "sub", (ha > 0 ? nf(base / ha, 0) + " kg/ha" + medTxt : "Falta la superficie del sector") + " · " + (arb > 0 ? nf(base / arb, 1) + " kg por árbol" : "faltan los árboles del sector")));
+      var pk = enGrupo(prevRecs, cu).filter(function(c){ return lim || (seco > 0 ? c.medida === "seco" : c.medida !== "seco"); }).reduce(function(a, c){ return a + (Number(c.kg) || 0); }, 0);
+      var pAny = enGrupo(prevRecs, cu).length > 0;
+      if (pk > 0){ var pc = (base - pk) / pk; bx.appendChild(el("p", "note", (pc >= 0 ? "+" : "") + nf(pc * 100, 0) + " % vs. la temporada " + cosEtiq(sk - 1) + " (" + nf(pk, 0) + " kg)")); }
+      else if (pAny) bx.appendChild(el("p", "note", "La temporada anterior se midió de otra forma (seco o al día): no se puede comparar directo."));
+      res.appendChild(bx);
+    });
+    if (recs.length){
+      var rows = el("div", "rows");
+      [["Nogal, seco", tot.seco], ["Nogal, al día (con cáscara verde)", tot.dia], ["Limón", tot.lim]].forEach(function(x){ if (x[1] > 0){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", nf(x[1], 0) + " kg")); rows.appendChild(r); } });
+      res.appendChild(rows);
+    }
+    f.appendChild(res);
+    if (S.owner && recs.length){
+      var fechas = {}; recs.forEach(function(c){ fechas[c.fecha] = 1; });
+      var costo = 0; S.jterc.forEach(function(r){ if (fechas[r.fecha] && vale(r)) costo += valorRec(r); });
+      var kgBase = tot.seco + tot.lim > 0 ? tot.seco + tot.lim : tot.dia;
+      if (costo > 0 && kgBase > 0){
+        var cc = el("section", "card sect"); cc.appendChild(el("h2", null, "Costo de mano de obra"));
+        cc.appendChild(el("p", null, pesos(costo) + " en jornadas de terceros los días de cosecha"));
+        cc.appendChild(el("p", "sub", "≈ " + pesos(costo / kgBase) + " por kilo"));
+        cc.appendChild(el("p", "note", "Aproximado: suma todas las jornadas de terceros de esos días y no incluye sueldos del personal."));
+        f.appendChild(cc);
+      }
+    }
+    var pr = S.cosechas.filter(function(c){ return c.rev === "pendiente" && (S.owner || c.uid === S.uid); });
+    if (pr.length){
+      var rv = el("section", "card sect prio"); rv.appendChild(el("h2", null, (S.owner ? "Por revisar (" : "Pendientes de Diego (") + pr.length + ")"));
+      pr.forEach(function(c){
+        var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, c.sector + " · " + fmtD2(c.fecha))); wo.appendChild(el("span", "chip idle", nf(c.kg, 0) + " kg")); bx.appendChild(wo);
+        if (c.quienes) bx.appendChild(el("p", "sub", "Con: " + c.quienes));
+        (c.motivos || []).forEach(function(m){ bx.appendChild(el("p", "note warn", m)); });
+        bx.appendChild(el("p", "note", fmtFH.format(new Date(c.ts)) + (c.por ? " · " + c.por : "") + (S.owner ? "" : " · aún no cuenta en los totales")));
+        if (S.owner){
+          var bb = el("div", "btns"), a1 = el("button", "primary", "Autorizar"), a2 = el("button", "small", "Rechazar");
+          a1.onclick = function(){ revisarCo(c, "ok"); }; a2.onclick = function(){ revisarCo(c, "no"); };
+          bb.appendChild(a1); bb.appendChild(a2); bx.appendChild(bb);
+        }
+        rv.appendChild(bx);
+      });
+      f.appendChild(rv);
+    }
+    var h = el("section", "card sect"); h.appendChild(el("h2", null, "Registros de la temporada"));
+    var lista = recs.slice().sort(function(a, b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.ts < b.ts ? 1 : -1); });
+    if (!lista.length) h.appendChild(el("p", "note", "Aún no hay registros."));
+    lista.slice(0, S.verMasCos ? 60 : 8).forEach(function(c){
+      var bx = el("div", "asg"), wo = el("div", "who");
+      wo.appendChild(el("b", null, fmtD2(c.fecha) + " · " + c.sector + " · " + nf(c.kg, 0) + " kg"));
+      wo.appendChild(el("span", "chip idle", c.esp === "Limón" ? "Limón" : (c.medida === "seco" ? "Seco" : "Al día"))); bx.appendChild(wo);
+      if (c.quienes) bx.appendChild(el("p", "sub", "Cosecharon: " + c.quienes));
+      if (c.destino) bx.appendChild(el("p", "sub", "Destino: " + c.destino));
+      if (c.nota) bx.appendChild(el("p", "sub", c.nota));
+      bx.appendChild(el("p", "note", (c.por || "") + " · " + fmtFH.format(new Date(c.ts))));
+      if (c.fotoId){
+        var vb = el("button", "link", "Ver foto"), im = el("img"); im.alt = "Foto de la cosecha"; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;
+        vb.onclick = async function(){
+          if (!im.hidden){ im.hidden = true; vb.textContent = "Ver foto"; return; }
+          vb.textContent = "Cargando…";
+          try { var d = fotosCache[c.fotoId]; if (!d){ var sn = await S.db.doc("fotos/" + c.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[c.fotoId] = d; }
+            if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; } im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; }
+          catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
+        };
+        bx.appendChild(vb); bx.appendChild(im);
+      }
+      if (S.owner){
+        var q = el("button", "small", quitarC === c.id ? "Confirmar" : "Quitar");
+        q.onclick = async function(){ if (quitarC !== c.id){ quitarC = c.id; render(); return; } quitarC = null; try { await S.db.doc("cosechas/" + c.id).delete(); toast("Cosecha quitada"); } catch (err){ toast("No se pudo quitar."); } };
+        bx.appendChild(q);
+      }
+      h.appendChild(bx);
+    });
+    if (lista.length > 8){ var mas = el("button", "link", S.verMasCos ? "Ver solo los 8 últimos" : "Ver más registros"); mas.onclick = function(){ S.verMasCos = !S.verMasCos; render(); }; h.appendChild(mas); }
     f.appendChild(h); return f;
   }
 
@@ -3290,6 +3550,7 @@ span.ag-ck{border-style:dashed}
     if (S.screen === "horarios" && S.owner) return setView("horarios", buildHorarios);
     if (S.screen === "terceros" && S.manager) return setView("terceros", buildTerceros);
     if (S.screen === "medidores" && S.manager) return setView("medidores", buildMedidores);
+    if (S.screen === "cosecha" && S.manager) return setView("cosecha", buildCosecha);
     setView("home", buildHome);
   }
 
@@ -3371,6 +3632,8 @@ span.ag-ck{border-style:dashed}
       }, function(){});
       subJornada();
       db.collection("medidores").onSnapshot(function(s){ S.medidores = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); if (S.owner && !S.semillaM){ S.semillaM = true; sembrarMedidores(); } }, function(){});
+      db.collection("cosechas").orderBy("fecha", "desc").limit(600).onSnapshot(function(s){ S.cosechas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); if (S.owner && !S.semillaC){ S.semillaC = true; sembrarCosechas(); } }, function(){});
+      db.doc("config/cosecha").onSnapshot(function(s){ S.cosconf = s.exists ? s.data() : {}; render(); }, function(){});
       db.collection("lecturas").orderBy("fecha", "desc").limit(400).onSnapshot(function(s){ S.lecturas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     }
     if (S.owner){

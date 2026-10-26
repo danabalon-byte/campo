@@ -820,6 +820,20 @@ span.ag-ck{border-style:dashed}
     <button id="tpCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="lmSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="lmTitle">
+    <h2 id="lmTitle">Preparar para uso real</h2>
+<div class="sbody">
+    <p class="note">Borra los datos de prueba. Se conservan: productos y su stock, movimientos de stock, personal y fichas, terceros y tarifas, sectores, medidores y todas sus lecturas, cosechas, bodega, ventas, equipo y roles. Los registros que elijas borrar no se pueden recuperar: por eso primero se descarga un respaldo.</p>
+    <div id="lmLista" role="group" aria-label="Qué borrar"></div>
+    <p class="note" id="lmEstado" role="status"></p>
+    <button type="button" id="lmResp" hidden>Descargar respaldo</button>
+    <div class="field" id="lmConfF" hidden><label for="lmConf">Para confirmar, escribe BORRAR</label><input type="text" id="lmConf" maxlength="10" autocomplete="off" autocapitalize="characters"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="lmOk">Revisar qué hay</button>
+    <button id="lmCancel">Cerrar</button></div>
+  </div>
+</div>
 <div class="sheet" id="csSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="csTitle">
     <h2 id="csTitle">Registrar cosecha</h2>
@@ -1034,7 +1048,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 16;
+  var GUIA_V = 17;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1074,6 +1088,7 @@ span.ag-ck{border-style:dashed}
     ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
+    ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
@@ -1729,6 +1744,7 @@ span.ag-ck{border-style:dashed}
     var bt = el("button", null, "Apariencia: " + TEMA_TXT[tm]); bt.id = "btnTema";
     bt.onclick = function(){ var n = TEMAS[(TEMAS.indexOf(temaGuardado()) + 1) % TEMAS.length]; try { localStorage.setItem("campo_tema", n); } catch (e2) {} aplicarTema(n); render(); };
     ay.appendChild(bt);
+    if (S.owner){ var bl = el("button", null, "Preparar para uso real (borrar datos de prueba)"); bl.onclick = abrirLimp; ay.appendChild(bl); }
     ua.appendChild(ay); f.appendChild(ua);
     return f;
   }
@@ -2990,6 +3006,74 @@ span.ag-ck{border-style:dashed}
     f.appendChild(h); return f;
   }
 
+
+  /* ---- Preparar para uso real (solo dueño): borra datos de prueba, con respaldo previo ----
+     Nunca toca: productos, movimientos, personal, terceros, tarifas, cuarteles, medidores, lecturas, cosechas, bodega, ventas, equipo, config. */
+  var LIMP = [
+    ["trabajos", "Trabajos", 1], ["aplicaciones", "Aplicaciones", 1], ["riegos", "Riegos", 1], ["tareas", "Tareas", 1], ["ideas", "Ideas", 1], ["plan", "Tareas programadas", 1],
+    ["solicitudes", "Solicitudes de stock", 1], ["permisos", "Permisos", 1], ["permisos_res", "Respuestas de permisos", 1], ["jornadas", "Jornadas del campo", 1],
+    ["jornadasTerc", "Jornadas de terceros", 1], ["semanasT", "Marcas de sábado de terceros", 1], ["arboles", "Fichas de árboles", 1], ["asistencia", "Asistencia (ingresos y salidas)", 1],
+    ["fotos", "Fotos que ya nadie usa", 1], ["consultas", "Consultas y notas enviadas", 0], ["abonos", "Abonos a terceros", 0]
+  ];
+  var LIMP_REVISAR = ["lecturas", "cosechas", "medidores", "movimientos", "productos", "personal", "terceros", "equipo", "cuarteles", "bodega", "ventas", "saldos"];
+  var lm = { datos: null, sel: {}, resp: false, ocupado: false };
+  async function lmLeer(col){ var sn = await S.db.collection(col).get(); return sn.docs.map(function(d){ return { id: d.id, data: d.data() }; }); }
+  async function lmAsistencia(){ var ids = {}; ids[S.uid] = 1; Object.keys(S.team || {}).forEach(function(k){ ids[k] = 1; }); try { (await lmLeer("equipo")).forEach(function(u){ ids[u.id] = 1; }); } catch (e0){}
+    var out = []; for (var id in ids){ try { var sn = await S.db.collection("asistencia/" + id + "/dias").get(); sn.docs.forEach(function(d){ out.push({ id: id + "/dias/" + d.id, data: d.data() }); }); } catch (e){} } return out; }
+  function lmFotosSinUso(){
+    var d = lm.datos, ref = "";
+    LIMP.forEach(function(x){ if (x[0] !== "fotos" && x[0] !== "asistencia" && !lm.sel[x[0]]) ref += JSON.stringify((d[x[0]] || []).map(function(r){ return r.data; })); });
+    LIMP_REVISAR.forEach(function(c){ ref += JSON.stringify((d[c] || []).map(function(r){ return r.data; })); });
+    return (d.fotos || []).filter(function(f){ return ref.indexOf('"' + f.id + '"') < 0; });
+  }
+  function lmPinta(){
+    var box = $("lmLista"); box.replaceChildren();
+    LIMP.forEach(function(x){
+      var n = x[0] === "fotos" ? (lm.sel.fotos ? lmFotosSinUso().length : (lm.datos.fotos || []).length) : (lm.datos[x[0]] || []).length;
+      var b = el("button", "tg"); b.type = "button"; b.setAttribute("aria-pressed", lm.sel[x[0]] ? "true" : "false");
+      b.appendChild(el("span", null, x[1] + " · " + n)); b.appendChild(el("span", "st", lm.sel[x[0]] ? "Borrar" : "Conservar"));
+      b.onclick = function(){ lm.sel[x[0]] = !lm.sel[x[0]]; lm.resp = false; $("lmConf").value = ""; lmPinta(); }; box.appendChild(b);
+    });
+    var tot = LIMP.reduce(function(a, x){ return a + (lm.sel[x[0]] ? (x[0] === "fotos" ? lmFotosSinUso().length : (lm.datos[x[0]] || []).length) : 0); }, 0);
+    $("lmEstado").textContent = tot ? "Se borrarán " + tot + " registros. Los que dicen «Conservar» no se tocan." : "No hay nada seleccionado para borrar.";
+    $("lmResp").hidden = !tot; $("lmResp").textContent = lm.resp ? "Respaldo descargado ✓ (volver a descargar)" : "1. Descargar respaldo";
+    $("lmConfF").hidden = !(tot && lm.resp); $("lmOk").textContent = tot && lm.resp ? "2. Borrar lo seleccionado" : "Volver a revisar";
+  }
+  function abrirLimp(){ lm = { datos: null, sel: {}, resp: false, ocupado: false }; $("lmLista").replaceChildren(); $("lmEstado").textContent = "Toca «Revisar qué hay» para contar los registros."; $("lmResp").hidden = true; $("lmConfF").hidden = true; $("lmConf").value = ""; $("lmOk").textContent = "Revisar qué hay"; $("lmOk").disabled = false; $("lmSheet").hidden = false; }
+  $("lmCancel").onclick = function(){ if (lm.ocupado) return; $("lmSheet").hidden = true; };
+  async function lmEscanear(){
+    $("lmEstado").textContent = "Contando registros…"; $("lmOk").disabled = true;
+    try {
+      var d = {}; for (var i = 0; i < LIMP.length; i++){ var c = LIMP[i][0]; d[c] = c === "asistencia" ? await lmAsistencia() : await lmLeer(c); lm.sel[c] = lm.sel[c] != null ? lm.sel[c] : !!LIMP[i][2]; }
+      for (var j = 0; j < LIMP_REVISAR.length; j++) d[LIMP_REVISAR[j]] = await lmLeer(LIMP_REVISAR[j]);
+      lm.datos = d; lm.resp = false; lmPinta();
+    } catch (err){ $("lmEstado").textContent = "No se pudo leer la base de datos. Revisa tu señal e intenta de nuevo."; }
+    $("lmOk").disabled = false;
+  }
+  $("lmResp").onclick = function(){
+    var out = { generado: new Date().toISOString(), por: S.nombre, borrados: {} };
+    LIMP.forEach(function(x){ if (!lm.sel[x[0]]) return; var l = x[0] === "fotos" ? lmFotosSinUso().map(function(f){ return { id: f.id, data: { aviso: "foto no incluida en el respaldo" } }; }) : lm.datos[x[0]]; out.borrados[x[0]] = l.map(function(r){ return { id: r.id, data: r.data }; }); });
+    try {
+      var blob = new Blob([JSON.stringify(out, null, 1)], { type: "application/json" }), a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "respaldo-antes-de-limpiar-" + fecha() + ".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+      lm.resp = true; lmPinta(); toast("Respaldo descargado");
+    } catch (err){ toast("No se pudo descargar el respaldo."); }
+  };
+  $("lmOk").onclick = async function(){
+    if (!lm.datos || !lm.resp){ await lmEscanear(); return; }
+    if ($("lmConf").value.trim().toUpperCase() !== "BORRAR"){ toast("Escribe BORRAR para confirmar."); $("lmConf").focus(); return; }
+    var rutas = [];
+    LIMP.forEach(function(x){ if (!lm.sel[x[0]]) return; if (x[0] === "fotos") lmFotosSinUso().forEach(function(f){ rutas.push("fotos/" + f.id); }); else (lm.datos[x[0]] || []).forEach(function(r){ rutas.push(x[0] === "asistencia" ? "asistencia/" + r.id : x[0] + "/" + r.id); }); });
+    lm.ocupado = true; $("lmOk").disabled = true; $("lmCancel").disabled = true; var hechos = 0, fallos = 0;
+    for (var i = 0; i < rutas.length; i += 15){
+      await Promise.all(rutas.slice(i, i + 15).map(function(r){ return S.db.doc(r).delete().then(function(){ hechos++; }, function(){ fallos++; }); }));
+      $("lmEstado").textContent = "Borrando… " + (hechos + fallos) + " de " + rutas.length;
+    }
+    lm.ocupado = false; $("lmCancel").disabled = false; $("lmOk").disabled = false; fotosCache = {};
+    if (fallos){ $("lmEstado").textContent = "Se borraron " + hechos + " registros y " + fallos + " no se pudieron borrar. Toca «Revisar qué hay» para ver lo que queda."; lm.datos = null; lm.resp = false; $("lmOk").textContent = "Revisar qué hay"; $("lmConfF").hidden = true; $("lmResp").hidden = true; }
+    else { $("lmSheet").hidden = true; toast("Listo: se borraron " + hechos + " registros de prueba"); }
+    render();
+  };
   /* ---- Gente del campo: equipo con la app, directorio de personal y terceros ---- */
   function norm(x){ return String(x || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim(); }
   function mismaPersona(a, b){

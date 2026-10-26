@@ -439,7 +439,49 @@ html.pc .cmdk:not([hidden]){display:flex}
 .cmdk li button svg{width:18px; height:18px; flex:none}
 .cmdk li button[aria-selected=true]{background:var(--ok-bg); color:var(--ok-fg)}
 .cmdk li button kbd{margin-left:auto; font:12px var(--font-body); color:var(--muted)}
+.pl-bar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px}
+.pl-bar .sp{flex:1}.pl-bar b{font:700 16px var(--font-display)}
+.pl-bar button{padding:8px 14px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px}
+.pl-bar button, .pl-bar button.primary{width:auto}
+.pl-bar button.primary{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.pl-split{display:grid; grid-template-columns:1fr 310px; gap:16px; align-items:start}
+.pl-cal{display:grid; grid-template-columns:104px repeat(7,minmax(0,1fr)); border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--surface)}
+.pl-cal > div{border-left:1px solid var(--line); border-top:1px solid var(--line); padding:6px; min-height:92px; font-size:13px; min-width:0}
+.pl-cal .h{min-height:0; background:var(--bg); font-weight:700; display:flex; justify-content:space-between; border-top:0}
+.pl-cal .h.hoy{background:var(--accent); color:var(--on-accent)}
+.pl-cal .l{border-left:0; background:var(--bg); font-weight:700; color:var(--muted)}
+.pl-cal .c.over{background:var(--ok-bg); outline:2px dashed var(--accent); outline-offset:-3px}
+.pl-cal .c.hoyc{background:color-mix(in srgb,var(--lemon) 9%,var(--surface))}
+.pl-ev{display:block; width:100%; text-align:left; border-radius:8px; padding:5px 8px; margin-bottom:5px; font-size:13px; font-weight:700; line-height:1.25}
+.pl-ev small{display:block; font-weight:400; opacity:.85}
+.pl-ev[draggable=true]{cursor:grab}
+.pl-ev.sel{outline:2px solid var(--fg); outline-offset:1px}
+.pl-ev.done{opacity:.7}
+.pl-ev.a{background:var(--lemon-bg); color:var(--lemon-fg)}.pl-ev.r{background:var(--water-bg); color:var(--water)}.pl-ev.w{background:var(--ok-bg); color:var(--ok-fg)}.pl-ev.p{background:var(--wood-bg); color:var(--wood)}.pl-ev.f{background:var(--slate-bg); color:var(--slate)}
+.pl-insp .in{display:block; width:100%; margin:6px 0 10px}
+.pl-insp p{margin:6px 0}
+.rg-wrap{grid-column:1 / -1; min-width:0}
+.rg-ctl{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px}
+.rg-ctl .sp{flex:1}
+.rg-ctl select, .rg-ctl button{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px}
+.rg-bar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--hero); color:var(--on-hero); border-radius:12px; padding:10px 16px; margin-bottom:12px}
+.rg-bar .sp{flex:1}
+.rg-bar button, .rg-bar input{width:auto; padding:7px 12px; border-radius:9px; border:0; font-weight:700; font-size:14px; background:var(--surface); color:var(--fg)}
+.rg-tabla{border:1px solid var(--line); border-radius:12px; background:var(--surface); overflow:auto}
+.rg-tabla table{width:100%; border-collapse:collapse; font-size:14px}
+.rg-tabla th{position:sticky; top:0; text-align:left; font-weight:700; color:var(--muted); background:var(--bg); padding:9px 12px; border-bottom:1px solid var(--line); white-space:nowrap}
+.rg-tabla td{padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+.rg-tabla tr.sel td{background:var(--lemon-bg)}
+.rg-tabla td.num, .rg-tabla th.num{text-align:right; font-variant-numeric:tabular-nums}
+.rg-tabla input[type=checkbox]{width:18px; height:18px; accent-color:var(--accent)}
+.rg-vacio{padding:26px; text-align:center; color:var(--muted)}
+@media print{
+  .nav,.pcbar,.rg-ctl,.rg-bar,.cmdk,.sheet,.toast,#toast{display:none !important}
+  html.pc .wrap{margin:0; padding:0} body{background:#fff}
+}
 </style>
+
+
 
 
 <div class="wrap">
@@ -1126,7 +1168,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 18;
+  var GUIA_V = 19;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1167,6 +1209,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Planificación y Registros en el computador", "En modo escritorio, «Planificación» muestra la semana en filas (riegos, aplicaciones, trabajos y tareas): arrastra un bloque a otro día para reprogramarlo, o ábrelo y usa «Mover» con el teclado. «Registros» reúne trabajos, riegos, cosechas, aplicaciones y permisos en tablas con filtros por mes, sector y estado; marca varias filas para autorizarlas, cambiarles la fecha o quitarlas, y exporta a CSV o imprime.", 19, "owner"],
     ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
@@ -4080,7 +4123,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* ---- Modo escritorio (solo dueño, ≥ 1100 px): barra lateral, búsqueda ⌘K y Centro de control ---- */
   var PC = false;
   var PC_ITEMS = [
-    ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Agenda", "2"], ["Resumen", "trabajo", "Trabajos", "3"],
+    ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Planificación", "2"], ["Resumen", "trabajo", "Registros", "3"],
     ["Campo", "riego", "Riego", "4"], ["Campo", "aplic", "Aplicaciones y stock", "5"], ["Campo", "cosecha", "Cosecha y bodega", "6"], ["Campo", "medidores", "Medidores", "7"], ["Campo", "campo", "Mi campo", "8"],
     ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""]
   ];
@@ -4203,6 +4246,163 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (kP > 0){ var rp = el("div", "cc-r"), tp = el("div", "t"); tp.appendChild(el("b", null, "Pulpa guardada")); rp.appendChild(tp); rp.appendChild(el("b", null, nf(kP, 0) + " kg")); c3.appendChild(rp); }
     cols.appendChild(c3); root.appendChild(cols); return root;
   }
+
+  /* Planificación (escritorio): semana por filas, arrastrar para reprogramar */
+  var PL_LANES = [["a", "Aplicar"], ["r", "Riego"], ["w", "Trabajos y tareas"], ["p", "Feriados y permisos"]];
+  function plItems(d){
+    var out = [];
+    S.plan.forEach(function(x){ if (x.fecha === d && x.estado !== "cancelada") out.push({ lane: "a", cls: "a", k: "plan", id: x.id, ref: x, t: tituloPlan(x), sub: x.sector || "", done: x.estado === "hecha", drag: x.estado === "pendiente" }); });
+    S.tareas.forEach(function(t){ if (t.fecha !== d) return; var rg = t.tipo === "riego"; out.push({ lane: rg ? "r" : t.tipo === "aplic" ? "a" : "w", cls: rg ? "r" : t.tipo === "aplic" ? "a" : "w", k: "tarea", id: t.id, ref: t, t: t.titulo, sub: (t.sector && t.sector !== "Todo el campo" ? t.sector : "") + (rg && t.horas ? (t.sector ? " · " : "") + nf(t.horas, 1) + " h" : ""), done: t.estado === "hecha", drag: t.estado !== "hecha" }); });
+    S.riegos.forEach(function(r){ if (r.fecha !== d) return; if (r.tareaId && S.tareas.some(function(t){ return t.id === r.tareaId; })) return; out.push({ lane: "r", cls: "r", k: "hecho", t: "Riego " + (r.sector || ""), sub: nf(r.horas || 0, 1) + " h" + (r.por ? " · " + r.por : ""), done: true, drag: false }); });
+    S.trabajos.forEach(function(t){ if (t.fecha !== d || !trVale(t)) return; out.push({ lane: "w", cls: "w", k: "hecho", t: t.actividad + (t.sector ? " · " + t.sector : ""), sub: nf(t.horas || 0, 1) + " h" + (t.por ? " · " + t.por : ""), done: true, drag: false }); });
+    fuera(d).forEach(function(x){ out.push({ lane: "p", cls: "p", k: "hecho", t: "Permiso · " + (x.por || "—"), sub: x.medio ? "medio día" : "", done: false, drag: false }); });
+    if (esFeriado(d)) out.push({ lane: "p", cls: "f", k: "hecho", t: "Feriado", sub: FERIADOS[d], done: false, drag: false });
+    return out;
+  }
+  async function plMover(it, d){
+    var hy = fecha(); if (d < hy){ toast("No se puede mover a un día que ya pasó."); return; }
+    try { await S.db.doc((it.k === "plan" ? "plan/" : "tareas/") + it.id).update({ fecha: d }); toast("Movido al " + etiquetaLarga(d).replace(/^./, function(c){ return c.toUpperCase(); })); }
+    catch (err){ toast("No se pudo mover. Intenta de nuevo."); }
+  }
+  function plInsp(allItems){
+    var c = el("section", "card sect pl-insp"), sel = S.plSel ? allItems.filter(function(i){ return i.k === S.plSel.k && i.id === S.plSel.id; })[0] : null;
+    if (!sel){
+      c.appendChild(el("h2", null, "Esta semana"));
+      var n = { a: 0, r: 0, w: 0 }; allItems.forEach(function(i){ if (n[i.lane] != null && !i.done) n[i.lane]++; });
+      c.appendChild(el("p", null, n.a + (n.a === 1 ? " aplicación" : " aplicaciones") + " por hacer"));
+      c.appendChild(el("p", null, n.r + (n.r === 1 ? " riego" : " riegos") + " por hacer"));
+      c.appendChild(el("p", null, n.w + (n.w === 1 ? " trabajo o tarea" : " trabajos o tareas") + " por hacer"));
+      c.appendChild(el("p", "note", "Toca un bloque para ver su detalle. Arrástralo a otro día de su misma fila para reprogramarlo. Los cambios llegan al teléfono de Yolanda al instante."));
+      return c;
+    }
+    c.appendChild(el("h2", null, sel.t)); if (sel.sub) c.appendChild(el("p", "sub", sel.sub));
+    var r = sel.ref || {};
+    if (sel.k === "plan"){ if (r.cantidad) c.appendChild(el("p", null, nf(r.cantidad, 2) + " " + (r.unidad || ""))); if (r.equipo) c.appendChild(el("p", null, "Equipo: " + r.equipo)); if (r.notas) c.appendChild(el("p", null, r.notas)); }
+    else { if (r.quien) c.appendChild(el("p", null, "Para: " + r.quien)); if (r.momento) c.appendChild(el("p", null, r.momento === "man" ? "En la mañana" : r.momento === "tar" ? "En la tarde" : "Cualquier hora")); }
+    c.appendChild(el("p", "note", sel.done ? "Ya está hecha." : "Programada para el " + etiquetaLarga(r.fecha)));
+    if (!sel.done){
+      var l = el("label", null, "Mover al día"); l.htmlFor = "plMoverF"; c.appendChild(l);
+      var inp = el("input", "in"); inp.type = "date"; inp.id = "plMoverF"; inp.min = fecha(); inp.value = r.fecha; c.appendChild(inp);
+      var mv = el("button", null, "Mover"); mv.type = "button"; mv.onclick = function(){ if (inp.value && inp.value !== r.fecha) plMover(sel, inp.value); }; c.appendChild(mv);
+      var go = el("button", "primary", sel.k === "plan" ? "Hacerla ahora" : "Marcar como hecha"); go.type = "button";
+      go.onclick = function(){ if (sel.k === "plan"){ S.screen = "aplic"; render(); abrirAp(r); } else marcarTarea(r); }; c.appendChild(go);
+    }
+    var cl = el("button", "small", "Cerrar detalle"); cl.type = "button"; cl.onclick = function(){ S.plSel = null; render(); }; c.appendChild(cl);
+    return c;
+  }
+  function buildPlanPC(){
+    var hy = fecha(), f = document.createDocumentFragment();
+    if (!S.agFecha) S.agFecha = hy; if (!S.agMes) S.agMes = hy.slice(0, 7); if (!S.agVista || S.agVista === "dia") S.agVista = "semana";
+    var tb = el("div", "mchips"); tb.setAttribute("role", "group"); tb.setAttribute("aria-label", "Vista");
+    [["semana", "Semana"], ["mes", "Mes"], ["ideas", "Ideas"]].forEach(function(x){ var b = el("button", null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", S.agVista === x[0] ? "true" : "false"); b.onclick = function(){ S.agVista = x[0]; render(); }; tb.appendChild(b); });
+    f.appendChild(tb);
+    if (S.agVista === "mes"){ f.appendChild(agMes()); return f; }
+    if (S.agVista === "ideas"){ f.appendChild(agIdeas()); return f; }
+    var ws = weekStart(S.agFecha), we = addDays(ws, 6), root = el("div", "cc");
+    var bar = el("div", "pl-bar");
+    var pv = el("button", null, "‹"); pv.type = "button"; pv.setAttribute("aria-label", "Semana anterior"); pv.onclick = function(){ S.agFecha = addDays(ws, -7); render(); };
+    var nx = el("button", null, "›"); nx.type = "button"; nx.setAttribute("aria-label", "Semana siguiente"); nx.onclick = function(){ S.agFecha = addDays(ws, 7); render(); };
+    var ho = el("button", null, "Hoy"); ho.type = "button"; ho.onclick = function(){ S.agFecha = hy; render(); };
+    bar.appendChild(pv); bar.appendChild(el("b", null, "Del " + fmtDM.format(new Date(ws + "T12:00:00Z")) + " al " + fmtDM.format(new Date(we + "T12:00:00Z")))); bar.appendChild(nx); bar.appendChild(ho); bar.appendChild(el("span", "sp"));
+    var ba = el("button", null, "+ Aplicación"); ba.type = "button"; ba.onclick = function(){ abrirPlan(); };
+    var bt = el("button", "primary", "+ Tarea"); bt.type = "button"; bt.onclick = function(){ abrirTarea(S.agFecha >= hy ? S.agFecha : hy); };
+    bar.appendChild(ba); bar.appendChild(bt); root.appendChild(bar);
+    var split = el("div", "pl-split"), cal = el("div", "pl-cal"), all = [];
+    cal.appendChild(el("div", "h"));
+    var dias = []; for (var i = 0; i < 7; i++) dias.push(addDays(ws, i));
+    dias.forEach(function(d){ var h = el("div", "h" + (d === hy ? " hoy" : "")); h.appendChild(el("span", null, dia(d).split(" ")[0].replace(".", ""))); h.appendChild(el("span", null, String(Number(d.slice(8))))); cal.appendChild(h); });
+    var items = {}; dias.forEach(function(d){ items[d] = plItems(d); all = all.concat(items[d]); });
+    PL_LANES.forEach(function(L){
+      cal.appendChild(el("div", "l", L[1]));
+      dias.forEach(function(d){
+        var cell = el("div", "c" + (d === hy ? " hoyc" : "")); cell.dataset.fecha = d; cell.dataset.lane = L[0];
+        cell.ondragover = function(e){ if (S.plArr && S.plArr.lane === L[0]){ e.preventDefault(); cell.classList.add("over"); } };
+        cell.ondragleave = function(){ cell.classList.remove("over"); };
+        cell.ondrop = function(e){ e.preventDefault(); cell.classList.remove("over"); var a = S.plArr; S.plArr = null; if (!a) return; if (a.lane !== L[0]){ toast("Muévelo dentro de su misma fila."); return; } if (a.ref.fecha !== d) plMover(a, d); };
+        items[d].filter(function(i){ return i.lane === L[0]; }).forEach(function(it){
+          var b = el("button", "pl-ev " + it.cls + (it.done ? " done" : "") + (S.plSel && S.plSel.k === it.k && S.plSel.id === it.id ? " sel" : "")); b.type = "button";
+          b.appendChild(document.createTextNode((it.done && it.k !== "hecho" ? "✓ " : "") + it.t)); if (it.sub) b.appendChild(el("small", null, it.sub));
+          if (it.k !== "hecho") b.onclick = function(){ S.plSel = { k: it.k, id: it.id }; render(); };
+          else b.tabIndex = -1;
+          if (it.drag){ b.draggable = true; b.setAttribute("aria-description", "Arrastra a otro día o abre el detalle para moverlo con el teclado"); b.ondragstart = function(e){ S.plArr = it; try { e.dataTransfer.setData("text/plain", it.k + "|" + it.id); e.dataTransfer.effectAllowed = "move"; } catch (e1) {} }; b.ondragend = function(){ S.plArr = null; }; }
+          cell.appendChild(b);
+        });
+        cal.appendChild(cell);
+      });
+    });
+    split.appendChild(cal); split.appendChild(plInsp(all)); root.appendChild(split); f.appendChild(root); return f;
+  }
+
+  /* Registros (escritorio): tablas con filtros, selección múltiple, exportar e imprimir */
+  var RG_TABS = [["trabajos", "Trabajos"], ["riegos", "Riegos"], ["cosechas", "Cosechas"], ["aplicaciones", "Aplicaciones"], ["permisos", "Permisos"]];
+  var rgPick = {}, rgQuit = false, rgFechaNueva = "";
+  function rgEstado(r){ return r.rev === "pendiente" ? ["Por revisar", "lem"] : r.rev === "no" ? ["Rechazado", "warn"] : ["Autorizado", "ok"]; }
+  function rgFilas(tab){
+    var out = [];
+    if (tab === "trabajos") S.trabajos.forEach(function(t){ var e = rgEstado(t); out.push({ id: t.id, col: "trabajos", fecha: t.fecha, sector: t.sector || "", rev: t.rev, c: [t.actividad || "", t.sector || "", t.por || "", nf(t.horas || 0, 1) + " h", fmtD2(t.fecha), e[0]], chip: e, fx: true, rv: true }); });
+    if (tab === "riegos") S.riegos.forEach(function(r){ out.push({ id: r.id, col: "riegos", fecha: r.fecha, sector: r.sector || "", c: [r.sector || "", nf(r.horas || 0, 1) + " h", nf(Number(r.m3) || 0, 0) + " m³", fmtD2(r.fecha), r.por || ""], fx: true }); });
+    if (tab === "cosechas") cosTodas().forEach(function(c){ var e = rgEstado(c); out.push({ id: c.id, col: "cosechas", fecha: c.fecha, sector: c.sector || "", rev: c.rev, fijo: !!c.fijo, c: [c.sector || "", nf(Number(c.kg) || 0, 1) + " kg", c.medida === "seco" ? "Seco" : "Al día", fmtD2(c.fecha), e[0]], chip: e, rv: true }); });
+    if (tab === "aplicaciones") S.aplicaciones.forEach(function(a){ out.push({ id: a.id, col: "aplicaciones", fecha: a.fecha, sector: a.sector || "", c: [itemsDe(a).map(function(i){ return i.producto || i.nombre || ""; }).filter(Boolean).join(" + ") || (a.producto || ""), a.sector || "", fmtD2(a.fecha), a.por || ""] }); });
+    if (tab === "permisos") S.permisos.forEach(function(x){ var e = pmEstado(x); out.push({ id: x.id, col: "permisos", fecha: x.desde, sector: "", c: [x.por || "", fmtD2(x.desde), fmtD2(x.hasta), e === "aprobado" ? "Aprobado" : e === "rechazado" ? "Rechazado" : "Por aprobar"], chip: [e === "aprobado" ? "Aprobado" : e === "rechazado" ? "Rechazado" : "Por aprobar", e === "aprobado" ? "ok" : e === "rechazado" ? "warn" : "lem"] }); });
+    return out.sort(function(a, b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : 0; });
+  }
+  var RG_COLS = { trabajos: ["Trabajo", "Sector", "Quién", "Horas", "Fecha", "Estado"], riegos: ["Sector", "Horas", "Agua", "Fecha", "Registró"], cosechas: ["Sector", "Kilos", "Medida", "Fecha", "Estado"], aplicaciones: ["Producto", "Sector", "Fecha", "Registró"], permisos: ["Persona", "Desde", "Hasta", "Estado"] };
+  function rgCsv(tab, filas){
+    var q = function(v){ return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; };
+    var txt = RG_COLS[tab].map(q).join(";") + "\r\n" + filas.map(function(r){ return r.c.map(q).join(";"); }).join("\r\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + txt], { type: "text/csv;charset=utf-8" })); a.download = "registros-" + tab + "-" + fecha() + ".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  }
+  async function rgHacer(filas, fn, ok){
+    var n = 0, mal = 0; for (var i = 0; i < filas.length; i++){ try { await fn(filas[i]); n++; } catch (e){ mal++; } }
+    rgPick = {}; rgQuit = false; toast(mal ? ok(n) + ". " + mal + " no se pudieron guardar." : ok(n));
+  }
+  function buildRegistros(){
+    var f = el("div", "rg-wrap"), tab = S.rgTab || "trabajos"; if (!RG_TABS.some(function(x){ return x[0] === tab; })) tab = "trabajos";
+    var tb = el("div", "mchips"); tb.setAttribute("role", "group"); tb.setAttribute("aria-label", "Tipo de registro");
+    RG_TABS.forEach(function(x){ var b = el("button", null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", tab === x[0] ? "true" : "false"); b.onclick = function(){ S.rgTab = x[0]; S.rgMes = ""; S.rgSector = ""; S.rgEst = ""; rgPick = {}; rgQuit = false; render(); }; tb.appendChild(b); });
+    f.appendChild(tb);
+    var todas = rgFilas(tab), meses = {}; todas.forEach(function(r){ if (r.fecha) meses[r.fecha.slice(0, 7)] = 1; });
+    var mk = Object.keys(meses).sort().reverse(), secs = {}; todas.forEach(function(r){ if (r.sector) secs[r.sector] = 1; });
+    var filas = todas.filter(function(r){ return (!S.rgMes || r.fecha.slice(0, 7) === S.rgMes) && (!S.rgSector || r.sector === S.rgSector) && (!S.rgEst || (r.chip && r.chip[0] === S.rgEst)); });
+    var ctl = el("div", "rg-ctl"), mkSel = function(id, lab, val, opts, set){ var s1 = el("select"); s1.id = id; s1.setAttribute("aria-label", lab); fill(s1, [{ value: "", label: lab + ": todos" }].concat(opts), val || ""); s1.onchange = function(){ set(s1.value); rgPick = {}; render(); }; return s1; };
+    ctl.appendChild(mkSel("rgMes", "Mes", S.rgMes, mk.map(function(m){ return { value: m, label: m.slice(5) + "/" + m.slice(0, 4) }; }), function(v){ S.rgMes = v; }));
+    if (Object.keys(secs).length) ctl.appendChild(mkSel("rgSector", "Sector", S.rgSector, Object.keys(secs).sort().map(function(x){ return { value: x, label: x }; }), function(v){ S.rgSector = v; }));
+    var ests = {}; todas.forEach(function(r){ if (r.chip) ests[r.chip[0]] = 1; });
+    if (Object.keys(ests).length) ctl.appendChild(mkSel("rgEst", "Estado", S.rgEst, Object.keys(ests).map(function(x){ return { value: x, label: x }; }), function(v){ S.rgEst = v; }));
+    ctl.appendChild(el("span", "sp")); ctl.appendChild(el("span", "note", filas.length + (filas.length === 1 ? " registro" : " registros")));
+    var bx = el("button", null, "Exportar CSV"); bx.type = "button"; bx.onclick = function(){ if (!filas.length){ toast("No hay registros que exportar."); return; } rgCsv(tab, filas); }; ctl.appendChild(bx);
+    var bp = el("button", null, "Imprimir"); bp.type = "button"; bp.onclick = function(){ window.print(); }; ctl.appendChild(bp);
+    f.appendChild(ctl);
+    var sel = filas.filter(function(r){ return rgPick[r.col + "/" + r.id] && !r.fijo; });
+    if (sel.length){
+      var bar = el("div", "rg-bar"); bar.setAttribute("role", "region"); bar.setAttribute("aria-label", "Acciones para los seleccionados"); bar.appendChild(el("b", null, sel.length + (sel.length === 1 ? " seleccionado" : " seleccionados"))); bar.appendChild(el("span", "sp"));
+      var pend = sel.filter(function(r){ return r.rv && r.rev === "pendiente"; });
+      if (pend.length){ var ba = el("button", null, "Autorizar " + pend.length); ba.type = "button"; ba.onclick = function(){ rgHacer(pend, function(r){ return S.db.doc(r.col + "/" + r.id).update({ rev: "ok", revPor: S.nombre, revTs: new Date().toISOString() }); }, function(n){ return n + (n === 1 ? " registro autorizado" : " registros autorizados"); }); }; bar.appendChild(ba); }
+      if (sel.every(function(r){ return r.fx; })){
+        var di = el("input"); di.type = "date"; di.setAttribute("aria-label", "Nueva fecha"); di.max = fecha(); di.value = rgFechaNueva; di.onchange = function(){ rgFechaNueva = di.value; }; bar.appendChild(di);
+        var bf = el("button", null, "Cambiar fecha"); bf.type = "button"; bf.onclick = function(){ if (!di.value || di.value > fecha()){ toast("Elige una fecha que no sea futura."); return; } rgHacer(sel, function(r){ return S.db.doc(r.col + "/" + r.id).update({ fecha: di.value }); }, function(n){ return "Fecha cambiada en " + n + (n === 1 ? " registro" : " registros"); }); }; bar.appendChild(bf);
+      }
+      if (sel.every(function(r){ return r.col === "trabajos" || r.col === "riegos" || r.col === "cosechas"; })){
+        var bq = el("button", null, rgQuit ? "Confirmar: quitar " + sel.length : "Quitar"); bq.type = "button"; bq.onclick = function(){ if (!rgQuit){ rgQuit = true; render(); return; } rgHacer(sel, function(r){ return S.db.doc(r.col + "/" + r.id).delete(); }, function(n){ return n + (n === 1 ? " registro quitado" : " registros quitados"); }); }; bar.appendChild(bq);
+      }
+      f.appendChild(bar);
+    }
+    var wrap = el("div", "rg-tabla");
+    if (!filas.length){ wrap.appendChild(el("p", "rg-vacio", todas.length ? "Ningún registro coincide con los filtros." : "Todavía no hay registros de este tipo.")); f.appendChild(wrap); return f; }
+    var tbl = el("table"), cap = el("caption", null, "Registros de " + RG_TABS.filter(function(x){ return x[0] === tab; })[0][1].toLowerCase()); cap.style.cssText = "position:absolute;left:-9999px"; tbl.appendChild(cap);
+    var hr = el("tr"), editable = filas.some(function(r){ return r.fx || r.rv || r.col === "cosechas"; }), ths = el("th"); 
+    if (editable){ var all = el("input"); all.type = "checkbox"; all.setAttribute("aria-label", "Seleccionar todos"); all.checked = filas.filter(function(r){ return !r.fijo; }).every(function(r){ return rgPick[r.col + "/" + r.id]; }) && filas.some(function(r){ return !r.fijo; });
+      all.onchange = function(){ filas.forEach(function(r){ if (!r.fijo){ if (all.checked) rgPick[r.col + "/" + r.id] = true; else delete rgPick[r.col + "/" + r.id]; } }); rgQuit = false; render(); }; ths.appendChild(all); hr.appendChild(ths); }
+    RG_COLS[tab].forEach(function(h){ var th = el("th", /Horas|Kilos|Agua/.test(h) ? "num" : null, h); th.scope = "col"; hr.appendChild(th); }); tbl.appendChild(hr);
+    filas.slice(0, 300).forEach(function(r){
+      var tr = el("tr", rgPick[r.col + "/" + r.id] ? "sel" : null);
+      if (editable){ var td0 = el("td"), cb = el("input"); cb.type = "checkbox"; cb.setAttribute("aria-label", "Seleccionar " + r.c[0] + ", " + r.c[r.c.length - 2]); cb.checked = !!rgPick[r.col + "/" + r.id]; cb.disabled = !!r.fijo; cb.onchange = function(){ if (cb.checked) rgPick[r.col + "/" + r.id] = true; else delete rgPick[r.col + "/" + r.id]; rgQuit = false; render(); }; td0.appendChild(cb); tr.appendChild(td0); }
+      r.c.forEach(function(v, i){ var td = el("td", RG_COLS[tab][i] && /Horas|Kilos|Agua/.test(RG_COLS[tab][i]) ? "num" : null); if (i === 0) td.style.fontWeight = "700"; if (r.chip && i === r.c.length - 1) td.appendChild(el("span", "chip " + r.chip[1], v)); else td.textContent = v; tr.appendChild(td); });
+      tbl.appendChild(tr);
+    });
+    wrap.appendChild(tbl); f.appendChild(wrap); if (filas.length > 300) f.appendChild(el("p", "note", "Se muestran los 300 más recientes. Usa los filtros o exporta para ver el resto."));
+    return f;
+  }
   function render(){
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
@@ -4215,9 +4415,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!S.nombre) return setView("name", buildName);
     if (!S.guiaVista){ S.guiaVista = true; abrirGuia(false); }
     if (S.screen === "permisos") return setView("permisos", buildPermisos);
-    if (S.screen === "agenda") return setView("agenda", buildAgenda);
+    if (S.screen === "agenda") return PC ? setView("agendapc", buildPlanPC) : setView("agenda", buildAgenda);
     if (S.screen === "campo") return setView("campo", buildCampo);
-    if (S.screen === "trabajo") return setView("trabajo", buildTrabajo);
+    if (S.screen === "trabajo") return PC ? setView("registrospc", buildRegistros) : setView("trabajo", buildTrabajo);
     if (S.screen === "aplic") return setView("aplic", buildAplic);
     if (S.screen === "riego") return setView("riego", buildRiego);
     if (S.screen === "personal" && S.manager) return setView("personal", buildPersonal);

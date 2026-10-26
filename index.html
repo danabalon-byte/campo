@@ -740,6 +740,86 @@ span.ag-ck{border-style:dashed}
     <button id="jcCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="bdSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="bdTitle">
+    <h2 id="bdTitle">Anotar movimiento</h2>
+<div class="sbody">
+    <div class="field"><label for="bdFecha">Fecha</label><input type="date" id="bdFecha"></div>
+    <div class="field"><label for="bdTipo">¿Qué pasó?</label><select id="bdTipo"><option value="ingreso">Entra a la bodega</option><option value="partir">Enviar a partir (nuez con cáscara)</option><option value="consumo">Sale: consumo</option><option value="semilla">Sale: semilla</option><option value="merma">Sale: merma</option><option value="ajuste">Ajuste de saldo (+ o −)</option></select></div>
+    <div class="field" id="bdProdF"><label for="bdProd">Producto</label><select id="bdProd"><option value="cascara">Nuez con cáscara</option><option value="mariposa">Pulpa mariposa</option><option value="resto">Pulpa resto</option></select></div>
+    <div class="field"><label for="bdLugar">Lugar</label><select id="bdLugar"></select></div>
+    <div class="field" id="bdLugarNF" hidden><label for="bdLugarN">Nombre del lugar</label><input type="text" id="bdLugarN" maxlength="40" placeholder="Ej: Bodega de la casa"></div>
+    <div class="field"><label for="bdKg">Kilos</label><input type="text" id="bdKg" inputmode="decimal" maxlength="9" placeholder="Ej: 160"></div>
+    <div class="field"><label for="bdNota">Nota (opcional)</label><input type="text" id="bdNota" maxlength="120" placeholder="Ej: para consumo de la casa"></div>
+    <p class="note warn" id="bdAviso" hidden></p>
+</div>
+<div class="sfoot">    <button class="primary" id="bdOk">Guardar movimiento</button>
+    <button id="bdCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="rpSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="rpTitle">
+    <h2 id="rpTitle">Recibir pulpa partida</h2>
+<div class="sbody">
+    <p class="note" id="rpInfo"></p>
+    <div class="field"><label for="rpFecha">Fecha de recepción</label><input type="date" id="rpFecha"></div>
+    <div class="field"><label for="rpNuez">Nuez con cáscara que se partió (kg)</label><input type="text" id="rpNuez" inputmode="decimal" maxlength="9" placeholder="Ej: 300"></div>
+    <div class="field"><label for="rpMar">Pulpa mariposa recibida (kg)</label><input type="text" id="rpMar" inputmode="decimal" maxlength="9" placeholder="Ej: 90"></div>
+    <div class="field"><label for="rpRes">Pulpa resto recibida (kg)</label><input type="text" id="rpRes" inputmode="decimal" maxlength="9" placeholder="Ej: 60"></div>
+    <div class="field"><label for="rpLugar">¿Dónde queda la pulpa?</label><select id="rpLugar"></select></div>
+    <div class="field" id="rpLugarNF" hidden><label for="rpLugarN">Nombre del lugar</label><input type="text" id="rpLugarN" maxlength="40"></div>
+    <p class="note" id="rpRend"></p>
+    <div id="rpCostoB" hidden><p class="note" id="rpCosto"></p></div>
+    <p class="note warn" id="rpAviso" hidden></p>
+</div>
+<div class="sfoot">    <button class="primary" id="rpOk">Guardar</button>
+    <button id="rpCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="vtSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="vtTitle">
+    <h2 id="vtTitle">Registrar venta</h2>
+<div class="sbody">
+    <div class="field"><label for="vtFecha">Fecha de la venta</label><input type="date" id="vtFecha"></div>
+    <div class="field"><label for="vtComp">Comprador</label><input type="text" id="vtComp" maxlength="60" list="vtComps" placeholder="Ej: Comercializadora Cabilterra"><datalist id="vtComps"></datalist></div>
+    <div class="field"><label for="vtKgC">Nuez con cáscara: kilos</label><input type="text" id="vtKgC" inputmode="decimal" maxlength="9" placeholder="Ej: 2079,5"></div>
+    <div class="field"><label for="vtPrC">Nuez con cáscara: precio neto por kilo ($)</label><input type="text" id="vtPrC" inputmode="numeric" maxlength="7" placeholder="Ej: 2150"></div>
+    <div class="field"><label for="vtKgM">Pulpa mariposa: kilos</label><input type="text" id="vtKgM" inputmode="decimal" maxlength="9"></div>
+    <div class="field"><label for="vtPrM">Pulpa mariposa: precio neto por kilo ($)</label><input type="text" id="vtPrM" inputmode="numeric" maxlength="7"></div>
+    <div class="field"><label for="vtKgR">Pulpa resto: kilos</label><input type="text" id="vtKgR" inputmode="decimal" maxlength="9"></div>
+    <div class="field"><label for="vtPrR">Pulpa resto: precio neto por kilo ($)</label><input type="text" id="vtPrR" inputmode="numeric" maxlength="7"></div>
+    <div id="vtRes" class="note"></div>
+    <div class="field"><label for="vtGuia">N° de guía o factura (opcional)</label><input type="text" id="vtGuia" maxlength="30" placeholder="Ej: Guía 1"></div>
+    <div class="field"><label for="vtFotoGBtn">Foto de la guía (opcional)</label>
+      <input type="file" id="vtFotoG" accept="image/*" hidden>
+      <button type="button" id="vtFotoGBtn">Tomar o elegir una foto</button>
+      <img id="vtFotoGV" alt="Vista previa de la guía" hidden style="width:100%;border-radius:14px;margin-top:8px"></div>
+    <div class="field"><label for="vtPago">Pago</label><select id="vtPago"><option value="pagada">Pagada</option><option value="pendiente">Pendiente</option></select></div>
+    <div class="field" id="vtFpF"><label for="vtFechaPago">Fecha de pago</label><input type="date" id="vtFechaPago"></div>
+    <div class="field" id="vtFotoPF"><label for="vtFotoPBtn">Foto del comprobante de pago (opcional)</label>
+      <input type="file" id="vtFotoP" accept="image/*" hidden>
+      <button type="button" id="vtFotoPBtn">Tomar o elegir una foto</button>
+      <img id="vtFotoPV" alt="Vista previa del comprobante" hidden style="width:100%;border-radius:14px;margin-top:8px"></div>
+    <div class="field"><button type="button" class="tg" id="vtPrev" aria-pressed="false"><span>Venta anterior a este módulo (la bodega ya la descontó)</span><span class="st" id="vtPrevSt">No</span></button></div>
+    <p class="note warn" id="vtAviso" hidden></p>
+</div>
+<div class="sfoot">    <button class="primary" id="vtOk">Guardar venta</button>
+    <button id="vtCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="tpSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="tpTitle">
+    <h2 id="tpTitle">Tarifas de partir</h2>
+<div class="sbody">
+    <div class="field"><label for="tpM">Pulpa mariposa: costo por kilo de pulpa ($)</label><input type="text" id="tpM" inputmode="numeric" maxlength="7" placeholder="Ej: 1000"></div>
+    <div class="field"><label for="tpR">Pulpa resto: costo por kilo de pulpa ($)</label><input type="text" id="tpR" inputmode="numeric" maxlength="7" placeholder="Ej: 500"></div>
+    <div class="field"><label for="tpDesde">Rigen desde</label><input type="date" id="tpDesde"></div>
+    <p class="note">Las partidas y ventas ya hechas siguen con la tarifa que regía ese día.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="tpOk">Guardar tarifas</button>
+    <button id="tpCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="csSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="csTitle">
     <h2 id="csTitle">Registrar cosecha</h2>
@@ -836,7 +916,7 @@ span.ag-ck{border-style:dashed}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0 };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -954,7 +1034,7 @@ span.ag-ck{border-style:dashed}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 15;
+  var GUIA_V = 16;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -992,6 +1072,8 @@ span.ag-ck{border-style:dashed}
     ["Fichas y cumpleaños", "En «Personal», cada persona tiene «Fecha de nacimiento», «Teléfono» y el botón «Mostrar la edad en esta ficha». Si falta la fecha o el teléfono, la ficha queda «Incompleta». En «Alertas» aparece el cumpleaños el día, 3 días antes y 5 días antes.", 13, "manager"],
     ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidores». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
     ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
+    ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
+    ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
@@ -1429,6 +1511,9 @@ span.ag-ck{border-style:dashed}
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
     });
     if (S.owner){ var nrc = S.cosechas.filter(function(c){ return c.rev === "pendiente"; }).length; if (nrc) out.push({ sev: 4, titulo: nrc === 1 ? "1 cosecha por revisar" : nrc + " cosechas por revisar", lineas: [["pm", "Cosecha", "sin asistencia verificada; esperan tu revisión"]], acciones: [], ir: function(){ S.screen = "cosecha"; render(); } }); }
+    if (S.owner) S.ventas.filter(function(v){ return v.pago === "pendiente" && difDias(v.fecha, fecha()) >= 30; }).forEach(function(v){
+      out.push({ sev: 4, titulo: "Venta por cobrar: " + v.comprador, lineas: [["pm", "Ventas", "pendiente de pago hace " + difDias(v.fecha, fecha()) + " días"]], acciones: [], ir: function(){ S.screen = "cosecha"; S.cosTab = "ventas"; render(); } });
+    });
     if (S.manager) cumplesProximos().forEach(function(c){
       var nom = c.g.nombre.split(" ")[0], hoyC = c.dias === 0;
       out.push({ sev: hoyC ? 2 : 4, titulo: hoyC ? "Hoy cumple años " + nom : "Cumple años " + nom + " en " + c.dias + " días", lineas: [["pm", "Cumpleaños", (hoyC ? "¡Salúdalo hoy!" : "para organizar el saludo") + " · " + fmtD2(c.fecha) + (c.edad != null ? " · " + c.edad + " años" : "")]], acciones: [], ir: function(){ S.screen = "personal"; render(); } });
@@ -2497,7 +2582,7 @@ span.ag-ck{border-style:dashed}
   /* historial anual de nogal (dato de Diego, sin sector ni fecha exacta): va fijo en la app y aparece siempre; el dueño puede editarlo (al editar se guarda en la base y reemplaza al fijo) */
   var NOTA_HIST = "Dato anual sin sector ni fecha exacta (fecha referencial)";
   var HIST_COS = [[2023, 300, "2023-04-15", "dia", NOTA_HIST], [2024, 800, "2024-04-15", "dia", NOTA_HIST], [2025, 1800, "2025-04-30", "dia", NOTA_HIST],
-    [2026, 2739.5, "2026-05-15", "seco", "Nuez seca: 2.079,5 kg vendidos el 2 de junio, 500 kg en bins y 160 kg en malla (bodega Chincolco). Faltan por calcular unos 300 kg de nuez partida. Fecha referencial."]];
+    [2026, 3039.5, "2026-05-15", "seco", "Nuez seca con cáscara: 2.079,5 kg vendidos el 2 de junio, 500 kg en bins, 160 kg en malla (bodega Chincolco) y ≈ 300 kg enviados a partir (estimado). Fecha referencial."]];
   function cosTodas(){
     var ids = {}; S.cosechas.forEach(function(c){ ids[c.id] = 1; });
     var fijas = HIST_COS.filter(function(h){ return !ids["h_" + h[0]]; }).map(function(h){ return { id: "h_" + h[0], fijo: true, fecha: h[2], sectorId: "", sector: "Todo el campo", esp: "Nogal", kg: h[1], medida: h[3], nota: h[4], ts: h[2] + "T12:00:00.000Z", por: "Historial de Diego" }; });
@@ -2518,6 +2603,12 @@ span.ag-ck{border-style:dashed}
   };
   function buildCosecha(){
     var f = document.createDocumentFragment(); f.appendChild(ph("cosecha"));
+    if (S.cosTab === "ventas" && !S.owner) S.cosTab = "cosecha";
+    var tb = el("div", "mchips mtabs"); tb.setAttribute("role", "group"); tb.setAttribute("aria-label", "Elige una sección");
+    [["cosecha", "Cosecha"], ["bodega", "Bodega"]].concat(S.owner ? [["ventas", "Ventas"]] : []).forEach(function(x){ var b = el("button", null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", S.cosTab === x[0] ? "true" : "false"); b.onclick = function(){ S.cosTab = x[0]; render(); }; tb.appendChild(b); });
+    f.appendChild(tb);
+    if (S.cosTab === "bodega") return buildBodega(f);
+    if (S.cosTab === "ventas") return buildVentas(f);
     var hoyT = cosTemp(), ks = {}; ks[hoyT] = 1; cosAct().forEach(function(c){ ks[cosTempDe(c.fecha)] = 1; });
     var keys = Object.keys(ks).map(Number).sort(function(a, b){ return b - a; });
     if (!S.cosSel || !ks[S.cosSel]) S.cosSel = hoyT;
@@ -2619,6 +2710,283 @@ span.ag-ck{border-style:dashed}
       h.appendChild(bx);
     });
     if (lista.length > 8){ var mas = el("button", "link", S.verMasCos ? "Ver solo los 8 últimos" : "Ver más registros"); mas.onclick = function(){ S.verMasCos = !S.verMasCos; render(); }; h.appendChild(mas); }
+    f.appendChild(h); return f;
+  }
+
+
+  /* ---- Bodega de nueces (kilos; la ven dueño y encargada) y Ventas (precios y pagos; solo el dueño) ----
+     bodega/{id}: movimientos {fecha, tipo, producto (cascara|mariposa|resto), lugar, kg (con signo), nota, ventaId?, partido?}.
+     ventas/{id} (solo dueño): {fecha, comprador, items[{prod, kg, precio}], ingreso, iva, total, costoPartir, netoFinal, guia, pago, fechaPago, previa, fotoG, fotoP}.
+     tarifas/partir (solo dueño): hist[{desde, m, r}] = costo por kilo de pulpa mariposa y resto. Los precios nunca van escritos en el código. */
+  var PRODS = { cascara: "Nuez con cáscara", mariposa: "Pulpa mariposa", resto: "Pulpa resto" };
+  var LUG_PARTIR = "Enviada a partir";
+  var BOD_BASE = [
+    { id: "b_ini_bins", info: false, fecha: "2026-10-25", tipo: "Saldo inicial", producto: "cascara", lugar: "Bins · bodega", kg: 500, nota: "1 bins guardado" },
+    { id: "b_ini_malla", info: false, fecha: "2026-10-25", tipo: "Saldo inicial", producto: "cascara", lugar: "Malla · bodega Chincolco", kg: 160, nota: "" },
+    { id: "b_ini_partir", info: false, fecha: "2026-10-25", tipo: "Saldo inicial", producto: "cascara", lugar: LUG_PARTIR, kg: 300, nota: "≈ 300 kg de nuez con cáscara enviados a partir (estimado)" },
+    { id: "b_venta_jun", info: true, fecha: "2026-06-02", tipo: "Venta", producto: "cascara", lugar: "", kg: -2079.5, nota: "Comercializadora Cabilterra (venta anterior a este módulo)" }
+  ];
+  function bodMovs(){ return S.bodega.concat(BOD_BASE.map(function(b){ return Object.assign({ fijo: true, ts: b.fecha + "T12:00:00.000Z" }, b); })); }
+  function bodSaldos(){
+    var m = {}; bodMovs().forEach(function(x){ if (x.info) return; var k = x.producto + "|" + (x.lugar || "Sin lugar"); m[k] = (m[k] || 0) + (Number(x.kg) || 0); });
+    return Object.keys(m).map(function(k){ var a = k.split("|"); return { producto: a[0], lugar: a[1], kg: Math.round(m[k] * 100) / 100 }; }).filter(function(x){ return Math.abs(x.kg) > 0.004; });
+  }
+  function bodSuma(fn){ return Math.round(bodMovs().filter(fn).reduce(function(a, x){ return a + (Number(x.kg) || 0); }, 0) * 100) / 100; }
+  function bodLugares(prod){
+    var base = prod === "cascara" ? ["Bins · bodega", "Malla · bodega Chincolco"] : ["Pulpa · bodega"], seen = {}, out = [];
+    bodSaldos().filter(function(x){ return x.lugar !== LUG_PARTIR && x.lugar !== "Sin lugar" && (prod ? (prod === "cascara" ? x.producto === "cascara" : x.producto !== "cascara") : true); }).forEach(function(x){ base.push(x.lugar); });
+    base.forEach(function(l){ if (!seen[l]){ seen[l] = 1; out.push(l); } });
+    return out;
+  }
+  function bodHist(){ return bodMovs().filter(function(x){ return !x.info; }); }
+  function cosechadoSeco(){ return cosAct().filter(function(c){ return c.esp !== "Limón" && c.medida === "seco"; }).reduce(function(a, c){ return a + (Number(c.kg) || 0); }, 0); }
+  function bodCuadre(){
+    var vendC = -bodSuma(function(x){ return x.tipo === "Venta" && x.producto === "cascara"; });
+    var guard = bodSaldos().filter(function(x){ return x.producto === "cascara"; }).reduce(function(a, x){ return a + x.kg; }, 0);
+    var part = -bodSuma(function(x){ return x.tipo === "Partido" && x.producto === "cascara"; });
+    var sal = -bodSuma(function(x){ return (x.tipo === "Consumo" || x.tipo === "Semilla" || x.tipo === "Merma") && x.producto === "cascara"; });
+    var cos = cosechadoSeco(), ubic = vendC + guard + part + sal;
+    return { cos: cos, ubic: ubic, dif: Math.round((cos - ubic) * 100) / 100, vendC: vendC };
+  }
+  function partirTar(f){ return tarifaVig("partir", f); }
+  function partidas(){
+    var g = {}; bodMovs().forEach(function(x){ if (!x.partido) return; var o = g[x.partido] || (g[x.partido] = { id: x.partido, fecha: x.fecha, nuez: 0, mar: 0, res: 0 });
+      if (x.producto === "cascara") o.nuez += -x.kg; else if (x.producto === "mariposa") o.mar += x.kg; else if (x.producto === "resto") o.res += x.kg; });
+    return Object.keys(g).map(function(k){ return g[k]; }).sort(function(a, b){ return a.fecha < b.fecha ? 1 : -1; });
+  }
+  function rendimiento(){ var n = 0, pl = 0; partidas().forEach(function(x){ n += x.nuez; pl += x.mar + x.res; }); return n > 0 && pl > 0 ? n / pl : 2; }
+  function costoPartir(mar, res, f){ var t = partirTar(f); return t ? Math.round((mar * (Number(t.m) || 0)) + (res * (Number(t.r) || 0))) : 0; }
+  function lugarSel(selId, nfId, prod, val){
+    var ls = bodLugares(prod).map(function(l){ return { value: l, label: l }; }).concat([{ value: "__otro", label: "Otro lugar…" }]);
+    fill($(selId), ls, val || ls[0].value); $(nfId).hidden = $(selId).value !== "__otro";
+  }
+  function lugarDe(selId, nId){ var v = $(selId).value; return v === "__otro" ? $(nId).value.trim() : v; }
+  async function movAdd(o){ return S.db.collection("bodega").add(Object.assign({ ts: new Date().toISOString(), uid: S.uid, por: S.nombre }, o)); }
+  /* reparte una salida de kilos entre los lugares que tienen ese producto */
+  function sacar(prod, kg){
+    var ls = bodSaldos().filter(function(x){ return x.producto === prod && x.lugar !== LUG_PARTIR && x.kg > 0; }).sort(function(a, b){ return b.kg - a.kg; }), out = [], falta = kg;
+    ls.forEach(function(l){ if (falta <= 0) return; var t = Math.min(l.kg, falta); out.push({ lugar: l.lugar, kg: -t }); falta = Math.round((falta - t) * 100) / 100; });
+    if (falta > 0) out.push({ lugar: "Sin lugar", kg: -falta });
+    return { movs: out, falta: falta };
+  }
+  function disp(prod){ return bodSaldos().filter(function(x){ return x.producto === prod && x.lugar !== LUG_PARTIR && x.kg > 0; }).reduce(function(a, x){ return a + x.kg; }, 0); }
+
+  /* movimiento manual */
+  var bdForzar = false;
+  function pintaBd(){ var t = $("bdTipo").value; $("bdProdF").hidden = t === "partir"; if (t === "partir") $("bdProd").value = "cascara"; $("bdLugarNF").hidden = $("bdLugar").value !== "__otro"; }
+  function abrirMov(){
+    $("bdFecha").value = fecha(); $("bdFecha").max = fecha(); $("bdTipo").value = "ingreso"; $("bdProd").value = "cascara"; $("bdKg").value = ""; $("bdNota").value = ""; $("bdLugarN").value = "";
+    lugarSel("bdLugar", "bdLugarNF", "cascara"); bdForzar = false; $("bdAviso").hidden = true; $("bdOk").textContent = "Guardar movimiento"; pintaBd(); $("bdSheet").hidden = false; $("bdKg").focus();
+  }
+  $("bdCancel").onclick = function(){ $("bdSheet").hidden = true; };
+  $("bdTipo").onchange = function(){ pintaBd(); bdForzar = false; $("bdAviso").hidden = true; $("bdOk").textContent = "Guardar movimiento"; };
+  $("bdProd").onchange = function(){ lugarSel("bdLugar", "bdLugarNF", $("bdProd").value); };
+  $("bdLugar").onchange = function(){ $("bdLugarNF").hidden = $("bdLugar").value !== "__otro"; };
+  $("bdOk").onclick = async function(){
+    var t = $("bdTipo").value, f = $("bdFecha").value, kg = leeNum($("bdKg").value), prod = t === "partir" ? "cascara" : $("bdProd").value, lug = lugarDe("bdLugar", "bdLugarN");
+    if (!f || f > fecha()){ toast("Revisa la fecha: no puede ser futura."); return; }
+    if (kg == null || kg === 0 || (t !== "ajuste" && kg < 0) || Math.abs(kg) > 100000){ toast("Escribe los kilos."); $("bdKg").focus(); return; }
+    if (!lug){ toast("Escribe el nombre del lugar."); return; }
+    var saldo = (bodSaldos().filter(function(x){ return x.producto === prod && x.lugar === lug; })[0] || { kg: 0 }).kg;
+    var sale = t === "partir" || t === "consumo" || t === "semilla" || t === "merma" || (t === "ajuste" && kg < 0);
+    if (sale && !bdForzar && Math.abs(kg) > saldo + 0.004){ bdForzar = true; $("bdAviso").textContent = "En «" + lug + "» solo hay " + fmtNum(Math.max(saldo, 0), 1) + " kg de " + PRODS[prod].toLowerCase() + ". Si es correcto, toca «Guardar igual»."; $("bdAviso").hidden = false; $("bdOk").textContent = "Guardar igual"; return; }
+    var b = $("bdOk"); b.disabled = true; var nota = $("bdNota").value.trim();
+    try {
+      if (t === "ingreso") await movAdd({ fecha: f, tipo: "Ingreso", producto: prod, lugar: lug, kg: kg, nota: nota });
+      else if (t === "ajuste") await movAdd({ fecha: f, tipo: "Ajuste", producto: prod, lugar: lug, kg: kg, nota: nota });
+      else if (t === "partir"){ await movAdd({ fecha: f, tipo: "Envío a partir", producto: "cascara", lugar: lug, kg: -kg, nota: nota }); await movAdd({ fecha: f, tipo: "En partido", producto: "cascara", lugar: LUG_PARTIR, kg: kg, nota: nota }); }
+      else await movAdd({ fecha: f, tipo: t === "consumo" ? "Consumo" : t === "semilla" ? "Semilla" : "Merma", producto: prod, lugar: lug, kg: -kg, nota: nota });
+      $("bdSheet").hidden = true; toast("Movimiento guardado");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  /* recibir pulpa partida */
+  var rpForzar = false;
+  function enPartido(){ return (bodSaldos().filter(function(x){ return x.lugar === LUG_PARTIR && x.producto === "cascara"; })[0] || { kg: 0 }).kg; }
+  function pintaRp(){
+    var n = leeNum($("rpNuez").value) || 0, m = leeNum($("rpMar").value) || 0, r = leeNum($("rpRes").value) || 0, f = $("rpFecha").value || fecha();
+    $("rpRend").textContent = n > 0 && m + r > 0 ? "Pulpa total " + fmtNum(m + r, 1) + " kg: " + fmtNum((m + r) / n, 2) + " kg de pulpa por kg de nuez." : "";
+    $("rpCostoB").hidden = !S.owner;
+    if (S.owner){ var t = partirTar(f); $("rpCosto").textContent = !t ? "Falta fijar las tarifas de partir (en «Ventas»)." : (m + r > 0 ? "Costo de partir: " + pesos(costoPartir(m, r, f)) + " (mariposa " + fmtNum(m, 1) + " kg × " + pesos(t.m) + " + resto " + fmtNum(r, 1) + " kg × " + pesos(t.r) + ")." : ""); }
+  }
+  function abrirRecibir(){
+    var ep = enPartido(); $("rpInfo").textContent = ep > 0 ? "Hay ≈ " + fmtNum(ep, 1) + " kg de nuez con cáscara enviados a partir. Con tu promedio se esperan ≈ " + fmtNum(ep / rendimiento(), 0) + " kg de pulpa." : "No hay nuez enviada a partir. Primero anota «Enviar a partir».";
+    $("rpFecha").value = fecha(); $("rpFecha").max = fecha(); $("rpNuez").value = ep > 0 ? String(ep).replace(".", ",") : ""; $("rpMar").value = ""; $("rpRes").value = ""; $("rpLugarN").value = "";
+    lugarSel("rpLugar", "rpLugarNF", "mariposa"); rpForzar = false; $("rpAviso").hidden = true; $("rpOk").textContent = "Guardar"; pintaRp(); $("rpSheet").hidden = false; $("rpMar").focus();
+  }
+  $("rpCancel").onclick = function(){ $("rpSheet").hidden = true; };
+  $("rpLugar").onchange = function(){ $("rpLugarNF").hidden = $("rpLugar").value !== "__otro"; };
+  $("rpFecha").onchange = $("rpNuez").oninput = $("rpMar").oninput = $("rpRes").oninput = function(){ pintaRp(); rpForzar = false; $("rpAviso").hidden = true; $("rpOk").textContent = "Guardar"; };
+  $("rpOk").onclick = async function(){
+    var f = $("rpFecha").value, n = leeNum($("rpNuez").value), m = leeNum($("rpMar").value) || 0, r = leeNum($("rpRes").value) || 0, lug = lugarDe("rpLugar", "rpLugarN");
+    if (!f || f > fecha()){ toast("Revisa la fecha: no puede ser futura."); return; }
+    if (!(n > 0)){ toast("Escribe los kilos de nuez con cáscara que se partieron."); $("rpNuez").focus(); return; }
+    if (m < 0 || r < 0 || !(m + r > 0)){ toast("Escribe los kilos de pulpa recibidos."); $("rpMar").focus(); return; }
+    if (!lug){ toast("Escribe el nombre del lugar."); return; }
+    var ep = enPartido();
+    if (!rpForzar && ((n > ep + 0.004) || (m + r > n))){ rpForzar = true; $("rpAviso").textContent = m + r > n ? "La pulpa recibida (" + fmtNum(m + r, 1) + " kg) es mayor que la nuez partida (" + fmtNum(n, 1) + " kg). Revisa los kilos. Si es correcto, toca «Guardar igual»." : "Solo hay " + fmtNum(Math.max(ep, 0), 1) + " kg de nuez enviados a partir. Si es correcto, toca «Guardar igual»."; $("rpAviso").hidden = false; $("rpOk").textContent = "Guardar igual"; return; }
+    var b = $("rpOk"); b.disabled = true, pid = "p_" + Date.now().toString(36);
+    try {
+      await movAdd({ fecha: f, tipo: "Partido", producto: "cascara", lugar: LUG_PARTIR, kg: -n, partido: pid });
+      if (m > 0) await movAdd({ fecha: f, tipo: "Pulpa recibida", producto: "mariposa", lugar: lug, kg: m, partido: pid });
+      if (r > 0) await movAdd({ fecha: f, tipo: "Pulpa recibida", producto: "resto", lugar: lug, kg: r, partido: pid });
+      $("rpSheet").hidden = true; toast("Pulpa recibida");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  var pid;
+  /* tarifas de partir (solo dueño) */
+  function abrirTar(){ var t = partirTar(fecha()); $("tpM").value = t ? String(t.m) : ""; $("tpR").value = t ? String(t.r) : ""; $("tpDesde").value = fecha(); $("tpSheet").hidden = false; $("tpM").focus(); }
+  $("tpCancel").onclick = function(){ $("tpSheet").hidden = true; };
+  $("tpOk").onclick = async function(){
+    var m = leePesos($("tpM").value), r = leePesos($("tpR").value), d = $("tpDesde").value;
+    if (!(m > 0) || !(r > 0)){ toast("Escribe las dos tarifas."); return; } if (!d){ toast("Elige desde cuándo rigen."); return; }
+    try {
+      var old = S.tarifas.partir || {}, hist = (old.hist || []).filter(function(x){ return x.desde !== d; }); hist.push({ desde: d, m: m, r: r });
+      await S.db.doc("tarifas/partir").set({ hist: hist }); $("tpSheet").hidden = true; toast("Tarifas guardadas");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  };
+  function buildBodega(f){
+    var sal = bodSaldos(), c = el("section", "card sect"); c.appendChild(el("h2", null, "Saldo de nueces"));
+    var kC = sal.filter(function(x){ return x.producto === "cascara" && x.lugar !== LUG_PARTIR; }).reduce(function(a, x){ return a + x.kg; }, 0), kP = sal.filter(function(x){ return x.producto !== "cascara"; }).reduce(function(a, x){ return a + x.kg; }, 0), ep = enPartido();
+    var g = el("div", "mbig");
+    function cel(b, s2){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s2)); g.appendChild(d); }
+    cel(fmtNum(kC, 1) + " kg", "nuez con cáscara guardada"); cel(fmtNum(kP, 1) + " kg", "pulpa guardada"); c.appendChild(g);
+    var rows = el("div", "rows"), cu = bodCuadre();
+    [["Vendido con cáscara", fmtNum(cu.vendC, 1) + " kg"], ["En proceso de partido", ep > 0 ? "≈ " + fmtNum(ep, 1) + " kg" : "—"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
+    c.appendChild(rows);
+    if (cu.cos > 0){ var p = el("p"); if (Math.abs(cu.dif) <= 1) p.appendChild(el("span", "chip ok", "Cuadra con Cosecha: " + fmtNum(cu.cos, 1) + " kg")); else { p.appendChild(el("span", "chip idle", "Cosecha " + fmtNum(cu.cos, 1) + " kg · ubicados " + fmtNum(cu.ubic, 1) + " kg")); c.appendChild(p); p = el("p", "note warn", (cu.dif > 0 ? "Faltan " + fmtNum(cu.dif, 1) + " kg por ubicar en la bodega." : "Hay " + fmtNum(-cu.dif, 1) + " kg más en bodega y ventas que en Cosecha.") + " Revisa «Cosecha» o anota el movimiento."); } c.appendChild(p); }
+    var b1 = el("button", "primary", "Anotar movimiento"); b1.onclick = abrirMov; c.appendChild(b1);
+    if (ep > 0){ var b2 = el("button", null, "Recibir pulpa partida"); b2.onclick = abrirRecibir; c.appendChild(b2); }
+    f.appendChild(c);
+    var d = el("section", "card sect"); d.appendChild(el("h2", null, "Dónde está"));
+    if (!sal.length) d.appendChild(el("p", "note", "Todavía no hay nueces anotadas en la bodega."));
+    sal.sort(function(a, b2){ return b2.kg - a.kg; }).forEach(function(x){ var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, x.lugar)); wo.appendChild(el("span", x.kg < 0 ? "chip warn" : "chip idle", (x.lugar === LUG_PARTIR ? "≈ " : "") + fmtNum(x.kg, 1) + " kg")); bx.appendChild(wo); bx.appendChild(el("p", "sub", PRODS[x.producto])); d.appendChild(bx); });
+    f.appendChild(d);
+    var ps = partidas();
+    if (ps.length){
+      var h = el("section", "card sect"); h.appendChild(el("h2", null, "Partidas recibidas"));
+      ps.forEach(function(x){ var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, fmtD2(x.fecha) + " · " + fmtNum(x.nuez, 1) + " kg de nuez")); wo.appendChild(el("span", "chip idle", fmtNum(x.mar + x.res, 1) + " kg de pulpa")); bx.appendChild(wo);
+        bx.appendChild(el("p", "sub", "Mariposa " + fmtNum(x.mar, 1) + " kg · resto " + fmtNum(x.res, 1) + " kg · " + fmtNum((x.mar + x.res) / x.nuez, 2) + " kg de pulpa por kg de nuez"));
+        if (S.owner) bx.appendChild(el("p", "note", "Costo de partir: " + pesos(costoPartir(x.mar, x.res, x.fecha)))); h.appendChild(bx); });
+      f.appendChild(h);
+    }
+    var hh = el("section", "card sect"); hh.appendChild(el("h2", null, "Movimientos"));
+    var L = bodMovs().sort(function(a, b2){ return a.fecha < b2.fecha ? 1 : a.fecha > b2.fecha ? -1 : (a.ts < b2.ts ? 1 : -1); });
+    L.slice(0, S.verMasBod ? 60 : 8).forEach(function(x){
+      var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, fmtD2(x.fecha) + " · " + x.tipo)); wo.appendChild(el("span", "chip idle", (x.kg > 0 ? "+" : "") + fmtNum(x.kg, 1) + " kg")); bx.appendChild(wo);
+      bx.appendChild(el("p", "sub", PRODS[x.producto] + (x.lugar ? " · " + x.lugar : ""))); if (x.nota) bx.appendChild(el("p", "note", x.nota));
+      if (!x.fijo) bx.appendChild(el("p", "note", (x.por || "") + " · " + fmtFH.format(new Date(x.ts))));
+      if (S.owner && !x.fijo && !x.ventaId){ var q = el("button", "small", quitarC === x.id ? "Confirmar" : "Quitar"); q.onclick = async function(){ if (quitarC !== x.id){ quitarC = x.id; render(); return; } quitarC = null; try { await S.db.doc("bodega/" + x.id).delete(); toast("Movimiento quitado"); } catch (err){ toast("No se pudo quitar."); } }; bx.appendChild(q); }
+      hh.appendChild(bx);
+    });
+    if (L.length > 8){ var mas = el("button", "link", S.verMasBod ? "Ver solo los 8 últimos" : "Ver más movimientos"); mas.onclick = function(){ S.verMasBod = !S.verMasBod; render(); }; hh.appendChild(mas); }
+    f.appendChild(hh); return f;
+  }
+  /* ventas (solo dueño) */
+  var vtPrevOn = false, vtFG = null, vtFP = null, vfCache = {};
+  function ventaCalc(v){
+    var ing = v.kC * v.pC + v.kM * v.pM + v.kR * v.pR, costo = costoPartir(v.kM, v.kR, v.fecha), tar = partirTar(v.fecha);
+    var rend = rendimiento(), nuezEq = v.kC + (v.kM + v.kR) * rend, pulpa = v.kM + v.kR;
+    var o = { ing: Math.round(ing), costo: costo, neto: Math.round(ing - costo), iva: Math.round(ing * 0.19), total: Math.round(ing * 1.19), nuezEq: nuezEq, rend: rend, sinTar: pulpa > 0 && !tar };
+    o.porKg = nuezEq > 0 ? o.neto / nuezEq : 0;
+    var ref = null; S.ventas.slice().sort(function(a, b){ return a.fecha < b.fecha ? 1 : -1; }).some(function(x){ var it = (x.items || []).filter(function(i){ return i.prod === "cascara" && i.kg > 0; })[0]; if (it){ ref = it.precio; return true; } return false; });
+    if (ref == null && v.pC > 0) ref = v.pC;
+    if (ref != null && pulpa > 0){
+      var ingP = v.kM * v.pM + v.kR * v.pR, netoP = ingP - costo; o.ref = ref; o.vsCascara = Math.round(netoP - pulpa * rend * ref);
+      o.equilibrio = Math.round(rend * ref + costo / pulpa);
+    }
+    return o;
+  }
+  function vtLee(){ return { fecha: $("vtFecha").value || fecha(), kC: leeNum($("vtKgC").value) || 0, pC: leePesos($("vtPrC").value), kM: leeNum($("vtKgM").value) || 0, pM: leePesos($("vtPrM").value), kR: leeNum($("vtKgR").value) || 0, pR: leePesos($("vtPrR").value) }; }
+  function pintaVt(){
+    var v = vtLee(), r = $("vtRes"); r.replaceChildren();
+    if (!(v.kC + v.kM + v.kR > 0)){ r.appendChild(el("p", "note", "Escribe los kilos y el precio de lo que vendiste.")); }
+    else {
+      var o = ventaCalc(v), rows = el("div", "rows");
+      [["Ingreso neto", pesos(o.ing)]].concat(o.costo > 0 ? [["Costo de partir", "− " + pesos(o.costo)], ["Neto final", pesos(o.neto)]] : []).concat([["IVA 19 %", pesos(o.iva)], ["Total con IVA", pesos(o.total)]]).concat(o.nuezEq > 0 ? [["Neto por kg de nuez con cáscara", pesos(o.porKg)]] : []).forEach(function(x){ var rr = el("div", "row"); rr.appendChild(el("span", "l", x[0])); rr.appendChild(el("span", "r", x[1])); rows.appendChild(rr); });
+      r.appendChild(rows);
+      if (o.sinTar) r.appendChild(el("p", "note warn", "Falta fijar las tarifas de partir: el costo no está descontado."));
+      if (o.vsCascara != null){ r.appendChild(el("p", "note", "Comparación: vender esa nuez con cáscara a " + pesos(o.ref) + " por kilo habría dado " + (o.vsCascara >= 0 ? pesos(o.vsCascara) + " menos." : pesos(-o.vsCascara) + " más."))); r.appendChild(el("p", "note", "Para que partir convenga, la pulpa debe venderse sobre ≈ " + pesos(o.equilibrio) + " por kilo (neto, promedio).")); }
+    }
+    $("vtFpF").hidden = $("vtFotoPF").hidden = $("vtPago").value !== "pagada";
+  }
+  function fotoPick(btnId, inId, imgId, set){
+    $(btnId).onclick = function(){ $(inId).click(); };
+    $(inId).onchange = async function(){ var fl = this.files && this.files[0]; this.value = ""; if (!fl) return; try { var d = await comprimirFoto(fl); set(d); $(imgId).src = d; $(imgId).hidden = false; $(btnId).textContent = "Cambiar la foto"; } catch (err){ set(null); toast("No se pudo leer la foto. Prueba con otra."); } };
+  }
+  fotoPick("vtFotoGBtn", "vtFotoG", "vtFotoGV", function(d){ vtFG = d; }); fotoPick("vtFotoPBtn", "vtFotoP", "vtFotoPV", function(d){ vtFP = d; });
+  function abrirVenta(){
+    ["vtComp", "vtKgC", "vtPrC", "vtKgM", "vtPrM", "vtKgR", "vtPrR", "vtGuia"].forEach(function(i){ $(i).value = ""; });
+    $("vtFecha").value = fecha(); $("vtFecha").max = fecha(); $("vtPago").value = "pagada"; $("vtFechaPago").value = fecha(); $("vtFechaPago").max = fecha();
+    vtPrevOn = false; $("vtPrev").setAttribute("aria-pressed", "false"); $("vtPrevSt").textContent = "No"; vtFG = vtFP = null;
+    ["vtFotoGV", "vtFotoPV"].forEach(function(i){ $(i).hidden = true; }); $("vtFotoGBtn").textContent = $("vtFotoPBtn").textContent = "Tomar o elegir una foto";
+    var cs = {}; S.ventas.forEach(function(x){ if (x.comprador) cs[x.comprador] = 1; }); $("vtComps").replaceChildren(); Object.keys(cs).forEach(function(c){ var o = el("option"); o.value = c; $("vtComps").appendChild(o); });
+    $("vtAviso").hidden = true; $("vtOk").textContent = "Guardar venta"; vtForzar = false; pintaVt(); $("vtSheet").hidden = false; $("vtComp").focus();
+  }
+  var vtForzar = false;
+  $("vtCancel").onclick = function(){ $("vtSheet").hidden = true; };
+  $("vtPrev").onclick = function(){ vtPrevOn = !vtPrevOn; $("vtPrev").setAttribute("aria-pressed", vtPrevOn ? "true" : "false"); $("vtPrevSt").textContent = vtPrevOn ? "Sí" : "No"; vtForzar = false; $("vtAviso").hidden = true; $("vtOk").textContent = "Guardar venta"; };
+  ["vtFecha", "vtKgC", "vtPrC", "vtKgM", "vtPrM", "vtKgR", "vtPrR", "vtPago"].forEach(function(i){ $(i).oninput = $(i).onchange = function(){ pintaVt(); vtForzar = false; $("vtAviso").hidden = true; $("vtOk").textContent = "Guardar venta"; }; });
+  $("vtOk").onclick = async function(){
+    var v = vtLee(), comp = $("vtComp").value.trim();
+    if (!v.fecha || v.fecha > fecha()){ toast("Revisa la fecha: no puede ser futura."); return; }
+    if (!comp){ toast("Escribe el comprador."); $("vtComp").focus(); return; }
+    var items = [["cascara", v.kC, v.pC], ["mariposa", v.kM, v.pM], ["resto", v.kR, v.pR]].filter(function(x){ return x[1] > 0; });
+    if (!items.length){ toast("Escribe los kilos vendidos."); return; }
+    if (items.some(function(x){ return !(x[2] > 0); })){ toast("Falta el precio de algún producto."); return; }
+    var pagada = $("vtPago").value === "pagada", fp = $("vtFechaPago").value;
+    if (pagada && (!fp || fp > fecha())){ toast("Revisa la fecha de pago."); return; }
+    if (!vtPrevOn && !vtForzar){ var falt = items.filter(function(x){ return x[1] > disp(x[0]) + 0.004; }); if (falt.length){ vtForzar = true; $("vtAviso").textContent = "En la bodega solo hay " + falt.map(function(x){ return fmtNum(disp(x[0]), 1) + " kg de " + PRODS[x[0]].toLowerCase(); }).join(" y ") + ". Si es correcto, toca «Guardar igual»."; $("vtAviso").hidden = false; $("vtOk").textContent = "Guardar igual"; return; } }
+    var o = ventaCalc(v), b = $("vtOk"); b.disabled = true;
+    try {
+      var ref = S.db.collection("ventas").doc(), fG = "", fP = "";
+      try {
+        if (vtFG){ var r1 = S.db.collection("ventasFotos").doc(); await r1.set({ data: vtFG, ts: new Date().toISOString(), uid: S.uid }); fG = r1.id; }
+        if (vtFP && pagada){ var r2 = S.db.collection("ventasFotos").doc(); await r2.set({ data: vtFP, ts: new Date().toISOString(), uid: S.uid }); fP = r2.id; }
+      } catch (e2){ toast("No se pudo guardar una foto. Revisa tu señal o quítala."); b.disabled = false; return; }
+      await ref.set({ fecha: v.fecha, comprador: comp, items: items.map(function(x){ return { prod: x[0], kg: x[1], precio: x[2] }; }), ingreso: o.ing, iva: o.iva, total: o.total, costoPartir: o.costo, netoFinal: o.neto, guia: $("vtGuia").value.trim(), pago: pagada ? "pagada" : "pendiente", fechaPago: pagada ? fp : "", previa: vtPrevOn, fotoG: fG, fotoP: fP, uid: S.uid, por: S.nombre, ts: new Date().toISOString() });
+      if (!vtPrevOn){
+        for (var i = 0; i < items.length; i++){ var rp = sacar(items[i][0], items[i][1]); for (var j = 0; j < rp.movs.length; j++) await movAdd({ fecha: v.fecha, tipo: "Venta", producto: items[i][0], lugar: rp.movs[j].lugar, kg: rp.movs[j].kg, ventaId: ref.id, nota: comp }); }
+      }
+      $("vtSheet").hidden = true; toast("Venta guardada");
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  async function fotoV(id){ var d = vfCache[id]; if (d) return d; var sn = await S.db.doc("ventasFotos/" + id).get(); d = sn.exists ? sn.data().data : null; if (d) vfCache[id] = d; return d; }
+  function verFoto(box, id, label){
+    var vb = el("button", "link", label), im = el("img"); im.alt = label; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;
+    vb.onclick = async function(){ if (!im.hidden){ im.hidden = true; vb.textContent = label; return; } vb.textContent = "Cargando…"; try { var d = await fotoV(id); if (!d){ vb.textContent = label; toast("La foto no está disponible."); return; } im.src = d; im.hidden = false; vb.textContent = "Ocultar"; } catch (e3){ vb.textContent = label; toast("No se pudo cargar la foto. Revisa tu señal."); } };
+    box.appendChild(vb); box.appendChild(im);
+  }
+  function buildVentas(f){
+    var vs = S.ventas.slice().sort(function(a, b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.ts < b.ts ? 1 : -1); });
+    var kg = 0, cob = 0, por = 0; vs.forEach(function(v){ (v.items || []).forEach(function(i){ kg += Number(i.kg) || 0; }); if (v.pago === "pagada") cob += Number(v.total) || 0; else por += Number(v.total) || 0; });
+    var c = el("section", "card sect"); c.appendChild(el("h2", null, "Ventas de nueces")); c.appendChild(el("p", "sub", "Solo tú ves los precios y pagos."));
+    var g = el("div", "mbig");
+    function cel(b, s2){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s2)); g.appendChild(d); }
+    cel(fmtNum(kg, 1) + " kg", "vendidos (todos los productos)"); cel(pesos(cob), "cobrado, con IVA"); c.appendChild(g);
+    var rows = el("div", "rows"), r = el("div", "row"); r.appendChild(el("span", "l", "Por cobrar")); r.appendChild(el("span", "r", pesos(por))); rows.appendChild(r);
+    var t = partirTar(fecha()), r2 = el("div", "row"); r2.appendChild(el("span", "l", "Costo de partir por kilo de pulpa")); r2.appendChild(el("span", "r", t ? "Mariposa " + pesos(t.m) + " · resto " + pesos(t.r) : "sin fijar")); rows.appendChild(r2); c.appendChild(rows);
+    var b1 = el("button", "primary", "Registrar venta"); b1.onclick = abrirVenta; c.appendChild(b1);
+    var b2 = el("button", null, "Tarifas de partir"); b2.onclick = abrirTar; c.appendChild(b2); f.appendChild(c);
+    var h = el("section", "card sect"); h.appendChild(el("h2", null, "Ventas registradas"));
+    if (!vs.length) h.appendChild(el("p", "note", "Todavía no hay ventas. Toca «Registrar venta»."));
+    vs.forEach(function(v){
+      var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, fmtD2(v.fecha) + " · " + v.comprador)); wo.appendChild(el("span", v.pago === "pagada" ? "chip ok" : "chip warn", v.pago === "pagada" ? "Pagada " + fmtD2(v.fechaPago) : "Por cobrar")); bx.appendChild(wo);
+      (v.items || []).forEach(function(i){ bx.appendChild(el("p", null, PRODS[i.prod] + ": " + fmtNum(i.kg, 1) + " kg × " + pesos(i.precio))); });
+      var rw = el("div", "rows");
+      [["Ingreso neto", pesos(v.ingreso)]].concat(v.costoPartir > 0 ? [["Costo de partir", "− " + pesos(v.costoPartir)], ["Neto final", pesos(v.netoFinal)]] : []).concat([["IVA 19 %", pesos(v.iva)], ["Total con IVA", pesos(v.total)]]).forEach(function(x){ var rr = el("div", "row"); rr.appendChild(el("span", "l", x[0])); rr.appendChild(el("span", "r", x[1])); rw.appendChild(rr); });
+      bx.appendChild(rw);
+      if (v.guia) bx.appendChild(el("p", "note", v.guia + (v.previa ? " · venta anterior a este módulo" : "")));
+      else if (v.previa) bx.appendChild(el("p", "note", "Venta anterior a este módulo"));
+      if (v.fotoG) verFoto(bx, v.fotoG, "Ver guía"); if (v.fotoP) verFoto(bx, v.fotoP, "Ver comprobante");
+      var bb = el("div", "btns");
+      if (v.pago !== "pagada"){ var pg = el("button", "small", "Marcar pagada"); pg.onclick = async function(){ try { await S.db.doc("ventas/" + v.id).update({ pago: "pagada", fechaPago: fecha() }); toast("Venta marcada como pagada"); } catch (err){ toast("No se pudo guardar."); } }; bb.appendChild(pg); }
+      var q = el("button", "small", quitarC === v.id ? "Confirmar" : "Quitar");
+      q.onclick = async function(){ if (quitarC !== v.id){ quitarC = v.id; render(); return; } quitarC = null; try { for (var i = 0; i < S.bodega.length; i++) if (S.bodega[i].ventaId === v.id) await S.db.doc("bodega/" + S.bodega[i].id).delete(); await S.db.doc("ventas/" + v.id).delete(); toast("Venta quitada"); } catch (err){ toast("No se pudo quitar."); } };
+      bb.appendChild(q); bx.appendChild(bb); h.appendChild(bx);
+    });
     f.appendChild(h); return f;
   }
 
@@ -3648,6 +4016,8 @@ span.ag-ck{border-style:dashed}
       subJornada();
       db.collection("medidores").onSnapshot(function(s){ S.medidores = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); if (S.owner && !S.semillaM){ S.semillaM = true; sembrarMedidores(); } }, function(){});
       db.collection("cosechas").orderBy("fecha", "desc").limit(600).onSnapshot(function(s){ S.cosechas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
+      db.collection("bodega").orderBy("fecha", "desc").limit(800).onSnapshot(function(s){ S.bodega = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
+      if (S.owner) db.collection("ventas").orderBy("fecha", "desc").limit(300).onSnapshot(function(s){ S.ventas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
       db.doc("config/cosecha").onSnapshot(function(s){ S.cosconf = s.exists ? s.data() : {}; render(); }, function(){});
       db.collection("lecturas").orderBy("fecha", "desc").limit(400).onSnapshot(function(s){ S.lecturas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     }

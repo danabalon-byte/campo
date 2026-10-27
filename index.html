@@ -381,6 +381,7 @@ html.pc .pcbar .sp{flex:1}
 .pcsearch{display:flex; align-items:center; gap:8px; width:300px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--muted); font-size:14px; text-align:left}
 .pcsearch kbd{margin-left:auto; font:12px var(--font-body); border:1px solid var(--line); border-radius:5px; padding:0 6px}
 .pcsearch svg{width:16px; height:16px}
+.pctema{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px; margin-right:12px}
 .pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
 .pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
 .pcsync.off{color:var(--alert)}.pcsync.off i{background:var(--alert)}
@@ -497,6 +498,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   </header>
   <div class="pcbar" id="pcbar"><h2 id="pcTitulo"></h2><span class="sp"></span>
     <button type="button" class="pcsearch" id="pcBuscar" aria-label="Buscar o ir a… (Comando K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><span>Buscar o ir a…</span><kbd>⌘K</kbd></button>
+    <button type="button" class="pctema" id="pcTema" aria-label="Cambiar apariencia"></button>
     <span class="pcsync" id="pcSync" role="status"><i></i><span>Sincronizado</span></span></div>
   <main id="app" aria-live="polite"></main>
 </div>
@@ -1192,7 +1194,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
     ["Horarios del equipo", "En «Inicio», el módulo «Horarios del equipo» muestra quién está en el campo y a qué hora entra y sale cada persona. Solo lo ves tú.", 2, "owner"],
     ["Letra grande para el sol", "En «Inicio», abajo, abre la casilla «Uso y apariencia». Ahí el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
-    ["Claro o nocturno", "En «Inicio», abajo, abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
+    ["Claro o nocturno", "En el computador, el botón «Apariencia» está arriba a la derecha. En el teléfono, en «Campo», abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
     ["Dónde quedó la guía", "En «Inicio», abajo, la casilla «Uso y apariencia» reúne la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
     ["Alertas en Inicio", "Si algo necesita atención, «Inicio» muestra la tarjeta «Alertas» justo bajo tu saludo, con lo más importante primero: «No entrar» (hasta cuándo no se debe entrar a un sector tras una aplicación), «Carencia» (hasta cuándo no se puede cosechar) y «Riego atrasado» (un riego programado que ya pasó y no se registró). Se ven las 3 primeras; toca el botón «Ver las» (con el número) para ver todas. Se apagan solas cuando vence el plazo o se hace la tarea. Los íconos de «Campo» y «Riego» muestran un número cuando tienen alertas.", 8, ""],
     ["Stock y aplicaciones en las alertas", "En «Alertas» aparece «Stock bajo» cuando un producto llega al 15 % o menos de lo ingresado, y «No alcanza» cuando lo agendado supera lo que hay en bodega. También aparece «Aplicación atrasada» para una aplicación agendada que ya pasó de fecha; toca «Hacerla ahora». Al agendar, la app avisa si el stock no alcanza. «Hoy toca» muestra solo lo de hoy.", 9, "manager"],
@@ -4168,6 +4170,9 @@ html.pc .cmdk:not([hidden]){display:flex}
   function cmAbre(){ if (!PC) return; $("cmdk").hidden = false; $("cmdkIn").value = ""; cmSel = 0; cmPinta(); $("cmdkIn").focus(); }
   function cmCierra(){ $("cmdk").hidden = true; }
   $("pcBuscar").onclick = cmAbre;
+  function pcTemaTxt(){ $("pcTema").textContent = "Apariencia: " + TEMA_TXT[temaGuardado()]; }
+  $("pcTema").onclick = function(){ var n = TEMAS[(TEMAS.indexOf(temaGuardado()) + 1) % TEMAS.length]; try { localStorage.setItem("campo_tema", n); } catch (e2) {} aplicarTema(n); pcTemaTxt(); render(); };
+  pcTemaTxt();
   $("cmdkIn").oninput = function(){ cmSel = 0; cmPinta(); };
   $("cmdk").addEventListener("click", function(ev){ if (ev.target === $("cmdk")) cmCierra(); });
   document.addEventListener("keydown", function(ev){

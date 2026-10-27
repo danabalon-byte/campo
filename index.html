@@ -795,6 +795,24 @@ html.pc .cmdk:not([hidden]){display:flex}
     <button id="pmCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="auSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="auTitle">
+    <h2 id="auTitle">Registrar ausencia</h2>
+<div class="sbody">
+    <div class="field"><label for="auQuien">Persona</label><select id="auQuien"></select></div>
+    <div class="field" id="auDesdeF"><label for="auDesde">Desde (puede ser un día pasado)</label><input type="date" id="auDesde"></div>
+    <div class="field" id="auHastaF"><label for="auHasta">Hasta (último día)</label><input type="date" id="auHasta"></div>
+    <p class="note" id="auVista" aria-live="polite"></p>
+    <div class="field"><label for="auCausa">Motivo</label><select id="auCausa"><option>Enfermedad propia</option><option>Familiar enfermo o accidente</option><option>Otro</option></select></div>
+    <div class="field"><label for="auLic">Licencia médica</label><select id="auLic"><option value="no">No hay</option><option value="solicitada">Solicitada</option><option value="otorgada">Otorgada</option><option value="rechazada">Rechazada</option></select></div>
+    <div class="field"><label for="auTrato">Cómo se trata el día</label><select id="auTrato"><option value="por_definir">Por definir</option><option value="descuenta">Descuenta</option><option value="con_goce">Con goce</option><option value="vacaciones">Cargo a vacaciones</option></select></div>
+    <div class="field"><label for="auNota">Nota (solo la ves tú)</label><textarea id="auNota" maxlength="400" placeholder="Ej: avisó por mensaje en la mañana"></textarea></div>
+    <p class="note">El motivo, la licencia y la nota solo los ves tú. Los demás ven únicamente «Ausencia».</p>
+</div>
+<div class="sfoot">    <button class="primary" id="auOk">Guardar ausencia</button>
+    <button id="auCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="sdSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="sdTitle">
     <h2 id="sdTitle">Días del año</h2>
@@ -1082,7 +1100,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1200,7 +1218,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 22;
+  var GUIA_V = 23;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1241,6 +1259,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Ausencias", "En «Permisos»: «Registrar ausencia» (solo tú) anota un día que ya pasó, para cualquier persona: motivo, licencia médica (no hay, solicitada, otorgada o rechazada), cómo se trata el día y una nota. Los demás solo ven «Ausencia». «Editar detalle» cambia la licencia cuando llega la respuesta. Solo «Cargo a vacaciones» descuenta del saldo. Cuando alguien avisa que hoy no puede ir, tú lo apruebas. En «Inicio» sale un aviso mientras haya días por definir.", 23, "owner"],
+    ["Avisar una ausencia", "En «Permisos», si hoy no puedes ir, toca «Avisar que hoy no puedo ir» (pide un segundo toque para confirmar). Diego recibe el aviso y lo aprueba; no hace falta escribir el motivo en la app.", 23, ""],
     ["Borrar una ficha", "En «Personal», abre una persona con «Editar» y toca «Borrar ficha completa» (solo tú; pide confirmar con un segundo toque). Se borra la ficha del directorio; lo ya registrado, como asistencia y jornadas pasadas, no se toca.", 22, "owner"],
     ["Legal y horas extras", "En «Inicio», el módulo «Legal» (solo tú) reúne lo que informó la contadora —vacaciones, jornada y extras, terceros— y las consultas pendientes. «Agregar dato o consulta» sirve para anotar nuevas condiciones o preguntas; en una pendiente, «Anotar respuesta» la pasa a respondida. Los montos y porcentajes los anotas tú ahí. En «Inicio» sale un aviso cuando alguien supera las 42 horas de la semana.", 21, "owner"],
     ["Sector Vivero", "En «Campo», «Agregar sector» → especie «Vivero (varias especies)». Marca las especies en cuidado (palto, olivo, quillay, peumo, limonero, kumquat, flores, cipreses, ornamentales, jacaranda) o toca «Todas»; si falta alguna, escríbela en «Otras» y toca «Agregar»: queda disponible para los próximos viveros. El riego es manual con manguera: al registrarlo eliges minutos y anotas qué se regó, sin cálculo de agua. El vivero no cuenta en los totales de nogal ni limón, ni en la cosecha.", 20, "owner"],
@@ -1303,7 +1323,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function saldoDe(uid){
     var anio = pmAnio(), tom = 0, pen = 0;
     S.permisos.forEach(function(x){
-      if (x.uid !== uid || String(x.desde).slice(0, 4) !== anio || x.tipo === "Permiso sin goce de sueldo" || x.tipo === "Otro") return;
+      if (x.uid !== uid || String(x.desde).slice(0, 4) !== anio || x.tipo === "Permiso sin goce de sueldo" || x.tipo === "Otro" || (x.tipo === "Ausencia" && !x.cargoVac)) return;
       var e = pmEstado(x); if (e === "aprobado") tom += Number(x.dias) || 0; else if (e === "pendiente") pen += Number(x.dias) || 0;
     });
     var c = S.saldos[uid], real = c && c.anual != null, anual = real ? Number(c.anual) : 15;
@@ -1409,10 +1429,74 @@ html.pc .cmdk:not([hidden]){display:flex}
     catch (err){ toast("No se pudo guardar."); }
     b.disabled = false;
   };
+
+  /* ---- Ausencias (ya ocurridas): el dueño las registra por cualquiera; la persona puede avisar la del día. El detalle sensible vive en ausDetalle (solo dueño) ---- */
+  var AU_LIC = { no: "Sin licencia", solicitada: "Licencia solicitada", otorgada: "Licencia otorgada", rechazada: "Licencia rechazada" };
+  var AU_TRATO = { por_definir: "Por definir", descuenta: "Descuenta", con_goce: "Con goce", vacaciones: "Cargo a vacaciones" };
+  var auEd = null;
+  function auPersonas(){ var ids = {}; ids[S.uid] = S.nombre; Object.keys(S.team).forEach(function(i){ ids[i] = S.team[i].nombre || "Sin nombre"; }); return ids; }
+  function auVista(){
+    if (auEd){ $("auVista").textContent = ""; return; }
+    var d = $("auDesde").value, h = $("auHasta").value; if (d && (!h || h < d)){ $("auHasta").value = d; h = d; }
+    var n = d ? contarDias(d, h) : 0; $("auVista").textContent = d ? (n ? n + (n === 1 ? " día laboral" : " días laborales") + " (lunes a viernes, sin feriados)." : "Ese tramo no tiene días laborales.") : "";
+  }
+  $("auDesde").onchange = auVista; $("auHasta").onchange = auVista;
+  function abrirAusencia(x){
+    auEd = x || null; var det = x ? (S.ausDet[x.id] || {}) : {};
+    var ids = auPersonas(); fill($("auQuien"), Object.keys(ids).map(function(i){ return { value: i, label: ids[i] }; }), x ? x.uid : S.uid);
+    $("auTitle").textContent = x ? "Detalle de la ausencia" : "Registrar ausencia";
+    $("auQuien").disabled = !!x; $("auDesdeF").hidden = !!x; $("auHastaF").hidden = !!x;
+    var hoy = fecha(); $("auDesde").value = hoy; $("auHasta").value = hoy; $("auDesde").max = addDays(hoy, 30); $("auHasta").max = addDays(hoy, 30);
+    $("auCausa").value = det.causa || "Enfermedad propia"; $("auLic").value = det.lic || "no"; $("auTrato").value = det.trato || "por_definir"; $("auNota").value = det.nota || "";
+    auVista(); $("auSheet").hidden = false;
+  }
+  $("auCancel").onclick = function(){ $("auSheet").hidden = true; };
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("auSheet").hidden) $("auSheet").hidden = true; });
+  $("auOk").onclick = async function(){
+    var d = $("auDesde").value, h = $("auHasta").value, n = 0, b = $("auOk");
+    if (!auEd){
+      if (!d){ toast("Indica desde qué día."); return; }
+      if (!h || h < d){ toast("Revisa las fechas: el último día no puede ser antes del primero."); return; }
+      n = contarDias(d, h); if (!(n > 0)){ toast("Ese tramo no tiene días laborales (lunes a viernes sin feriados)."); return; }
+    }
+    var det = { causa: $("auCausa").value, lic: $("auLic").value, trato: $("auTrato").value, nota: $("auNota").value.trim(), ts: new Date().toISOString(), por: S.nombre };
+    b.disabled = true;
+    try {
+      if (auEd){
+        det.uid = auEd.uid; await S.db.doc("ausDetalle/" + auEd.id).set(det);
+        await S.db.doc("permisos/" + auEd.id).update({ cargoVac: det.trato === "vacaciones" });
+      } else {
+        var uid = $("auQuien").value, nom = auPersonas()[uid] || S.nombre, ref = S.db.collection("permisos").doc(), ahora = det.ts;
+        det.uid = uid;
+        await ref.set({ uid: uid, por: nom, tipo: "Ausencia", desde: d, hasta: h, dias: n, medio: "", motivo: "", cargoVac: det.trato === "vacaciones", ts: ahora });
+        await S.db.doc("permisos_res/" + ref.id).set({ estado: "aprobado", por: S.nombre, ts: ahora, nota: "Registrado por el dueño" });
+        await S.db.doc("ausDetalle/" + ref.id).set(det);
+      }
+      $("auSheet").hidden = true; toast("Ausencia guardada");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+  /* aviso de la propia persona: queda por aprobar y no lleva motivo (el dueño lo completa) */
+  function avisarAusencia(btn){
+    var hoy = fecha();
+    if (btn.dataset.ok !== "1"){ btn.dataset.ok = "1"; btn.textContent = "Toca otra vez para avisar que hoy no vas"; return; }
+    if (!contarDias(hoy, hoy)){ toast("Hoy no es un día laboral."); return; }
+    if (S.permisos.some(function(x){ return x.uid === S.uid && x.tipo === "Ausencia" && x.desde <= hoy && x.hasta >= hoy && pmEstado(x) !== "rechazado"; })){ toast("Ya avisaste de hoy."); return; }
+    btn.disabled = true;
+    S.db.collection("permisos").doc().set({ uid: S.uid, por: S.nombre, tipo: "Ausencia", desde: hoy, hasta: hoy, dias: 1, medio: "", motivo: "", cargoVac: false, ts: new Date().toISOString() })
+      .then(function(){ toast("Aviso enviado. Diego lo verá."); }).catch(function(){ btn.disabled = false; toast("No se pudo enviar. Intenta de nuevo."); });
+  }
+  function ausPorDefinir(){
+    var out = {};
+    S.permisos.forEach(function(x){ if (x.tipo !== "Ausencia" || pmEstado(x) !== "aprobado") return; var d = S.ausDet[x.id]; if (d && d.trato !== "por_definir") return; var k = x.uid; out[k] = out[k] || { nombre: x.por, dias: 0 }; out[k].dias += Number(x.dias) || 0; });
+    return Object.keys(out).map(function(k){ return out[k]; });
+  }
   function buildPermisos(){
     var f = document.createDocumentFragment(); f.appendChild(ph("permisos"));
     var hoy = fecha(); if (!S.pmMes) S.pmMes = hoy.slice(0, 7);
     var b0 = el("button", "primary", "Pedir días libres"); b0.onclick = abrirPermiso; f.appendChild(b0);
+    if (S.owner){ var b1 = el("button", null, "Registrar ausencia"); b1.id = "btnAus"; b1.type = "button"; b1.onclick = function(){ abrirAusencia(null); }; f.appendChild(b1); }
+    else if (S.uid){ var b2 = el("button", null, "Avisar que hoy no puedo ir"); b2.id = "btnAviso"; b2.type = "button"; b2.onclick = function(){ avisarAusencia(b2); }; f.appendChild(b2); }
 
     var sv = el("section", "card sect"); sv.appendChild(el("h2", null, "Saldo de días " + pmAnio()));
     function filaSaldo(uid, nombre, conBoton){
@@ -1452,6 +1536,13 @@ html.pc .cmdk:not([hidden]){display:flex}
       f.appendChild(pc);
     }
 
+    if (S.owner){
+      var rsm = {}; S.permisos.forEach(function(x){ if (x.tipo !== "Ausencia" || pmEstado(x) !== "aprobado" || String(x.desde).slice(0, 4) !== pmAnio()) return; var d = S.ausDet[x.id] || {}, r = rsm[x.uid] || (rsm[x.uid] = { nombre: x.por, dias: 0, con: 0, sin: 0, pd: 0 }), n = Number(x.dias) || 0; r.dias += n; if (d.lic === "otorgada") r.con += n; else r.sin += n; if (!d.trato || d.trato === "por_definir") r.pd += n; });
+      var ks = Object.keys(rsm);
+      if (ks.length){ var ac = el("section", "card sect"); ac.id = "ausResumen"; ac.appendChild(el("h2", null, "Ausencias del año")); var ar = el("div", "rows");
+        ks.forEach(function(k){ var r = rsm[k], rw = el("div", "row"); rw.appendChild(el("span", "l", r.nombre)); rw.appendChild(el("span", "r", nf(r.dias, r.dias % 1 ? 1 : 0) + (r.dias === 1 ? " día" : " días") + " · con licencia " + nf(r.con, 0) + " · sin licencia " + nf(r.sin, 0) + " · por definir " + nf(r.pd, 0))); ar.appendChild(rw); });
+        ac.appendChild(ar); f.appendChild(ac); }
+    }
     var cal = el("section", "card sect"); cal.appendChild(el("h2", null, "Calendario"));
     var ym = S.pmMes.split("-"), anio = Number(ym[0]), mes = Number(ym[1]) - 1;
     var nav = el("div", "mes"); var pv = el("button", null, "‹"); pv.setAttribute("aria-label", "Mes anterior"); pv.onclick = function(){ var d = new Date(Date.UTC(anio, mes - 1, 1)); S.pmMes = d.toISOString().slice(0, 7); render(); };
@@ -1489,7 +1580,13 @@ html.pc .cmdk:not([hidden]){display:flex}
     mis.slice(0, 40).forEach(function(x){
       var e = pmEstado(x), bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, (S.owner ? (x.por || "") + " · " : "") + fmtD2(x.desde) + (x.hasta !== x.desde ? " al " + fmtD2(x.hasta) : "") + (x.medio ? " · medio día (" + x.medio + ")" : "")));
       wo.appendChild(el("span", "chip " + (e === "aprobado" ? "ok" : e === "rechazado" ? "warn" : "idle"), e === "aprobado" ? "Aprobado" : e === "rechazado" ? "Rechazado" : "Por aprobar")); bx.appendChild(wo);
-      bx.appendChild(el("p", "sub", x.tipo + " · " + nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día" : " días") + (x.motivo ? " · " + x.motivo : "")));
+      var dAu = S.owner && x.tipo === "Ausencia" ? S.ausDet[x.id] : null;
+      bx.appendChild(el("p", "sub", x.tipo + (dAu && dAu.causa ? " · " + dAu.causa : "") + " · " + nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día" : " días") + (x.motivo ? " · " + x.motivo : "")));
+      if (S.owner && x.tipo === "Ausencia" && e === "aprobado"){
+        var cw = el("div", "btns"); cw.appendChild(el("span", "chip " + (dAu && dAu.lic === "otorgada" ? "ok" : dAu && dAu.lic === "solicitada" ? "lem" : "idle"), AU_LIC[(dAu && dAu.lic) || "no"])); cw.appendChild(el("span", "chip " + (dAu && dAu.trato && dAu.trato !== "por_definir" ? "ok" : "lem"), AU_TRATO[(dAu && dAu.trato) || "por_definir"]));
+        bx.appendChild(cw); if (dAu && dAu.nota) bx.appendChild(el("p", "note", dAu.nota));
+        var eb = el("button", "small", "Editar detalle"); eb.type = "button"; eb.onclick = function(){ abrirAusencia(x); }; bx.appendChild(eb);
+      }
       var r = S.pres[x.id]; bx.appendChild(el("p", "note", "Pedido el " + fmtFH.format(new Date(x.ts)) + (r && r.ts ? " · " + (e === "aprobado" ? "aprobado" : "rechazado") + " el " + fmtFH.format(new Date(r.ts)) + (r.por ? " por " + r.por : "") : "")));
       if (x.diasOrig != null) bx.appendChild(el("p", "note", "Días ajustados por " + (x.ajustadoPor || "el dueño") + " (pedían " + nf(x.diasOrig, x.diasOrig % 1 ? 1 : 0) + ")."));
       if (S.owner && e !== "pendiente") bx.appendChild(ajusteDias(x));
@@ -1682,6 +1779,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.manager) alertasStock().forEach(function(z){ out.push(z); });
     if (S.manager) medPendientes().forEach(function(m){
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
+    });
+    if (S.owner) ausPorDefinir().forEach(function(x){
+      out.push({ sev: 3, titulo: nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día de ausencia" : " días de ausencia") + " de " + x.nombre + " por definir", lineas: [["pm", "Ausencia", "decide si se descuentan, van con goce o a vacaciones"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
     });
     if (S.owner) extrasSemana().forEach(function(x){
       out.push({ sev: 3, titulo: x.nombre + " pasó las " + nf(semMin() / 60, 0) + " horas de la semana", lineas: [["pm", "Horas extras", "lleva " + dur(x.t) + ": " + dur(x.t - semMin()) + " sobre la jornada"], ["pm", "Recuerda", "máximo 2 horas extras por día (Angélica)"]], acciones: [], ir: function(){ S.screen = x.ir; render(); } });
@@ -4503,6 +4603,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     { id: "p03", tipo: "pendiente", tema: "Jornada y extras", titulo: "Trabajo en feriado", texto: "¿Corresponde recargo, día compensatorio o pago normal? Angélica solo indicó el máximo de 2 horas extras por día.", fecha: "2026-10-25" },
     { id: "p04", tipo: "pendiente", tema: "Terceros", titulo: "Practicante: gratificación y seguro escolar", texto: "Falta aclarar gratificación o asignación, seguro escolar y qué más se puede pagar.", fecha: "2026-10-25" },
     { id: "p05", tipo: "pendiente", tema: "Pagos", titulo: "Respaldo de pagos", texto: "¿Qué documento pedir según la forma de pago: por día, semana, quincena o mes?", fecha: "2026-10-25" },
+    { id: "p07", tipo: "pendiente", tema: "Vacaciones", titulo: "Ausencia por enfermedad sin licencia otorgada", texto: "Si alguien falta por enfermedad o por un accidente familiar y la licencia médica no se otorga: ¿se descuenta el día, se puede cargar a vacaciones o a permiso con goce? Y si la licencia se otorga después, ¿cómo se regulariza el pago?", fecha: "2026-10-27" },
     { id: "p06", tipo: "pendiente", tema: "Feriados", titulo: "Feriados 2027", texto: "Confirmar la lista oficial de feriados 2027 (la app solo trae los confirmados).", fecha: "2026-10-25" }
   ];
   function lgItems(){
@@ -4634,6 +4735,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     db.collection("saldos").onSnapshot(function(s){
       S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
     }, function(){});
+    if (S.owner) db.collection("ausDetalle").onSnapshot(function(s){ S.ausDet = {}; s.docs.forEach(function(d){ S.ausDet[d.id] = d.data(); }); render(); }, function(){});
     if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     if (S.owner) db.collection("consultas").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
       S.consultas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();

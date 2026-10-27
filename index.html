@@ -384,6 +384,14 @@ html.pc .pcbar .sp{flex:1}
 .vivadd{display:flex; gap:8px; margin-top:8px}
 .vivadd input{flex:1}
 .vivadd button{width:auto; padding:0 14px}
+.lg-wrap{grid-column:1 / -1; min-width:0; max-width:760px}
+.lg-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:8px}
+.lg-card b{display:block; font-size:16px; margin-top:6px}
+.lg-card .lt{margin-top:6px; line-height:1.4; white-space:pre-wrap}
+.lg-card .lm{margin-top:6px; font-size:13px; color:var(--muted)}
+.lg-card .btns{display:flex; gap:8px; margin-top:8px}
+.lg-card .btns button{width:auto}
+.lg-h{margin:16px 0 6px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
 .pctema{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px; margin-right:12px}
 .pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
 .pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
@@ -727,6 +735,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     <p class="note" id="peInfo" aria-live="polite"></p>
 </div>
 <div class="sfoot">    <button class="primary" id="peOk">Guardar</button>
+    <button id="peDel" hidden>Borrar ficha completa</button>
     <button id="peCancel">Cancelar</button></div>
   </div>
 </div>
@@ -903,6 +912,22 @@ html.pc .cmdk:not([hidden]){display:flex}
     <button id="rpCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="lgSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="lgTitle">
+    <h2 id="lgTitle">Nuevo dato o consulta</h2>
+<div class="sbody">
+    <div class="field"><label for="lgTipo">Tipo</label><select id="lgTipo"><option value="dato">Dato o respuesta</option><option value="pendiente">Consulta pendiente</option></select></div>
+    <div class="field"><label for="lgTema">Tema</label><select id="lgTema"></select></div>
+    <div class="field"><label for="lgTitulo">Título</label><input type="text" id="lgTitulo" maxlength="80" placeholder="Ej: Convenio del practicante"></div>
+    <div class="field"><label for="lgTexto" id="lgTextoL">Detalle</label><textarea id="lgTexto" rows="5" maxlength="1500"></textarea></div>
+    <div class="field" id="lgFuenteF"><label for="lgFuente">Quién lo informó</label><input type="text" id="lgFuente" maxlength="40" placeholder="Ej: Angélica"></div>
+    <div class="field"><label for="lgFecha">Fecha</label><input type="date" id="lgFecha"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="lgOk">Guardar</button>
+    <button id="lgDel" hidden>Eliminar</button>
+    <button id="lgCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="vtSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="vtTitle">
     <h2 id="vtTitle">Registrar venta</h2>
@@ -1057,7 +1082,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1175,7 +1200,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 20;
+  var GUIA_V = 22;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1216,6 +1241,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Borrar una ficha", "En «Personal», abre una persona con «Editar» y toca «Borrar ficha completa» (solo tú; pide confirmar con un segundo toque). Se borra la ficha del directorio; lo ya registrado, como asistencia y jornadas pasadas, no se toca.", 22, "owner"],
+    ["Legal y horas extras", "En «Inicio», el módulo «Legal» (solo tú) reúne lo que informó la contadora —vacaciones, jornada y extras, terceros— y las consultas pendientes. «Agregar dato o consulta» sirve para anotar nuevas condiciones o preguntas; en una pendiente, «Anotar respuesta» la pasa a respondida. Los montos y porcentajes los anotas tú ahí. En «Inicio» sale un aviso cuando alguien supera las 42 horas de la semana.", 21, "owner"],
     ["Sector Vivero", "En «Campo», «Agregar sector» → especie «Vivero (varias especies)». Marca las especies en cuidado (palto, olivo, quillay, peumo, limonero, kumquat, flores, cipreses, ornamentales, jacaranda) o toca «Todas»; si falta alguna, escríbela en «Otras» y toca «Agregar»: queda disponible para los próximos viveros. El riego es manual con manguera: al registrarlo eliges minutos y anotas qué se regó, sin cálculo de agua. El vivero no cuenta en los totales de nogal ni limón, ni en la cosecha.", 20, "owner"],
     ["Planificación y Registros en el computador", "En modo escritorio, «Planificación» muestra la semana en filas (riegos, aplicaciones, trabajos y tareas): arrastra un bloque a otro día para reprogramarlo, o ábrelo y usa «Mover» con el teclado. «Registros» reúne trabajos, riegos, cosechas, aplicaciones y permisos en tablas con filtros por mes, sector y estado; marca varias filas para autorizarlas, cambiarles la fecha o quitarlas, y exporta a CSV o imprime.", 19, "owner"],
     ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
@@ -1488,6 +1515,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     consulta: "M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-4 4v-4H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 9.500h8M8 12.500h5",
     ajustes: "M4 7h9M17 7h3M4 17h3M11 17h9M15 4.500v5M9 14.500v5",
     permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5",
+    legal: "M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 006 0zM19 7l-3 7a3 3 0 006 0z",
     chev: "M6 9l6 6 6-6",
     agenda: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM9 14.500l2 2 4-4.500"
   };
@@ -1550,7 +1578,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -1655,6 +1683,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.manager) medPendientes().forEach(function(m){
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
     });
+    if (S.owner) extrasSemana().forEach(function(x){
+      out.push({ sev: 3, titulo: x.nombre + " pasó las " + nf(semMin() / 60, 0) + " horas de la semana", lineas: [["pm", "Horas extras", "lleva " + dur(x.t) + ": " + dur(x.t - semMin()) + " sobre la jornada"], ["pm", "Recuerda", "máximo 2 horas extras por día (Angélica)"]], acciones: [], ir: function(){ S.screen = x.ir; render(); } });
+    });
     if (S.owner){ var nrc = S.cosechas.filter(function(c){ return c.rev === "pendiente"; }).length; if (nrc) out.push({ sev: 4, titulo: nrc === 1 ? "1 cosecha por revisar" : nrc + " cosechas por revisar", lineas: [["pm", "Cosecha", "sin asistencia verificada; esperan tu revisión"]], acciones: [], ir: function(){ S.screen = "cosecha"; render(); } }); }
     if (S.owner) S.ventas.filter(function(v){ return v.pago === "pendiente" && difDias(v.fecha, fecha()) >= 30; }).forEach(function(v){
       out.push({ sev: 4, titulo: "Venta por cobrar: " + v.comprador, lineas: [["pm", "Ventas", "pendiente de pago hace " + difDias(v.fecha, fecha()) + " días"]], acciones: [], ir: function(){ S.screen = "cosecha"; S.cosTab = "ventas"; render(); } });
@@ -1671,7 +1702,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     return out.sort(function(a, b){ return a.sev - b.sev; });
   }
   function buildNav(){
-    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros" ? "" : S.screen, hy = fecha();
+    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros" || S.screen === "legal" ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
     NAV.concat(S.manager ? [["medidores", "Medidores"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
@@ -1784,6 +1815,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ];
     var fHoy = fuera(hy), pPend = nPend();
     mods.push(["permisos", "Permisos", S.owner && pPend ? pPend + (pPend === 1 ? " por aprobar" : " por aprobar") : fHoy.length ? fHoy.map(function(x){ return x.por; }).join(", ") + " con permiso hoy" : "Días libres y saldo"]);
+    if (S.owner) mods.push(["legal", "Legal", lgPend() ? lgPend() + (lgPend() === 1 ? " consulta pendiente" : " consultas pendientes") : "Condiciones y consultas legales"]);
     if (S.owner) mods.push(["horarios", "Horarios del equipo", enCampo ? enCampo + (enCampo === 1 ? " persona en el campo ahora" : " personas en el campo ahora") : "Quién está y cuándo entra y sale"]);
     if (S.manager){
       var nPorConf = S.jterc.filter(function(x){ return x.estado === "acordada" && x.fecha <= hy && (S.owner || x.uid === S.uid); }).length;
@@ -1802,7 +1834,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       b.appendChild(el("b", null, t[1])); b.appendChild(el("small", null, t[2]));
       if (t[0] === "campo" && av.length){ b.classList.add("tile-alerta"); }
       if (t[0] === "riego" && riegosAtrasados().length){ b.classList.add("tile-azul"); }
-      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "terceros" || t[0] === "medidores" || t[0] === "cosecha" || t[0] === "consulta") b.classList.add("wide");
+      if (t[0] === "personal" || t[0] === "permisos" || t[0] === "horarios" || t[0] === "legal" || t[0] === "terceros" || t[0] === "medidores" || t[0] === "cosecha" || t[0] === "consulta") b.classList.add("wide");
       b.onclick = t[0] === "consulta" ? abrirConsulta : function(){ S.screen = t[0]; render(); };
       g.appendChild(b);
     });
@@ -3487,8 +3519,14 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("peTitle").textContent = p ? "Editar persona" : "Agregar persona";
     $("peNombre").value = (p && p.nombre) || ""; $("peNac").value = (p && p.nac) || ""; $("peTel").value = (p && p.tel) || ""; pintaEdad("pe", !!(p && p.mostrarEdad)); infoNac("pe");
     fill($("peFunc"), FUNC, (p && p.funcion) || FUNC[0]); fill($("peJorn"), JORN, (p && p.jornada) || JORN[0]);
+    $("peDel").hidden = !(S.owner && p && p.id); $("peDel").dataset.ok = ""; $("peDel").textContent = "Borrar ficha completa";
     $("perSheet").hidden = false; $("peNombre").focus();
   }
+  $("peDel").onclick = async function(){
+    if (!S.owner || !perEd || !perEd.id) return;
+    if ($("peDel").dataset.ok !== perEd.id){ $("peDel").dataset.ok = perEd.id; $("peDel").textContent = "Toca otra vez para borrar la ficha de " + (perEd.nombre || "esta persona"); return; }
+    try { await S.db.doc("personal/" + perEd.id).delete(); $("perSheet").hidden = true; toast("Ficha borrada"); } catch (err){ toast("No se pudo borrar. Intenta de nuevo."); }
+  };
   $("peCancel").onclick = function(){ $("perSheet").hidden = true; };
   $("peOk").onclick = async function(){
     var nombre = $("peNombre").value.trim();
@@ -4168,7 +4206,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var PC_ITEMS = [
     ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Planificación", "2"], ["Resumen", "trabajo", "Registros", "3"],
     ["Campo", "riego", "Riego", "4"], ["Campo", "aplic", "Aplicaciones y stock", "5"], ["Campo", "cosecha", "Cosecha y bodega", "6"], ["Campo", "medidores", "Medidores", "7"], ["Campo", "campo", "Mi campo", "8"],
-    ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""]
+    ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""], ["Personas", "legal", "Legal", ""]
   ];
   function pcTitulo(k){ var r = PC_ITEMS.filter(function(x){ return x[1] === k; })[0]; return r ? r[2] : "Centro de control"; }
   function pcSync(){
@@ -4449,6 +4487,93 @@ html.pc .cmdk:not([hidden]){display:flex}
     wrap.appendChild(tbl); f.appendChild(wrap); if (filas.length > 300) f.appendChild(el("p", "note", "Se muestran los 300 más recientes. Usa los filtros o exporta para ver el resto."));
     return f;
   }
+
+  /* ---- Legal (solo dueño): condiciones informadas por la contadora y consultas pendientes. No lleva montos: esos los agrega Diego y viven solo en su base de datos ---- */
+  var LG_TEMAS = ["Vacaciones", "Jornada y extras", "Terceros", "Pagos", "Feriados", "Otro"];
+  var LG_BASE = [
+    { id: "l01", tipo: "dato", tema: "Vacaciones", titulo: "Sábados y feriados no descuentan", texto: "Solo cuentan los días de lunes a viernes. Los feriados dentro de las vacaciones no se descuentan. La app ya funciona así.", fuente: "Angélica", fecha: "2026-10-27" },
+    { id: "l02", tipo: "dato", tema: "Vacaciones", titulo: "Permiso sin goce de sueldo", texto: "Son días no remunerados: no se paga nada. En la app no se descuentan del saldo de vacaciones.", fuente: "Angélica", fecha: "2026-10-27" },
+    { id: "l03", tipo: "dato", tema: "Vacaciones", titulo: "Saldo de vacaciones de Yolanda", texto: "Le quedaban 5 días (informe del 09/06/2026 a la fecha). Cargado en «Permisos». Falta conocer el saldo del resto del equipo.", fuente: "Angélica", fecha: "2026-10-27" },
+    { id: "l04", tipo: "dato", tema: "Jornada y extras", titulo: "Sábado con horario de lunes a viernes", texto: "Si el horario se distribuye de lunes a viernes, el sábado trabajado es hora extra.", fuente: "Angélica", fecha: "2026-10-27" },
+    { id: "l05", tipo: "dato", tema: "Jornada y extras", titulo: "Máximo de horas extras", texto: "Máximo 2 horas extras por día, de lunes a sábado. La app avisa cuando alguien supera las 42 horas de la semana.", fuente: "Angélica", fecha: "2026-10-27" },
+    { id: "l06", tipo: "dato", tema: "Terceros", titulo: "Corina", texto: "Trabaja contra pedido. Si entrega boleta de honorarios, se aplica una retención que se paga junto con los impuestos mensuales. Anota aquí el porcentaje como dato propio.", fuente: "Angélica y Diego", fecha: "2026-10-27" },
+    { id: "l07", tipo: "dato", tema: "Terceros", titulo: "Practicante", texto: "Se le puede hacer contrato. El convenio es sin sueldo fijo acordado. Si es menor de 18 años, se paga sueldo. Anota aquí el monto como dato propio.", fuente: "Angélica y Diego", fecha: "2026-10-27" },
+    { id: "p01", tipo: "pendiente", tema: "Jornada y extras", titulo: "Horario de Yolanda", texto: "Solicitar el horario vigente según su contrato, para cargarlo en la app y compararlo con su asistencia real.", fecha: "2026-10-25" },
+    { id: "p02", tipo: "pendiente", tema: "Jornada y extras", titulo: "Jornada de 42 horas", texto: "Confirmar que aplica desde abril de 2026 y cómo debe quedar en el contrato o anexo de Yolanda y en los acuerdos con terceros. También qué debe quedar firmado antes para que un sábado sea acordado.", fecha: "2026-10-25" },
+    { id: "p03", tipo: "pendiente", tema: "Jornada y extras", titulo: "Trabajo en feriado", texto: "¿Corresponde recargo, día compensatorio o pago normal? Angélica solo indicó el máximo de 2 horas extras por día.", fecha: "2026-10-25" },
+    { id: "p04", tipo: "pendiente", tema: "Terceros", titulo: "Practicante: gratificación y seguro escolar", texto: "Falta aclarar gratificación o asignación, seguro escolar y qué más se puede pagar.", fecha: "2026-10-25" },
+    { id: "p05", tipo: "pendiente", tema: "Pagos", titulo: "Respaldo de pagos", texto: "¿Qué documento pedir según la forma de pago: por día, semana, quincena o mes?", fecha: "2026-10-25" },
+    { id: "p06", tipo: "pendiente", tema: "Feriados", titulo: "Feriados 2027", texto: "Confirmar la lista oficial de feriados 2027 (la app solo trae los confirmados).", fecha: "2026-10-25" }
+  ];
+  function lgItems(){
+    var docs = {}; S.legal.forEach(function(d){ docs[d.id] = d; });
+    var baseIds = {}, out = LG_BASE.map(function(b){ baseIds[b.id] = 1; var d = docs[b.id]; return Object.assign({}, b, d || {}, { id: b.id, base: true, editado: !!d }); });
+    S.legal.forEach(function(d){ if (!baseIds[d.id]) out.push(Object.assign({}, d, { base: false })); });
+    return out.sort(function(a, b){ return a.tipo !== b.tipo ? (a.tipo === "pendiente" ? -1 : 1) : (a.fecha || "") < (b.fecha || "") ? 1 : -1; });
+  }
+  function lgPend(){ return lgItems().filter(function(x){ return x.tipo === "pendiente"; }).length; }
+  var lgEd = null;
+  function lgTextoL(){ $("lgTextoL").textContent = $("lgTipo").value === "pendiente" ? "Qué hay que preguntar" : "Detalle"; $("lgFuenteF").hidden = $("lgTipo").value === "pendiente"; }
+  $("lgTipo").onchange = lgTextoL;
+  function abrirLegal(x, responder){
+    lgEd = x || null;
+    fill($("lgTema"), LG_TEMAS.map(function(t){ return { value: t, label: t }; }), x ? x.tema : (S.lgTema && S.lgTema !== "__p" ? S.lgTema : "Otro"));
+    $("lgTitle").textContent = responder ? "Anotar la respuesta" : x ? "Editar" : "Nuevo dato o consulta";
+    $("lgTipo").value = responder ? "dato" : x ? x.tipo : "dato";
+    $("lgTitulo").value = x ? x.titulo : ""; $("lgTexto").value = x && !responder ? x.texto : ""; $("lgFuente").value = x && x.fuente && !responder ? x.fuente : "";
+    $("lgFecha").value = x && !responder ? (x.fecha || fecha()) : fecha(); $("lgFecha").max = fecha();
+    $("lgDel").hidden = !x || (x.base && !x.editado); $("lgDel").textContent = x && x.base ? "Restaurar el texto original" : "Eliminar";
+    lgTextoL(); $("lgSheet").hidden = false; (responder ? $("lgTexto") : $("lgTitulo")).focus();
+  }
+  $("lgCancel").onclick = function(){ $("lgSheet").hidden = true; };
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("lgSheet").hidden) $("lgSheet").hidden = true; });
+  $("lgOk").onclick = async function(){
+    var titulo = $("lgTitulo").value.trim(), texto = $("lgTexto").value.trim();
+    if (!titulo){ toast("Escribe un título."); $("lgTitulo").focus(); return; }
+    if (!texto){ toast("Escribe el detalle."); $("lgTexto").focus(); return; }
+    var tipo = $("lgTipo").value, d = { tipo: tipo, tema: $("lgTema").value, titulo: titulo, texto: texto, fuente: tipo === "pendiente" ? "" : $("lgFuente").value.trim(), fecha: $("lgFecha").value || fecha(), por: S.nombre, ts: new Date().toISOString() };
+    var b = $("lgOk"); b.disabled = true;
+    try { var ref = lgEd ? S.db.doc("legal/" + lgEd.id) : S.db.collection("legal").doc(); await ref.set(d); $("lgSheet").hidden = true; toast("Guardado"); }
+    catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+  $("lgDel").onclick = async function(){
+    if (!lgEd) return;
+    if ($("lgDel").dataset.ok !== lgEd.id){ $("lgDel").dataset.ok = lgEd.id; $("lgDel").textContent = "Toca otra vez para confirmar"; return; }
+    $("lgDel").dataset.ok = "";
+    try { await S.db.doc("legal/" + lgEd.id).delete(); $("lgSheet").hidden = true; toast(lgEd.base ? "Texto original restaurado" : "Eliminado"); } catch (err){ toast("No se pudo. Intenta de nuevo."); }
+  };
+  function buildLegal(){
+    var f = el("div", "lg-wrap"); f.appendChild(ph("legal"));
+    var its = lgItems(), tema = S.lgTema || "", np = lgPend();
+    var tb = el("div", "mchips"); tb.setAttribute("role", "group"); tb.setAttribute("aria-label", "Filtrar por tema");
+    [["", "Todo"]].concat(LG_TEMAS.filter(function(t){ return its.some(function(x){ return x.tema === t; }); }).map(function(t){ return [t, t]; })).concat([["__p", "Pendientes · " + np]]).forEach(function(x){
+      var b = el("button", null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", tema === x[0] ? "true" : "false"); b.onclick = function(){ S.lgTema = x[0]; render(); }; tb.appendChild(b); });
+    f.appendChild(tb);
+    var nb = el("button", "primary", "+ Agregar dato o consulta"); nb.id = "lgNuevo"; nb.type = "button"; nb.onclick = function(){ abrirLegal(null); }; f.appendChild(nb);
+    var vis = its.filter(function(x){ return !tema || (tema === "__p" ? x.tipo === "pendiente" : x.tema === tema); });
+    if (!vis.length) f.appendChild(el("p", "note", "No hay nada en este filtro."));
+    var ult = "";
+    vis.forEach(function(x){
+      if (!tema && x.tema !== ult){ ult = x.tema; f.appendChild(el("h3", "lg-h", x.tema)); }
+      var c = el("div", "lg-card"); c.appendChild(el("span", "chip " + (x.tipo === "pendiente" ? "lem" : "ok"), x.tipo === "pendiente" ? "Pendiente" : "Respondida"));
+      if (tema) c.appendChild(el("span", "chip idle", " " + x.tema)); 
+      c.appendChild(el("b", null, x.titulo)); c.appendChild(el("p", "lt", x.texto));
+      c.appendChild(el("p", "lm", x.tipo === "pendiente" ? "Consulta del " + fmtD2(x.fecha) : [x.fuente, fmtD2(x.fecha)].filter(Boolean).join(" · ")));
+      var bb = el("div", "btns");
+      if (x.tipo === "pendiente"){ var br = el("button", "small", "Anotar respuesta"); br.type = "button"; br.onclick = function(){ abrirLegal(x, true); }; bb.appendChild(br); }
+      var be = el("button", "small", "Editar"); be.type = "button"; be.onclick = function(){ abrirLegal(x); }; bb.appendChild(be); c.appendChild(bb);
+      f.appendChild(c);
+    });
+    return f;
+  }
+  /* aviso de horas extras: solo si alguien supera las horas de la jornada semanal */
+  function extrasSemana(){
+    var out = [], hy = fecha(), ws = weekStart(hy), sm = semMin(), now = Date.now();
+    personasHor().forEach(function(p){ var t = 0; for (var k = 0; k < 7; k++){ var fd = addDays(ws, k), tr = p.dias[fd]; if (tr && tr.length) t += mins(tr, fd === hy ? now : null); } if (t > sm) out.push({ nombre: p.nombre, t: t, ir: "horarios" }); });
+    S.terceros.filter(function(t){ return t.activo !== false; }).forEach(function(t){ var m = semanaT(t.id, ws).min; if (m > sm) out.push({ nombre: t.nombre, t: m, ir: "terceros" }); });
+    return out;
+  }
   function render(){
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
@@ -4468,6 +4593,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.screen === "riego") return setView("riego", buildRiego);
     if (S.screen === "personal" && S.manager) return setView("personal", buildPersonal);
     if (S.screen === "horarios" && S.owner) return setView("horarios", buildHorarios);
+    if (S.screen === "legal" && S.owner) return setView("legal", buildLegal);
     if (S.screen === "terceros" && S.manager) return setView("terceros", buildTerceros);
     if (S.screen === "medidores" && S.manager) return setView("medidores", buildMedidores);
     if (S.screen === "cosecha" && S.manager) return setView("cosecha", buildCosecha);
@@ -4508,6 +4634,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     db.collection("saldos").onSnapshot(function(s){
       S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
     }, function(){});
+    if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     if (S.owner) db.collection("consultas").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
       S.consultas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
     }, function(){});

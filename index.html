@@ -381,6 +381,9 @@ html.pc .pcbar .sp{flex:1}
 .pcsearch{display:flex; align-items:center; gap:8px; width:300px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--muted); font-size:14px; text-align:left}
 .pcsearch kbd{margin-left:auto; font:12px var(--font-body); border:1px solid var(--line); border-radius:5px; padding:0 6px}
 .pcsearch svg{width:16px; height:16px}
+.vivadd{display:flex; gap:8px; margin-top:8px}
+.vivadd input{flex:1}
+.vivadd button{width:auto; padding:0 14px}
 .pctema{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px; margin-right:12px}
 .pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
 .pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
@@ -532,11 +535,13 @@ html.pc .cmdk:not([hidden]){display:flex}
     <h2 id="edTitle">Editar cuartel</h2>
 <div class="sbody">
     <div class="field"><label for="edNombre">Nombre</label><input type="text" id="edNombre" maxlength="40"></div>
-    <div class="field"><label for="edEsp">Especie</label><select id="edEsp"><option>Nogal</option><option>Limón</option></select></div>
-    <div class="field"><label for="edVar">Variedad</label><input type="text" id="edVar" maxlength="30" placeholder="Ej: Chandler"></div>
-    <div class="field"><label for="edAnio">Año de plantación</label><input type="text" id="edAnio" inputmode="numeric" maxlength="4" placeholder="Ej: 2018"></div>
-    <div class="field"><label for="edHa">Hectáreas</label><input type="text" id="edHa" inputmode="decimal" placeholder="Ej: 0,75"></div>
-    <div class="field"><label for="edArb">Número de árboles</label><input type="text" id="edArb" inputmode="numeric" placeholder="Ej: 250"></div>
+    <div class="field"><label for="edEsp">Especie</label><select id="edEsp"><option>Nogal</option><option>Limón</option><option value="Vivero">Vivero (varias especies)</option></select></div>
+    <div class="field" id="edEspF" hidden><label id="edEspL">Especies en cuidado</label><div class="mchips" id="edEspList" role="group" aria-label="Especies en cuidado"></div>
+      <div class="vivadd"><input type="text" id="edOtra" maxlength="30" placeholder="Otras: escribe una especie nueva" aria-label="Otra especie"><button type="button" id="edOtraB">Agregar</button></div></div>
+    <div class="field" id="edVarF"><label for="edVar">Variedad</label><input type="text" id="edVar" maxlength="30" placeholder="Ej: Chandler"></div>
+    <div class="field" id="edAnioF"><label for="edAnio">Año de plantación</label><input type="text" id="edAnio" inputmode="numeric" maxlength="4" placeholder="Ej: 2018"></div>
+    <div class="field"><label for="edHa" id="edHaL">Hectáreas</label><input type="text" id="edHa" inputmode="decimal" placeholder="Ej: 0,75"></div>
+    <div class="field" id="edArbF"><label for="edArb">Número de árboles</label><input type="text" id="edArb" inputmode="numeric" placeholder="Ej: 250"></div>
 </div>
 <div class="sfoot">    <button class="primary" id="edOk">Guardar</button>
     <button id="edCancel">Cancelar</button></div>
@@ -1170,7 +1175,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 19;
+  var GUIA_V = 20;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1211,6 +1216,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Sector Vivero", "En «Campo», «Agregar sector» → especie «Vivero (varias especies)». Marca las especies en cuidado (palto, olivo, quillay, peumo, limonero, kumquat, flores, cipreses, ornamentales, jacaranda) o toca «Todas»; si falta alguna, escríbela en «Otras» y toca «Agregar»: queda disponible para los próximos viveros. El riego es manual con manguera: al registrarlo eliges minutos y anotas qué se regó, sin cálculo de agua. El vivero no cuenta en los totales de nogal ni limón, ni en la cosecha.", 20, "owner"],
     ["Planificación y Registros en el computador", "En modo escritorio, «Planificación» muestra la semana en filas (riegos, aplicaciones, trabajos y tareas): arrastra un bloque a otro día para reprogramarlo, o ábrelo y usa «Mover» con el teclado. «Registros» reúne trabajos, riegos, cosechas, aplicaciones y permisos en tablas con filtros por mes, sector y estado; marca varias filas para autorizarlas, cambiarles la fecha o quitarlas, y exporta a CSV o imprime.", 19, "owner"],
     ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
@@ -1875,13 +1881,37 @@ html.pc .cmdk:not([hidden]){display:flex}
 
   function nf(n, d){ return Number(n).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d }); }
   var editing = null;
+  var VIV_BASE = ["Palto", "Olivo", "Quillay", "Peumo", "Limonero", "Kumquat", "Flores", "Cipreses", "Ornamentales", "Jacaranda"];
+  var edEsps = [];
+  function esViv(c){ return !!c && c.especie === "Vivero"; }
+  function vivTexto(c){ return (c.especies && c.especies.length ? c.especies.join(", ") : "Varias especies"); }
+  function edPintaEsp(){
+    var box = $("edEspList"); box.textContent = "";
+    var todas = VIV_BASE.slice(); S.cuarteles.forEach(function(c){ (c.especies || []).forEach(function(x){ if (todas.indexOf(x) < 0) todas.push(x); }); }); edEsps.forEach(function(x){ if (todas.indexOf(x) < 0) todas.push(x); });
+    var bt = el("button", null, "Todas"); bt.type = "button"; bt.id = "edTodas"; var allOn = todas.every(function(x){ return edEsps.indexOf(x) >= 0; }); bt.setAttribute("aria-pressed", allOn ? "true" : "false");
+    bt.onclick = function(){ edEsps = allOn ? [] : todas.slice(); edPintaEsp(); }; box.appendChild(bt);
+    todas.forEach(function(x){ var b = el("button", null, x); b.type = "button"; var on = edEsps.indexOf(x) >= 0; b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.onclick = function(){ var i = edEsps.indexOf(x); if (i >= 0) edEsps.splice(i, 1); else edEsps.push(x); edPintaEsp(); }; box.appendChild(b); });
+  }
+  function edPinta(){
+    var v = $("edEsp").value === "Vivero";
+    $("edEspF").hidden = !v; $("edVarF").hidden = v; $("edAnioF").hidden = v; $("edArbF").hidden = v;
+    $("edHaL").textContent = v ? "Superficie en m² (opcional)" : "Hectáreas"; $("edHa").placeholder = v ? "Ej: 400" : "Ej: 0,75";
+    if (v) edPintaEsp();
+  }
+  $("edEsp").onchange = edPinta;
+  function edOtra(){ var v = $("edOtra").value.trim().replace(/\s+/g, " "); if (!v) return; v = v.charAt(0).toUpperCase() + v.slice(1);
+    var ya = VIV_BASE.concat(edEsps).filter(function(x){ return x.toLowerCase() === v.toLowerCase(); })[0]; if (ya){ if (edEsps.indexOf(ya) < 0) edEsps.push(ya); } else edEsps.push(v);
+    $("edOtra").value = ""; edPintaEsp(); }
+  $("edOtraB").onclick = edOtra; $("edOtra").onkeydown = function(ev){ if (ev.key === "Enter"){ ev.preventDefault(); edOtra(); } };
   function abrirEdit(c){
     editing = c || {};
     $("edTitle").textContent = c ? "Editar sector" : "Agregar sector";
     $("edNombre").value = (c && c.nombre) || ""; $("edEsp").value = (c && c.especie) || "Nogal";
     $("edVar").value = (c && c.variedad) || ""; $("edAnio").value = c && c.anio ? c.anio : "";
-    $("edHa").value = c && c.ha != null ? String(c.ha).replace(".", ",") : ""; $("edArb").value = c && c.arboles != null ? c.arboles : "";
-    $("editSheet").hidden = false; $("edNombre").focus();
+    edEsps = (c && c.especies ? c.especies.slice() : []); $("edOtra").value = "";
+    $("edHa").value = c && c.ha != null ? String(esViv(c) ? Math.round(c.ha * 10000) : c.ha).replace(".", ",") : ""; $("edArb").value = c && c.arboles != null ? c.arboles : "";
+    edPinta(); $("editSheet").hidden = false; $("edNombre").focus();
   }
   $("edCancel").onclick = function(){ $("editSheet").hidden = true; };
   document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("editSheet").hidden) $("editSheet").hidden = true; });
@@ -1889,7 +1919,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     var nombre = $("edNombre").value.trim();
     if (!nombre){ toast("Escribe el nombre del sector."); $("edNombre").focus(); return; }
     function num(v){ var n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : null; }
-    var data = { nombre: nombre, especie: $("edEsp").value, variedad: $("edVar").value.trim(), anio: num($("edAnio").value), ha: num($("edHa").value), arboles: num($("edArb").value), orden: editing.orden || (S.cuarteles.length + 1) };
+    var viv = $("edEsp").value === "Vivero";
+    if (viv && $("edOtra").value.trim()) edOtra();
+    var haN = num($("edHa").value); if (viv && haN != null) haN = Math.round(haN) / 10000;
+    var data = { nombre: nombre, especie: $("edEsp").value, variedad: viv ? "" : $("edVar").value.trim(), anio: viv ? null : num($("edAnio").value), ha: haN, arboles: viv ? null : num($("edArb").value), orden: editing.orden || (S.cuarteles.length + 1) };
+    if (viv){ data.especies = edEsps.slice(); data.riego = "manual"; if (!data.especies.length){ toast("Marca al menos una especie del vivero."); return; } }
     var b = $("edOk"); b.disabled = true;
     try {
       var ref = editing.id ? S.db.doc("cuarteles/" + editing.id) : S.db.collection("cuarteles").doc();
@@ -2280,15 +2314,21 @@ html.pc .cmdk:not([hidden]){display:flex}
   function abrirPct(){ $("pcPct").value = ""; $("pcLitros").value = ""; $("pcUn").value = "L"; $("pcTipo").value = "liq"; $("pcDil").selectedIndex = 0; calcPct(); $("pcSheet").hidden = false; $("pcPct").focus(); }
 
   var M3H_HA = 22, DERECHO_SEM = 1210;
-  function demandaM3h(c){ return c && c.ha && c.especie !== "Limón" ? c.ha * M3H_HA : null; }
+  function demandaM3h(c){ return c && c.ha && c.especie !== "Limón" && c.especie !== "Vivero" ? c.ha * M3H_HA : null; }
   function rgSel(){ return S.cuarteles.filter(function(c){ return c.id === $("rgSector").value; })[0]; }
   function rgEstim(){
     var c = rgSel(), hr = parseFloat($("rgHoras").value), d = demandaM3h(c), t = $("rgCalc");
     if (d){ t.textContent = "Estimado: " + nf(d * hr, 0) + " m³ (" + nf(d, 1) + " m³/h × " + nf(hr, 1) + " h)"; t.hidden = false; }
-    else { t.textContent = "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
+    else { t.textContent = esViv(c) ? "Riego manual con manguera: no se calcula el agua. En las notas anota qué se regó." : "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
     return d ? d * hr : null;
   }
-  $("rgSector").onchange = rgEstim; $("rgHoras").onchange = rgEstim;
+  $("rgSector").onchange = function(){ rgHorasPara(); rgEstim(); }; $("rgHoras").onchange = rgEstim;
+  function rgHorasPara(){
+    var v = esViv(rgSel()), hs = [], i, sel = $("rgHoras").value;
+    if (v){ hs.push({ value: "0.25", label: "15 minutos" }); hs.push({ value: "0.5", label: "30 minutos" }); hs.push({ value: "0.75", label: "45 minutos" }); for (i = 2; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") }); }
+    else for (i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
+    fill($("rgHoras"), hs, hs.some(function(h){ return h.value === sel; }) ? sel : (v ? "0.5" : "3"));
+  }
   function abrirRiego(){
     rgTarea = null; $("rgTitle").textContent = "Registrar riego";
     var cs = sectoresOrden();
@@ -2298,6 +2338,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill($("rgFecha"), [{ value: hoy, label: "Hoy" }, { value: ayer, label: "Ayer" }, { value: anteayer, label: "Anteayer" }]);
     var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
     fill($("rgHoras"), hs, "3");
+    rgHorasPara();
     $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); $("rgSheet").hidden = false;
   }
   $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; };
@@ -2655,7 +2696,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var csEd = null;
   function abrirCosecha(ed){
     csEd = ed || null;
-    var cs = sectoresOrden(); if (!cs.length && !ed){ toast("Primero crea un sector en «Campo»."); return; }
+    var cs = sectoresOrden().filter(function(c){ return !esViv(c); }); if (!cs.length && !ed){ toast("Primero crea un sector en «Campo»."); return; }
     var opts = cs.map(function(c){ return { value: c.id, label: c.nombre }; }); if (ed) opts.push({ value: "__todo", label: "Todo el campo (sin sector)" });
     fill($("csSector"), opts);
     $("csTitle").textContent = ed ? "Editar cosecha" : "Registrar cosecha"; $("csOk").textContent = ed ? "Guardar cambios" : "Guardar cosecha";
@@ -2765,10 +2806,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     var res = el("section", "card sect"); res.appendChild(el("h2", null, "Resumen por sector"));
     if (!recs.length) res.appendChild(el("p", "note", "Todavía no hay cosechas en esta temporada. Toca «Registrar cosecha»."));
     var tot = { seco: 0, dia: 0, lim: 0 };
-    var cuIds = {}, nogCu = sectoresOrden().filter(function(c){ return !esLimon(c); }); S.cuarteles.forEach(function(c){ cuIds[c.id] = 1; });
+    var cuIds = {}, nogCu = sectoresOrden().filter(function(c){ return !esLimon(c) && !esViv(c); }); S.cuarteles.forEach(function(c){ cuIds[c.id] = 1; });
     var todo = { id: "", nombre: "Todo el campo", especie: "Nogal", ha: nogCu.reduce(function(a, c){ return a + (Number(c.ha) || 0); }, 0), arboles: nogCu.length && nogCu.every(function(c){ return Number(c.arboles) > 0; }) ? nogCu.reduce(function(a, c){ return a + Number(c.arboles); }, 0) : 0 };
     var enGrupo = function(arr, cu){ return arr.filter(function(c){ return cu.id === "" ? !cuIds[c.sectorId] : c.sectorId === cu.id; }); };
-    sectoresOrden().concat([todo]).forEach(function(cu){
+    sectoresOrden().filter(function(c){ return !esViv(c); }).concat([todo]).forEach(function(cu){
       var rs = enGrupo(recs, cu); if (!rs.length) return;
       var lim = esLimon(cu), seco = 0, dia = 0, kgT = 0;
       rs.forEach(function(c){ var k = Number(c.kg) || 0; kgT += k; if (lim) tot.lim += k; else if (c.medida === "seco"){ seco += k; tot.seco += k; } else { dia += k; tot.dia += k; } });
@@ -3345,7 +3386,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(ph("campo"));
     var cs = S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); });
     var nog = 0, lim = 0;
-    cs.forEach(function(c){ var h = Number(c.ha) || 0; if (c.especie === "Limón") lim += h; else nog += h; });
+    cs.forEach(function(c){ var h = Number(c.ha) || 0; if (c.especie === "Limón") lim += h; else if (c.especie !== "Vivero") nog += h; });
     var sum = el("section", "card sect"); sum.appendChild(el("h2", null, "Superficie plantada"));
     var rows = el("div", "rows");
     [["Nogal", nog], ["Limón", lim]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", nf(x[1], 2) + " ha")); rows.appendChild(r); });
@@ -3356,7 +3397,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(sum);
     f.appendChild(buildArboles());
     if (!cs.length) f.appendChild(el("p", "note", "Aún no hay sectores cargados."));
-    var totHa = cs.reduce(function(a, c){ return a + (Number(c.ha) || 0); }, 0);
+    var totHa = cs.reduce(function(a, c){ return a + (esViv(c) ? 0 : (Number(c.ha) || 0)); }, 0);
     var card = el("section", "card cua"), abierto = !!S.sectAb;
     var t = el("button", "cua-t"); t.type = "button"; t.id = "sectTit"; t.setAttribute("aria-expanded", abierto ? "true" : "false");
     var ti0 = el("span", "ti"); ti0.appendChild(ico("campo")); t.appendChild(ti0);
@@ -3372,7 +3413,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var r = el("button", "sec-r" + (sel ? " on" : "")); r.type = "button"; r.setAttribute("aria-expanded", sel ? "true" : "false");
       r.appendChild(el("span", "dot" + (c.especie === "Limón" ? " lemon" : "")));
       var rt = el("span", "tx"); rt.appendChild(el("b", null, c.nombre || "Sin nombre"));
-      rt.appendChild(el("span", "rs", [c.especie, c.variedad, c.ha != null ? nf(c.ha, 2) + " ha" : null].filter(Boolean).join(" · ")));
+      rt.appendChild(el("span", "rs", esViv(c) ? ["Vivero · riego manual", c.ha != null ? nf(c.ha * 10000, 0) + " m²" : null].filter(Boolean).join(" · ") : [c.especie, c.variedad, c.ha != null ? nf(c.ha, 2) + " ha" : null].filter(Boolean).join(" · ")));
       if (rst.rein) rt.appendChild(el("span", "cua-alert", "No entrar hasta " + fmtFH.format(new Date(rst.rein))));
       else if (rst.cos) rt.appendChild(el("span", "cua-alert", "Carencia hasta el " + fmtD2(rst.cos)));
       r.appendChild(rt); var c2 = el("span", "chev"); c2.appendChild(ico("chev")); r.appendChild(c2);
@@ -3380,7 +3421,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       body.appendChild(r);
       if (sel){
         var d = el("div", "sec-d");
-        var det = [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); d.appendChild(el("p", "sub", det)); if (c.nota) d.appendChild(el("p", "note", c.nota));
+        var det = esViv(c) ? "Vivero · riego manual con manguera" : [c.especie, c.variedad, c.anio ? "plantación " + c.anio : null].filter(Boolean).join(" · "); d.appendChild(el("p", "sub", det)); if (esViv(c)) d.appendChild(el("p", "note", "Especies: " + vivTexto(c))); if (c.nota) d.appendChild(el("p", "note", c.nota));
         var rs = el("div", "rows");
         function fila(k, v){ var rr = el("div", "row"); rr.appendChild(el("span", "l", k)); rr.appendChild(el("span", "r", v)); rs.appendChild(rr); }
         fila("Superficie", c.ha != null ? nf(c.ha, 2) + " ha" : "por registrar");
@@ -4236,7 +4277,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var c3 = ccCard("Estado del campo"), grid = el("div", "cc-sec"), now = Date.now();
     S.cuarteles.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }).forEach(function(c){
       var rs = restriccionesSector(c.id, now), b = el("button", "cc-sc"); b.type = "button"; b.onclick = function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = c.id; render(); };
-      b.appendChild(el("b", null, c.nombre || "Sector")); b.appendChild(el("small", null, (c.especie || "") + (c.ha ? " · " + nf(c.ha, 2) + " ha" : "")));
+      b.appendChild(el("b", null, c.nombre || "Sector")); b.appendChild(el("small", null, esViv(c) ? "Vivero · manual" : (c.especie || "") + (c.ha ? " · " + nf(c.ha, 2) + " ha" : "")));
       var ult = ""; S.aplicaciones.forEach(function(a){ if ((!a.sectorId || a.sectorId === c.id) && a.fecha > ult) ult = a.fecha; });
       if (ult) b.appendChild(el("small", null, "Última aplicación hace " + diasDesde(ult) + " días"));
       b.appendChild(el("span", "chip " + (rs.rein ? "warn" : rs.cos ? "lem" : "ok"), rs.rein ? "No entrar hasta " + fmtFH.format(new Date(rs.rein)) : rs.cos ? "Carencia hasta " + fmtD2(rs.cos) : "Libre")); grid.appendChild(b);

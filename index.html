@@ -392,6 +392,14 @@ html.pc .pcbar .sp{flex:1}
 .lg-card .btns{display:flex; gap:8px; margin-top:8px}
 .lg-card .btns button{width:auto}
 .lg-h{margin:16px 0 6px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+.co-row{display:grid; grid-template-columns:1fr 1fr auto; gap:8px; align-items:end; margin-bottom:8px}
+.co-row label{display:block; font-weight:700; font-size:13px; margin-bottom:4px}
+.co-row input[type=time]{width:100%}
+.co-row .sg{grid-column:1 / -1; font-size:13px; display:flex; gap:6px; align-items:center}
+.co-row .sg input{width:auto}
+.rowc{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+.rowc .acc{display:flex; gap:6px; align-items:center}
+button.small.link2{background:transparent; border:0; color:var(--accent); font-weight:700; text-decoration:underline; padding:4px 6px; width:auto}
 .pctema{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px; margin-right:12px}
 .pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
 .pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
@@ -813,6 +821,37 @@ html.pc .cmdk:not([hidden]){display:flex}
     <button id="auCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="coSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="coTitle">
+    <h2 id="coTitle">Corregir el día</h2>
+<div class="sbody">
+    <p class="note" id="coQuien"></p>
+    <div class="field" id="coFechaF"><label for="coFecha">Día</label><input type="date" id="coFecha"></div>
+    <div id="coTramos"></div>
+    <button type="button" id="coAdd" class="small">+ Agregar otro tramo</button>
+    <button type="button" id="coSug" class="small" hidden></button>
+    <p class="note" id="coRes" aria-live="polite"></p>
+    <div class="field"><label for="coMotivo">Motivo de la corrección</label><select id="coMotivo"><option>Olvidé registrar la salida</option><option>Olvidé registrar la llegada</option><option>No tenía señal</option><option>Otro</option></select></div>
+    <p class="note warn" id="coAviso" hidden></p>
+    <p class="note" id="coNota"></p>
+</div>
+<div class="sfoot">    <button class="primary" id="coOk">Guardar corrección</button>
+    <button id="coCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="psSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="psTitle">
+    <h2 id="psTitle">Falta registrar una salida</h2>
+<div class="sbody">
+    <p id="psTexto"></p>
+    <div class="field"><label for="psHora">¿A qué hora saliste?</label><input type="time" id="psHora"></div>
+    <p class="note" id="psNota"></p>
+</div>
+<div class="sfoot">    <button class="primary" id="psOk">Guardar salida</button>
+    <button id="psMas">Más opciones</button>
+    <button id="psDespues">Lo corrijo después</button></div>
+  </div>
+</div>
 <div class="sheet" id="sdSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="sdTitle">
     <h2 id="sdTitle">Días del año</h2>
@@ -1100,7 +1139,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, corr:[], psSkip:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1218,7 +1257,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 23;
+  var GUIA_V = 24;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1259,6 +1298,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Corregir horarios", "Si olvidaste registrar la salida, en «Inicio» → «Mi semana» → «Ver horarios» toca «Corregir salida» (o «Corregir» en cualquier día), o «+ Agregar un día olvidado». Puedes ajustar varios tramos del día; la app sugiere la hora de tu última actividad. Al abrir la app también te pregunta por una salida pendiente de los últimos 7 días. Diego lo guarda directo; si eres otra persona, la corrección se envía a Diego y cuenta cuando la aprueba. Si el día suma más de 14 horas, te pide confirmar. Los días sin salida no cuentan horas hasta corregirlos.", 24, ""],
     ["Ausencias", "En «Permisos»: «Registrar ausencia» (solo tú) anota un día que ya pasó, para cualquier persona: motivo, licencia médica (no hay, solicitada, otorgada o rechazada), cómo se trata el día y una nota. Los demás solo ven «Ausencia». «Editar detalle» cambia la licencia cuando llega la respuesta. Solo «Cargo a vacaciones» descuenta del saldo. Cuando alguien avisa que hoy no puede ir, tú lo apruebas. En «Inicio» sale un aviso mientras haya días por definir.", 23, "owner"],
     ["Avisar una ausencia", "En «Permisos», si hoy no puedes ir, toca «Avisar que hoy no puedo ir» (pide un segundo toque para confirmar). Diego recibe el aviso y lo aprueba; no hace falta escribir el motivo en la app.", 23, ""],
     ["Borrar una ficha", "En «Personal», abre una persona con «Editar» y toca «Borrar ficha completa» (solo tú; pide confirmar con un segundo toque). Se borra la ficha del directorio; lo ya registrado, como asistencia y jornadas pasadas, no se toca.", 22, "owner"],
@@ -1780,6 +1820,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.manager) medPendientes().forEach(function(m){
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
     });
+    if (S.owner && corrPend().length){ var ncp = corrPend().length; out.push({ sev: 3, titulo: ncp + (ncp === 1 ? " corrección de horario por aprobar" : " correcciones de horario por aprobar"), lineas: [["pm", "Horarios", "las horas cuentan cuando las apruebes"]], acciones: [], ir: function(){ S.screen = "horarios"; render(); } }); }
+    (function(){ var e0 = estado(S.dias, Date.now()); if (e0.st === "open" && e0.min >= 600) out.push({ sev: 2, titulo: "Llevas " + dur(e0.min) + " en turno", lineas: [["pm", "Salida", "si ya terminaste, registra tu salida"]], acciones: [{ txt: "Registrar salida", pri: true, aria: "Registrar tu salida", fn: function(){ pedir("out"); } }], ir: function(){ pedir("out"); } }); })();
     if (S.owner) ausPorDefinir().forEach(function(x){
       out.push({ sev: 3, titulo: nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día de ausencia" : " días de ausencia") + " de " + x.nombre + " por definir", lineas: [["pm", "Ausencia", "decide si se descuentan, van con goce o a vacaciones"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
     });
@@ -1973,10 +2015,14 @@ html.pc .cmdk:not([hidden]){display:flex}
         var r = el("div", "row"); r.appendChild(el("span", "l", dia(x.fecha)));
         var t = (x.tramos || []).map(function(t){ return hora(t.entrada) + "–" + (t.salida ? hora(t.salida) : "…"); }).join("  ");
         var abierto = (x.tramos || []).some(function(t){ return !t.salida; });
-        var rr2 = el("span", "r"); rr2.textContent = t + (abierto && x.fecha !== wk.hoy ? "  sin salida" : ""); r.appendChild(rr2); rows.appendChild(r);
+        var rr2 = el("span", "r"); rr2.textContent = t + (abierto && x.fecha !== wk.hoy ? "  sin salida" : ""); var rc = el("div", "rowc"); r.className = "row"; var acc = el("span", "acc"); acc.appendChild(rr2);
+        var cb2 = el("button", "small link2", abierto && x.fecha !== wk.hoy ? "Corregir salida" : "Corregir"); cb2.type = "button"; cb2.setAttribute("aria-label", "Corregir el " + dia(x.fecha)); cb2.onclick = function(){ abrirCorreccion(S.uid, S.nombre, x.fecha); }; acc.appendChild(cb2); r.appendChild(acc); rows.appendChild(r);
       });
       dt.appendChild(rows); sem.appendChild(dt);
     } else sem.appendChild(el("p", "note", "Todavía no hay registros esta semana."));
+    if (wk.sinSalida) sem.appendChild(el("p", "note warn", wk.sinSalida + (wk.sinSalida === 1 ? " día sin salida registrada: no cuenta horas hasta corregirlo." : " días sin salida registrada: no cuentan horas hasta corregirlos.")));
+    var mp = S.corr.filter(function(c){ return c.uid === S.uid && c.estado === "pendiente"; }); if (mp.length) sem.appendChild(el("p", "note", mp.length + (mp.length === 1 ? " corrección enviada, por aprobar." : " correcciones enviadas, por aprobar.")));
+    var ba = el("button", "small", "+ Agregar un día olvidado"); ba.id = "btnDiaOlv"; ba.type = "button"; ba.onclick = function(){ abrirCorreccion(S.uid, S.nombre, null); }; sem.appendChild(ba);
     f.appendChild(sem);
 
     if (S.manager){
@@ -3987,7 +4033,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function personasHor(){
     var m = {};
     function add(nombre){ var n = String(nombre || "").trim(), k = n.toLowerCase(); if (!k) return null; if (!m[k]) m[k] = { nombre: n, dias: {} }; return m[k]; }
-    Object.keys(S.team).forEach(function(id){ var t = S.team[id], p = add(t.nombre); if (!p) return; (t.dias || []).forEach(function(d){ p.dias[d.fecha] = (d.tramos || []).slice(); }); });
+    Object.keys(S.team).forEach(function(id){ var t = S.team[id], p = add(t.nombre); if (!p) return; p.uid = id; (t.dias || []).forEach(function(d){ p.dias[d.fecha] = (d.tramos || []).slice(); }); });
     S.personal.forEach(function(x){ add(x.nombre); });
     (S.jornHist || []).forEach(function(j){ (j.asignaciones || []).forEach(function(a){ var p = add(a.nombre); if (!p || !a.hi) return; if (!p.dias[j.fecha]) p.dias[j.fecha] = [{ entrada: a.hi, salida: a.hs || null }]; }); });
     return Object.keys(m).map(function(k){ return m[k]; }).sort(function(a, b){ return a.nombre.localeCompare(b.nombre, "es"); });
@@ -4010,6 +4056,19 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(c1);
     if (!ps.length){ var c0 = el("section", "card sect"); c0.appendChild(el("p", "note", "Todavía no hay personas con registros.")); f.appendChild(c0); return f; }
 
+    var cp = corrPend();
+    if (cp.length){
+      var cc2 = el("section", "card sect prio"); cc2.id = "corrCard"; cc2.appendChild(el("h2", null, "Correcciones por aprobar (" + cp.length + ")"));
+      cp.forEach(function(c){
+        var bx = el("div", "asg"); bx.appendChild(el("b", null, (c.nombre || "Alguien") + " · " + dia(c.fecha)));
+        bx.appendChild(el("p", null, "Antes: " + trTxt(c.antes))); bx.appendChild(el("p", null, "Propone: " + trTxt(c.tramos)));
+        bx.appendChild(el("p", "note", c.motivo + " · enviada el " + fmtFH.format(new Date(c.ts))));
+        var bb = el("div", "btns"), ok = el("button", "primary", "Aprobar"), no = el("button", "small", "Rechazar");
+        ok.onclick = function(){ ok.disabled = true; resolverCorr(c, true); }; no.onclick = function(){ no.disabled = true; resolverCorr(c, false); };
+        bb.appendChild(ok); bb.appendChild(no); bx.appendChild(bb); cc2.appendChild(bx);
+      });
+      f.appendChild(cc2);
+    }
     var ws = S.horWs && S.horWs <= ws0 ? S.horWs : ws0, we = addDays(ws, 6);
     var c3 = el("section", "card sect"); c3.appendChild(el("h2", null, "Resumen de la semana"));
     c3.appendChild(el("p", "sub", "Semana del " + rangoSem(ws, we)));
@@ -4029,16 +4088,20 @@ html.pc .cmdk:not([hidden]){display:flex}
     pv.onclick = function(){ S.horWs = addDays(ws, -7); render(); };
     nx.disabled = ws >= ws0; nx.onclick = function(){ var n = addDays(ws, 7); S.horWs = n >= ws0 ? ws0 : n; render(); };
     nav.appendChild(pv); nav.appendChild(el("b", null, rangoSem(ws, we))); nav.appendChild(nx); c2.appendChild(nav);
-    var P = ps.filter(function(p){ return p.nombre.toLowerCase() === S.horP; })[0], rows = el("div", "rows"), tot = 0, nd = 0;
+    var P = ps.filter(function(p){ return p.nombre.toLowerCase() === S.horP; })[0], rows = el("div", "rows"), tot = 0, nd = 0, nCorr = 0;
     for (var k = 0; k < 7; k++){
       var fd = addDays(ws, k), tr = P.dias[fd] || [], r = el("div", "row"); r.appendChild(el("span", "l", dia(fd)));
       var m = mins(tr, fd === hy ? now : null), abierto = tr.some(function(t){ return !t.salida; });
       var txt = tr.length ? tr.map(function(t){ return hora(t.entrada) + "–" + (t.salida ? hora(t.salida) : "…"); }).join("  ") + " · " + dur(m) + (abierto && fd !== hy ? " · sin salida" : "") : "Sin registro";
       var rr = el("span", "r", txt); rr.style.textAlign = "right"; if (!tr.length) rr.style.color = "var(--muted)";
-      if (tr.length){ nd++; tot += m; } r.appendChild(rr); rows.appendChild(r);
+      if (tr.length){ nd++; tot += m; } if (abierto && fd !== hy) nCorr++;
+      if (P.uid && fd <= hy){ var acc2 = el("span", "acc"); acc2.appendChild(rr); var bc = el("button", "small link2", abierto && fd !== hy ? "Corregir salida" : tr.length ? "Corregir" : "Agregar"); bc.type = "button"; bc.setAttribute("aria-label", "Corregir el " + dia(fd)); (function(fd2){ bc.onclick = function(){ abrirCorreccion(P.uid, P.nombre, fd2); }; })(fd); acc2.appendChild(bc); r.className = "row"; r.appendChild(acc2); }
+      else r.appendChild(rr); rows.appendChild(r);
     }
     c2.appendChild(rows);
     var tt = el("div", "total"); tt.appendChild(el("span", null, nd + (nd === 1 ? " día trabajado" : " días trabajados"))); tt.appendChild(el("span", null, dur(tot))); c2.appendChild(tt);
+    if (nCorr) c2.appendChild(el("p", "note warn", nCorr + (nCorr === 1 ? " día sin salida registrada: no cuenta horas hasta corregirlo." : " días sin salida registrada: no cuentan horas hasta corregirlos.")));
+    if (P.uid){ var bo = el("button", "small", "+ Agregar un día olvidado"); bo.type = "button"; bo.onclick = function(){ abrirCorreccion(P.uid, P.nombre, null); }; c2.appendChild(bo); }
     var ym = ws.slice(0, 7), md = 0, mt = 0;
     Object.keys(P.dias).forEach(function(d){ if (d.slice(0, 7) === ym && P.dias[d].length){ md++; mt += mins(P.dias[d], d === hy ? now : null); } });
     var mes = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "long" }).format(new Date(ym + "-15T12:00:00Z"));
@@ -4675,6 +4738,139 @@ html.pc .cmdk:not([hidden]){display:flex}
     S.terceros.filter(function(t){ return t.activo !== false; }).forEach(function(t){ var m = semanaT(t.id, ws).min; if (m > sm) out.push({ nombre: t.nombre, t: m, ir: "terceros" }); });
     return out;
   }
+
+  /* ---- Corregir horarios: el dueño guarda directo; los demás envían la corrección y queda por aprobar (correcciones/{id}) ---- */
+  var CO_TOPE = 14 * 60;
+  function tzOffMin(ms){
+    var o = {}; new Intl.DateTimeFormat("en-US", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).formatToParts(new Date(ms)).forEach(function(x){ o[x.type] = x.value; });
+    return Math.round((Date.UTC(+o.year, +o.month - 1, +o.day, (+o.hour) % 24, +o.minute, +o.second) - Math.floor(ms / 1000) * 1000) / 60000);
+  }
+  function isoLocal(f, hhmm){
+    var a = f.split("-"), h = hhmm.split(":"), g = Date.UTC(+a[0], +a[1] - 1, +a[2], +h[0], +h[1]), off = tzOffMin(g), t = g - off * 60000, off2 = tzOffMin(t);
+    if (off2 !== off) t = g - off2 * 60000; return new Date(t).toISOString();
+  }
+  function diasDe(uid){ return uid === S.uid ? S.dias : ((S.team[uid] && S.team[uid].dias) || []); }
+  function docDia(uid, f){ return diasDe(uid).filter(function(x){ return x.fecha === f; })[0] || null; }
+  function limpiaTr(tr){ return (tr || []).map(function(t){ return { entrada: t.entrada, salida: t.salida || null }; }); }
+  function lastActividad(nombre, f){
+    var mx = 0; [S.aplicaciones, S.riegos, S.trabajos, S.cosechas, S.arboles].forEach(function(arr){ (arr || []).forEach(function(x){ if (x && x.por === nombre && x.ts){ var t = Date.parse(x.ts); if (t && fecha(new Date(t)) === f && t > mx) mx = t; } }); });
+    return mx ? new Date(mx).toISOString() : null;
+  }
+  var coCtx = null, co14 = false;
+  function coFila(e, sal, sig){
+    var w = el("div", "co-row");
+    var a = el("div"), la = el("label", null, "Entrada"), ia = el("input"); ia.type = "time"; ia.value = e || ""; ia.className = "coE"; ia.id = "coE" + $("coTramos").children.length; la.htmlFor = ia.id; a.appendChild(la); a.appendChild(ia);
+    var b = el("div"), lb = el("label", null, "Salida"), ib = el("input"); ib.type = "time"; ib.value = sal || ""; ib.className = "coS"; ib.id = "coS" + $("coTramos").children.length; lb.htmlFor = ib.id; b.appendChild(lb); b.appendChild(ib);
+    var q = el("button", "small", "Quitar"); q.type = "button"; q.setAttribute("aria-label", "Quitar este tramo"); q.onclick = function(){ if ($("coTramos").children.length > 1){ w.remove(); coRes(); } else toast("Debe quedar al menos un tramo."); };
+    var sg = el("label", "sg"), ck = el("input"); ck.type = "checkbox"; ck.className = "coSig"; ck.checked = !!sig; sg.appendChild(ck); sg.appendChild(document.createTextNode("La salida fue al día siguiente"));
+    w.appendChild(a); w.appendChild(b); w.appendChild(q); w.appendChild(sg);
+    [ia, ib, ck].forEach(function(n){ n.onchange = coRes; n.oninput = coRes; }); $("coTramos").appendChild(w);
+  }
+  function coLee(){
+    var f = $("coFecha").value, out = [], err = "";
+    Array.prototype.forEach.call($("coTramos").children, function(w){
+      var e = w.querySelector(".coE").value, s2 = w.querySelector(".coS").value, sig = w.querySelector(".coSig").checked;
+      if (!e && !s2) return;
+      if (!e){ err = "Falta la hora de entrada."; return; }
+      out.push({ e: e, s: s2, sig: sig });
+    });
+    var hoyF = fecha(), now = Date.now(), tr = [], tot = 0;
+    if (!f) err = err || "Elige el día."; else if (f > hoyF) err = err || "El día no puede ser futuro.";
+    if (!err && !out.length) err = "Agrega al menos una entrada.";
+    if (!err) out.forEach(function(x, i){
+      var ei = isoLocal(f, x.e), si = null;
+      if (x.s){ si = isoLocal(f, x.s); if (x.sig) si = new Date(Date.parse(si) + 86400000).toISOString(); }
+      else if (!(f === hoyF && i === out.length - 1)) err = err || "Falta la hora de salida de un tramo.";
+      if (si && Date.parse(si) <= Date.parse(ei)) err = err || "La salida debe ser después de la entrada.";
+      if (Date.parse(ei) > now || (si && Date.parse(si) > now)) err = err || "Esa hora todavía no llega.";
+      tr.push({ entrada: ei, salida: si });
+    });
+    if (!err){ tr.sort(function(a, b){ return Date.parse(a.entrada) - Date.parse(b.entrada); });
+      for (var i = 1; i < tr.length; i++){ if (!tr[i - 1].salida || Date.parse(tr[i - 1].salida) > Date.parse(tr[i].entrada)) err = err || "Los tramos no pueden cruzarse."; }
+      tr.forEach(function(t){ if (t.salida) tot += (Date.parse(t.salida) - Date.parse(t.entrada)) / 60000; }); }
+    return { f: f, tr: tr, tot: Math.round(tot), err: err };
+  }
+  function coRes(){
+    var r = coLee(); co14 = false; $("coAviso").hidden = true;
+    $("coRes").textContent = r.err ? r.err : "Resultado: " + dur(r.tot) + (r.tr.some(function(t){ return !t.salida; }) ? " (más lo que corre del tramo abierto)" : "") + ".";
+  }
+  $("coAdd").onclick = function(){ coFila("", "", false); coRes(); };
+  $("coFecha").onchange = function(){
+    if (!coCtx) return; var d = docDia(coCtx.uid, $("coFecha").value); $("coTramos").textContent = "";
+    var tr = d && d.tramos && d.tramos.length ? d.tramos : null;
+    if (tr) tr.forEach(function(t){ coFila(hora(t.entrada), t.salida ? hora(t.salida) : "", t.salida && fecha(new Date(t.salida)) !== fecha(new Date(t.entrada))); }); else coFila("", "", false);
+    coSug(); coRes();
+  };
+  function coSug(){
+    var b = $("coSug"); b.hidden = true; if (!coCtx) return; var f = $("coFecha").value, la = f ? lastActividad(coCtx.nombre, f) : null;
+    if (!la) return; var hh = hora(la); b.hidden = false; b.textContent = "Usar la última actividad en la app ese día: " + hh;
+    b.onclick = function(){ var ss = $("coTramos").querySelectorAll(".coS"), last = ss[ss.length - 1]; if (last){ last.value = hh; var sg = last.closest(".co-row").querySelector(".coSig"); sg.checked = false; coRes(); } };
+  }
+  function abrirCorreccion(uid, nombre, f){
+    coCtx = { uid: uid, nombre: nombre }; co14 = false;
+    $("coQuien").textContent = uid === S.uid ? "Tus horas." : "Horas de " + nombre + ".";
+    $("coNota").textContent = S.owner ? "Se guarda directo. Queda anotado quién corrigió y las horas que había antes." : "Se envía a Diego y cuenta cuando él la apruebe. Queda anotado qué horas había antes.";
+    $("coOk").textContent = S.owner ? "Guardar corrección" : "Enviar a Diego";
+    $("coFechaF").hidden = !!f; $("coTitle").textContent = f ? "Corregir " + dia(f) : "Agregar un día olvidado";
+    var hoyF = fecha(); $("coFecha").max = hoyF; $("coFecha").value = f || addDays(hoyF, -1); $("coMotivo").selectedIndex = 0;
+    $("coFecha").onchange(); $("coSheet").hidden = false;
+  }
+  $("coCancel").onclick = function(){ $("coSheet").hidden = true; };
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !$("coSheet").hidden) $("coSheet").hidden = true; });
+  async function guardarAsistencia(uid, nombre, f, tr, motivo, antes, aprobo){
+    var iso = new Date().toISOString(), prev = docDia(uid, f), hist = (prev && prev.correcciones ? prev.correcciones : []).concat([{ por: aprobo ? nombre : S.nombre, aprobadaPor: aprobo ? S.nombre : null, ts: iso, motivo: motivo, antes: antes }]).slice(-5);
+    await S.db.doc("asistencia/" + uid + "/dias/" + f).set({ fecha: f, tramos: tr.map(function(t){ return { entrada: t.entrada, salida: t.salida, por: nombre, uid: uid, corregido: true }; }), actualizadoPor: S.nombre, actualizadoTs: iso, correcciones: hist });
+  }
+  async function enviarOGuardar(uid, nombre, f, tr, motivo){
+    var antes = limpiaTr((docDia(uid, f) || {}).tramos);
+    if (S.owner){ await guardarAsistencia(uid, nombre, f, tr, motivo, antes, false); toast("Corrección guardada"); }
+    else { await S.db.collection("correcciones").doc().set({ uid: uid, nombre: nombre, fecha: f, tramos: tr, antes: antes, motivo: motivo, estado: "pendiente", ts: new Date().toISOString() }); toast("Corrección enviada. Diego la revisará"); }
+  }
+  $("coOk").onclick = async function(){
+    var r = coLee(); if (r.err){ toast(r.err); return; }
+    if (r.tot > CO_TOPE && !co14){ co14 = true; $("coAviso").textContent = "Este día suma " + dur(r.tot) + ", más de 14 horas. Si es correcto, toca otra vez."; $("coAviso").hidden = false; return; }
+    var b = $("coOk"); b.disabled = true;
+    try { await enviarOGuardar(coCtx.uid, coCtx.nombre, r.f, r.tr, $("coMotivo").value); $("coSheet").hidden = true; }
+    catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
+  async function resolverCorr(c, ok){
+    try {
+      if (ok){ await guardarAsistencia(c.uid, c.nombre, c.fecha, c.tramos, c.motivo, c.antes || [], true); }
+      await S.db.doc("correcciones/" + c.id).update({ estado: ok ? "aprobada" : "rechazada", resueltaPor: S.nombre, resueltaTs: new Date().toISOString() });
+      toast(ok ? "Corrección aprobada" : "Corrección rechazada");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+  }
+  function corrPend(){ return S.corr.filter(function(c){ return c.estado === "pendiente"; }); }
+  function trTxt(tr){ return (tr && tr.length) ? tr.map(function(t){ return hora(t.entrada) + "–" + (t.salida ? hora(t.salida) : "…"); }).join("  ") : "sin registro"; }
+  function porCorregir(dias, now){ var hy = fecha(new Date(now)); return (dias || []).filter(function(x){ return x.fecha < hy && (x.tramos || []).some(function(t){ return !t.salida; }); }); }
+  /* al abrir la app: si quedó una salida sin registrar en los últimos 7 días, la pregunta una vez por sesión */
+  var psCtx = null;
+  function psRevisa(){
+    if (S.psVisto || !S.okDias || !S.nombre || !S.uid) return;
+    if (document.querySelector(".sheet:not([hidden])")) return;
+    var now = Date.now(), lim = addDays(fecha(new Date(now)), -7);
+    var d = porCorregir(S.dias, now).filter(function(x){ return x.fecha >= lim && !S.psSkip[x.fecha] && !S.corr.some(function(c){ return c.uid === S.uid && c.fecha === x.fecha && c.estado === "pendiente"; }); }).sort(function(a, b){ return a.fecha < b.fecha ? 1 : -1; })[0];
+    if (!d) return; S.psVisto = true;
+    var ab = d.tramos.filter(function(t){ return !t.salida; })[0], la = lastActividad(S.nombre, d.fecha);
+    psCtx = { f: d.fecha, ent: ab.entrada, doc: d };
+    $("psTexto").textContent = "El " + dia(d.fecha) + " entraste a las " + hora(ab.entrada) + " y no quedó registrada la salida; ese día no cuenta horas.";
+    $("psHora").value = la && Date.parse(la) > Date.parse(ab.entrada) ? hora(la) : ""; $("psNota").textContent = (la ? "Sugerencia: tu última actividad en la app ese día fue a las " + hora(la) + ". " : "") + (S.owner ? "Se guarda directo." : "Se envía a Diego y cuenta cuando él la apruebe.");
+    $("psSheet").hidden = false;
+  }
+  $("psDespues").onclick = function(){ if (psCtx) S.psSkip[psCtx.f] = true; $("psSheet").hidden = true; };
+  $("psMas").onclick = function(){ var c = psCtx; $("psSheet").hidden = true; if (c) abrirCorreccion(S.uid, S.nombre, c.f); };
+  $("psOk").onclick = async function(){
+    var c = psCtx; if (!c) return; var h = $("psHora").value; if (!h){ toast("Escribe la hora de salida."); return; }
+    var si = isoLocal(c.f, h), ei = c.ent; if (Date.parse(si) <= Date.parse(ei)){ si = new Date(Date.parse(si) + 86400000).toISOString(); }
+    if (Date.parse(si) > Date.now()){ toast("Esa hora todavía no llega."); return; }
+    var tr = c.doc.tramos.map(function(t){ return t.salida ? { entrada: t.entrada, salida: t.salida } : { entrada: t.entrada, salida: si }; });
+    var tot = 0; tr.forEach(function(t){ tot += (Date.parse(t.salida) - Date.parse(t.entrada)) / 60000; });
+    if (tot > CO_TOPE && $("psOk").dataset.ok !== c.f){ $("psOk").dataset.ok = c.f; $("psNota").textContent = "Eso suma " + dur(tot) + " ese día, más de 14 horas. Si es correcto, toca otra vez."; return; }
+    var b = $("psOk"); b.disabled = true;
+    try { await enviarOGuardar(S.uid, S.nombre, c.f, tr, "Olvidé registrar la salida"); $("psSheet").hidden = true; } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false; $("psOk").dataset.ok = "";
+  };
   function render(){
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
@@ -4686,6 +4882,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!S.okEq || !S.okDias) return setView("loading", msg("Cargando…", "Un momento."));
     if (!S.nombre) return setView("name", buildName);
     if (!S.guiaVista){ S.guiaVista = true; abrirGuia(false); }
+    setTimeout(psRevisa, 700);
     if (S.screen === "permisos") return setView("permisos", buildPermisos);
     if (S.screen === "agenda") return PC ? setView("agendapc", buildPlanPC) : setView("agenda", buildAgenda);
     if (S.screen === "campo") return setView("campo", buildCampo);
@@ -4735,6 +4932,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     db.collection("saldos").onSnapshot(function(s){
       S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
     }, function(){});
+    (S.owner ? db.collection("correcciones") : db.collection("correcciones").where("uid", "==", S.uid)).onSnapshot(function(s){ S.corr = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }).sort(function(a, b){ return a.ts < b.ts ? 1 : -1; }); render(); }, function(){});
     if (S.owner) db.collection("ausDetalle").onSnapshot(function(s){ S.ausDet = {}; s.docs.forEach(function(d){ S.ausDet[d.id] = d.data(); }); render(); }, function(){});
     if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     if (S.owner) db.collection("consultas").orderBy("ts", "desc").limit(100).onSnapshot(function(s){

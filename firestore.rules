@@ -77,7 +77,12 @@ service cloud.firestore {
     match /aplicaciones/{d} { allow read, write: if isMember(); }
     match /riegos/{d} { allow read, write: if isMember(); }
     match /plan/{d} { allow read, write: if isMember(); }
-    match /consultas/{d} { allow read, write: if isMember(); }
+    match /consultas/{d} {
+      allow read: if isOwner() || (isMember() && resource.data.uid == request.auth.uid);
+      allow create: if isMember() && request.resource.data.uid == request.auth.uid;
+      allow update: if isOwner() || (isMember() && resource.data.uid == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leida']));
+      allow delete: if isOwner();
+    }
     match /permisos/{d} { allow read, write: if isMember(); }
     // Cosechas (kilos por sector): una encargada solo puede crear con rev "pendiente" (o sin rev) y no puede cambiar la revisión; la autoriza el dueño.
     match /cosechas/{d} {

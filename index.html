@@ -400,6 +400,27 @@ html.pc .pcbar .sp{flex:1}
 .rowc{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
 .rowc .acc{display:flex; gap:6px; align-items:center}
 button.small.link2{background:transparent; border:0; color:var(--accent); font-weight:700; text-decoration:underline; padding:4px 6px; width:auto}
+.cs-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; margin-bottom:8px; overflow:hidden}
+.cs-card.on{border-color:var(--accent)}
+.cs-h{display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; text-align:left; background:transparent; border:0; padding:12px 14px; min-height:56px; color:var(--fg); font:inherit}
+.cs-h .tx{min-width:0; flex:1}
+.cs-h b{display:block; font-size:15px}
+.cs-h .pv{display:block; color:var(--muted); font-size:13.5px; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cs-b{padding:0 14px 14px}
+.cs-b .msg{line-height:1.4; white-space:pre-wrap; margin:0}
+.cs-b .ctx{font-size:13px; color:var(--muted); margin:6px 0 0}
+.cs-b h4{margin:14px 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+.mk{display:flex; flex-direction:column; gap:8px}
+.mk button{display:flex; justify-content:space-between; align-items:center; gap:10px; width:100%; min-height:48px; text-align:left; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:10px 13px; color:var(--fg); font-weight:700; font-size:15px}
+.mk button span{font-weight:400; font-size:12.5px; color:var(--muted); white-space:nowrap}
+.mk button.t{background:transparent; border-style:dashed; color:var(--accent)}
+.cs-rep{background:var(--ok-bg); color:var(--fg); border-radius:12px; padding:10px 12px; margin-top:10px}
+.cs-rep small{display:block; color:var(--muted); margin-top:4px}
+.cs-dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--alert); margin-right:8px}
+.cs-txt textarea{min-height:84px}
+.cs-txt label.ck{display:flex; gap:8px; align-items:center; font-size:14px; margin:8px 0}
+.cs-txt label.ck input{width:20px; height:20px}
+.toast button.und{background:transparent; border:0; color:var(--lem-fg, #F3E6A6); font-weight:700; text-decoration:underline; padding:0 0 0 14px; width:auto; min-height:0}
 .pctema{width:auto; padding:8px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--fg); font-weight:700; font-size:14px; margin-right:12px}
 .pcsync{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ok-fg)}
 .pcsync i{width:8px; height:8px; border-radius:50%; background:#5E9B55; display:block}
@@ -1139,7 +1160,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, corr:[], psSkip:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, corr:[], psSkip:{}, consAb:null, consTxt:null, consDraft:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1257,7 +1278,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 24;
+  var GUIA_V = 25;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1298,6 +1319,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
     ["Modo escritorio", "En un computador con pantalla ancha (desde 1100 px) la app cambia sola a un modo de escritorio solo para ti: barra lateral con todas las secciones, y un Centro de control con lo que necesita tu decisión, lo que toca hoy, el estado de cada sector, los medidores y la bodega. Con Control+K (o ⌘K) buscas una sección y con Option más un número (⌥1 a ⌥0) saltas a ella. Si achicas la ventana, vuelve a la vista de teléfono. En el teléfono no cambia nada.", 18, "owner"],
+    ["Responder mensajes", "En «Inicio», «Consultas del equipo»: toca un mensaje para desplegarlo y responde con un toque («Recibido, lo reviso», «Ya quedó resuelto», «Buena idea, la anoto»…) o con «Escribir otra respuesta…». Hay unos segundos para «Deshacer». «Buena idea, la anoto» también agrega la idea a «Ideas» en «Agenda». Quien escribió ve tu respuesta en «Inicio» con un aviso hasta que toque «Entendido».", 25, "owner"],
+    ["Ver las respuestas de Diego", "Cuando Diego responde a un mensaje que enviaste con «Tengo un problema o una idea», en «Inicio» aparece «Respuesta de Diego» y un número en el botón «Inicio». Toca «Entendido» cuando la hayas leído. Tus mensajes anteriores quedan en «Mis mensajes».", 25, ""],
     ["Corregir horarios", "Si olvidaste registrar la salida, en «Inicio» → «Mi semana» → «Ver horarios» toca «Corregir salida» (o «Corregir» en cualquier día), o «+ Agregar un día olvidado». Puedes ajustar varios tramos del día; la app sugiere la hora de tu última actividad. Al abrir la app también te pregunta por una salida pendiente de los últimos 7 días. Diego lo guarda directo; si eres otra persona, la corrección se envía a Diego y cuenta cuando la aprueba. Si el día suma más de 14 horas, te pide confirmar. Los días sin salida no cuentan horas hasta corregirlos.", 24, ""],
     ["Ausencias", "En «Permisos»: «Registrar ausencia» (solo tú) anota un día que ya pasó, para cualquier persona: motivo, licencia médica (no hay, solicitada, otorgada o rechazada), cómo se trata el día y una nota. Los demás solo ven «Ausencia». «Editar detalle» cambia la licencia cuando llega la respuesta. Solo «Cargo a vacaciones» descuenta del saldo. Cuando alguien avisa que hoy no puede ir, tú lo apruebas. En «Inicio» sale un aviso mientras haya días por definir.", 23, "owner"],
     ["Avisar una ausencia", "En «Permisos», si hoy no puedes ir, toca «Avisar que hoy no puedo ir» (pide un segundo toque para confirmar). Diego recibe el aviso y lo aprueba; no hace falta escribir el motivo en la app.", 23, ""],
@@ -1851,6 +1874,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
+      if (x[0] === "home"){ var nrp = respNuevas().length; if (nrp){ w.appendChild(el("i", null, String(nrp))); b.setAttribute("aria-label", "Inicio, " + nrp + (nrp === 1 ? " respuesta nueva" : " respuestas nuevas")); } }
       if (x[0] === "riego"){ var nr = riegosAtrasados().length; if (nr){ b.classList.add("hay-azul"); w.appendChild(el("i", null, String(nr))); b.setAttribute("aria-label", "Riego, " + nr + (nr === 1 ? " atrasado" : " atrasados")); } }
       var avc = x[0] === "campo" ? avisosCampo() : []; if (avc.length){ b.classList.add(avc.some(function(z){ return z.rein; }) ? "hay-alerta" : "hay-aviso"); w.appendChild(el("i", null, String(avc.length))); b.setAttribute("aria-label", "Campo, " + avc.length + (avc.length === 1 ? " sector con aviso" : " sectores con aviso")); }
       b.appendChild(w); b.appendChild(el("span", null, x[1]));
@@ -1982,18 +2006,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
     tiles.appendChild(g); f.appendChild(tiles);
 
-    if (S.owner){
-      var abiertas = S.consultas.filter(function(x){ return !x.resuelta; });
-      var cc = el("section", "card sect"); cc.id = "consCard"; cc.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
-      abiertas.slice(0, 10).forEach(function(x){
-        var bx = el("div", "asg"); var wo = el("div", "who"); wo.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo)); bx.appendChild(wo);
-        bx.appendChild(el("p", null, x.texto));
-        bx.appendChild(el("p", "note", fmtFH.format(new Date(x.ts)) + " · pantalla: " + (x.pantalla || "inicio") + (x.rol ? " · " + x.rol : "")));
-        var ok = el("button", "small", "Marcar como resuelta"); ok.onclick = async function(){ ok.disabled = true; try { await S.db.doc("consultas/" + x.id).update({ resuelta: true, resueltaTs: new Date().toISOString() }); } catch (err){ ok.disabled = false; toast("No se pudo actualizar."); } }; bx.appendChild(ok);
-        cc.appendChild(bx);
-      });
-      if (abiertas.length) f.appendChild(cc);
-    }
+    var ccs = buildConsultasCard(); if (ccs) f.appendChild(ccs);
 
     var sem = el("section", "card sect"); sem.appendChild(el("h2", null, "Mi semana"));
     var DL = ["L", "M", "M", "J", "V", "S", "D"], byDay = {}; wk.rows.forEach(function(x){ byDay[x.fecha] = x; });
@@ -4491,7 +4504,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     var sal = bodSaldos(), kC = 0, kP = 0; sal.forEach(function(x){ if (x.producto === "cascara"){ if (x.lugar !== LUG_PARTIR) kC += x.kg; } else kP += x.kg; });
     var rb = el("div", "cc-r"), tb = el("div", "t"), cu = bodCuadre(); tb.appendChild(el("b", null, "Nuez con cáscara guardada")); tb.appendChild(el("small", null, Math.abs(cu.dif) <= 1 ? "Bodega cuadra con cosecha" : "Faltan " + nf(cu.dif, 0) + " kg por ubicar en la bodega")); rb.appendChild(tb); rb.appendChild(el("b", null, nf(kC, 0) + " kg")); c3.appendChild(rb);
     if (kP > 0){ var rp = el("div", "cc-r"), tp = el("div", "t"); tp.appendChild(el("b", null, "Pulpa guardada")); rp.appendChild(tp); rp.appendChild(el("b", null, nf(kP, 0) + " kg")); c3.appendChild(rp); }
-    cols.appendChild(c3); root.appendChild(cols); return root;
+    cols.appendChild(c3); root.appendChild(cols);
+    var ccn = buildConsultasCard(); if (ccn){ ccn.style.marginTop = "16px"; root.appendChild(ccn); }
+    return root;
   }
 
   /* Planificación (escritorio): semana por filas, arrastrar para reprogramar */
@@ -4871,6 +4886,83 @@ html.pc .cmdk:not([hidden]){display:flex}
     try { await enviarOGuardar(S.uid, S.nombre, c.f, tr, "Olvidé registrar la salida"); $("psSheet").hidden = true; } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
     b.disabled = false; $("psOk").dataset.ok = "";
   };
+
+  /* ---- Mensajes del equipo (consultas): el dueño responde con un toque desde la misma tarjeta; quien escribió ve la respuesta ---- */
+  var MARC = {
+    "Algo no funciona": [{ k: "recibido", t: "Recibido, lo reviso", h: "queda en revisión" }, { k: "resuelto", t: "Ya quedó resuelto", h: "cierra", cierra: true }, { k: "terreno", t: "Lo vemos en terreno", h: "queda en revisión" }],
+    "No entiendo cómo se hace": [{ k: "guia", t: "Mira la guía de uso", h: "cierra", cierra: true }, { k: "persona", t: "Te lo explico en persona", h: "queda en revisión" }, { k: "resuelto", t: "Ya quedó resuelto", h: "cierra", cierra: true }],
+    "Tengo una idea o sugerencia": [{ k: "anota", t: "Buena idea, la anoto", h: "va a Ideas y cierra", cierra: true, idea: true }, { k: "evalua", t: "Lo evalúo", h: "queda en revisión" }, { k: "no", t: "Por ahora no", h: "cierra", cierra: true }]
+  };
+  function marcasDe(tipo){ return MARC[tipo] || MARC["Algo no funciona"]; }
+  function estCons(x){ return x.resuelta ? "resuelta" : x.resp ? "revision" : "nueva"; }
+  function chipCons(x){ var e = estCons(x); return el("span", "chip " + (e === "nueva" ? "lem" : e === "revision" ? "wat" : "ok"), e === "nueva" ? "Nueva" : e === "revision" ? "En revisión" : x.resp && x.resp.marca === "anota" ? "Anotada" : "Resuelta"); }
+  function respNuevas(){ return S.owner ? [] : S.consultas.filter(function(c){ return c.uid === S.uid && c.resp && c.leida === false; }); }
+  function toastUndo(msg, fn){
+    var t = $("toast"); t.hidden = false; t.replaceChildren(); t.appendChild(document.createTextNode(msg));
+    var b = el("button", "und", "Deshacer"); b.type = "button"; b.onclick = async function(){ b.disabled = true; try { await fn(); t.hidden = true; toast("Respuesta deshecha"); } catch (e){ toast("No se pudo deshacer."); } };
+    t.appendChild(b); clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 7000);
+  }
+  async function responderCons(c, m, texto){
+    var prev = { resp: c.resp || null, resuelta: !!c.resuelta, leida: c.leida == null ? null : c.leida, ideaId: c.ideaId || null, hist: c.hist || [] };
+    var iso = new Date().toISOString(), resp = { texto: texto, marca: m.k, por: S.nombre, ts: iso }, ideaId = c.ideaId || null, nueva = null;
+    try {
+      if (m.idea && !ideaId){ var ref = S.db.collection("ideas").doc(); await ref.set({ texto: "Idea de " + (c.por || "el equipo") + ": " + c.texto, tag: "Otro", estado: "abierta", ts: iso, uid: S.uid, por: S.nombre, deConsulta: c.id }); ideaId = ref.id; nueva = ref.id; }
+      await S.db.doc("consultas/" + c.id).update({ resp: resp, hist: prev.hist.concat([resp]).slice(-10), resuelta: !!m.cierra, resueltaTs: m.cierra ? iso : null, leida: false, ideaId: ideaId });
+      S.consAb = null; S.consTxt = null; delete S.consDraft[c.id];
+      toastUndo("Respuesta enviada a " + String(c.por || "la persona").split(" ")[0], async function(){
+        await S.db.doc("consultas/" + c.id).update({ resp: prev.resp, hist: prev.hist, resuelta: prev.resuelta, resueltaTs: null, leida: prev.leida, ideaId: prev.ideaId });
+        if (nueva) await S.db.doc("ideas/" + nueva).delete();
+      });
+    } catch (err){ toast("No se pudo enviar. Revisa tu señal e intenta de nuevo."); }
+  }
+  function cardCons(x){
+    var abierto = S.consAb === x.id, card = el("div", "cs-card" + (abierto ? " on" : "")); card.dataset.id = x.id;
+    var h = el("button", "cs-h"); h.type = "button"; h.setAttribute("aria-expanded", abierto ? "true" : "false");
+    var tx = el("span", "tx"); tx.appendChild(el("b", null, (x.por || "Alguien") + " · " + x.tipo)); if (!abierto) tx.appendChild(el("span", "pv", x.texto)); h.appendChild(tx); h.appendChild(chipCons(x));
+    h.onclick = function(){ S.consAb = abierto ? null : x.id; S.consTxt = null; render(); }; card.appendChild(h);
+    if (!abierto) return card;
+    var b = el("div", "cs-b"); b.appendChild(el("p", "msg", x.texto));
+    b.appendChild(el("p", "ctx", fmtFH.format(new Date(x.ts)) + " · pantalla: " + (x.pantalla || "inicio") + (x.rol ? " · " + x.rol : "")));
+    (x.hist || (x.resp ? [x.resp] : [])).forEach(function(r){ var d = el("div", "cs-rep"); d.appendChild(document.createTextNode(r.texto)); d.appendChild(el("small", null, (r.por || "Diego") + " · " + fmtFH.format(new Date(r.ts)))); b.appendChild(d); });
+    if (S.owner){
+      if (x.resuelta){
+        var rb = el("button", "small", "Volver a abrir"); rb.type = "button"; rb.onclick = async function(){ try { await S.db.doc("consultas/" + x.id).update({ resuelta: false, resueltaTs: null }); } catch (e){ toast("No se pudo guardar."); } }; b.appendChild(rb);
+      } else {
+        b.appendChild(el("h4", null, "Responder con un toque"));
+        var mk = el("div", "mk"); mk.setAttribute("role", "group"); mk.setAttribute("aria-label", "Respuestas rápidas");
+        marcasDe(x.tipo).forEach(function(m){ var bt = el("button"); bt.type = "button"; bt.dataset.k = m.k; bt.appendChild(document.createTextNode(m.t)); bt.appendChild(el("span", null, m.h)); bt.onclick = function(){ bt.disabled = true; responderCons(x, m, m.t); }; mk.appendChild(bt); });
+        var ot = el("button", "t", S.consTxt === x.id ? "Ocultar el cuadro de texto" : "Escribir otra respuesta…"); ot.type = "button"; ot.onclick = function(){ S.consTxt = S.consTxt === x.id ? null : x.id; render(); }; mk.appendChild(ot);
+        b.appendChild(mk);
+        if (S.consTxt === x.id){
+          var w = el("div", "cs-txt"), ta = el("textarea"); ta.maxLength = 500; ta.setAttribute("aria-label", "Tu respuesta"); ta.placeholder = "Escribe tu respuesta"; ta.value = S.consDraft[x.id] || ""; ta.oninput = function(){ S.consDraft[x.id] = ta.value; };
+          var lk = el("label", "ck"), ck = el("input"); ck.type = "checkbox"; ck.checked = true; lk.appendChild(ck); lk.appendChild(document.createTextNode("Cerrar el mensaje al enviar"));
+          var en = el("button", "primary", "Enviar respuesta"); en.type = "button"; en.onclick = function(){ var v = ta.value.trim(); if (v.length < 2){ toast("Escribe la respuesta."); ta.focus(); return; } en.disabled = true; responderCons(x, { k: "texto", cierra: ck.checked }, v); };
+          w.appendChild(ta); w.appendChild(lk); w.appendChild(en); b.appendChild(w); setTimeout(function(){ try { ta.focus(); } catch (e){} }, 0);
+        }
+      }
+    } else if (x.resp && x.leida === false){
+      var en2 = el("button", "primary", "Entendido"); en2.type = "button"; en2.onclick = async function(){ en2.disabled = true; try { await S.db.doc("consultas/" + x.id).update({ leida: true }); } catch (e){ en2.disabled = false; toast("No se pudo guardar."); } }; b.appendChild(en2);
+    }
+    card.appendChild(b); return card;
+  }
+  function buildConsultasCard(){
+    var mias = S.owner ? S.consultas : S.consultas.filter(function(c){ return c.uid === S.uid; });
+    if (!mias.length) return null;
+    var sec = el("section", "card sect"); sec.id = "consCard";
+    if (S.owner){
+      var abiertas = mias.filter(function(x){ return !x.resuelta; }), cerradas = mias.filter(function(x){ return x.resuelta; }).slice(0, 8);
+      sec.appendChild(el("h2", null, "Consultas del equipo" + (abiertas.length ? " (" + abiertas.length + ")" : "")));
+      if (!abiertas.length) sec.appendChild(el("p", "note", "No hay mensajes por responder."));
+      abiertas.slice(0, 12).forEach(function(x){ sec.appendChild(cardCons(x)); });
+      if (cerradas.length){ var dt = document.createElement("details"); dt.appendChild(el("summary", null, "Respondidos recientemente (" + cerradas.length + ")")); cerradas.forEach(function(x){ dt.appendChild(cardCons(x)); }); sec.appendChild(dt); }
+      return sec;
+    }
+    var nuevas = respNuevas();
+    if (nuevas.length){ sec.classList.add("prio"); var h2 = el("h2"); h2.appendChild(el("span", "cs-dot")); h2.appendChild(document.createTextNode("Respuesta de Diego" + (nuevas.length > 1 ? " (" + nuevas.length + ")" : ""))); sec.appendChild(h2); nuevas.forEach(function(x){ S.consAb = S.consAb || x.id; sec.appendChild(cardCons(x)); }); }
+    var resto = mias.filter(function(x){ return !nuevas.some(function(n){ return n.id === x.id; }); }).slice(0, 5);
+    if (resto.length){ if (!nuevas.length) sec.appendChild(el("h2", null, "Mis mensajes")); else { var dt2 = document.createElement("details"); dt2.appendChild(el("summary", null, "Mis mensajes")); resto.forEach(function(x){ dt2.appendChild(cardCons(x)); }); sec.appendChild(dt2); } if (!nuevas.length) resto.forEach(function(x){ sec.appendChild(cardCons(x)); }); }
+    return sec;
+  }
   function render(){
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
@@ -4935,8 +5027,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     (S.owner ? db.collection("correcciones") : db.collection("correcciones").where("uid", "==", S.uid)).onSnapshot(function(s){ S.corr = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }).sort(function(a, b){ return a.ts < b.ts ? 1 : -1; }); render(); }, function(){});
     if (S.owner) db.collection("ausDetalle").onSnapshot(function(s){ S.ausDet = {}; s.docs.forEach(function(d){ S.ausDet[d.id] = d.data(); }); render(); }, function(){});
     if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
-    if (S.owner) db.collection("consultas").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
-      S.consultas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    (S.owner ? db.collection("consultas").orderBy("ts", "desc").limit(100) : db.collection("consultas").where("uid", "==", S.uid)).onSnapshot(function(s){
+      S.consultas = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }).sort(function(a, b){ return a.ts < b.ts ? 1 : -1; }); render();
     }, function(){});
     if (S.manager) db.collection("solicitudes").orderBy("ts", "desc").limit(100).onSnapshot(function(s){
       S.solicitudes = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();

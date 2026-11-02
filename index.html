@@ -287,6 +287,16 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .ag-seg{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; background:var(--surface-2); border-radius:16px; padding:4px; margin:12px 0}
 .ag-seg button{min-height:46px; border-radius:12px; background:transparent; color:var(--muted); font-weight:700; font-size:16px; padding:4px 2px}
 .ag-seg button.on{background:var(--surface); color:var(--fg); box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.tm-big{font-size:34px; font-weight:800; line-height:1.1}
+.tm-grid{display:grid; grid-template-columns:1.25fr 1fr 1fr 1fr; gap:8px 6px; font-size:15px; align-items:center}
+.tm-grid .n{white-space:nowrap}
+.tm-grid .h{font-size:13px; color:var(--muted); font-weight:700; text-align:right}
+.tm-grid .h:first-child{text-align:left}
+.tm-grid .n{text-align:right; font-weight:700}
+.tm-grid .t{font-weight:800; border-top:1px solid var(--line); padding-top:6px}
+.tm-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tm-d{display:grid; gap:2px; padding:8px 0; border-top:1px solid var(--line); font-size:15px}
+.tm-d .l{display:flex; justify-content:space-between; gap:8px}
 .nv-it{display:grid; gap:8px; padding:12px 14px; border:1px solid var(--line); border-radius:16px; background:var(--surface)}
 .nv-it button{justify-self:start}
 #nvList{display:grid; gap:10px}
@@ -840,6 +850,19 @@ html.pc .cmdk:not([hidden]){display:flex}
     <button id="cnCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="tmSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+    <h2 id="tmTitle">Agregar tiempo</h2>
+<div class="sbody">
+    <div class="field"><label for="tmFecha">Día</label><input type="date" id="tmFecha"></div>
+    <div class="field"><label for="tmH">Horas</label><select id="tmH"></select></div>
+    <div class="field"><label for="tmM">Minutos</label><select id="tmM"></select></div>
+    <div class="field"><label for="tmDesc">¿En qué trabajaste?</label><input type="text" id="tmDesc" maxlength="120" placeholder="Ej: Desarrollo y mejoras de la app"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="tmOk">Guardar tiempo</button>
+    <button id="tmCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="nvSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="nvTitle">
     <h2 id="nvTitle">La app se actualizó</h2>
@@ -1336,7 +1359,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 29;
+  var GUIA_V = 30;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1350,6 +1373,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Riegos programados por especie", "En «Riego», la lista de riegos programados se agrupa por especie (Nogales, Limones, Vivero). Toca el título de cada grupo para abrirlo o cerrarlo; el chip muestra el próximo riego o cuántos están atrasados.", 29, ""],
+    ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, «Importar sesión» carga el tiempo de desarrollo y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 30, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1407,6 +1431,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 30, f: "2026-11-02", t: "Mi tiempo", d: "Una tarjeta solo tuya que cuenta el tiempo que usas la app, con cronómetro, tiempo manual y planilla.", g: "Mi tiempo" },
     { v: 29, f: "2026-11-02", t: "Riegos programados por especie", d: "La lista se agrupa en Nogales, Limones y Vivero, y cada grupo se abre o se cierra con un toque.", g: "Riegos programados por especie" },
     { v: 28, f: "2026-11-02", t: "Riego de los 4 nogales", d: "Programa los 4 sectores de una vez: pones la hora del sector 1 y la app calcula los demás, con contador de horas.", g: "Riego de los 4 nogales" },
     { v: 27, f: "2026-11-02", t: "Aviso de novedades", d: "Al actualizarse la app verás aquí lo nuevo. El historial queda en Ayuda → «Novedades de la app».", g: "Novedades de la app" },
@@ -2114,6 +2139,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     tiles.appendChild(g); f.appendChild(tiles);
 
     var ccs = buildConsultasCard(); if (ccs) f.appendChild(ccs);
+    if (S.owner) f.appendChild(buildTiempo());
 
     var sem = el("section", "card sect"); sem.appendChild(el("h2", null, "Mi semana"));
     var DL = ["L", "M", "M", "J", "V", "S", "D"], byDay = {}; wk.rows.forEach(function(x){ byDay[x.fecha] = x; });
@@ -4885,6 +4911,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (kP > 0){ var rp = el("div", "cc-r"), tp = el("div", "t"); tp.appendChild(el("b", null, "Pulpa guardada")); rp.appendChild(tp); rp.appendChild(el("b", null, nf(kP, 0) + " kg")); c3.appendChild(rp); }
     cols.appendChild(c3); root.appendChild(cols);
     var ccn = buildConsultasCard(); if (ccn){ ccn.style.marginTop = "16px"; root.appendChild(ccn); }
+    if (S.owner){ var tmc = buildTiempo(); tmc.style.marginTop = "16px"; root.appendChild(tmc); }
     return root;
   }
 
@@ -5342,6 +5369,130 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (resto.length){ if (!nuevas.length) sec.appendChild(el("h2", null, "Mis mensajes")); else { var dt2 = document.createElement("details"); dt2.appendChild(el("summary", null, "Mis mensajes")); resto.forEach(function(x){ dt2.appendChild(cardCons(x)); }); sec.appendChild(dt2); } if (!nuevas.length) resto.forEach(function(x){ sec.appendChild(cardCons(x)); }); }
     return sec;
   }
+  /* ---- Mi tiempo (solo dueño): uso de la app medido solo, más desarrollo importado y tiempo manual. Aparte del horario del campo. ---- */
+  var TM_PAUSA = 3 * 60 * 1000, tm = { act: Date.now(), lt: Date.now(), tot: {}, sucio: {}, dev: "", crono: null, ok: false };
+  try { tm.dev = localStorage.getItem("tm_dev") || ""; if (!tm.dev){ tm.dev = Math.random().toString(36).slice(2, 6); localStorage.setItem("tm_dev", tm.dev); } } catch (e){ tm.dev = tm.dev || "x"; }
+  try { var cr = JSON.parse(localStorage.getItem("tm_crono") || "null"); if (cr && cr.ini) tm.crono = cr; } catch (e){ }
+  function tmDocId(f){ return f + "_app_" + tm.dev; }
+  function tmActivo(t){ return !!(S.owner && S.db && S.uid && tm.ok) && document.visibilityState !== "hidden" && (t - tm.act) <= TM_PAUSA; }
+  function tmSuma(seg){
+    var f = fecha(); if (tm.tot[f] == null){ var d = S.tiempo && S.tiempo[tmDocId(f)]; tm.tot[f] = d && d.seg ? d.seg : 0; }
+    tm.tot[f] += seg; tm.sucio[f] = 1;
+  }
+  function tmTick(t){
+    var dt = (t - tm.lt) / 1000; tm.lt = t;
+    if (dt > 0 && tmActivo(t)) tmSuma(Math.min(dt, 15));
+  }
+  async function tmFlush(){
+    if (!(S.owner && S.db && S.uid && tm.ok)) return;
+    var dias = Object.keys(tm.sucio); tm.sucio = {};
+    for (var i = 0; i < dias.length; i++){
+      try { await S.db.doc("tiempo/" + tmDocId(dias[i])).set({ fecha: dias[i], tipo: "app", dev: tm.dev, seg: Math.round(tm.tot[dias[i]]), ts: new Date().toISOString(), uid: S.uid }); }
+      catch (e){ tm.sucio[dias[i]] = 1; }
+    }
+  }
+  function tmToca(){ tm.act = Date.now(); }
+  ["pointerdown", "keydown", "touchstart", "scroll", "wheel"].forEach(function(ev){ window.addEventListener(ev, tmToca, { passive: true, capture: true }); });
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") tmFlush(); else { tm.lt = Date.now(); } });
+  window.addEventListener("pagehide", function(){ tmFlush(); });
+  setInterval(function(){ tmTick(Date.now()); if ($("tmCard")) tmPinta(); }, 5000);
+  setInterval(tmFlush, 60000);
+  window.__tm = { tm: tm, tick: tmTick, add: function(seg){ tm.act = Date.now(); tmSuma(seg); }, flush: tmFlush };
+  function tmCorto(m){ var h = Math.floor(m / 60), r = m % 60; return h ? h + " h " + String(r).padStart(2, "0") + " m" : r + " m"; }
+  function tmFilas(){
+    var out = [], docs = S.tiempo || {}, hoy = fecha();
+    Object.keys(docs).forEach(function(id){
+      var d = docs[id], own = d.tipo === "app" && id === tmDocId(d.fecha), seg = d.tipo === "app" ? Math.max(Number(d.seg) || 0, own ? (tm.tot[d.fecha] || 0) : 0) : 0;
+      out.push({ id: id, fecha: d.fecha, tipo: d.tipo, min: d.tipo === "app" ? seg / 60 : Number(d.min) || 0, desc: d.desc || "", sesion: d.sesion || "" });
+    });
+    Object.keys(tm.tot).forEach(function(f){ if (!docs[tmDocId(f)]) out.push({ id: tmDocId(f), fecha: f, tipo: "app", min: tm.tot[f] / 60, desc: "", sesion: "" }); });
+    return out;
+  }
+  function tmSum(filas, tipo, desde, hasta){ var m = 0; filas.forEach(function(r){ if ((!tipo || r.tipo === tipo) && r.fecha >= desde && r.fecha <= hasta) m += r.min; }); return Math.round(m); }
+  function tmCsv(filas){
+    var q = function(v){ return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }, nom = { app: "Uso de la app", desarrollo: "Desarrollo y mejoras", manual: "Manual" };
+    var txt = ["Día", "Tipo", "Minutos", "Descripción"].map(q).join(";") + "\r\n" + filas.slice().sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }).map(function(r){ return [r.fecha, nom[r.tipo] || r.tipo, Math.round(r.min), r.desc].map(q).join(";"); }).join("\r\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + txt], { type: "text/csv;charset=utf-8" })); a.download = "mi-tiempo-" + fecha() + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
+  function tmAbrir(fechaIni, min, desc, titulo){
+    $("tmTitle").textContent = titulo || "Agregar tiempo"; $("tmFecha").value = fechaIni || fecha(); $("tmFecha").max = fecha();
+    var hs = [], ms = [], i; for (i = 0; i <= 16; i++) hs.push({ value: String(i), label: i + (i === 1 ? " hora" : " horas") }); for (i = 0; i < 60; i++) ms.push({ value: String(i), label: i + " min" });
+    fill($("tmH"), hs, String(Math.min(16, Math.floor((min || 0) / 60)))); fill($("tmM"), ms, String((min || 0) % 60));
+    $("tmDesc").value = desc || "Desarrollo y mejoras de la app"; $("tmSheet").hidden = false;
+  }
+  $("tmCancel").onclick = function(){ $("tmSheet").hidden = true; };
+  $("tmOk").onclick = async function(){
+    var f = $("tmFecha").value, m = (parseInt($("tmH").value, 10) || 0) * 60 + (parseInt($("tmM").value, 10) || 0), d = $("tmDesc").value.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f)){ toast("Elige el día."); return; }
+    if (m < 1){ toast("Pon al menos 1 minuto."); return; }
+    var b = $("tmOk"); b.disabled = true;
+    try {
+      await S.db.doc("tiempo/m_" + Date.now().toString(36)).set({ fecha: f, tipo: "manual", min: m, desc: d || "Trabajo", ts: new Date().toISOString(), uid: S.uid });
+      if (tm.crono && tm.crono.parar){ tm.crono = null; try { localStorage.removeItem("tm_crono"); } catch (e){ } }
+      $("tmSheet").hidden = true; toast("Tiempo anotado: " + dur(m));
+    } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false; tmPinta();
+  };
+  function tmImportar(txt){
+    var o; try { o = JSON.parse(txt); } catch (e){ toast("El archivo no se pudo leer."); return Promise.resolve(); }
+    if (!o || !Array.isArray(o.entradas) || !o.entradas.length || !o.sesion){ toast("Ese archivo no es una sesión de tiempo."); return Promise.resolve(); }
+    var ent = o.entradas.filter(function(e){ return e && /^\d{4}-\d{2}-\d{2}$/.test(e.fecha) && e.min >= 1 && e.min <= 1440; });
+    if (!ent.length){ toast("El archivo no trae días válidos."); return Promise.resolve(); }
+    var ses = String(o.sesion).replace(/[^\w-]/g, "").slice(0, 60), desc = String(o.desc || "Desarrollo y mejoras de la app").slice(0, 120), tot = 0;
+    return Promise.all(ent.map(function(e){ tot += Math.round(e.min); return S.db.doc("tiempo/dev_" + ses + "_" + e.fecha).set({ fecha: e.fecha, tipo: "desarrollo", min: Math.round(e.min), desc: desc, sesion: ses, ts: new Date().toISOString(), uid: S.uid }); }))
+      .then(function(){ toast("Importé " + ent.length + (ent.length === 1 ? " día" : " días") + " (" + dur(tot) + ")."); }, function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); });
+  }
+  function tmPinta(){
+    var c = $("tmCard"); if (!c) return; var n = buildTiempo(true); c.replaceChildren.apply(c, Array.prototype.slice.call(n.childNodes));
+  }
+  function buildTiempo(soloInterior){
+    var sec = soloInterior ? document.createDocumentFragment() : el("section", "card sect");
+    if (!soloInterior) sec.id = "tmCard";
+    var hoy = fecha(), ws = weekStart(hoy), we = addDays(ws, 6), mes = hoy.slice(0, 7), filas = tmFilas(), ahora = Date.now(), cuenta = tmActivo(ahora);
+    var hd = el("div", "who"); hd.appendChild(el("h2", null, "Mi tiempo")); hd.appendChild(el("span", "chip " + (cuenta ? "ok" : "idle"), cuenta ? "Contando" : "En pausa")); sec.appendChild(hd);
+    var hoyApp = tmSum(filas, "app", hoy, hoy); var big = el("p", "tm-big", dur(hoyApp)); big.id = "tmHoy"; sec.appendChild(big);
+    sec.appendChild(el("p", "note", "Hoy en la app. Se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Es aparte de tu horario en el campo."));
+    var g = el("div", "tm-grid"); ["", "Hoy", "Semana", "Mes"].forEach(function(x){ g.appendChild(el("span", "h", x)); });
+    [["En la app", "app"], ["Desarrollo y mejoras", "desarrollo"], ["Manual", "manual"], ["Total", ""]].forEach(function(r){
+      var tt = r[0] === "Total"; g.appendChild(el("span", tt ? "t" : null, r[0]));
+      [[hoy, hoy], [ws, we], [mes + "-01", mes + "-31"]].forEach(function(rg){ g.appendChild(el("span", "n" + (tt ? " t" : ""), tmCorto(tmSum(filas, r[1], rg[0], rg[1])))); });
+    });
+    sec.appendChild(g);
+    var acts = el("div", "tm-acts");
+    var cr = el("button", tm.crono ? "primary" : null, "Iniciar cronómetro"); cr.type = "button";
+    if (tm.crono){ var mm = Math.max(0, Math.round((Date.now() - tm.crono.ini) / 60000)); cr.textContent = "Detener (" + dur(mm) + ")"; }
+    cr.onclick = function(){
+      if (!tm.crono){ tm.crono = { ini: Date.now(), fecha: fecha() }; try { localStorage.setItem("tm_crono", JSON.stringify(tm.crono)); } catch (e){ } tmPinta(); return; }
+      var m = Math.max(1, Math.round((Date.now() - tm.crono.ini) / 60000)); tm.crono.parar = true; tmAbrir(tm.crono.fecha, m, "Desarrollo y mejoras de la app", "Guardar el cronómetro");
+    };
+    acts.appendChild(cr);
+    var ag = el("button", null, "Agregar tiempo"); ag.type = "button"; ag.onclick = function(){ if (tm.crono) tm.crono.parar = false; tmAbrir(fecha(), 0, "", "Agregar tiempo"); }; acts.appendChild(ag);
+    var im = el("button", null, "Importar sesión"); im.type = "button";
+    var fi = document.createElement("input"); fi.type = "file"; fi.accept = ".json,application/json"; fi.id = "tmFile"; fi.hidden = true;
+    fi.onchange = function(){ var fl = fi.files && fi.files[0]; if (!fl) return; var fr = new FileReader(); fr.onload = function(){ tmImportar(String(fr.result)); }; fr.readAsText(fl); fi.value = ""; };
+    im.onclick = function(){ fi.click(); }; acts.appendChild(im); acts.appendChild(fi);
+    var cs = el("button", null, "Descargar planilla"); cs.type = "button"; cs.onclick = function(){ tmCsv(filas); }; acts.appendChild(cs);
+    sec.appendChild(acts);
+    var dt = document.createElement("details"); dt.appendChild(el("summary", null, "Últimos días"));
+    var dias = {}; filas.forEach(function(r){ (dias[r.fecha] = dias[r.fecha] || []).push(r); });
+    Object.keys(dias).sort().reverse().slice(0, 14).forEach(function(f){
+      var box = el("div", "tm-d"), tot = 0; dias[f].forEach(function(r){ tot += r.min; });
+      var l = el("div", "l"); l.appendChild(el("b", null, fmtD2(f))); l.appendChild(el("b", null, dur(Math.round(tot)))); box.appendChild(l);
+      dias[f].forEach(function(r){
+        var nom = r.tipo === "app" ? "En la app" : r.tipo === "desarrollo" ? "Desarrollo" : "Manual", ln = el("div", "l"); ln.appendChild(el("span", "note", nom + (r.desc && r.tipo === "manual" ? " · " + r.desc : "") + " · " + dur(Math.round(r.min))));
+        if (r.tipo !== "app"){
+          var q = el("button", "small", "Quitar"); q.type = "button"; var arm = false;
+          q.onclick = async function(){ if (!arm){ arm = true; q.textContent = "Toca otra vez"; setTimeout(function(){ arm = false; q.textContent = "Quitar"; }, 4000); return; } try { await S.db.doc("tiempo/" + r.id).delete(); toast("Quité ese tiempo"); } catch (e){ toast("No se pudo quitar."); } };
+          ln.appendChild(q);
+        }
+        box.appendChild(ln);
+      });
+      dt.appendChild(box);
+    });
+    if (!Object.keys(dias).length) dt.appendChild(el("p", "note", "Aún no hay tiempo registrado."));
+    sec.appendChild(dt);
+    return sec;
+  }
   function render(){
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
@@ -5404,6 +5555,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
     }, function(){});
     (S.owner ? db.collection("correcciones") : db.collection("correcciones").where("uid", "==", S.uid)).onSnapshot(function(s){ S.corr = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }).sort(function(a, b){ return a.ts < b.ts ? 1 : -1; }); render(); }, function(){});
+    if (S.owner) db.collection("tiempo").onSnapshot(function(s){ S.tiempo = {}; s.docs.forEach(function(d){ S.tiempo[d.id] = d.data(); }); tm.ok = true; tm.lt = Date.now(); tmPinta(); }, function(){});
     if (S.owner) db.collection("ausDetalle").onSnapshot(function(s){ S.ausDet = {}; s.docs.forEach(function(d){ S.ausDet[d.id] = d.data(); }); render(); }, function(){});
     if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     (S.owner ? db.collection("consultas").orderBy("ts", "desc").limit(100) : db.collection("consultas").where("uid", "==", S.uid)).onSnapshot(function(s){

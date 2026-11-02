@@ -100,6 +100,7 @@ service cloud.firestore {
     match /ventasFotos/{d} { allow read, write: if isOwner(); }
     match /legal/{d} { allow read, write: if isOwner(); }
     match /ausDetalle/{d} { allow read, write: if isOwner(); }
+    match /tiempo/{d} { allow read, write: if isOwner(); }
     match /correcciones/{d} {
       allow read: if isOwner() || (isMember() && resource.data.uid == request.auth.uid);
       allow create: if isMember() && request.resource.data.uid == request.auth.uid && request.resource.data.estado == 'pendiente';

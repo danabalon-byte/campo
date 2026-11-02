@@ -176,8 +176,8 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 /* formularios */
 .field{display:grid; gap:6px}
 label{font-weight:700; font-size:16px}
-input[type=text],input[type=tel],input[type=date],input[type=datetime-local],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
-input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,input[type=datetime-local]:focus,select:focus,textarea:focus{border-color:var(--accent)}
+input[type=text],input[type=tel],input[type=date],input[type=time],input[type=datetime-local],select,textarea{font:inherit; font-size:19px; min-height:54px; padding:10px 14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); width:100%}
+input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,input[type=time]:focus,input[type=datetime-local]:focus,select:focus,textarea:focus{border-color:var(--accent)}
 select{appearance:none; -webkit-appearance:none; padding-right:44px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23738575' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center}
 textarea{font-size:18px; min-height:92px; resize:vertical}
 /* barra de pestañas */
@@ -295,6 +295,10 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .rg-nav button{min-height:48px; font-size:22px; padding:0}
 .rg-nav .rg-mes:disabled{opacity:1; color:var(--fg)}
 .rg-nav .rg-mes{min-height:48px; font-size:16px; font-weight:700}
+.rg-turnos{display:grid; gap:8px; padding:12px 14px; border:1px solid var(--line); border-radius:16px; background:var(--surface)}
+.rg-tr{display:grid; grid-template-columns:1fr auto auto; gap:8px; align-items:center; font-size:15px}
+.rg-tr select{min-height:40px; padding:4px 8px; font-size:15px}
+.rg-ct{font-size:15px}
 .rg-act{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .rg-act.uno{grid-template-columns:1fr}
 .rg-seg{display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; background:var(--surface-2); border-radius:16px}
@@ -729,6 +733,8 @@ html.pc .cmdk:not([hidden]){display:flex}
       <p class="note rg-leg"><span class="rg-k r"></span>ya regado &nbsp; <span class="rg-k p"></span>programado</p>
       <p class="note" id="rgCalNota"></p><button type="button" class="small" id="rgLimpia">Quitar la selección</button></div>
     <div class="field"><label for="rgHoras" id="rgHorasL">Horas de riego</label><select id="rgHoras"></select></div>
+    <div class="field" id="rgHoraF"><label for="rgHora" id="rgHoraL">Hora de inicio (opcional)</label><input type="time" id="rgHora"></div>
+    <div id="rgTurnos" class="rg-turnos" style="display:none"></div>
     <p class="calc" id="rgCalc"></p>
     <div class="field" id="rgQuienF"><label for="rgQuien">¿Quién riega? (opcional)</label><select id="rgQuien"></select></div>
     <div class="field" id="rgRepF"><label for="rgRep">Repetir</label><select id="rgRep"><option value="0">No repetir</option><option value="1">Cada día</option><option value="2">Cada 2 días</option><option value="3">Cada 3 días</option><option value="4">Cada 4 días</option><option value="7">Cada semana</option></select></div>
@@ -738,6 +744,7 @@ html.pc .cmdk:not([hidden]){display:flex}
 </div>
 <div class="sfoot">    <button class="primary" id="rgOk">Guardar riego</button>
     <button id="rgQuitar" style="display:none">Quitar este riego programado</button>
+    <button id="rgQuitarG" style="display:none">Quitar todo el grupo de ese día</button>
     <button id="rgCancel">Cancelar</button></div>
   </div>
 </div>
@@ -1322,7 +1329,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 27;
+  var GUIA_V = 28;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1334,6 +1341,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
+    ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1391,6 +1399,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 28, f: "2026-11-02", t: "Riego de los 4 nogales", d: "Programa los 4 sectores de una vez: pones la hora del sector 1 y la app calcula los demás, con contador de horas.", g: "Riego de los 4 nogales" },
     { v: 27, f: "2026-11-02", t: "Aviso de novedades", d: "Al actualizarse la app verás aquí lo nuevo. El historial queda en Ayuda → «Novedades de la app».", g: "Novedades de la app" },
     { v: 26, f: "2026-11-02", t: "Riego con calendario", d: "Anota uno o varios días, incluso los que olvidaste. Los días ya regados y los programados se ven en colores.", g: "Riego en otro día" },
     { v: 26, f: "2026-11-02", t: "Programar riegos", d: "Agenda riegos futuros y repítelos cada cierto número de días.", g: "Programar riegos" },
@@ -2596,23 +2605,28 @@ html.pc .cmdk:not([hidden]){display:flex}
 
   var M3H_HA = 22, DERECHO_SEM = 1210;
   function demandaM3h(c){ return c && c.ha && c.especie !== "Limón" && c.especie !== "Vivero" ? c.ha * M3H_HA : null; }
-  function rgSel(){ return S.cuarteles.filter(function(c){ return c.id === $("rgSector").value; })[0]; }
+  function rgSel(){ var v = $("rgSector").value; if (v === "grp:nogal") return rgGrupo()[0]; return S.cuarteles.filter(function(c){ return c.id === v; })[0]; }
   function rgEstim(){
     var c = rgSel(), hr = parseFloat($("rgHoras").value), d = demandaM3h(c), t = $("rgCalc");
     if (d){ t.textContent = "Estimado: " + nf(d * hr, 0) + " m³ (" + nf(d, 1) + " m³/h × " + nf(hr, 1) + " h)"; t.hidden = false; }
     else { t.textContent = esViv(c) ? "Riego manual con manguera: no se calcula el agua. En las notas anota qué se regó." : "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
     return d ? d * hr : null;
   }
-  $("rgSector").onchange = function(){ rgHorasPara(); rgEstim(); rgDibuja(); }; $("rgHoras").onchange = rgEstim;
+  $("rgSector").onchange = function(){ rgHrsSec = {}; if (rgEsGrp() && !$("rgHora").value) $("rgHora").value = "08:00"; rgHorasPara(); rgEstim(); rgAjusta(); rgDibuja(); }; $("rgHoras").onchange = function(){ rgHrsSec = {}; rgEstim(); rgBoton(); };
   function rgHorasPara(){
     var v = esViv(rgSel()), hs = [], i, sel = $("rgHoras").value;
     if (v){ hs.push({ value: "0.25", label: "15 minutos" }); hs.push({ value: "0.5", label: "30 minutos" }); hs.push({ value: "0.75", label: "45 minutos" }); for (i = 2; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") }); }
     else for (i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
     fill($("rgHoras"), hs, hs.some(function(h){ return h.value === sel; }) ? sel : (v ? "0.5" : "3"));
   }
-  var rgMod = "reg", rgDias = [], rgMes = "", rgEdit = null, rgEditT = null, rgConfirmDup = false, rgQArm = false;
+  var rgMod = "reg", rgDias = [], rgMes = "", rgEdit = null, rgEditT = null, rgConfirmDup = false, rgQArm = false, rgQGArm = false, rgHrsSec = {};
   function rgSolo(){ return !!(rgEdit || rgEditT); }
   function vis(id, on){ $(id).style.display = on ? "" : "none"; }
+  function rgGrupo(){ return sectoresOrden().filter(function(c){ return c.especie === "Nogal"; }); }
+  function rgEsGrp(){ return $("rgSector").value === "grp:nogal"; }
+  function rgSecs(){ return rgEsGrp() ? rgGrupo() : [rgSel()].filter(Boolean); }
+  function hmMin(h){ var m = /^(\d{1,2}):(\d{2})$/.exec(h || ""); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+  function minHm(n){ n = ((n % 1440) + 1440) % 1440; var h = Math.floor(n / 60), m = n % 60; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
   function rgSetHoras(h){
     var v = String(h), sl = $("rgHoras");
     if (!Array.prototype.some.call(sl.options, function(o){ return o.value === v; })){ var o = document.createElement("option"); o.value = v; o.textContent = nf(Number(h), 1) + " horas"; sl.appendChild(o); }
@@ -2628,31 +2642,89 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (rep > 0 && out.length && /^\d{4}-\d{2}-\d{2}$/.test(hasta)){ var d = out[0], n = 0; while (n < 80){ d = addDays(d, rep); if (d > hasta) break; if (out.indexOf(d) < 0) out.push(d); n++; } }
     return out.sort();
   }
+  /* Turnos del grupo de nogales: el programador corre el sector 1 y sigue en orden, sin pausas. */
+  function rgTurnos(){
+    var hr = parseFloat($("rgHoras").value) || 0, t = hmMin($("rgHora").value), out = [];
+    rgGrupo().forEach(function(c){
+      var h = rgHrsSec[c.id] != null ? rgHrsSec[c.id] : hr, ini = t, fin = t == null ? null : t + Math.round(h * 60);
+      out.push({ c: c, h: h, ini: ini, fin: fin }); if (t != null) t = fin;
+    });
+    return out;
+  }
+  function horaTxt(ini, fin){ return minHm(ini) + " – " + minHm(fin) + (fin > 1440 ? " (día sig.)" : ""); }
+  function rgAvisos(tr){
+    var av = [], fechas = rgFechasProg().filter(function(f){ return f >= fecha(); });
+    if (!tr.length || tr[0].ini == null || !fechas.length) return av;
+    var last = tr[tr.length - 1]; if (last.fin > 1440) av.push("El programa pasa de medianoche: el último sector termina a las " + minHm(last.fin) + " del día siguiente.");
+    var hecho = false;
+    fechas.forEach(function(f){
+      if (hecho) return;
+      S.tareas.forEach(function(t){
+        if (hecho || t.tipo !== "riego" || t.estado === "hecha" || t.fecha !== f || !t.hora || !t.horaFin) return;
+        var a = hmMin(t.hora), b2 = hmMin(t.horaFin); if (a == null || b2 == null) return; if (t.finSig) b2 += 1440;
+        tr.forEach(function(x){ if (!hecho && x.ini < b2 && a < x.fin){ hecho = true; av.push("Se cruza con otro riego: " + t.sector + " ya está programado el " + fmtD2(f) + " de " + t.hora + " a " + t.horaFin + "."); } });
+      });
+    });
+    var semanas = {}; fechas.forEach(function(f){ var w = weekStart(f); semanas[w] = (semanas[w] || 0) + 1; });
+    var porDia = 0; tr.forEach(function(x){ porDia += (demandaM3h(x.c) || 0) * x.h; });
+    Object.keys(semanas).sort().forEach(function(w){
+      var m3 = 0, f2 = addDays(w, 6);
+      S.riegos.forEach(function(r){ if (r.fecha >= w && r.fecha <= f2) m3 += Number(r.m3) || 0; });
+      S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.fecha >= w && t.fecha <= f2){ var cc = S.cuarteles.filter(function(c){ return c.id === t.sectorId; })[0]; m3 += (demandaM3h(cc) || 0) * (Number(t.horas) || 0); } });
+      m3 += porDia * semanas[w];
+      if (m3 > DERECHO_SEM) av.push("La semana del " + fmtD2(w) + " quedaría en " + nf(m3 / DERECHO_SEM * 100, 0) + " % del derecho de agua.");
+    });
+    return av;
+  }
+  function rgTurnosDibuja(){
+    var box = $("rgTurnos"), on = rgEsGrp() && !rgSolo();
+    vis("rgTurnos", on); box.textContent = ""; if (!on) return;
+    var tr = rgTurnos(), prog = rgMod === "prog", f0 = rgFechasProg()[0] || rgDias.slice().sort()[0];
+    box.appendChild(el("b", null, prog ? "Turnos calculados" + (f0 ? " · " + fmtD2(f0) : "") : "Horas por sector"));
+    var tot = 0, m3 = 0;
+    tr.forEach(function(x){
+      var row = el("div", "rg-tr"); row.appendChild(el("span", null, x.c.nombre));
+      var sl = document.createElement("select"); sl.setAttribute("aria-label", "Horas de " + x.c.nombre);
+      var i, hs = []; for (i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + " h" }); fill(sl, hs, String(x.h)); if (sl.value !== String(x.h)){ var o = document.createElement("option"); o.value = String(x.h); o.textContent = nf(x.h, 1) + " h"; sl.appendChild(o); sl.value = String(x.h); }
+      sl.onchange = function(){ rgHrsSec[x.c.id] = parseFloat(sl.value); rgBoton(); };
+      row.appendChild(sl);
+      row.appendChild(el("b", null, prog && x.ini != null ? horaTxt(x.ini, x.fin) : ""));
+      box.appendChild(row); tot += x.h; m3 += (demandaM3h(x.c) || 0) * x.h;
+    });
+    var ct = el("p", "rg-ct"); ct.appendChild(el("b", null, "Contador: " + (tot % 1 === 0 ? String(tot) : nf(tot, 1)) + " h en total"));
+    var last = tr[tr.length - 1]; if (prog && last && last.fin != null) ct.appendChild(document.createTextNode(" · termina a las " + minHm(last.fin) + (last.fin > 1440 ? " del día siguiente" : "")));
+    box.appendChild(ct);
+    if (m3) box.appendChild(el("p", "note", "Agua estimada: " + nf(m3, 0) + " m³ por día (" + nf(m3 / DERECHO_SEM * 100, 0) + " % del derecho semanal)."));
+    if (prog) rgAvisos(tr).forEach(function(t){ box.appendChild(el("p", "note warn", t)); });
+  }
   function rgBoton(){
     rgConfirmDup = false;
-    var b = $("rgOk"), n = rgDias.length;
+    var b = $("rgOk"), n = rgDias.length, g = rgEsGrp() ? rgGrupo().length : 1;
     if (rgSolo()) b.textContent = "Guardar cambios";
-    else if (rgMod === "prog"){ var k = rgFechasProg().length; b.textContent = k > 1 ? "Programar " + k + " riegos" : "Programar riego"; }
-    else b.textContent = n > 1 ? "Guardar " + n + " riegos" : "Guardar riego";
+    else if (rgMod === "prog"){ var k = rgFechasProg().length * g; b.textContent = k > 1 ? "Programar " + k + " riegos" : "Programar riego"; }
+    else { var k2 = n * g; b.textContent = k2 > 1 ? "Guardar " + k2 + " riegos" : "Guardar riego"; }
     $("rgM3L").textContent = n > 1 ? "m³ medidos por día (opcional, si tienes medidor)" : "m³ medidos (opcional, si tienes medidor)";
+    rgTurnosDibuja();
   }
   function rgAjusta(){
-    var prog = rgMod === "prog", edit = rgSolo();
+    var prog = rgMod === "prog", edit = rgSolo(), grp = rgEsGrp();
     $("rgTitle").textContent = rgEdit ? "Corregir riego" : rgEditT ? "Cambiar riego programado" : rgTarea ? "Registrar el riego programado" : prog ? "Programar riego" : "Registrar riego";
     vis("rgModo", !!S.manager && !edit && !rgTarea);
     Array.prototype.forEach.call($("rgModo").children, function(bt){ var on = bt.getAttribute("data-m") === rgMod; bt.classList.toggle("on", on); bt.setAttribute("aria-pressed", on ? "true" : "false"); });
-    $("rgHorasL").textContent = prog ? "Horas previstas por día" : "Horas de riego";
+    $("rgHorasL").textContent = grp ? "Horas por sector (todos igual)" : prog ? "Horas previstas por día" : "Horas de riego";
     $("rgDiaL").textContent = edit ? "Día" : "Día(s)";
-    vis("rgM3F", !prog); vis("rgNotasF", !prog); vis("rgCalc", !prog);
+    $("rgHoraL").textContent = grp ? "Inicia el sector 1 a las" : "Hora de inicio (opcional)";
+    vis("rgM3F", !prog && !grp); vis("rgNotasF", !prog); vis("rgCalc", !prog && !grp);
+    vis("rgHoraF", prog && (!edit || !!rgEditT));
     vis("rgQuienF", prog); vis("rgRepF", prog && !edit); vis("rgHastaF", prog && !edit && $("rgRep").value !== "0");
-    vis("rgQuitar", !!rgEditT);
+    vis("rgQuitar", !!rgEditT); vis("rgQuitarG", !!(rgEditT && rgEditT.grupo));
     rgBoton();
   }
   function rgMesMas(n){ var d = new Date(rgMes + "-01T12:00:00Z"); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 7); }
   var fmtMesRg = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "long", year: "numeric" });
   function rgDibuja(foco){
     var box = $("rgCal"); box.textContent = "";
-    var hoy = fecha(), prog = rgMod === "prog", c = rgSel(), sid = c ? c.id : "";
+    var hoy = fecha(), prog = rgMod === "prog", sids = rgSecs().map(function(c){ return c.id; });
     var mn = addDays(hoy, -120), mx = addDays(hoy, 180);
     var nav = agNav(function(){ rgMes = rgMesMas(-1); rgDibuja(); }, fmtMesRg.format(new Date(rgMes + "-01T12:00:00Z")), function(){ rgMes = rgMesMas(1); rgDibuja(); });
     nav.className = "rg-nav"; nav.children[1].className = "rg-mes"; nav.children[0].disabled = rgMes <= mn.slice(0, 7); nav.children[2].disabled = rgMes >= mx.slice(0, 7);
@@ -2664,8 +2736,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     for (i = 1; i <= nd; i++){
       var f = rgMes + "-" + (i < 10 ? "0" : "") + i, bt = el("button", "rg-d", String(i)); bt.type = "button"; bt.setAttribute("data-f", f);
       var ok = prog ? (f >= hoy && f <= mx) : (f <= hoy && f >= mn);
-      var reg = S.riegos.some(function(r){ return r.sectorId === sid && r.fecha === f && (!rgEdit || r.id !== rgEdit.id); });
-      var pg = S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === sid && t.fecha === f && (!rgEditT || t.id !== rgEditT.id); });
+      var regF = function(sid){ return S.riegos.some(function(r){ return r.sectorId === sid && r.fecha === f && (!rgEdit || r.id !== rgEdit.id); }); };
+      var pgF = function(sid){ return S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === sid && t.fecha === f && (!rgEditT || t.id !== rgEditT.id); }); };
+      var reg = sids.length > 0 && sids.every(regF), pg = sids.some(pgF);
       var sel = rgDias.indexOf(f) >= 0;
       if (reg) bt.classList.add("r"); if (pg) bt.classList.add("p"); if (sel) bt.classList.add("sel"); if (f === hoy) bt.classList.add("hoy");
       bt.disabled = !ok && !sel;
@@ -2687,29 +2760,32 @@ html.pc .cmdk:not([hidden]){display:flex}
   function rgAbre(modo){
     var cs = sectoresOrden();
     if (!cs.length){ toast("Aún no hay sectores cargados."); return false; }
-    rgTarea = null; rgEdit = null; rgEditT = null; rgMod = modo === "prog" && S.manager ? "prog" : "reg";
-    fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
+    rgTarea = null; rgEdit = null; rgEditT = null; rgHrsSec = {}; rgMod = modo === "prog" && S.manager ? "prog" : "reg";
+    var lista = cs.map(function(c){ return { value: c.id, label: c.nombre }; }), ng = rgGrupo().length;
+    if (ng >= 2) lista.unshift({ value: "grp:nogal", label: "Nogales (" + ng + " sectores)" });
+    fill($("rgSector"), lista, cs[0].id);
     var hoy = fecha();
     rgDias = []; rgMes = hoy.slice(0, 7);
     var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
     fill($("rgHoras"), hs, "3"); rgHorasPara();
     var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(k){ if (S.team[k].nombre) nombres[S.team[k].nombre] = 1; });
     fill($("rgQuien"), [{ value: "", label: "Sin asignar" }, { value: "Todo el equipo", label: "Todo el equipo" }].concat(Object.keys(nombres).sort().map(function(n){ return { value: n, label: n }; })));
-    $("rgRep").value = "0"; $("rgHasta").value = ""; $("rgHasta").min = addDays(hoy, 1);
+    $("rgRep").value = "0"; $("rgHasta").value = ""; $("rgHasta").min = addDays(hoy, 1); $("rgHora").value = "";
     $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); rgAjusta(); rgDibuja(); $("rgSheet").hidden = false;
     return true;
   }
+  function rgSinGrupo(){ var o = $("rgSector").querySelector('option[value="grp:nogal"]'); if (o) o.remove(); }
   function abrirRiego(){ rgAbre("reg"); }
   function abrirProgramar(){ rgAbre("prog"); }
   function corregirRiego(r){
     if (!rgAbre("reg")) return;
-    rgEdit = r; rgSetSel("rgSector", r.sectorId); rgHorasPara(); rgSetHoras(r.horas || 3);
+    rgSinGrupo(); rgEdit = r; rgSetSel("rgSector", r.sectorId); rgHorasPara(); rgSetHoras(r.horas || 3);
     $("rgM3").value = r.medido && r.m3 ? String(r.m3) : ""; $("rgNotas").value = r.notas || "";
     rgDias = [r.fecha]; rgMes = r.fecha.slice(0, 7); rgEstim(); rgAjusta(); rgDibuja();
   }
   function cambiarProgramado(t){
     if (!rgAbre("prog")) return;
-    rgEditT = t; rgSetSel("rgSector", t.sectorId); rgSetHoras(t.horas || 3); rgSetSel("rgQuien", t.quien || "");
+    rgSinGrupo(); rgEditT = t; rgSetSel("rgSector", t.sectorId); rgSetHoras(t.horas || 3); rgSetSel("rgQuien", t.quien || ""); $("rgHora").value = t.hora || "";
     rgDias = [t.fecha]; rgMes = t.fecha.slice(0, 7); rgAjusta(); rgDibuja();
   }
   $("rgModo").onclick = function(e){
@@ -2720,7 +2796,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     rgMes = (rgDias[0] || hoy).slice(0, 7); rgAjusta(); rgDibuja();
   };
   $("rgLimpia").onclick = function(){ rgDias = []; rgBoton(); rgDibuja(); };
-  $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton;
+  $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton; $("rgHora").onchange = rgBoton; $("rgHora").oninput = rgBoton;
   $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; rgEdit = null; rgEditT = null; };
   $("rgQuitar").onclick = async function(){
     var q = $("rgQuitar"); if (!rgEditT) return;
@@ -2728,34 +2804,66 @@ html.pc .cmdk:not([hidden]){display:flex}
     try { await S.db.doc("tareas/" + rgEditT.id).delete(); $("rgSheet").hidden = true; rgEditT = null; rgQArm = false; q.textContent = "Quitar este riego programado"; toast("Riego programado quitado"); }
     catch (err){ toast("No se pudo quitar. Revisa tu señal e intenta de nuevo."); }
   };
+  $("rgQuitarG").onclick = async function(){
+    var q = $("rgQuitarG"); if (!rgEditT || !rgEditT.grupo) return;
+    if (!rgQGArm){ rgQGArm = true; q.textContent = "Toca otra vez para quitar los 4 sectores"; setTimeout(function(){ rgQGArm = false; q.textContent = "Quitar todo el grupo de ese día"; }, 4000); return; }
+    var gid = rgEditT.grupo, mem = S.tareas.filter(function(x){ return x.grupo === gid && x.estado !== "hecha"; });
+    try { for (var i = 0; i < mem.length; i++) await S.db.doc("tareas/" + mem[i].id).delete(); $("rgSheet").hidden = true; rgEditT = null; rgQGArm = false; q.textContent = "Quitar todo el grupo de ese día"; toast("Quité " + mem.length + " riegos programados"); }
+    catch (err){ toast("No se pudo quitar. Revisa tu señal e intenta de nuevo."); }
+  };
   $("rgOk").onclick = async function(){
     var c = rgSel(); if (!c) return;
-    var b = $("rgOk"), hoy = fecha(), hr = parseFloat($("rgHoras").value), ahora = new Date().toISOString();
+    var b = $("rgOk"), hoy = fecha(), hr = parseFloat($("rgHoras").value), ahora = new Date().toISOString(), grp = rgEsGrp();
     if (!rgDias.length){ toast("Toca al menos un día en el calendario."); return; }
     if (rgEditT){
       b.disabled = true;
       try {
-        var upT = { fecha: rgDias[0], sectorId: c.id, sector: c.nombre, horas: hr, quien: $("rgQuien").value };
-        if (/^Riego/.test(rgEditT.titulo || "")) upT.titulo = "Riego " + c.nombre;
-        await S.db.doc("tareas/" + rgEditT.id).update(upT);
-        $("rgSheet").hidden = true; rgEditT = null; toast("Riego programado actualizado");
+        var t0 = rgEditT, hIni = $("rgHora").value, fNew = rgDias[0], iniM = hmMin(hIni);
+        var upT = { fecha: fNew, sectorId: c.id, sector: c.nombre, horas: hr, quien: $("rgQuien").value, hora: "", horaFin: "", finSig: false };
+        if (/^Riego/.test(t0.titulo || "")) upT.titulo = "Riego " + c.nombre;
+        var finM = null; if (iniM != null){ finM = iniM + Math.round(hr * 60); upT.hora = minHm(iniM); upT.horaFin = minHm(finM); upT.finSig = finM > 1440; }
+        await S.db.doc("tareas/" + t0.id).update(upT);
+        if (t0.grupo){
+          var mem = S.tareas.filter(function(x){ return x.grupo === t0.grupo; }).sort(function(a, bb){ return (a.orden || 0) - (bb.orden || 0); });
+          var pos = mem.map(function(x){ return x.id; }).indexOf(t0.id), cur = finM;
+          for (var j = 0; j < mem.length; j++){
+            if (j === pos) continue; var m = mem[j], up = {};
+            if (fNew !== t0.fecha) up.fecha = fNew;
+            if (j > pos && cur != null){ var e = cur + Math.round((Number(m.horas) || 0) * 60); up.hora = minHm(cur); up.horaFin = minHm(e); up.finSig = e > 1440; cur = e; }
+            if (Object.keys(up).length) await S.db.doc("tareas/" + m.id).update(up);
+          }
+        }
+        $("rgSheet").hidden = true; rgEditT = null; toast(t0.grupo ? "Actualicé el riego y los sectores que siguen" : "Riego programado actualizado");
       } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
       b.disabled = false; return;
     }
     if (rgMod === "prog"){
-      var fechas = rgFechasProg().filter(function(f){ return f >= hoy; });
-      if (fechas.length > 60){ toast("Son más de 60 riegos. Acorta la fecha de término."); return; }
-      var ya = {}; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id) ya[t.fecha] = 1; });
-      var nuevas = fechas.filter(function(f){ return !ya[f]; }), omit = fechas.length - nuevas.length;
+      var fechas = rgFechasProg().filter(function(f){ return f >= hoy; }), tr = grp ? rgTurnos() : null, ini1 = hmMin($("rgHora").value);
+      if (grp && ini1 == null){ toast("Pon la hora en que parte el sector 1."); $("rgHora").focus(); return; }
+      var porDia = grp ? tr.length : 1;
+      if (fechas.length * porDia > 60){ toast("Son más de 60 riegos. Acorta la fecha de término."); return; }
+      var ya = {}; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha") ya[t.sectorId + "|" + t.fecha] = 1; });
+      var lote = []; // {f, c, h, ini, grupo, orden}
+      fechas.forEach(function(f, fi){
+        var gid = "g" + Date.now().toString(36) + f.replace(/-/g, "");
+        if (grp) tr.forEach(function(x, k){ lote.push({ f: f, c: x.c, h: x.h, ini: x.ini, grupo: gid, orden: k + 1 }); });
+        else lote.push({ f: f, c: c, h: hr, ini: ini1, grupo: "", orden: 0 });
+      });
+      var nuevas = lote.filter(function(x){ return !ya[x.c.id + "|" + x.f]; }), omit = lote.length - nuevas.length;
       if (!nuevas.length){ toast("Esos días ya tienen un riego programado en este sector."); return; }
       b.disabled = true;
       try {
-        for (var j = 0; j < nuevas.length; j++) await S.db.collection("tareas").add({ fecha: nuevas[j], titulo: "Riego " + c.nombre, tipo: "riego", horas: hr, sectorId: c.id, sector: c.nombre, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre });
+        for (var j2 = 0; j2 < nuevas.length; j2++){
+          var x = nuevas[j2], doc = { fecha: x.f, titulo: "Riego " + x.c.nombre, tipo: "riego", horas: x.h, sectorId: x.c.id, sector: x.c.nombre, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre };
+          if (x.ini != null){ var fin = x.ini + Math.round(x.h * 60); doc.hora = minHm(x.ini); doc.horaFin = minHm(fin); doc.finSig = fin > 1440; }
+          if (x.grupo){ doc.grupo = x.grupo; doc.orden = x.orden; }
+          await S.db.collection("tareas").add(doc);
+        }
         $("rgSheet").hidden = true; toast(nuevas.length === 1 ? "Riego programado" : nuevas.length + " riegos programados" + (omit ? " (" + omit + " ya estaban)" : ""));
       } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
       b.disabled = false; return;
     }
-    var med = numI($("rgM3")), est = rgEstim(), m3 = med != null && med > 0 ? med : est;
+    var med = grp ? null : numI($("rgM3")), est = rgEstim(), m3 = med != null && med > 0 ? med : est;
     if (rgEdit){
       b.disabled = true;
       try {
@@ -2764,19 +2872,20 @@ html.pc .cmdk:not([hidden]){display:flex}
       } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
       b.disabled = false; return;
     }
-    var dias = rgDias.slice().sort();
-    var dup = dias.filter(function(f){ return S.riegos.some(function(r){ return r.sectorId === c.id && r.fecha === f; }); });
-    if (dup.length && !rgConfirmDup){ rgConfirmDup = true; b.textContent = "Ya hay riego ese día: toca otra vez para guardar"; toast("En " + c.nombre + " ya hay un riego el " + fmtD2(dup[0]) + (dup.length > 1 ? " y otros días" : "") + "."); return; }
+    var dias = rgDias.slice().sort(), items = [];
+    dias.forEach(function(f){ if (grp) rgTurnos().forEach(function(x){ items.push({ f: f, c: x.c, h: x.h }); }); else items.push({ f: f, c: c, h: hr }); });
+    var dup = items.filter(function(it){ return S.riegos.some(function(r){ return r.sectorId === it.c.id && r.fecha === it.f; }); });
+    if (dup.length && !rgConfirmDup){ rgConfirmDup = true; b.textContent = "Ya hay riego ese día: toca otra vez para guardar"; toast("En " + dup[0].c.nombre + " ya hay un riego el " + fmtD2(dup[0].f) + (dup.length > 1 ? " y en otros casos" : "") + "."); return; }
     b.disabled = true;
     try {
       var usados = {}, creados = 0, cerradas = 0, cerrada = null;
-      for (var k = 0; k < dias.length; k++){
-        var f = dias[k], tarea = null;
-        var rref = await S.db.collection("riegos").add({ fecha: f, ts: ahora, sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea && k === 0 ? rgTarea.id : "" });
+      for (var k = 0; k < items.length; k++){
+        var it = items[k], tarea = null, mm = grp ? (demandaM3h(it.c) ? demandaM3h(it.c) * it.h : null) : m3;
+        var rref = await S.db.collection("riegos").add({ fecha: it.f, ts: ahora, sectorId: it.c.id, sector: it.c.nombre, horas: it.h, m3: mm, medido: !grp && med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea && k === 0 ? rgTarea.id : "" });
         creados++;
         if (rgTarea && k === 0) tarea = rgTarea;
-        else tarea = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id && t.fecha && t.fecha <= f && !usados[t.id] && !(rgTarea && t.id === rgTarea.id); }).sort(function(a, bb){ var ea = a.fecha === f ? 0 : 1, eb = bb.fecha === f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
-        if (tarea){ usados[tarea.id] = 1; try { await S.db.doc("tareas/" + tarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: hr }); cerradas++; cerrada = tarea; } catch (e4){} }
+        else tarea = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === it.c.id && t.fecha && t.fecha <= it.f && !usados[t.id] && !(rgTarea && t.id === rgTarea.id); }).sort(function(a, bb){ var ea = a.fecha === it.f ? 0 : 1, eb = bb.fecha === it.f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
+        if (tarea){ usados[tarea.id] = 1; try { await S.db.doc("tareas/" + tarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: it.h }); cerradas++; cerrada = tarea; } catch (e4){} }
       }
       rgTarea = null; $("rgSheet").hidden = true;
       toast(creados === 1 ? (cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado") : creados + " riegos registrados" + (cerradas ? ". Cerré " + cerradas + " programado" + (cerradas > 1 ? "s" : "") : ""));
@@ -2806,9 +2915,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(res);
     if (progPend.length){
       var pg = el("section", "card sect"); pg.appendChild(el("h2", null, "Riegos programados"));
-      progPend.sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; }).slice(0, 12).forEach(function(t){
+      progPend.sort(function(a, b){ return a.fecha === b.fecha ? ((a.hora || "") < (b.hora || "") ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); }).slice(0, 12).forEach(function(t){
         var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
-        var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.quien ? " · " + t.quien : "")));
+        var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.hora ? " · " + t.hora + " a " + t.horaFin + (t.finSig ? " (día sig.)" : "") : "") + (t.quien ? " · " + t.quien : "")));
         var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go);
         if (S.manager){ var cm = el("button", "small", "Cambiar o quitar"); cm.onclick = function(){ cambiarProgramado(t); }; bx.appendChild(cm); }
         pg.appendChild(bx);
@@ -4392,7 +4501,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
     S.tareas.forEach(function(t){
       if (t.fecha !== f) return;
-      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: [t.tipo === "riego" && t.horas ? (t.estado === "hecha" && t.horasReal != null ? "Programado " + nf(t.horas, 1) + " h · regado " + nf(t.horasReal, 1) + " h" : "Programado " + nf(t.horas, 1) + " h") : "", t.quien || ""].filter(Boolean).join(" · "), hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true });
+      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: [t.tipo === "riego" && t.horas ? (t.estado === "hecha" && t.horasReal != null ? "Programado " + nf(t.horas, 1) + " h · regado " + nf(t.horasReal, 1) + " h" : "Programado " + nf(t.horas, 1) + " h" + (t.hora ? " · " + t.hora + " a " + t.horaFin : "")) : "", t.quien || ""].filter(Boolean).join(" · "), hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true });
     });
     fuera(f).forEach(function(x){ out.push({ k: "perm", titulo: "Permiso · " + (x.por || "—"), sub: x.medio ? "medio día (" + x.medio + ")" : "", hecho: false, mom: "perm", nc: true }); });
     out.sort(function(a, b){ return (MOMOR[a.mom] - MOMOR[b.mom]) || ((a.hecho ? 1 : 0) - (b.hecho ? 1 : 0)); });

@@ -299,6 +299,13 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .rg-tr{display:grid; grid-template-columns:1fr auto auto; gap:8px; align-items:center; font-size:15px}
 .rg-tr select{min-height:40px; padding:4px 8px; font-size:15px}
 .rg-ct{font-size:15px}
+.rg-gr{border-top:1px solid var(--line); padding-top:4px}
+.rg-gr summary{justify-content:space-between; gap:10px; font-size:18px}
+.rg-gr[open] > summary{margin-bottom:6px}
+.rg-gr summary{list-style:none}
+.rg-gr summary::-webkit-details-marker{display:none}
+.rg-gr summary > span:first-child::before{content:"▸"; display:inline-block; width:1.2em}
+.rg-gr[open] > summary > span:first-child::before{content:"▾"}
 .rg-act{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .rg-act.uno{grid-template-columns:1fr}
 .rg-seg{display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; background:var(--surface-2); border-radius:16px}
@@ -1329,7 +1336,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 28;
+  var GUIA_V = 29;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1342,6 +1349,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
+    ["Riegos programados por especie", "En «Riego», la lista de riegos programados se agrupa por especie (Nogales, Limones, Vivero). Toca el título de cada grupo para abrirlo o cerrarlo; el chip muestra el próximo riego o cuántos están atrasados.", 29, ""],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1399,6 +1407,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 29, f: "2026-11-02", t: "Riegos programados por especie", d: "La lista se agrupa en Nogales, Limones y Vivero, y cada grupo se abre o se cierra con un toque.", g: "Riegos programados por especie" },
     { v: 28, f: "2026-11-02", t: "Riego de los 4 nogales", d: "Programa los 4 sectores de una vez: pones la hora del sector 1 y la app calcula los demás, con contador de horas.", g: "Riego de los 4 nogales" },
     { v: 27, f: "2026-11-02", t: "Aviso de novedades", d: "Al actualizarse la app verás aquí lo nuevo. El historial queda en Ayuda → «Novedades de la app».", g: "Novedades de la app" },
     { v: 26, f: "2026-11-02", t: "Riego con calendario", d: "Anota uno o varios días, incluso los que olvidaste. Los días ya regados y los programados se ven en colores.", g: "Riego en otro día" },
@@ -2918,12 +2927,31 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(res);
     if (progPend.length){
       var pg = el("section", "card sect"); pg.appendChild(el("h2", null, "Riegos programados"));
-      progPend.sort(function(a, b){ return a.fecha === b.fecha ? ((a.hora || "") < (b.hora || "") ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); }).slice(0, 12).forEach(function(t){
-        var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
-        var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.hora ? " · " + t.hora + " a " + t.horaFin + (t.finSig ? " (día sig.)" : "") : "") + (t.quien ? " · " + t.quien : "")));
-        var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go);
-        if (S.manager){ var cm = el("button", "small", "Cambiar o quitar"); cm.onclick = function(){ cambiarProgramado(t); }; bx.appendChild(cm); }
-        pg.appendChild(bx);
+      progPend.sort(function(a, b){ return a.fecha === b.fecha ? ((a.hora || "") < (b.hora || "") ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); });
+      var NOM_ESP = { "Nogal": "Nogales", "Limón": "Limones", "Vivero": "Vivero" }, grupos = [], gmap = {};
+      progPend.forEach(function(t){
+        var cu = S.cuarteles.filter(function(c){ return c.id === t.sectorId; })[0], esp = cu && cu.especie ? cu.especie : "Otros";
+        if (!gmap[esp]){ gmap[esp] = { esp: esp, items: [] }; grupos.push(gmap[esp]); }
+        gmap[esp].items.push(t);
+      });
+      if (!S.rgGrp) S.rgGrp = {};
+      grupos.forEach(function(g, gi){
+        var dt = document.createElement("details"); dt.className = "rg-gr";
+        dt.open = S.rgGrp[g.esp] != null ? !!S.rgGrp[g.esp] : gi === 0;
+        dt.addEventListener("toggle", function(){ S.rgGrp[g.esp] = dt.open; });
+        var sm = document.createElement("summary"); sm.appendChild(el("span", null, (NOM_ESP[g.esp] || g.esp) + " · " + g.items.length + (g.items.length === 1 ? " riego" : " riegos")));
+        var atr = g.items.filter(function(t){ return diasDesde(t.fecha) > 0; }).length;
+        sm.appendChild(el("span", "chip " + (atr ? "warn" : "idle"), atr ? atr + (atr === 1 ? " atrasado" : " atrasados") : "Próximo: " + etiquetaDia(g.items[0].fecha)));
+        dt.appendChild(sm);
+        g.items.slice(0, 20).forEach(function(t){
+          var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
+          var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.hora ? " · " + t.hora + " a " + t.horaFin + (t.finSig ? " (día sig.)" : "") : "") + (t.quien ? " · " + t.quien : "")));
+          var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go);
+          if (S.manager){ var cm = el("button", "small", "Cambiar o quitar"); cm.onclick = function(){ cambiarProgramado(t); }; bx.appendChild(cm); }
+          dt.appendChild(bx);
+        });
+        if (g.items.length > 20) dt.appendChild(el("p", "note", "Y " + (g.items.length - 20) + " más. Míralos en la Agenda."));
+        pg.appendChild(dt);
       });
       f.appendChild(pg);
     }

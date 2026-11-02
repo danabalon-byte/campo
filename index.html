@@ -287,6 +287,27 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .ag-seg{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; background:var(--surface-2); border-radius:16px; padding:4px; margin:12px 0}
 .ag-seg button{min-height:46px; border-radius:12px; background:transparent; color:var(--muted); font-weight:700; font-size:16px; padding:4px 2px}
 .ag-seg button.on{background:var(--surface); color:var(--fg); box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.rg-nav{display:grid; grid-template-columns:52px 1fr 52px; gap:8px; align-items:center; margin:4px 0 10px}
+.rg-nav button{min-height:48px; font-size:22px; padding:0}
+.rg-nav .rg-mes:disabled{opacity:1; color:var(--fg)}
+.rg-nav .rg-mes{min-height:48px; font-size:16px; font-weight:700}
+.rg-act{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.rg-act.uno{grid-template-columns:1fr}
+.rg-seg{display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; background:var(--surface-2); border-radius:16px}
+.rg-seg button{min-height:46px; background:transparent; border-radius:12px; color:var(--muted)}
+.rg-seg button.on{background:var(--accent); color:var(--on-accent)}
+.rg-cal{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center}
+.rg-cal b{font-size:13px; color:var(--muted); font-weight:700; padding:2px 0}
+.rg-cal .rg-d{min-height:46px; padding:0; border-radius:12px; background:var(--surface); border:1px solid var(--line); font-size:16px}
+.rg-cal .rg-d.r{background:var(--ok-bg); color:var(--ok-fg); border-color:var(--ok-fg)}
+.rg-cal .rg-d.p{background:var(--water-bg); color:var(--water); border-color:var(--water)}
+.rg-cal .rg-d.r.p{background:var(--ok-bg); color:var(--ok-fg); box-shadow:inset 0 -5px 0 var(--water)}
+.rg-cal .rg-d.hoy{outline:2px solid var(--focus); outline-offset:-2px}
+.rg-cal .rg-d.sel{background:var(--accent); color:var(--on-accent); border-color:var(--accent); box-shadow:none}
+.rg-cal .rg-d:disabled{opacity:.35; cursor:default}
+.rg-k{display:inline-block; width:14px; height:14px; border-radius:4px; vertical-align:-2px; margin-right:5px; border:1px solid}
+.rg-k.r{background:var(--ok-bg); border-color:var(--ok-fg)}
+.rg-k.p{background:var(--water-bg); border-color:var(--water)}
 .ag-nav{display:grid; grid-template-columns:52px 1fr 52px; gap:8px; align-items:center; margin:4px 0 10px}
 .ag-nav button{min-height:48px; font-size:22px; padding:0}
 .ag-nav .mid{min-height:48px; font-size:16px; font-weight:700}
@@ -698,14 +719,21 @@ html.pc .cmdk:not([hidden]){display:flex}
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="rgTitle">
     <h2 id="rgTitle">Registrar riego</h2>
 <div class="sbody">
-    <div class="field"><label for="rgSector">¿Qué sector regaste?</label><select id="rgSector"></select></div>
-    <div class="field"><label for="rgFecha">Día</label><select id="rgFecha"></select></div>
-    <div class="field"><label for="rgHoras">Horas de riego</label><select id="rgHoras"></select></div>
+    <div class="rg-seg" id="rgModo" role="group" aria-label="Tipo de riego"><button type="button" data-m="reg">Ya regué</button><button type="button" data-m="prog">Voy a regar</button></div>
+    <div class="field"><label for="rgSector">¿Qué sector?</label><select id="rgSector"></select></div>
+    <div class="field"><label id="rgDiaL">Día(s)</label><div id="rgCal"></div>
+      <p class="note rg-leg"><span class="rg-k r"></span>ya regado &nbsp; <span class="rg-k p"></span>programado</p>
+      <p class="note" id="rgCalNota"></p></div>
+    <div class="field"><label for="rgHoras" id="rgHorasL">Horas de riego</label><select id="rgHoras"></select></div>
     <p class="calc" id="rgCalc"></p>
-    <div class="field"><label for="rgM3">m³ medidos (opcional, si tienes medidor)</label><input type="text" id="rgM3" inputmode="decimal" placeholder="Si lo dejas vacío se estima"></div>
-    <div class="field"><label for="rgNotas">Notas (opcional)</label><textarea id="rgNotas" maxlength="300" placeholder="Ej: se cortó la luz a la mitad"></textarea></div>
+    <div class="field" id="rgQuienF"><label for="rgQuien">¿Quién riega? (opcional)</label><select id="rgQuien"></select></div>
+    <div class="field" id="rgRepF"><label for="rgRep">Repetir</label><select id="rgRep"><option value="0">No repetir</option><option value="1">Cada día</option><option value="2">Cada 2 días</option><option value="3">Cada 3 días</option><option value="4">Cada 4 días</option><option value="7">Cada semana</option></select></div>
+    <div class="field" id="rgHastaF"><label for="rgHasta">Repetir hasta el día</label><input type="date" id="rgHasta"><p class="note">Se parte desde el primer día que elegiste en el calendario.</p></div>
+    <div class="field" id="rgM3F"><label for="rgM3" id="rgM3L">m³ medidos (opcional, si tienes medidor)</label><input type="text" id="rgM3" inputmode="decimal" placeholder="Si lo dejas vacío se estima"></div>
+    <div class="field" id="rgNotasF"><label for="rgNotas">Notas (opcional)</label><textarea id="rgNotas" maxlength="300" placeholder="Ej: se cortó la luz a la mitad"></textarea></div>
 </div>
 <div class="sfoot">    <button class="primary" id="rgOk">Guardar riego</button>
+    <button id="rgQuitar" style="display:none">Quitar este riego programado</button>
     <button id="rgCancel">Cancelar</button></div>
   </div>
 </div>
@@ -1278,7 +1306,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 25;
+  var GUIA_V = 26;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1288,6 +1316,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
     ["Ideas y notas", "En «Agenda», vista «Ideas», el botón «Nueva nota» guarda recordatorios con una etiqueta (Riego, Plagas, Bodega, Compras u Otro). Puedes escribir o tocar el micrófono para dictar. Cuando se resuelve, toca el círculo de la nota.", 2, ""],
     ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
+    ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
+    ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
+    ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
     ["Bodega", "En «Aplicar», «Bodega» muestra cuánto producto queda. Si falta o sobra, usa «Agregar o ajustar stock». Diego revisa y autoriza cada cambio.", 1, ""],
@@ -2513,37 +2544,182 @@ html.pc .cmdk:not([hidden]){display:flex}
     else { t.textContent = esViv(c) ? "Riego manual con manguera: no se calcula el agua. En las notas anota qué se regó." : "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
     return d ? d * hr : null;
   }
-  $("rgSector").onchange = function(){ rgHorasPara(); rgEstim(); }; $("rgHoras").onchange = rgEstim;
+  $("rgSector").onchange = function(){ rgHorasPara(); rgEstim(); rgDibuja(); }; $("rgHoras").onchange = rgEstim;
   function rgHorasPara(){
     var v = esViv(rgSel()), hs = [], i, sel = $("rgHoras").value;
     if (v){ hs.push({ value: "0.25", label: "15 minutos" }); hs.push({ value: "0.5", label: "30 minutos" }); hs.push({ value: "0.75", label: "45 minutos" }); for (i = 2; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") }); }
     else for (i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
     fill($("rgHoras"), hs, hs.some(function(h){ return h.value === sel; }) ? sel : (v ? "0.5" : "3"));
   }
-  function abrirRiego(){
-    rgTarea = null; $("rgTitle").textContent = "Registrar riego";
-    var cs = sectoresOrden();
-    if (!cs.length){ toast("Aún no hay sectores cargados."); return; }
-    fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
-    var hoy = fecha(), ayer = addDays(hoy, -1), anteayer = addDays(hoy, -2);
-    fill($("rgFecha"), [{ value: hoy, label: "Hoy" }, { value: ayer, label: "Ayer" }, { value: anteayer, label: "Anteayer" }]);
-    var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
-    fill($("rgHoras"), hs, "3");
-    rgHorasPara();
-    $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); $("rgSheet").hidden = false;
+  var rgMod = "reg", rgDias = [], rgMes = "", rgEdit = null, rgEditT = null, rgConfirmDup = false, rgQArm = false;
+  function rgSolo(){ return !!(rgEdit || rgEditT); }
+  function vis(id, on){ $(id).style.display = on ? "" : "none"; }
+  function rgSetHoras(h){
+    var v = String(h), sl = $("rgHoras");
+    if (!Array.prototype.some.call(sl.options, function(o){ return o.value === v; })){ var o = document.createElement("option"); o.value = v; o.textContent = nf(Number(h), 1) + " horas"; sl.appendChild(o); }
+    sl.value = v;
   }
-  $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; };
+  function rgSetSel(id, v){
+    var sl = $(id); if (!v) return;
+    if (!Array.prototype.some.call(sl.options, function(o){ return o.value === v; })){ var o = document.createElement("option"); o.value = v; o.textContent = v; sl.appendChild(o); }
+    sl.value = v;
+  }
+  function rgFechasProg(){
+    var out = rgDias.slice().sort(), rep = parseInt($("rgRep").value, 10) || 0, hasta = $("rgHasta").value;
+    if (rep > 0 && out.length && /^\d{4}-\d{2}-\d{2}$/.test(hasta)){ var d = out[0], n = 0; while (n < 80){ d = addDays(d, rep); if (d > hasta) break; if (out.indexOf(d) < 0) out.push(d); n++; } }
+    return out.sort();
+  }
+  function rgBoton(){
+    rgConfirmDup = false;
+    var b = $("rgOk"), n = rgDias.length;
+    if (rgSolo()) b.textContent = "Guardar cambios";
+    else if (rgMod === "prog"){ var k = rgFechasProg().length; b.textContent = k > 1 ? "Programar " + k + " riegos" : "Programar riego"; }
+    else b.textContent = n > 1 ? "Guardar " + n + " riegos" : "Guardar riego";
+    $("rgM3L").textContent = n > 1 ? "m³ medidos por día (opcional, si tienes medidor)" : "m³ medidos (opcional, si tienes medidor)";
+  }
+  function rgAjusta(){
+    var prog = rgMod === "prog", edit = rgSolo();
+    $("rgTitle").textContent = rgEdit ? "Corregir riego" : rgEditT ? "Cambiar riego programado" : rgTarea ? "Registrar el riego programado" : prog ? "Programar riego" : "Registrar riego";
+    vis("rgModo", !!S.manager && !edit && !rgTarea);
+    Array.prototype.forEach.call($("rgModo").children, function(bt){ var on = bt.getAttribute("data-m") === rgMod; bt.classList.toggle("on", on); bt.setAttribute("aria-pressed", on ? "true" : "false"); });
+    $("rgHorasL").textContent = prog ? "Horas previstas por día" : "Horas de riego";
+    $("rgDiaL").textContent = edit ? "Día" : "Día(s)";
+    vis("rgM3F", !prog); vis("rgNotasF", !prog); vis("rgCalc", !prog);
+    vis("rgQuienF", prog); vis("rgRepF", prog && !edit); vis("rgHastaF", prog && !edit && $("rgRep").value !== "0");
+    vis("rgQuitar", !!rgEditT);
+    rgBoton();
+  }
+  function rgMesMas(n){ var d = new Date(rgMes + "-01T12:00:00Z"); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 7); }
+  var fmtMesRg = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "long", year: "numeric" });
+  function rgDibuja(foco){
+    var box = $("rgCal"); box.textContent = "";
+    var hoy = fecha(), prog = rgMod === "prog", c = rgSel(), sid = c ? c.id : "";
+    var mn = addDays(hoy, -120), mx = addDays(hoy, 180);
+    var nav = agNav(function(){ rgMes = rgMesMas(-1); rgDibuja(); }, fmtMesRg.format(new Date(rgMes + "-01T12:00:00Z")), function(){ rgMes = rgMesMas(1); rgDibuja(); });
+    nav.className = "rg-nav"; nav.children[1].className = "rg-mes"; nav.children[0].disabled = rgMes <= mn.slice(0, 7); nav.children[2].disabled = rgMes >= mx.slice(0, 7);
+    box.appendChild(nav);
+    var g = el("div", "rg-cal");
+    ["L", "M", "M", "J", "V", "S", "D"].forEach(function(h){ var x = el("b", null, h); x.setAttribute("aria-hidden", "true"); g.appendChild(x); });
+    var dow = (new Date(rgMes + "-01T12:00:00Z").getUTCDay() + 6) % 7, nd = new Date(Date.UTC(+rgMes.slice(0, 4), +rgMes.slice(5, 7), 0)).getUTCDate(), i;
+    for (i = 0; i < dow; i++) g.appendChild(el("span"));
+    for (i = 1; i <= nd; i++){
+      var f = rgMes + "-" + (i < 10 ? "0" : "") + i, bt = el("button", "rg-d", String(i)); bt.type = "button"; bt.setAttribute("data-f", f);
+      var ok = prog ? (f >= hoy && f <= mx) : (f <= hoy && f >= mn);
+      var reg = S.riegos.some(function(r){ return r.sectorId === sid && r.fecha === f && (!rgEdit || r.id !== rgEdit.id); });
+      var pg = S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === sid && t.fecha === f && (!rgEditT || t.id !== rgEditT.id); });
+      var sel = rgDias.indexOf(f) >= 0;
+      if (reg) bt.classList.add("r"); if (pg) bt.classList.add("p"); if (sel) bt.classList.add("sel"); if (f === hoy) bt.classList.add("hoy");
+      bt.disabled = !ok && !sel;
+      bt.setAttribute("aria-label", etiquetaLarga(f) + (reg ? ", ya regado" : "") + (pg ? ", programado" : "") + (sel ? ", elegido" : ""));
+      bt.setAttribute("aria-pressed", sel ? "true" : "false");
+      bt.onclick = (function(f, ok){ return function(){
+        if (!ok) return;
+        if (rgSolo()) rgDias = [f]; else { var k = rgDias.indexOf(f); if (k >= 0) rgDias.splice(k, 1); else rgDias.push(f); }
+        rgBoton(); rgDibuja(f);
+      }; })(f, ok);
+      g.appendChild(bt);
+    }
+    box.appendChild(g);
+    var d2 = rgDias.slice().sort();
+    $("rgCalNota").textContent = (rgSolo() ? "Toca el día que corresponde. " : prog ? "Hoy y los días siguientes; toca varios para programarlos de una vez. " : "Hoy y los días anteriores; toca varios si regaste más de uno. ") + (d2.length ? "Elegido: " + d2.slice(0, 4).map(fmtD2).join(", ") + (d2.length > 4 ? " y " + (d2.length - 4) + " más" : "") + "." : "Aún no eliges ningún día.");
+    if (foco){ var fb = box.querySelector('[data-f="' + foco + '"]'); if (fb) fb.focus(); }
+  }
+  function rgAbre(modo){
+    var cs = sectoresOrden();
+    if (!cs.length){ toast("Aún no hay sectores cargados."); return false; }
+    rgTarea = null; rgEdit = null; rgEditT = null; rgMod = modo === "prog" && S.manager ? "prog" : "reg";
+    fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
+    var hoy = fecha();
+    rgDias = [rgMod === "prog" ? addDays(hoy, 1) : hoy]; rgMes = rgDias[0].slice(0, 7);
+    var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
+    fill($("rgHoras"), hs, "3"); rgHorasPara();
+    var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(k){ if (S.team[k].nombre) nombres[S.team[k].nombre] = 1; });
+    fill($("rgQuien"), [{ value: "", label: "Sin asignar" }, { value: "Todo el equipo", label: "Todo el equipo" }].concat(Object.keys(nombres).sort().map(function(n){ return { value: n, label: n }; })));
+    $("rgRep").value = "0"; $("rgHasta").value = ""; $("rgHasta").min = addDays(hoy, 1);
+    $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); rgAjusta(); rgDibuja(); $("rgSheet").hidden = false;
+    return true;
+  }
+  function abrirRiego(){ rgAbre("reg"); }
+  function abrirProgramar(){ rgAbre("prog"); }
+  function corregirRiego(r){
+    if (!rgAbre("reg")) return;
+    rgEdit = r; rgSetSel("rgSector", r.sectorId); rgHorasPara(); rgSetHoras(r.horas || 3);
+    $("rgM3").value = r.medido && r.m3 ? String(r.m3) : ""; $("rgNotas").value = r.notas || "";
+    rgDias = [r.fecha]; rgMes = r.fecha.slice(0, 7); rgEstim(); rgAjusta(); rgDibuja();
+  }
+  function cambiarProgramado(t){
+    if (!rgAbre("prog")) return;
+    rgEditT = t; rgSetSel("rgSector", t.sectorId); rgSetHoras(t.horas || 3); rgSetSel("rgQuien", t.quien || "");
+    rgDias = [t.fecha]; rgMes = t.fecha.slice(0, 7); rgAjusta(); rgDibuja();
+  }
+  $("rgModo").onclick = function(e){
+    var bt = e.target.closest && e.target.closest("button"); if (!bt) return;
+    var m = bt.getAttribute("data-m"); if (m === rgMod) return;
+    rgMod = m; var hoy = fecha();
+    rgDias = rgDias.filter(function(f){ return m === "prog" ? f >= hoy : f <= hoy; });
+    if (!rgDias.length) rgDias = [m === "prog" ? addDays(hoy, 1) : hoy];
+    rgMes = rgDias[0].slice(0, 7); rgAjusta(); rgDibuja();
+  };
+  $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton;
+  $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; rgEdit = null; rgEditT = null; };
+  $("rgQuitar").onclick = async function(){
+    var q = $("rgQuitar"); if (!rgEditT) return;
+    if (!rgQArm){ rgQArm = true; q.textContent = "Toca otra vez para quitarlo"; setTimeout(function(){ rgQArm = false; q.textContent = "Quitar este riego programado"; }, 4000); return; }
+    try { await S.db.doc("tareas/" + rgEditT.id).delete(); $("rgSheet").hidden = true; rgEditT = null; rgQArm = false; q.textContent = "Quitar este riego programado"; toast("Riego programado quitado"); }
+    catch (err){ toast("No se pudo quitar. Revisa tu señal e intenta de nuevo."); }
+  };
   $("rgOk").onclick = async function(){
     var c = rgSel(); if (!c) return;
-    var hr = parseFloat($("rgHoras").value), med = numI($("rgM3")), est = rgEstim();
-    var m3 = med != null && med > 0 ? med : est;
-    var b = $("rgOk"); b.disabled = true;
+    var b = $("rgOk"), hoy = fecha(), hr = parseFloat($("rgHoras").value), ahora = new Date().toISOString();
+    if (!rgDias.length){ toast("Toca al menos un día en el calendario."); return; }
+    if (rgEditT){
+      b.disabled = true;
+      try {
+        var upT = { fecha: rgDias[0], sectorId: c.id, sector: c.nombre, horas: hr, quien: $("rgQuien").value };
+        if (/^Riego/.test(rgEditT.titulo || "")) upT.titulo = "Riego " + c.nombre;
+        await S.db.doc("tareas/" + rgEditT.id).update(upT);
+        $("rgSheet").hidden = true; rgEditT = null; toast("Riego programado actualizado");
+      } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+      b.disabled = false; return;
+    }
+    if (rgMod === "prog"){
+      var fechas = rgFechasProg().filter(function(f){ return f >= hoy; });
+      if (fechas.length > 60){ toast("Son más de 60 riegos. Acorta la fecha de término."); return; }
+      var ya = {}; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id) ya[t.fecha] = 1; });
+      var nuevas = fechas.filter(function(f){ return !ya[f]; }), omit = fechas.length - nuevas.length;
+      if (!nuevas.length){ toast("Esos días ya tienen un riego programado en este sector."); return; }
+      b.disabled = true;
+      try {
+        for (var j = 0; j < nuevas.length; j++) await S.db.collection("tareas").add({ fecha: nuevas[j], titulo: "Riego " + c.nombre, tipo: "riego", horas: hr, sectorId: c.id, sector: c.nombre, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre });
+        $("rgSheet").hidden = true; toast(nuevas.length === 1 ? "Riego programado" : nuevas.length + " riegos programados" + (omit ? " (" + omit + " ya estaban)" : ""));
+      } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+      b.disabled = false; return;
+    }
+    var med = numI($("rgM3")), est = rgEstim(), m3 = med != null && med > 0 ? med : est;
+    if (rgEdit){
+      b.disabled = true;
+      try {
+        await S.db.doc("riegos/" + rgEdit.id).update({ fecha: rgDias[0], sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), editadoPor: S.nombre, editadoTs: ahora });
+        $("rgSheet").hidden = true; rgEdit = null; toast("Riego corregido");
+      } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+      b.disabled = false; return;
+    }
+    var dias = rgDias.slice().sort();
+    var dup = dias.filter(function(f){ return S.riegos.some(function(r){ return r.sectorId === c.id && r.fecha === f; }); });
+    if (dup.length && !rgConfirmDup){ rgConfirmDup = true; b.textContent = "Ya hay riego ese día: toca otra vez para guardar"; toast("En " + c.nombre + " ya hay un riego el " + fmtD2(dup[0]) + (dup.length > 1 ? " y otros días" : "") + "."); return; }
+    b.disabled = true;
     try {
-      var rref = await S.db.collection("riegos").add({ fecha: $("rgFecha").value, ts: new Date().toISOString(), sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea ? rgTarea.id : "" });
-      var cerrada = null;
-      if (!rgTarea){ var rf = $("rgFecha").value; var cand = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id && t.fecha && t.fecha <= rf; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; })[0]; if (cand){ try { await S.db.doc("tareas/" + cand.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: new Date().toISOString(), riegoId: rref && rref.id || "", horasReal: hr }); cerrada = cand; } catch (e4){} } }
-      if (rgTarea){ try { await S.db.doc("tareas/" + rgTarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: new Date().toISOString(), riegoId: rref && rref.id || "", horasReal: hr }); } catch (e3){} rgTarea = null; }
-      $("rgSheet").hidden = true; toast(cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado");
+      var usados = {}, creados = 0, cerradas = 0, cerrada = null;
+      for (var k = 0; k < dias.length; k++){
+        var f = dias[k], tarea = null;
+        var rref = await S.db.collection("riegos").add({ fecha: f, ts: ahora, sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea && k === 0 ? rgTarea.id : "" });
+        creados++;
+        if (rgTarea && k === 0) tarea = rgTarea;
+        else tarea = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === c.id && t.fecha && t.fecha <= f && !usados[t.id] && !(rgTarea && t.id === rgTarea.id); }).sort(function(a, bb){ var ea = a.fecha === f ? 0 : 1, eb = bb.fecha === f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
+        if (tarea){ usados[tarea.id] = 1; try { await S.db.doc("tareas/" + tarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: hr }); cerradas++; cerrada = tarea; } catch (e4){} }
+      }
+      rgTarea = null; $("rgSheet").hidden = true;
+      toast(creados === 1 ? (cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado") : creados + " riegos registrados" + (cerradas ? ". Cerré " + cerradas + " programado" + (cerradas > 1 ? "s" : "") : ""));
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
@@ -2551,7 +2727,9 @@ html.pc .cmdk:not([hidden]){display:flex}
   function buildRiego(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("riego"));
-    var reg = el("button", "primary", "Registrar riego"); reg.onclick = abrirRiego; f.appendChild(reg);
+    var acts = el("div", "rg-act" + (S.manager ? "" : " uno")); var reg = el("button", "primary", "Registrar riego"); reg.onclick = abrirRiego; acts.appendChild(reg);
+    if (S.manager){ var prg = el("button", null, "Programar riego"); prg.onclick = abrirProgramar; acts.appendChild(prg); }
+    f.appendChild(acts);
     var hoy = fecha(), sem = weekStart(hoy), cs = sectoresOrden();
     var mSem = 0, mHoy = 0, hSem = 0;
     S.riegos.forEach(function(r){ if (r.fecha >= sem){ mSem += Number(r.m3) || 0; hSem += Number(r.horas) || 0; } if (r.fecha === hoy) mHoy += Number(r.m3) || 0; });
@@ -2568,10 +2746,12 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(res);
     if (progPend.length){
       var pg = el("section", "card sect"); pg.appendChild(el("h2", null, "Riegos programados"));
-      progPend.sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; }).slice(0, 8).forEach(function(t){
+      progPend.sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; }).slice(0, 12).forEach(function(t){
         var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
         var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.quien ? " · " + t.quien : "")));
-        var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go); pg.appendChild(bx);
+        var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go);
+        if (S.manager){ var cm = el("button", "small", "Cambiar o quitar"); cm.onclick = function(){ cambiarProgramado(t); }; bx.appendChild(cm); }
+        pg.appendChild(bx);
       });
       f.appendChild(pg);
     }
@@ -2593,8 +2773,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!S.riegos.length) l.appendChild(el("p", "note", "Todavía no hay riegos registrados."));
     S.riegos.slice().sort(function(a, b){ return a.fecha === b.fecha ? (a.ts < b.ts ? 1 : -1) : (a.fecha < b.fecha ? 1 : -1); }).slice(0, 25).forEach(function(r){
       var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, r.sector)); w.appendChild(el("span", "chip idle", nf(r.horas, 1) + " h")); bx.appendChild(w);
-      bx.appendChild(el("p", "sub", fmtD2(r.fecha) + (r.m3 ? " · " + nf(r.m3, 0) + " m³" + (r.medido ? " medidos" : " estimados") : "") + (r.por ? " · " + r.por : "")));
+      bx.appendChild(el("p", "sub", fmtD2(r.fecha) + (r.m3 ? " · " + nf(r.m3, 0) + " m³" + (r.medido ? " medidos" : " estimados") : "") + (r.por ? " · " + r.por : "") + (r.editadoPor ? " · corregido por " + r.editadoPor : "")));
       if (r.notas) bx.appendChild(el("p", null, r.notas));
+      if (S.manager){ var cr = el("button", "small", "Corregir"); cr.onclick = function(){ corregirRiego(r); }; bx.appendChild(cr); }
       if (S.owner || r.uid === S.uid){
         var del = el("button", "small", "Anular"); var armed = false;
         del.onclick = async function(){
@@ -4167,12 +4348,10 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   var rgTarea = null;
   function riegoDeTarea(t){
-    abrirRiego(); if ($("rgSheet").hidden) return;
-    rgTarea = t;
-    if (t.sectorId && Array.prototype.some.call($("rgSector").options, function(o){ return o.value === t.sectorId; })) $("rgSector").value = t.sectorId;
-    var hv = String(t.horas || 3); if (Array.prototype.some.call($("rgHoras").options, function(o){ return o.value === hv; })) $("rgHoras").value = hv;
-    if (Array.prototype.some.call($("rgFecha").options, function(o){ return o.value === t.fecha; })) $("rgFecha").value = t.fecha;
-    rgEstim(); $("rgTitle").textContent = "Registrar el riego programado";
+    if (!rgAbre("reg")) return;
+    rgTarea = t; rgSetSel("rgSector", t.sectorId); rgHorasPara(); rgSetHoras(t.horas || 3);
+    var hoy = fecha(); rgDias = [t.fecha && t.fecha <= hoy && t.fecha >= addDays(hoy, -120) ? t.fecha : hoy]; rgMes = rgDias[0].slice(0, 7);
+    rgEstim(); rgAjusta(); rgDibuja();
   }
   async function marcarTarea(t){
     if (t.tipo === "riego" && t.estado !== "hecha"){ riegoDeTarea(t); return; }

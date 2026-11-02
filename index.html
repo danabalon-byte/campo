@@ -738,7 +738,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     <p class="calc" id="rgCalc"></p>
     <div class="field" id="rgQuienF"><label for="rgQuien">¿Quién riega? (opcional)</label><select id="rgQuien"></select></div>
     <div class="field" id="rgRepF"><label for="rgRep">Repetir</label><select id="rgRep"><option value="0">No repetir</option><option value="1">Cada día</option><option value="2">Cada 2 días</option><option value="3">Cada 3 días</option><option value="4">Cada 4 días</option><option value="7">Cada semana</option></select></div>
-    <div class="field" id="rgHastaF"><label for="rgHasta">Repetir hasta el día</label><input type="date" id="rgHasta"><p class="note">Se parte desde el primer día que elegiste en el calendario.</p></div>
+    <div class="field" id="rgHastaF"><label for="rgHasta">Repetir hasta el día</label><input type="date" id="rgHasta"><p class="note" id="rgHastaNota"></p></div>
     <div class="field" id="rgM3F"><label for="rgM3" id="rgM3L">m³ medidos (opcional, si tienes medidor)</label><input type="text" id="rgM3" inputmode="decimal" placeholder="Si lo dejas vacío se estima"></div>
     <div class="field" id="rgNotasF"><label for="rgNotas">Notas (opcional)</label><textarea id="rgNotas" maxlength="300" placeholder="Ej: se cortó la luz a la mitad"></textarea></div>
 </div>
@@ -2638,8 +2638,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     sl.value = v;
   }
   function rgFechasProg(){
-    var out = rgDias.slice().sort(), rep = parseInt($("rgRep").value, 10) || 0, hasta = $("rgHasta").value;
-    if (rep > 0 && out.length && /^\d{4}-\d{2}-\d{2}$/.test(hasta)){ var d = out[0], n = 0; while (n < 80){ d = addDays(d, rep); if (d > hasta) break; if (out.indexOf(d) < 0) out.push(d); n++; } }
+    var base = rgDias.slice().sort(), out = base.slice(), rep = parseInt($("rgRep").value, 10) || 0, hasta = $("rgHasta").value;
+    if (rep > 0 && /^\d{4}-\d{2}-\d{2}$/.test(hasta)) base.forEach(function(d0){ var d = d0, n = 0; while (n < 120){ d = addDays(d, rep); if (d > hasta) break; if (out.indexOf(d) < 0) out.push(d); n++; } });
     return out.sort();
   }
   /* Turnos del grupo de nogales: el programador corre el sector 1 y sigue en orden, sin pausas. */
@@ -2699,10 +2699,13 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   function rgBoton(){
     rgConfirmDup = false;
+    if (rgMod === "prog" && !rgSolo() && (parseInt($("rgRep").value, 10) || 0) > 0 && !$("rgHasta").value && rgDias.length) $("rgHasta").value = addDays(rgDias.slice().sort()[0], 91);
     var b = $("rgOk"), n = rgDias.length, g = rgEsGrp() ? rgGrupo().length : 1;
     if (rgSolo()) b.textContent = "Guardar cambios";
     else if (rgMod === "prog"){ var k = rgFechasProg().length * g; b.textContent = k > 1 ? "Programar " + k + " riegos" : "Programar riego"; }
     else { var k2 = n * g; b.textContent = k2 > 1 ? "Guardar " + k2 + " riegos" : "Guardar riego"; }
+    var fp = rgFechasProg(), rp = parseInt($("rgRep").value, 10) || 0;
+    $("rgHastaNota").textContent = rp > 0 ? (fp.length ? "Se programarán " + fp.length + " días: del " + fmtD2(fp[0]) + " al " + fmtD2(fp[fp.length - 1]) + ". Se repite desde cada día que elegiste." : "Elige primero los días en el calendario.") : "";
     $("rgM3L").textContent = n > 1 ? "m³ medidos por día (opcional, si tienes medidor)" : "m³ medidos (opcional, si tienes medidor)";
     rgTurnosDibuja();
   }

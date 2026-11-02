@@ -287,6 +287,10 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .ag-seg{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; background:var(--surface-2); border-radius:16px; padding:4px; margin:12px 0}
 .ag-seg button{min-height:46px; border-radius:12px; background:transparent; color:var(--muted); font-weight:700; font-size:16px; padding:4px 2px}
 .ag-seg button.on{background:var(--surface); color:var(--fg); box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.nv-it{display:grid; gap:8px; padding:12px 14px; border:1px solid var(--line); border-radius:16px; background:var(--surface)}
+.nv-it button{justify-self:start}
+#nvList{display:grid; gap:10px}
+#nvList h3{padding-top:8px}
 .rg-nav{display:grid; grid-template-columns:52px 1fr 52px; gap:8px; align-items:center; margin:4px 0 10px}
 .rg-nav button{min-height:48px; font-size:22px; padding:0}
 .rg-nav .rg-mes:disabled{opacity:1; color:var(--fg)}
@@ -723,7 +727,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     <div class="field"><label for="rgSector">¿Qué sector?</label><select id="rgSector"></select></div>
     <div class="field"><label id="rgDiaL">Día(s)</label><div id="rgCal"></div>
       <p class="note rg-leg"><span class="rg-k r"></span>ya regado &nbsp; <span class="rg-k p"></span>programado</p>
-      <p class="note" id="rgCalNota"></p></div>
+      <p class="note" id="rgCalNota"></p><button type="button" class="small" id="rgLimpia">Quitar la selección</button></div>
     <div class="field"><label for="rgHoras" id="rgHorasL">Horas de riego</label><select id="rgHoras"></select></div>
     <p class="calc" id="rgCalc"></p>
     <div class="field" id="rgQuienF"><label for="rgQuien">¿Quién riega? (opcional)</label><select id="rgQuien"></select></div>
@@ -820,6 +824,18 @@ html.pc .cmdk:not([hidden]){display:flex}
 </div>
 <div class="sfoot">    <button class="primary" id="cnOk">Enviar a Diego</button>
     <button id="cnCancel">Cancelar</button></div>
+  </div>
+</div>
+<div class="sheet" id="nvSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="nvTitle">
+    <h2 id="nvTitle">La app se actualizó</h2>
+<div class="sbody">
+    <div><span class="chip inc" id="nvTag"></span></div>
+    <p class="sub" id="nvSub"></p>
+    <div id="nvList"></div>
+</div>
+<div class="sfoot">    <button class="primary" id="nvOk">Entendido</button>
+    <button id="nvPaso">Ver todo paso a paso</button></div>
   </div>
 </div>
 <div class="sheet" id="guSheet" hidden>
@@ -1306,7 +1322,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 26;
+  var GUIA_V = 27;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1318,6 +1334,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
+    ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
@@ -1372,10 +1389,51 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("guOk").textContent = guI === guPasos.length - 1 ? "Entendido" : "Siguiente";
   }
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
+  /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
+  var NOVEDADES = [
+    { v: 27, f: "2026-11-02", t: "Aviso de novedades", d: "Al actualizarse la app verás aquí lo nuevo. El historial queda en Ayuda → «Novedades de la app».", g: "Novedades de la app" },
+    { v: 26, f: "2026-11-02", t: "Riego con calendario", d: "Anota uno o varios días, incluso los que olvidaste. Los días ya regados y los programados se ven en colores.", g: "Riego en otro día" },
+    { v: 26, f: "2026-11-02", t: "Programar riegos", d: "Agenda riegos futuros y repítelos cada cierto número de días.", g: "Programar riegos" },
+    { v: 26, f: "2026-11-02", t: "Corregir un riego", d: "Cambia el día, el sector o las horas de un riego ya anotado.", g: "Corregir un riego" },
+    { v: 25, f: "2026-10-30", t: "Responder mensajes con un toque", d: "Responde desde la tarjeta del mensaje con un marcador. «Buena idea» la guarda en Ideas.", g: "Responder mensajes" },
+    { v: 25, f: "2026-10-30", t: "Respuestas a tus mensajes", d: "Cuando Diego responde a un mensaje tuyo, lo ves en Inicio.", g: "Ver las respuestas de Diego" },
+    { v: 24, f: "2026-10-28", t: "Corregir horarios", d: "Si olvidaste marcar la salida, corrige tu horario. Si no eres encargada, Diego lo aprueba.", g: "Corregir horarios" },
+    { v: 23, f: "2026-10-27", t: "Ausencias", d: "Registra una ausencia ya ocurrida en Permisos.", g: "Ausencias" },
+    { v: 23, f: "2026-10-27", t: "Avisar una ausencia", d: "Si hoy no puedes ir, avisa desde Permisos.", g: "Avisar una ausencia" }
+  ];
+  function nvPaso(n){ return GUIA.filter(function(g){ return g[0] === n.g; })[0]; }
+  function nvLista(desde){
+    return NOVEDADES.filter(function(n){ var g = nvPaso(n); return g && n.v > desde && (!g[3] || (g[3] === "owner" ? S.owner : S.manager)); });
+  }
+  var nvHist = false;
+  function abrirNovedades(hist, lista){
+    nvHist = !!hist; var lst = hist ? nvLista(0) : lista;
+    $("nvTitle").textContent = hist ? "Novedades" : "La app se actualizó";
+    $("nvTag").textContent = hist ? "Versión " + GUIA_V : "Versión " + GUIA_V + " · " + fmtD2(lst[0].f);
+    $("nvSub").textContent = hist ? "Lo que ha cambiado en la app, de lo más reciente a lo más antiguo." : "Esto es lo nuevo para ti:";
+    $("nvOk").textContent = hist ? "Cerrar" : "Entendido"; $("nvPaso").style.display = hist ? "none" : "";
+    var box = $("nvList"); box.textContent = ""; var ult = null;
+    lst.forEach(function(n){
+      if (hist && n.v !== ult){ ult = n.v; box.appendChild(el("h3", null, "Versión " + n.v + " · " + fmtD2(n.f))); }
+      var it = el("div", "nv-it"); it.appendChild(el("b", null, n.t)); it.appendChild(el("span", "note", n.d));
+      var bt = el("button", "small", "Ver cómo"); bt.type = "button";
+      bt.onclick = function(){ $("nvSheet").hidden = true; guNov = false; guPasos = [nvPaso(n)]; guI = 0; pintarGuia(); $("guSheet").hidden = false; };
+      it.appendChild(bt); box.appendChild(it);
+    });
+    $("nvSheet").hidden = false;
+  }
+  $("nvOk").onclick = function(){ $("nvSheet").hidden = true; if (!nvHist) cerrarGuia(); };
+  $("nvPaso").onclick = function(){
+    $("nvSheet").hidden = true; var visto = guiaVista(); guNov = true;
+    guPasos = GUIA.filter(function(g){ return (!g[3] || (g[3] === "owner" ? S.owner : S.manager)) && g[2] > visto; });
+    if (!guPasos.length){ cerrarGuia(); return; }
+    guI = 0; pintarGuia(); $("guSheet").hidden = false;
+  };
   function abrirGuia(manual){
     var visto = guiaVista();
     if (!manual && visto >= GUIA_V) return;
     guNov = !manual && visto > 0;
+    if (guNov){ var nl = nvLista(visto); if (nl.length){ abrirNovedades(false, nl); return; } }
     guPasos = GUIA.filter(function(g){ return (!g[3] || (g[3] === "owner" ? S.owner : S.manager)) && (!guNov || g[2] > visto); });
     if (!guPasos.length){ cerrarGuia(); return; }
     guI = 0; pintarGuia(); $("guSheet").hidden = false;
@@ -2088,6 +2146,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ua.addEventListener("toggle", function(){ S.uaAb = ua.open; });
     var ay = el("div", "sect");
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
+    var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
     var on = document.documentElement.classList.contains("sol");
     var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
     bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
@@ -2622,6 +2681,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     box.appendChild(g);
     var d2 = rgDias.slice().sort();
     $("rgCalNota").textContent = (rgSolo() ? "Toca el día que corresponde. " : prog ? "Hoy y los días siguientes; toca varios para programarlos de una vez. " : "Hoy y los días anteriores; toca varios si regaste más de uno. ") + (d2.length ? "Elegido: " + d2.slice(0, 4).map(fmtD2).join(", ") + (d2.length > 4 ? " y " + (d2.length - 4) + " más" : "") + "." : "Aún no eliges ningún día.");
+    vis("rgLimpia", !rgSolo() && rgDias.length > 0);
     if (foco){ var fb = box.querySelector('[data-f="' + foco + '"]'); if (fb) fb.focus(); }
   }
   function rgAbre(modo){
@@ -2630,7 +2690,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     rgTarea = null; rgEdit = null; rgEditT = null; rgMod = modo === "prog" && S.manager ? "prog" : "reg";
     fill($("rgSector"), cs.map(function(c){ return { value: c.id, label: c.nombre }; }));
     var hoy = fecha();
-    rgDias = [rgMod === "prog" ? addDays(hoy, 1) : hoy]; rgMes = rgDias[0].slice(0, 7);
+    rgDias = []; rgMes = hoy.slice(0, 7);
     var hs = []; for (var i = 1; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") });
     fill($("rgHoras"), hs, "3"); rgHorasPara();
     var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(k){ if (S.team[k].nombre) nombres[S.team[k].nombre] = 1; });
@@ -2657,9 +2717,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     var m = bt.getAttribute("data-m"); if (m === rgMod) return;
     rgMod = m; var hoy = fecha();
     rgDias = rgDias.filter(function(f){ return m === "prog" ? f >= hoy : f <= hoy; });
-    if (!rgDias.length) rgDias = [m === "prog" ? addDays(hoy, 1) : hoy];
-    rgMes = rgDias[0].slice(0, 7); rgAjusta(); rgDibuja();
+    rgMes = (rgDias[0] || hoy).slice(0, 7); rgAjusta(); rgDibuja();
   };
+  $("rgLimpia").onclick = function(){ rgDias = []; rgBoton(); rgDibuja(); };
   $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton;
   $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; rgEdit = null; rgEditT = null; };
   $("rgQuitar").onclick = async function(){

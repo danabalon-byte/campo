@@ -318,6 +318,106 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .rg-gr[open] > summary > span:first-child::before{content:"▾"}
 .rg-act{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .rg-act.uno{grid-template-columns:1fr}
+/* medidores: consumo por lectura + lecturas por mes */
+.ml-bars{display:flex; align-items:flex-end; gap:4px; height:96px}
+button.ml-bar{flex:1; min-width:0; min-height:0; height:100%; padding:0; background:transparent; border-radius:8px; display:flex; align-items:flex-end}
+button.ml-bar i{display:block; width:100%; background:var(--water-bg); border:2px solid var(--water); border-radius:6px 6px 2px 2px}
+button.ml-bar.on i,button.ml-bar:last-child i{background:var(--water)}
+button.ml-bar.on{outline:3px solid var(--focus); outline-offset:1px}
+.ml-bl{display:flex; gap:4px} .ml-bl span{flex:1; min-width:0; text-align:center; font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden}
+details.ml-m{border-top:1px solid var(--line)} details.ml-m:first-of-type{border-top:0}
+details.ml-m > summary{list-style:none; display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:52px; color:var(--fg)}
+details.ml-m > summary::-webkit-details-marker{display:none}
+details.ml-m > summary b{font-family:var(--font-display); font-size:16px; white-space:nowrap}
+details.ml-m > summary .r{display:flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); font-weight:400; white-space:nowrap}
+details.ml-m > summary .r strong{color:var(--water); font-size:16px}
+details.ml-m > summary .r em{font-style:normal; color:var(--accent); font-size:16px}
+details.ml-m > summary .r em::before{content:"▸"} details.ml-m[open] > summary .r em::before{content:"▾"}
+button.ml-r{width:100%; display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; min-height:52px; padding:4px 6px; background:transparent; border-radius:14px; text-align:left; font-weight:400; color:var(--fg)}
+button.ml-r .d{font-size:16px; font-weight:700} button.ml-r .v{font-size:15px; color:var(--muted); text-align:right} button.ml-r .c{font-size:17px; font-weight:700; color:var(--water); min-width:84px; text-align:right}
+button.ml-r.open{background:var(--surface-2)}
+.ml-det{display:grid; gap:6px; background:var(--surface-2); border-radius:0 0 14px 14px; padding:0 10px 10px; margin:-6px 0 6px}
+/* riegos programados: tablero + línea de tiempo + vista en vivo */
+.rv-sw{display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface-2); border-radius:16px; padding:8px 12px 8px 14px; min-height:60px}
+.rv-sw b{display:block; font-size:17px; line-height:1.2} .rv-sw .s{font-size:14px; color:var(--muted)}
+button.rv-tg{flex:none; width:76px; min-height:38px; height:38px; padding:0; border-radius:999px; background:var(--surface); border:2px solid var(--line); position:relative; display:block}
+button.rv-tg::after{content:""; position:absolute; top:3px; left:3px; width:28px; height:28px; border-radius:50%; background:var(--muted)}
+button.rv-tg.on{background:var(--accent); border-color:var(--accent)}
+button.rv-tg.on::after{left:41px; background:var(--on-accent)}
+button.rv-tg em{position:absolute; top:0; bottom:0; font-style:normal; font-size:12px; font-weight:700; display:flex; align-items:center}
+button.rv-tg.on em{left:10px; color:var(--on-accent)} button.rv-tg:not(.on) em{right:9px; color:var(--muted)}
+button.rv-band{width:100%; display:flex; align-items:center; gap:10px; background:var(--alert-bg); color:var(--alert); border-radius:14px; padding:11px 14px; font-size:16px; text-align:left; min-height:48px}
+button.rv-band span{flex:1}
+.rv-head{display:flex; justify-content:space-between; align-items:center; gap:8px}
+.rv-head b{font-size:17px}
+.rv-nv{display:flex; gap:6px}
+button.rv-nv-b{min-height:44px; min-width:44px; padding:0; font-size:20px; background:var(--ok-bg); color:var(--ok-fg)}
+.rv-mx{display:grid; grid-template-columns:72px repeat(7,minmax(0,1fr)); gap:4px; align-items:stretch}
+button.rv-d{min-height:48px; padding:2px 0 4px; background:transparent; border-radius:12px; font-size:13px; color:var(--muted); display:grid; justify-items:center; align-content:start}
+button.rv-d i{font-style:normal; font-size:16px; color:var(--fg); width:26px; height:26px; line-height:26px; border-radius:50%}
+button.rv-d.hoy i{background:var(--accent); color:var(--on-accent)}
+button.rv-d.on{background:var(--surface-2)}
+.rv-r{font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px; line-height:1.15; min-width:0; overflow-wrap:anywhere}
+.rv-r s{width:6px; align-self:stretch; border-radius:3px; background:var(--accent); flex:none}
+.rv-r s.l{background:var(--lemon)}
+.rv-c{min-height:46px; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:14px; font-weight:700; line-height:1.1; min-width:0}
+.rv-c.vacio{border:1px dashed var(--line)}
+button.rv-c{padding:2px 0; font-size:14px; min-height:46px; border-radius:11px}
+button.rv-c small, .rv-c small{font-size:10px; letter-spacing:-.01em; font-weight:700}
+button.rv-c.pen{background:var(--ok-bg); color:var(--ok-fg); border:2px solid var(--accent)}
+button.rv-c.pen.l{background:var(--lemon-bg); color:var(--lemon-fg); border-color:var(--lemon)}
+button.rv-c.hec{background:var(--surface-2); color:var(--muted)}
+button.rv-c.atr{background:var(--alert-bg); color:var(--alert); border:2px solid var(--alert)}
+button.rv-c.sel{outline:3px solid var(--focus); outline-offset:1px}
+.rv-tot{font-size:12px; color:var(--muted); text-align:center; font-weight:700; padding-top:2px}
+.rv-leg{display:flex; flex-wrap:wrap; gap:6px 12px; font-size:13px; color:var(--muted)}
+.rv-leg span::before{content:""; display:inline-block; width:12px; height:12px; border-radius:4px; margin-right:5px; vertical-align:-2px; background:var(--ok-bg); border:2px solid var(--accent)}
+.rv-leg .h::before{background:var(--surface-2); border-color:var(--line)}
+.rv-leg .a::before{background:var(--alert-bg); border-color:var(--alert)}
+.rv-dia{display:grid; gap:8px; border-top:1px solid var(--line); padding-top:12px}
+.rv-dh{display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:6px 2px 2px}
+.rv-dh b{font-size:17px}
+.rv-dh.hoy b{color:var(--accent)}
+.rv-dh span{font-size:14px; color:var(--muted)}
+.rv-dh.atr b,.rv-dh.atr span{color:var(--alert)}
+.rv-tl{position:relative; margin-left:46px; border-left:2px solid var(--line); margin-top:6px}
+.rv-tl .hr{position:absolute; left:-46px; width:40px; text-align:right; font-size:12.5px; color:var(--muted); transform:translateY(-8px)}
+.rv-tl .ln{position:absolute; left:0; right:0; border-top:1px solid var(--line)}
+.rv-blk{position:absolute; left:8px; right:4px; border-radius:12px; padding:4px 10px; background:var(--ok-bg); border-left:6px solid var(--accent); color:var(--ok-fg); overflow:hidden; display:flex; align-items:center; justify-content:space-between; gap:8px; z-index:2}
+.rv-blk.l{background:var(--lemon-bg); border-left-color:var(--lemon); color:var(--lemon-fg)}
+.rv-blk.hec{background:var(--surface-2); border-left-color:var(--line); color:var(--muted)}
+.rv-blk.prog{background:var(--surface); border:2px dashed var(--accent); border-left:6px solid var(--accent); color:var(--fg)}
+.rv-blk.atr{background:var(--alert-bg); border:2px solid var(--alert); color:var(--alert)}
+.rv-blk.act{box-shadow:0 0 0 3px var(--focus)}
+.rv-blk[role=button]{cursor:pointer}
+.rv-blk b{display:block; font-size:16px; line-height:1.15} .rv-blk span.x{font-size:13px}
+.rv-blk .pr{position:absolute; left:0; bottom:0; height:5px; background:var(--accent); opacity:.85}
+.rv-now{position:absolute; left:-6px; right:0; border-top:2px solid var(--alert); z-index:3; pointer-events:none}
+.rv-now::before{content:"ahora"; position:absolute; right:0; top:-19px; font-size:12px; background:var(--alert); color:var(--on-alert); padding:1px 7px; border-radius:8px; font-weight:700}
+button.rv-ck{width:52px; min-height:52px; height:52px; padding:0; border-radius:16px; background:var(--accent); color:var(--on-accent); font-size:26px; display:grid; place-items:center; flex:none}
+.rv-blk button.rv-ck{width:40px; min-height:40px; height:40px; font-size:20px; border-radius:12px}
+button.rv-ck.warn{background:var(--alert); color:var(--on-alert)}
+.rv-ck.hec{width:52px; height:52px; border-radius:16px; background:var(--surface-2); color:var(--muted); font-size:26px; display:grid; place-items:center; flex:none; font-weight:700}
+.rv-blk .rv-ck.hec{width:40px; height:40px; font-size:20px; border-radius:12px}
+.rv-f{display:grid; grid-template-columns:62px 6px minmax(0,1fr) auto; gap:10px; align-items:center; padding:11px 0; border-top:1px solid var(--line)}
+.rv-f.t0{border-top:0}
+.rv-f .t{font-size:15px; font-weight:700; line-height:1.15} .rv-f .t small{display:block; font-weight:400; color:var(--muted); font-size:13px}
+.rv-f .bar{align-self:stretch; border-radius:3px; background:var(--accent)} .rv-f .bar.l{background:var(--lemon)}
+.rv-f .w b{display:block; font-size:17px; line-height:1.2} .rv-f .w span{font-size:14px; color:var(--muted)}
+.rv-f.ya .w b,.rv-f.ya .t{color:var(--muted)} .rv-f.ya .bar{opacity:.45}
+.rv-f.ahora{background:var(--ok-bg); margin:0 -10px; padding-left:10px; padding-right:10px; border-radius:14px; border-top-color:transparent}
+.rv-f.ahora .w span{color:var(--ok-fg)}
+.rv-f[role=button]{cursor:pointer}
+.rv-vacio{color:var(--muted); font-size:14px; padding:2px 2px 6px}
+.rv-live{background:var(--hero); color:var(--on-hero); border-radius:20px; padding:16px; display:grid; gap:10px}
+.rv-live .k{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; opacity:.92}
+.rv-live .k i{width:10px; height:10px; border-radius:50%; background:#E4B91C; display:inline-block; box-shadow:0 0 0 4px rgba(228,185,28,.3)}
+.rv-live h3{font-family:var(--font-display); font-size:26px; line-height:1.1; font-weight:700}
+.rv-live p{font-size:15px; opacity:.94}
+.rv-pb{height:12px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden}
+.rv-pb i{display:block; height:100%; background:#E4B91C; border-radius:6px}
+.rv-live .two{display:flex; justify-content:space-between; gap:8px; font-size:14px; font-weight:700}
+.rv-blk.l.prog{border-color:var(--lemon)}
 .rg-seg{display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; background:var(--surface-2); border-radius:16px}
 .rg-seg button{min-height:46px; background:transparent; border-radius:12px; color:var(--muted)}
 .rg-seg button.on{background:var(--accent); color:var(--on-accent)}
@@ -1359,7 +1459,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 30;
+  var GUIA_V = 32;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1372,7 +1472,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
-    ["Riegos programados por especie", "En «Riego», la lista de riegos programados se agrupa por especie (Nogales, Limones, Vivero). Toca el título de cada grupo para abrirlo o cerrarlo; el chip muestra el próximo riego o cuántos están atrasados.", 29, ""],
+    ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, «Importar sesión» carga el tiempo de desarrollo y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 30, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
@@ -1403,6 +1503,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Revisar trabajos", "En «Trabajo», la tarjeta «Por revisar» muestra los trabajos pendientes con la razón. Toca «Autorizar» para que cuenten o «Rechazar». Tú no necesitas revisarte a ti mismo: lo que registras queda aprobado.", 13, "owner"],
     ["Fichas y cumpleaños", "En «Personal», cada persona tiene «Fecha de nacimiento», «Teléfono» y el botón «Mostrar la edad en esta ficha». Si falta la fecha o el teléfono, la ficha queda «Incompleta». En «Alertas» aparece el cumpleaños el día, 3 días antes y 5 días antes.", 13, "manager"],
     ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidores». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
+    ["Lecturas por mes y consumo", "En «Medidores», «Consumo por lectura» dibuja una barra por cada lectura con lo consumido desde la anterior (m³ en el caudalímetro, kWh en el tablero eléctrico); toca una barra para ver esa lectura. Más abajo, «Lecturas» se ordena por mes: cada mes muestra cuántas lecturas tiene y su consumo total, y se abre o se cierra con un toque. Cada lectura ocupa una línea con la fecha, el número del medidor y el consumo; tócala para ver quién la anotó, la nota y la foto. Solo Diego ve «Quitar».", 32, "manager"],
     ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
     ["Ventas y precio final", "En «Cosecha», la pestaña «Ventas» solo la ves tú. «Registrar venta» pide comprador, kilos y precio de la nuez con cáscara, de la pulpa mariposa y de la pulpa resto: calcula el IVA, descuenta el costo de partir y muestra el neto final y si convenía partir. «Tarifas de partir» guarda lo que cuesta cada kilo de pulpa. «Marcar pagada» cierra una venta pendiente. Si una venta lleva 30 días sin pagarse, aparece un aviso en «Inicio».", 16, "owner"],
@@ -1431,8 +1532,10 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 32, f: "2026-11-09", t: "Lecturas de los medidores más ordenadas", d: "Un gráfico con el consumo de cada lectura y las lecturas agrupadas por mes, con el total del mes y una sola línea por lectura.", g: "Lecturas por mes y consumo" },
+    { v: 31, f: "2026-11-09", t: "Nueva vista de riegos programados", d: "Un tablero de la semana por sector y día, la línea de tiempo del día y la «Vista en vivo» con pulsador: qué se riega ahora, cuánto falta y qué sigue.", g: "Vista de riegos programados" },
     { v: 30, f: "2026-11-02", t: "Mi tiempo", d: "Una tarjeta solo tuya que cuenta el tiempo que usas la app, con cronómetro, tiempo manual y planilla.", g: "Mi tiempo" },
-    { v: 29, f: "2026-11-02", t: "Riegos programados por especie", d: "La lista se agrupa en Nogales, Limones y Vivero, y cada grupo se abre o se cierra con un toque.", g: "Riegos programados por especie" },
+    { v: 29, f: "2026-11-02", t: "Riegos programados por especie", d: "La lista se agrupaba en Nogales, Limones y Vivero (reemplazada en la versión 31).", g: "Vista de riegos programados" },
     { v: 28, f: "2026-11-02", t: "Riego de los 4 nogales", d: "Programa los 4 sectores de una vez: pones la hora del sector 1 y la app calcula los demás, con contador de horas.", g: "Riego de los 4 nogales" },
     { v: 27, f: "2026-11-02", t: "Aviso de novedades", d: "Al actualizarse la app verás aquí lo nuevo. El historial queda en Ayuda → «Novedades de la app».", g: "Novedades de la app" },
     { v: 26, f: "2026-11-02", t: "Riego con calendario", d: "Anota uno o varios días, incluso los que olvidaste. Los días ya regados y los programados se ven en colores.", g: "Riego en otro día" },
@@ -2931,6 +3034,185 @@ html.pc .cmdk:not([hidden]){display:flex}
     b.disabled = false;
   };
   function diasDesde(f){ return Math.round((new Date(fecha() + "T12:00:00Z") - new Date(f + "T12:00:00Z")) / 86400000); }
+  /* ---- Riegos programados: tablero semanal + línea de tiempo del día; «Vista en vivo» (agenda) con pulsador ---- */
+  var RV_NOMD = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"], RV_PX = 30;
+  function rvNomDia(f){ var d = new Date(f + "T12:00:00Z"); return RV_NOMD[d.getUTCDay()] + " " + d.getUTCDate(); }
+  function rvVivo(){ try { return localStorage.getItem("rg_vivo") === "1"; } catch (e){ return false; } }
+  function rvVivoSet(v){ try { localStorage.setItem("rg_vivo", v ? "1" : "0"); } catch (e){} }
+  function rvAhora(){ var p = fmtH.format(new Date()).split(":"); return ((+p[0]) % 24) * 60 + (+p[1]); }
+  var RV_MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  function rvRango(sem){ var a = new Date(sem + "T12:00:00Z"), b = new Date(addDays(sem, 6) + "T12:00:00Z"); return a.getUTCDate() + (a.getUTCMonth() === b.getUTCMonth() ? "" : " " + RV_MES[a.getUTCMonth()]) + "–" + b.getUTCDate() + " " + RV_MES[b.getUTCMonth()]; }
+  function rvTareas(){ return S.tareas.filter(function(t){ return t.tipo === "riego" && t.fecha; }); }
+  function rvIni(t){ return hmMin(t.hora); }
+  function rvFin(t){ var b = hmMin(t.horaFin); return b == null ? null : b + (t.finSig ? 1440 : 0); }
+  function rvLimon(t){ var cu = S.cuarteles.filter(function(c){ return c.id === t.sectorId; })[0]; return !!(cu && cu.especie === "Limón"); }
+  function rvNom(t){ return t.sector && t.sector !== "Todo el campo" ? t.sector : (t.titulo || "Riego"); }
+  function rvH(h){ h = Number(h) || 0; return nf(h, h % 1 ? 1 : 0); }
+  function rvPuede(t){
+    if (t.estado === "hecha") return false; var hoy = fecha();
+    if (t.fecha < hoy) return true; if (t.fecha > hoy) return false;
+    var i = rvIni(t); return i == null || i <= rvAhora();
+  }
+  function rvOrden(a, b){ var x = rvIni(a), y = rvIni(b); if (x == null) x = 9999; if (y == null) y = 9999; return x === y ? (a.orden || 0) - (b.orden || 0) : x - y; }
+  function rvAct(t, ahora){ /* ¿está regando ahora? */
+    if (t.estado === "hecha") return false; var i = rvIni(t), e = rvFin(t); if (i == null || e == null) return false;
+    var d = diasDesde(t.fecha); if (d < 0 || d > 1) return false; var n = ahora + d * 1440; return n >= i && n < e;
+  }
+  function rvEstadoTxt(t, ahora){
+    if (t.estado === "hecha") return "hecho";
+    if (t.fecha < fecha()) return "atrasado";
+    if (rvAct(t, ahora)) return "regando ahora · termina " + t.horaFin;
+    return t.hora ? t.hora + " a " + t.horaFin + (t.finSig ? " (día siguiente)" : "") : "sin hora fija";
+  }
+  function rvCeldas(sem){
+    var ds = [], map = {}, hoy = fecha(), i; for (i = 0; i < 7; i++) ds.push(addDays(sem, i));
+    function celda(sid, f){ var k = sid + "|" + f; return map[k] || (map[k] = { sid: sid, f: f, h: 0, hec: 0, pen: 0, atr: 0 }); }
+    var usados = {};
+    rvTareas().forEach(function(t){
+      if (ds.indexOf(t.fecha) < 0) return; var c = celda(t.sectorId, t.fecha); c.h += Number(t.horas) || 0;
+      if (t.estado === "hecha"){ c.hec++; if (t.riegoId) usados[t.riegoId] = 1; } else if (t.fecha < hoy) c.atr++; else c.pen++;
+    });
+    S.riegos.forEach(function(r){
+      if (ds.indexOf(r.fecha) < 0 || usados[r.id] || r.tareaId) return; var k = r.sectorId + "|" + r.fecha;
+      if (map[k] && map[k].hec) return; var c = celda(r.sectorId, r.fecha); c.h += Number(r.horas) || 0; c.hec++;
+    });
+    return { ds: ds, map: map };
+  }
+  function rvFila(t, ahora, primera){
+    var hoy = fecha(), ya = t.estado === "hecha", act = rvAct(t, ahora);
+    var r = el("div", "rv-f" + (primera ? " t0" : "") + (ya ? " ya" : "") + (act ? " ahora" : ""));
+    var tc = el("div", "t", t.hora || "Sin hora"); if (t.hora && t.horaFin) tc.appendChild(el("small", null, "a " + t.horaFin)); r.appendChild(tc);
+    r.appendChild(el("div", "bar" + (rvLimon(t) ? " l" : "")));
+    var w = el("div", "w"); w.appendChild(el("b", null, rvNom(t))); w.appendChild(el("span", null, rvH(t.horas) + " h · " + (act ? "regando ahora" : ya ? "hecho" : t.fecha < hoy ? "atrasado" : t.fecha === hoy ? (t.hora ? "programado" : "para hoy") : "en " + (-diasDesde(t.fecha)) + (diasDesde(t.fecha) === -1 ? " día" : " días")))); r.appendChild(w);
+    if (ya) r.appendChild(el("div", "rv-ck hec", "✓"));
+    else if (rvPuede(t)){ var b = el("button", "rv-ck" + (t.fecha < hoy ? " warn" : ""), "✓"); b.type = "button"; b.setAttribute("aria-label", "Ya lo regué: " + rvNom(t)); b.onclick = function(e){ e.stopPropagation(); riegoDeTarea(t); }; r.appendChild(b); }
+    if (S.manager && !ya){ r.setAttribute("role", "button"); r.tabIndex = 0; r.setAttribute("aria-label", "Cambiar o quitar: " + rvNom(t) + ", " + rvNomDia(t.fecha)); r.onclick = function(){ cambiarProgramado(t); }; r.onkeydown = function(e){ if ((e.key === "Enter" || e.key === " ") && e.target === r){ e.preventDefault(); cambiarProgramado(t); } }; }
+    return r;
+  }
+  function rvDetalle(f){
+    var hoy = fecha(), ahora = rvAhora(), box = el("div", "rv-dia");
+    var ts = rvTareas().filter(function(t){ return t.fecha === f; }).sort(rvOrden), usados = {};
+    ts.forEach(function(t){ if (t.riegoId) usados[t.riegoId] = 1; });
+    var extra = S.riegos.filter(function(r){ return r.fecha === f && !usados[r.id] && !r.tareaId && !ts.some(function(t){ return t.estado === "hecha" && t.sectorId === r.sectorId; }); });
+    var tot = 0; ts.forEach(function(t){ tot += Number(t.horas) || 0; }); extra.forEach(function(r){ tot += Number(r.horas) || 0; });
+    var dh = el("div", "rv-dh" + (f === hoy ? " hoy" : "")); dh.appendChild(el("b", null, rvNomDia(f) + (f === hoy ? " · hoy" : f === addDays(hoy, 1) ? " · mañana" : f === addDays(hoy, -1) ? " · ayer" : "")));
+    dh.appendChild(el("span", null, ts.length || extra.length ? rvH(tot) + " h" : "sin riegos")); box.appendChild(dh);
+    var tim = ts.filter(function(t){ return rvIni(t) != null && rvFin(t) != null; }), sin = ts.filter(function(t){ return tim.indexOf(t) < 0; });
+    if (tim.length){
+      var lo = Math.min.apply(null, tim.map(rvIni)), hi = Math.max.apply(null, tim.map(rvFin));
+      lo = Math.max(0, Math.floor(lo / 60) - 1); hi = Math.min(24, Math.ceil(hi / 60) + 1); if (hi - lo < 4) hi = Math.min(24, lo + 4);
+      var tl = el("div", "rv-tl"); tl.style.height = ((hi - lo) * RV_PX + 6) + "px"; tl.style.marginTop = "14px";
+      for (var h = lo; h <= hi; h += 2){ var ln = el("div", "ln"); ln.style.top = ((h - lo) * RV_PX) + "px"; tl.appendChild(ln); var hr = el("div", "hr", (h < 10 ? "0" : "") + (h % 24) + ":00"); hr.style.top = ((h - lo) * RV_PX) + "px"; tl.appendChild(hr); }
+      tim.forEach(function(t){
+        var i = rvIni(t), e = Math.min(rvFin(t), hi * 60), ya = t.estado === "hecha", act = rvAct(t, ahora), late = !ya && f < hoy;
+        var b = el("div", "rv-blk" + (rvLimon(t) ? " l" : "") + (ya ? " hec" : late ? " atr" : act ? " act" : (rvLimon(t) ? "" : " prog")));
+        if (!ya && !late && !act && rvLimon(t)) b.className += " prog";
+        b.style.top = ((i / 60 - lo) * RV_PX + 2) + "px"; b.style.height = Math.max(30, (e - i) / 60 * RV_PX - 4) + "px";
+        var w = el("div"); w.appendChild(el("b", null, rvNom(t) + " · " + rvH(t.horas) + " h")); w.appendChild(el("span", "x", rvEstadoTxt(t, ahora))); b.appendChild(w);
+        if (ya) b.appendChild(el("div", "rv-ck hec", "✓"));
+        else if (rvPuede(t)){ var ck = el("button", "rv-ck" + (late ? " warn" : ""), "✓"); ck.type = "button"; ck.setAttribute("aria-label", "Ya lo regué: " + rvNom(t)); ck.onclick = function(ev){ ev.stopPropagation(); riegoDeTarea(t); }; b.appendChild(ck); }
+        if (act){ var pr = el("div", "pr"); pr.style.width = Math.max(2, Math.min(100, (ahora + diasDesde(t.fecha) * 1440 - i) / (rvFin(t) - i) * 100)) + "%"; b.appendChild(pr); }
+        if (S.manager && !ya){ b.setAttribute("role", "button"); b.tabIndex = 0; b.setAttribute("aria-label", "Cambiar o quitar: " + rvNom(t) + ", " + rvEstadoTxt(t, ahora)); b.onclick = function(){ cambiarProgramado(t); }; b.onkeydown = function(ev){ if ((ev.key === "Enter" || ev.key === " ") && ev.target === b){ ev.preventDefault(); cambiarProgramado(t); } }; }
+        tl.appendChild(b);
+      });
+      if (f === hoy && ahora >= lo * 60 && ahora <= hi * 60){ var nw = el("div", "rv-now"); nw.style.top = ((ahora / 60 - lo) * RV_PX) + "px"; tl.appendChild(nw); }
+      box.appendChild(tl);
+      if (tim.some(function(t){ return t.finSig; })) box.appendChild(el("p", "note", "Termina después de la medianoche."));
+    }
+    if (sin.length){ box.appendChild(el("div", "rv-dh")).appendChild(el("b", null, "Sin hora fija")); sin.forEach(function(t, i){ box.appendChild(rvFila(t, ahora, i === 0)); }); }
+    extra.forEach(function(r, i){
+      var fl = el("div", "rv-f ya" + (i === 0 && !sin.length && !tim.length ? " t0" : "")); fl.appendChild(el("div", "t", "Hecho")); fl.appendChild(el("div", "bar"));
+      var w = el("div", "w"); w.appendChild(el("b", null, r.sector)); w.appendChild(el("span", null, rvH(r.horas) + " h" + (r.por ? " · " + r.por : ""))); fl.appendChild(w); fl.appendChild(el("div", "rv-ck hec", "✓")); box.appendChild(fl);
+    });
+    if (!ts.length && !extra.length) box.appendChild(el("p", "rv-vacio", "No hay riegos programados ese día."));
+    else if (S.manager && ts.some(function(t){ return t.estado !== "hecha"; })) box.appendChild(el("p", "note", "Toca un riego para cambiarlo o quitarlo."));
+    return box;
+  }
+  function rvTablero(sec, pend, repinta){
+    var hoy = fecha(), sel = S.rgDia || hoy, sem = S.rgSem || weekStart(sel);
+    var lates = pend.filter(function(t){ return t.fecha < hoy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : 1; });
+    if (lates.length){
+      var bd = el("button", "rv-band"); bd.type = "button"; var l0 = lates[0];
+      bd.appendChild(el("span", null, lates.length === 1 ? "1 atrasado · " + rvNom(l0) + ", " + rvNomDia(l0.fecha).toLowerCase() : lates.length + " atrasados · el primero: " + rvNom(l0) + ", " + rvNomDia(l0.fecha).toLowerCase()));
+      bd.appendChild(el("span", null, "›")); bd.lastChild.style.flex = "none";
+      bd.onclick = function(){ S.rgDia = l0.fecha; S.rgSem = weekStart(l0.fecha); repinta(); }; sec.appendChild(bd);
+    }
+    var g = rvCeldas(sem), card = el("div", "rv-tab");
+    var hd = el("div", "rv-head"); hd.appendChild(el("b", null, "Semana " + rvRango(sem)));
+    var nv = el("div", "rv-nv");
+    [["‹", "Semana anterior", -7], ["›", "Semana siguiente", 7]].forEach(function(x){
+      var b = el("button", "rv-nv-b", x[0]); b.type = "button"; b.setAttribute("aria-label", x[1]);
+      b.onclick = function(){ var n = addDays(sem, x[2]); S.rgSem = n; S.rgDia = (hoy >= n && hoy <= addDays(n, 6)) ? hoy : n; repinta(); }; nv.appendChild(b);
+    });
+    hd.appendChild(nv); card.appendChild(hd);
+    var mx = el("div", "rv-mx"); mx.appendChild(el("div"));
+    g.ds.forEach(function(f, i){
+      var b = el("button", "rv-d" + (f === hoy ? " hoy" : "") + (f === sel ? " on" : "")); b.type = "button"; b.setAttribute("aria-label", rvNomDia(f) + (f === hoy ? ", hoy" : "")); b.setAttribute("aria-pressed", f === sel ? "true" : "false");
+      b.appendChild(document.createTextNode("LMMJVSD".charAt(i))); b.appendChild(el("i", null, String(new Date(f + "T12:00:00Z").getUTCDate()))); b.onclick = function(){ S.rgDia = f; repinta(); }; mx.appendChild(b);
+    });
+    var vistos = {}; Object.keys(g.map).forEach(function(k){ vistos[g.map[k].sid] = 1; });
+    var tot = [0, 0, 0, 0, 0, 0, 0];
+    sectoresOrden().filter(function(c){ return vistos[c.id]; }).forEach(function(c){
+      var r = el("div", "rv-r"); r.appendChild(el("s", c.especie === "Limón" ? "l" : "")); r.appendChild(el("span", null, c.nombre)); mx.appendChild(r);
+      g.ds.forEach(function(f, i){
+        var x = g.map[c.id + "|" + f]; if (!x){ mx.appendChild(el("div", "rv-c vacio")); return; }
+        tot[i] += x.h; var est = x.atr ? "atr" : x.pen ? "pen" : "hec";
+        var b = el("button", "rv-c " + est + (c.especie === "Limón" ? " l" : "") + (f === sel ? " sel" : "")); b.type = "button";
+        b.appendChild(document.createTextNode(rvH(x.h) + "h")); b.appendChild(el("small", null, est === "atr" ? "atraso" : est === "hec" ? "hecho" : f === hoy ? "hoy" : "prog."));
+        b.setAttribute("aria-label", c.nombre + ", " + rvNomDia(f) + ", " + rvH(x.h) + " horas, " + (est === "atr" ? "atrasado" : est === "hec" ? "hecho" : "programado"));
+        b.onclick = function(){ S.rgDia = f; repinta(); }; mx.appendChild(b);
+      });
+    });
+    mx.appendChild(el("div", "rv-tot", "h/día")); tot.forEach(function(h){ mx.appendChild(el("div", "rv-tot", h ? rvH(h) : "–")); });
+    card.appendChild(mx);
+    var lg = el("div", "rv-leg"); lg.appendChild(el("span", null, "Programado")); lg.appendChild(el("span", "h", "Hecho")); lg.appendChild(el("span", "a", "Atrasado")); card.appendChild(lg);
+    if (sem !== weekStart(hoy)){ var ir = el("button", "small link2", "Volver a esta semana"); ir.type = "button"; ir.onclick = function(){ S.rgSem = weekStart(hoy); S.rgDia = hoy; repinta(); }; card.appendChild(ir); }
+    sec.appendChild(card); sec.appendChild(rvDetalle(sel));
+  }
+  function rvVivoVista(sec, pend){
+    var hoy = fecha(), ahora = rvAhora(), ts = rvTareas();
+    var act = ts.filter(function(t){ return rvAct(t, ahora); }).sort(rvOrden)[0];
+    var fut = pend.filter(function(t){ return rvIni(t) != null && !rvAct(t, ahora) && (t.fecha > hoy || (t.fecha === hoy && rvIni(t) > ahora)); }).sort(function(a, b){ return a.fecha === b.fecha ? rvOrden(a, b) : (a.fecha < b.fecha ? -1 : 1); });
+    var sig = fut[0], hero = el("div", "rv-live");
+    function cuando(t){ return (t.fecha === hoy ? "" : (t.fecha === addDays(hoy, 1) ? "mañana " : rvNomDia(t.fecha).toLowerCase() + " ")) + t.hora; }
+    if (act){
+      var i = rvIni(act), e = rvFin(act), n = ahora + diasDesde(act.fecha) * 1440, k = el("div", "k"); k.appendChild(el("i")); k.appendChild(document.createTextNode("Regando ahora")); hero.appendChild(k);
+      hero.appendChild(el("h3", null, rvNom(act))); hero.appendChild(el("p", null, "Desde las " + act.hora + " · termina a las " + act.horaFin));
+      var pb = el("div", "rv-pb"), pi = el("i"); pi.style.width = Math.max(2, Math.min(100, (n - i) / (e - i) * 100)) + "%"; pb.appendChild(pi); hero.appendChild(pb);
+      var two = el("div", "two"); two.appendChild(el("span", null, "Faltan " + dur(Math.max(0, e - n)))); two.appendChild(el("span", null, sig ? "Sigue: " + rvNom(sig) + " · " + cuando(sig) : "Es el último programado")); hero.appendChild(two);
+    } else {
+      var k2 = el("div", "k"); k2.appendChild(document.createTextNode("Sin riego en curso")); hero.appendChild(k2);
+      hero.appendChild(el("h3", null, sig ? "Sigue: " + rvNom(sig) : "Nada programado"));
+      hero.appendChild(el("p", null, sig ? cuando(sig).charAt(0).toUpperCase() + cuando(sig).slice(1) + " · " + rvH(sig.horas) + " h" : "No hay riegos con hora por delante."));
+    }
+    sec.appendChild(hero);
+    var card = el("div", "rv-ag"), first = true;
+    function grupo(txt, sub, cls){ var d = el("div", "rv-dh" + (cls ? " " + cls : "")); d.appendChild(el("b", null, txt)); d.appendChild(el("span", null, sub)); card.appendChild(d); }
+    var lates = pend.filter(function(t){ return t.fecha < hoy; }).sort(function(a, b){ return a.fecha === b.fecha ? rvOrden(a, b) : (a.fecha < b.fecha ? -1 : 1); });
+    if (lates.length){ grupo("Atrasados", String(lates.length), "atr"); lates.forEach(function(t, i){ var fl = rvFila(t, ahora, i === 0); var tt = fl.firstChild; tt.textContent = rvNomDia(t.fecha).split(" ").map(function(s, j){ return j === 0 ? s.slice(0, 3) : s; }).join(" "); if (t.hora) tt.appendChild(el("small", null, t.hora)); card.appendChild(fl); }); }
+    for (var d = 0; d <= 13; d++){
+      var f = addDays(hoy, d), dts = ts.filter(function(t){ return t.fecha === f; }).sort(rvOrden);
+      if (d > 7 && !dts.length) continue; var h = 0; dts.forEach(function(t){ h += Number(t.horas) || 0; });
+      grupo((d === 0 ? "Hoy · " : d === 1 ? "Mañana · " : "") + rvNomDia(f), dts.length ? rvH(h) + " h" : "sin riegos", d === 0 ? "hoy" : "");
+      dts.forEach(function(t, i){ card.appendChild(rvFila(t, ahora, i === 0)); });
+    }
+    if (S.manager) card.appendChild(el("p", "note", "Toca un riego para cambiarlo o quitarlo."));
+    sec.appendChild(card);
+  }
+  function rvNodo(){
+    var hoy = fecha(), ts = rvTareas(), pend = ts.filter(function(t){ return t.estado !== "hecha"; });
+    var sem = S.rgSem || weekStart(S.rgDia || hoy), fin = addDays(sem, 6);
+    if (!pend.length && !ts.some(function(t){ return t.fecha >= sem && t.fecha <= fin; })) return null;
+    var sec = el("section", "card sect"); sec.id = "rgProg";
+    var hd = el("div", "rv-head"); hd.appendChild(el("h2", null, "Riegos programados")); hd.appendChild(el("span", "chip idle", pend.length + (pend.length === 1 ? " pendiente" : " pendientes"))); sec.appendChild(hd);
+    var on = rvVivo(), sw = el("div", "rv-sw"), tx = el("div"); tx.appendChild(el("b", null, "Vista en vivo")); tx.appendChild(el("span", "s", on ? "Agenda del día, se actualiza sola" : "Apagada · tablero y línea de tiempo")); sw.appendChild(tx);
+    var tg = el("button", "rv-tg" + (on ? " on" : "")); tg.type = "button"; tg.setAttribute("role", "switch"); tg.setAttribute("aria-checked", on ? "true" : "false"); tg.setAttribute("aria-label", "Vista en vivo"); tg.appendChild(el("em", null, on ? "ON" : "OFF"));
+    tg.onclick = function(){ rvVivoSet(!on); rvRepinta(); }; sw.appendChild(tg); sec.appendChild(sw);
+    if (on) rvVivoVista(sec, pend); else rvTablero(sec, pend, rvRepinta);
+    return sec;
+  }
+  function rvRepinta(){ var o = $("rgProg"); if (!o) return; var n = rvNodo(); if (n) o.replaceWith(n); else o.remove(); }
+  setInterval(function(){ if ($("rgProg") && !document.hidden) rvRepinta(); }, 60000);
   function buildRiego(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("riego"));
@@ -2951,36 +3233,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var bar = el("div", "meter" + (mSem > DERECHO_SEM ? " over" : "")); var fil = el("i"); fil.style.width = pct + "%"; bar.appendChild(fil); res.appendChild(bar);
     res.appendChild(el("p", mSem > DERECHO_SEM ? "note warn" : "note", nf(mSem / DERECHO_SEM * 100, 0) + " % del derecho semanal de agua (" + nf(DERECHO_SEM, 0) + " m³, a 2 L/s). Los m³ son estimados por horas de riego, salvo los que midas."));
     f.appendChild(res);
-    if (progPend.length){
-      var pg = el("section", "card sect"); pg.appendChild(el("h2", null, "Riegos programados"));
-      progPend.sort(function(a, b){ return a.fecha === b.fecha ? ((a.hora || "") < (b.hora || "") ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); });
-      var NOM_ESP = { "Nogal": "Nogales", "Limón": "Limones", "Vivero": "Vivero" }, grupos = [], gmap = {};
-      progPend.forEach(function(t){
-        var cu = S.cuarteles.filter(function(c){ return c.id === t.sectorId; })[0], esp = cu && cu.especie ? cu.especie : "Otros";
-        if (!gmap[esp]){ gmap[esp] = { esp: esp, items: [] }; grupos.push(gmap[esp]); }
-        gmap[esp].items.push(t);
-      });
-      if (!S.rgGrp) S.rgGrp = {};
-      grupos.forEach(function(g, gi){
-        var dt = document.createElement("details"); dt.className = "rg-gr";
-        dt.open = S.rgGrp[g.esp] != null ? !!S.rgGrp[g.esp] : gi === 0;
-        dt.addEventListener("toggle", function(){ S.rgGrp[g.esp] = dt.open; });
-        var sm = document.createElement("summary"); sm.appendChild(el("span", null, (NOM_ESP[g.esp] || g.esp) + " · " + g.items.length + (g.items.length === 1 ? " riego" : " riegos")));
-        var atr = g.items.filter(function(t){ return diasDesde(t.fecha) > 0; }).length;
-        sm.appendChild(el("span", "chip " + (atr ? "warn" : "idle"), atr ? atr + (atr === 1 ? " atrasado" : " atrasados") : "Próximo: " + etiquetaDia(g.items[0].fecha)));
-        dt.appendChild(sm);
-        g.items.slice(0, 20).forEach(function(t){
-          var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""))); w.appendChild(el("span", "chip idle", nf(t.horas || 0, 1) + " h")); bx.appendChild(w);
-          var late = diasDesde(t.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasado · " : "") + etiquetaDia(t.fecha) + (t.hora ? " · " + t.hora + " a " + t.horaFin + (t.finSig ? " (día sig.)" : "") : "") + (t.quien ? " · " + t.quien : "")));
-          var go = el("button", "primary", "Ya lo regué"); go.onclick = function(){ riegoDeTarea(t); }; bx.appendChild(go);
-          if (S.manager){ var cm = el("button", "small", "Cambiar o quitar"); cm.onclick = function(){ cambiarProgramado(t); }; bx.appendChild(cm); }
-          dt.appendChild(bx);
-        });
-        if (g.items.length > 20) dt.appendChild(el("p", "note", "Y " + (g.items.length - 20) + " más. Míralos en la Agenda."));
-        pg.appendChild(dt);
-      });
-      f.appendChild(pg);
-    }
+    var pgn = rvNodo(); if (pgn) f.appendChild(pgn);
     var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Por sector"));
     cs.forEach(function(c){
       var bx = el("div", "asg"); var w = el("div", "who"); w.appendChild(el("b", null, c.nombre));
@@ -3222,33 +3475,61 @@ html.pc .cmdk:not([hidden]){display:flex}
     var bl = el("button", "primary", "Anotar lectura"); bl.onclick = function(){ abrirLectura(m); }; c.appendChild(bl);
     if (S.owner){ var be = el("button", "link", "Editar medidor"); be.onclick = function(){ abrirMedidor(m); }; c.appendChild(be); }
     f.appendChild(c);
+    var rowsL = L.map(function(l, i){ return { l: l, d: i > 0 ? l.valor - L[i - 1].valor : null }; });
+    function medFC(fe){ var dd = new Date(fe + "T12:00:00Z"); return ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dd.getUTCDay()] + " " + dd.getUTCDate() + " " + RV_MES[dd.getUTCMonth()]; }
+    function medDelta(d){ return (d >= 0 ? "+" : "−") + fmtNum(Math.abs(d), 1) + " " + un; }
+    var conC = rowsL.filter(function(x){ return x.d != null; }).slice(-12);
+    if (conC.length >= 2){
+      var gc = el("section", "card sect"), gh = el("div", "who"), sumC = 0, mxC = 0; conC.forEach(function(x){ sumC += x.d; mxC = Math.max(mxC, Math.abs(x.d)); });
+      gh.appendChild(el("h2", null, "Consumo por lectura")); gh.appendChild(el("span", "chip info", "promedio " + fmtNum(sumC / conC.length, 1) + " " + un)); gc.appendChild(gh);
+      var bars = el("div", "ml-bars"), labs = el("div", "ml-bl");
+      conC.forEach(function(x, i){
+        var b = el("button", "ml-bar" + (x.l.id === S.medLSel ? " on" : "")), bi = el("i"); b.type = "button"; b.setAttribute("aria-label", medFC(x.l.fecha) + ": " + medDelta(x.d));
+        bi.style.height = Math.max(4, mxC ? Math.abs(x.d) / mxC * 100 : 4) + "%"; b.appendChild(bi);
+        b.onclick = function(){ S.medLSel = S.medLSel === x.l.id ? "" : x.l.id; if (!S.medAb) S.medAb = {}; S.medAb[m.id + "|" + x.l.fecha.slice(0, 7)] = true; render(); };
+        bars.appendChild(b);
+        var mm = x.l.fecha.slice(5, 7); labs.appendChild(el("span", null, Number(x.l.fecha.slice(8)) + (i === 0 || conC[i - 1].l.fecha.slice(5, 7) !== mm ? " " + RV_MES[Number(mm) - 1] : "")));
+      });
+      gc.appendChild(bars); gc.appendChild(labs); gc.appendChild(el("p", "note", "Cada barra es el consumo entre una lectura y la anterior. Toca una barra para ver esa lectura.")); f.appendChild(gc);
+    }
     var h = el("section", "card sect"); h.appendChild(el("h2", null, "Lecturas"));
     if (!L.length) h.appendChild(el("p", "note", "Aún no hay lecturas."));
-    L.slice().reverse().slice(0, S.verMasMed ? 40 : 8).forEach(function(l){
-      var idx = L.indexOf(l), pr = idx > 0 ? L[idx - 1] : null, bx = el("div", "asg"), wo = el("div", "who");
-      wo.appendChild(el("b", null, fmtD2(l.fecha) + " · " + fmtNum(l.valor, 2) + " " + un));
-      if (pr) wo.appendChild(el("span", "chip idle", "+" + fmtNum(l.valor - pr.valor, 1) + " " + un)); bx.appendChild(wo);
-      if (l.nota) bx.appendChild(el("p", "sub", l.nota));
-      bx.appendChild(el("p", "note", (l.por || "") + " · " + fmtFH.format(new Date(l.ts))));
-      if (l.fotoId){
-        var vb = el("button", "link", "Ver foto"), im = el("img"); im.alt = "Foto del medidor"; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;
-        vb.onclick = async function(){
-          if (!im.hidden){ im.hidden = true; vb.textContent = "Ver foto"; return; }
-          vb.textContent = "Cargando…";
-          try { var d = fotosCache[l.fotoId]; if (!d){ var sn = await S.db.doc("fotos/" + l.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[l.fotoId] = d; }
-            if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; } im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; }
-          catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
-        };
-        bx.appendChild(vb); bx.appendChild(im);
-      }
-      if (S.owner){
-        var q = el("button", "small", quitarL === l.id ? "Confirmar" : "Quitar");
-        q.onclick = async function(){ if (quitarL !== l.id){ quitarL = l.id; render(); return; } quitarL = null; try { await S.db.doc("lecturas/" + l.id).delete(); toast("Lectura quitada"); } catch (err){ toast("No se pudo quitar."); } };
-        bx.appendChild(q);
-      }
-      h.appendChild(bx);
+    var meses = [], mapM = {}; rowsL.slice().reverse().forEach(function(x){ var k = x.l.fecha.slice(0, 7); if (!mapM[k]){ mapM[k] = { k: k, rows: [], tot: 0 }; meses.push(mapM[k]); } mapM[k].rows.push(x); if (x.d != null) mapM[k].tot += x.d; });
+    if (!S.medAb) S.medAb = {};
+    meses.forEach(function(g, gi){
+      var key = m.id + "|" + g.k, dt = document.createElement("details"); dt.className = "ml-m";
+      dt.open = S.medAb[key] != null ? !!S.medAb[key] : (gi === 0 || g.rows.some(function(x){ return x.l.id === S.medLSel; }));
+      dt.addEventListener("toggle", function(){ S.medAb[key] = dt.open; });
+      var sm = document.createElement("summary"), nmm = MESES_C[Number(g.k.slice(5)) - 1]; sm.appendChild(el("b", null, nmm.charAt(0).toUpperCase() + nmm.slice(1) + " " + g.k.slice(0, 4)));
+      var rr = el("span", "r"); rr.appendChild(el("span", null, g.rows.length + (g.rows.length === 1 ? " lectura" : " lecturas"))); rr.appendChild(el("strong", null, fmtNum(g.tot, 1) + " " + un)); rr.appendChild(el("em")); sm.appendChild(rr); dt.appendChild(sm);
+      g.rows.forEach(function(x){
+        var l = x.l, op = S.medLSel === l.id, rb = el("button", "ml-r" + (op ? " open" : "")); rb.type = "button"; rb.setAttribute("aria-expanded", op ? "true" : "false");
+        rb.appendChild(el("span", "d", medFC(l.fecha))); rb.appendChild(el("span", "v", fmtNum(l.valor, 2))); rb.appendChild(el("span", "c", x.d == null ? "inicial" : medDelta(x.d)));
+        rb.onclick = function(){ S.medLSel = op ? "" : l.id; render(); }; dt.appendChild(rb);
+        if (!op) return;
+        var bx = el("div", "ml-det");
+        bx.appendChild(el("p", "note", fmtNum(l.valor, 2) + " " + un + " · " + (l.por || "") + " · " + fmtFH.format(new Date(l.ts))));
+        if (l.nota) bx.appendChild(el("p", "sub", l.nota));
+        if (l.fotoId){
+          var vb = el("button", "link", "Ver foto"), im = el("img"); im.alt = "Foto del medidor"; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;
+          vb.onclick = async function(){
+            if (!im.hidden){ im.hidden = true; vb.textContent = "Ver foto"; return; }
+            vb.textContent = "Cargando…";
+            try { var d = fotosCache[l.fotoId]; if (!d){ var sn = await S.db.doc("fotos/" + l.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[l.fotoId] = d; }
+              if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; } im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; }
+            catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
+          };
+          bx.appendChild(vb); bx.appendChild(im);
+        }
+        if (S.owner){
+          var q = el("button", "small", quitarL === l.id ? "Confirmar" : "Quitar");
+          q.onclick = async function(){ if (quitarL !== l.id){ quitarL = l.id; render(); return; } quitarL = null; try { await S.db.doc("lecturas/" + l.id).delete(); toast("Lectura quitada"); } catch (err){ toast("No se pudo quitar."); } };
+          bx.appendChild(q);
+        }
+        dt.appendChild(bx);
+      });
+      h.appendChild(dt);
     });
-    if (L.length > 8){ var mas = el("button", "link", S.verMasMed ? "Ver solo las 8 últimas" : "Ver más lecturas"); mas.onclick = function(){ S.verMasMed = !S.verMasMed; render(); }; h.appendChild(mas); }
     f.appendChild(h); return f;
   }
 

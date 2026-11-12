@@ -1316,6 +1316,8 @@ html.pc .cmdk:not([hidden]){display:flex}
       <img id="mdFotoVista" alt="Vista previa de la foto del medidor" hidden style="width:100%;border-radius:14px;margin-top:8px">
       <button type="button" class="link" id="mdFotoQuitar" hidden>Quitar foto</button>
       <p class="note" id="mdAutoRes" aria-live="polite"></p>
+      <p class="note" id="mdFechaFoto" hidden></p>
+      <button type="button" id="mdFechaUsar" hidden>Usar la fecha de la foto</button>
       <canvas id="mdTira" width="640" height="200" hidden style="width:100%;border-radius:10px"></canvas>
       <p class="note" id="mdTiraNota" hidden>Tambor enderezado y ampliado: escribe arriba los 7 dígitos (son los m³ enteros). Si el último está girando, anota el que está subiendo.</p>
       <input type="file" id="mdFoto2" accept="image/*" hidden>
@@ -1554,7 +1556,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
-    ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un círculo para encuadrar el medidor; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto».", 34, "manager"],
+    ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un círculo para encuadrar el medidor; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto». Si la foto es de otro día (por ejemplo, del viernes y la subes el lunes), la app lo avisa y te ofrece «Usar la fecha de la foto».", 34, "manager"],
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
@@ -3513,6 +3515,36 @@ html.pc .cmdk:not([hidden]){display:flex}
     }
     return { data: o, width: ancho, height: alto };
   }
+  /* Fecha en que se sacó la foto, leída de sus metadatos (EXIF). bytes: Uint8Array del archivo. Devuelve "AAAA-MM-DD" o null. */
+  function fotoFechaExif(by){
+    try {
+      if (!by || by.length < 12 || by[0] !== 0xFF || by[1] !== 0xD8) return null;
+      var i = 2;
+      while (i + 4 < by.length){
+        if (by[i] !== 0xFF){ i++; continue; }
+        var mk = by[i + 1], len = (by[i + 2] << 8) | by[i + 3];
+        if (mk === 0xDA || mk === 0xD9) return null;
+        if (mk === 0xE1 && by[i + 4] === 0x45 && by[i + 5] === 0x78 && by[i + 6] === 0x69 && by[i + 7] === 0x66){
+          var t = i + 10, le = by[t] === 0x49;
+          var u16 = function(o){ return le ? by[t + o] | (by[t + o + 1] << 8) : (by[t + o] << 8) | by[t + o + 1]; };
+          var u32 = function(o){ return le ? (by[t + o] | (by[t + o + 1] << 8) | (by[t + o + 2] << 16) | (by[t + o + 3] << 24)) >>> 0 : ((by[t + o] << 24) | (by[t + o + 1] << 16) | (by[t + o + 2] << 8) | by[t + o + 3]) >>> 0; };
+          var texto = function(o){ var r = ""; for (var k = 0; k < 19; k++) r += String.fromCharCode(by[t + o + k]); return r; };
+          var buscar = function(ifd, tag){
+            var n = u16(ifd);
+            for (var e = 0; e < n; e++){ var q = ifd + 2 + e * 12; if (u16(q) === tag) return q; }
+            return -1;
+          };
+          var ifd0 = u32(4), ex = buscar(ifd0, 0x8769), cand = [];
+          if (ex >= 0){ var q1 = buscar(u32(ex + 8), 0x9003); if (q1 >= 0) cand.push(texto(u32(q1 + 8))); }
+          var q2 = buscar(ifd0, 0x0132); if (q2 >= 0) cand.push(texto(u32(q2 + 8)));
+          for (var c = 0; c < cand.length; c++){ var m = /^(\d{4}):(\d{2}):(\d{2}) /.exec(cand[c]); if (m && +m[1] > 2000) return m[1] + "-" + m[2] + "-" + m[3]; }
+          return null;
+        }
+        i += 2 + len;
+      }
+    } catch (e){}
+    return null;
+  }
   /* LECTURA-FOTO:FIN */
   function medidoresAct(){ return S.medidores.filter(function(m){ return m.activo !== false; }).sort(function(a, b){ return (a.orden || 99) - (b.orden || 99); }); }
   function medLect(mid){ return S.lecturas.filter(function(l){ return l.mid === mid; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (String(a.ts) < String(b.ts) ? -1 : 1); }); }
@@ -3562,7 +3594,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("mdRelBox").hidden = m.tipo !== "agua"; $("mdRelC").value = ""; $("mdRelG").value = ""; $("mdRelRes").textContent = ""; $("mdRelUsar").hidden = true;
     $("mdGuiaFoto").textContent = m.tipo === "agua" ? GUIA_FOTO_AGUA : m.tipo === "luz" ? GUIA_FOTO_LUZ : GUIA_FOTO_OTRO;
     $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Elegir una foto de la galería"; mdFoto2D = null; mdRes = { 1: null, 2: null }; mdAutoOn = false; mdAutoR = null;
-    $("mdAutoRes").textContent = ""; $("mdTira").hidden = true; $("mdTiraNota").hidden = true; $("mdFoto2Btn").hidden = true; $("mdFoto2Vista").hidden = true; $("mdFoto2Quitar").hidden = true;
+    $("mdAutoRes").textContent = ""; $("mdFechaFoto").hidden = true; $("mdFechaUsar").hidden = true; $("mdTira").hidden = true; $("mdTiraNota").hidden = true; $("mdFoto2Btn").hidden = true; $("mdFoto2Vista").hidden = true; $("mdFoto2Quitar").hidden = true;
     var L = medLect(m.id), u = L[L.length - 1]; $("mdPrev").textContent = u ? "Lectura anterior: " + fmtNum(u.valor, 2) + " " + (m.unidad || "") + " el " + fmtD2(u.fecha) + "." : "Es la primera lectura: sirve como punto de partida.";
     $("mdSheet").hidden = false; $("mdValor").focus();
   }
@@ -3573,7 +3605,19 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (n === 1){ mdFotoD = d; $("mdFotoVista").src = d; $("mdFotoVista").hidden = false; $("mdFotoQuitar").hidden = false; $("mdFotoBtn").textContent = "Cambiar la foto"; $("mdCamBtn").textContent = "Tomar otra foto con marco guía"; }
     else { mdFoto2D = d; $("mdFoto2Vista").src = d; $("mdFoto2Vista").hidden = false; $("mdFoto2Quitar").hidden = false; $("mdFoto2Btn").textContent = "Cambiar la 2ª foto"; }
     $("mdFoto2Btn").hidden = false;
+    if (n === 1) mdFechaDeFoto(f);
     if (mdEd && mdEd.tipo === "agua") mdAnaliza(n, f);
+  }
+  /* Si la foto trae la fecha en que se sacó y no es la que está escrita, se ofrece usarla (por ejemplo, una foto del viernes subida el lunes). No se cambia sola. */
+  async function mdFechaDeFoto(f){
+    var nota = $("mdFechaFoto"), bt = $("mdFechaUsar"); nota.hidden = true; bt.hidden = true;
+    if (!f || !f.slice || !f.arrayBuffer) return;
+    try {
+      var d = fotoFechaExif(new Uint8Array(await f.slice(0, 131072).arrayBuffer()));
+      if (!d || d > fecha() || d === $("mdFecha").value) return;
+      nota.textContent = "La foto se sacó el " + fmtD2(d) + " y la fecha de la lectura dice " + fmtD2($("mdFecha").value) + "."; nota.hidden = false; bt.hidden = false;
+      bt.onclick = function(){ $("mdFecha").value = d; mdForzar = false; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura"; nota.hidden = true; bt.hidden = true; };
+    } catch (e){}
   }
   function mdQuita(n){
     if (n === 1){ mdFotoD = null; $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Elegir una foto de la galería"; $("mdCamBtn").textContent = "Tomar foto con marco guía"; if (!mdFoto2D) $("mdFoto2Btn").hidden = true; }

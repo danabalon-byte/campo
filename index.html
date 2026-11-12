@@ -1300,7 +1300,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     <h2 id="mdTitle">Anotar lectura</h2>
 <div class="sbody">
     <div class="field"><label for="mdFecha">Fecha de la lectura</label><input type="date" id="mdFecha"></div>
-    <div class="field"><label for="mdValor" id="mdValorL">Número que marca</label><input type="text" id="mdValor" inputmode="decimal" maxlength="14" placeholder="Ej: 178363,03"></div>
+    <div class="field"><label for="mdValor" id="mdValorL">Número que marca</label><input type="text" id="mdValor" inputmode="decimal" maxlength="14" placeholder="Ej: 53217,40"></div>
     <p class="note" id="mdPrev"></p>
     <div id="mdRelBox" hidden>
       <div class="field"><label for="mdRelC">Relojes del caudalímetro (opcional): reloj chico «×0.1»</label><input type="text" id="mdRelC" inputmode="decimal" maxlength="5" placeholder="Número al que apunta la punta. Ej: 4"></div>
@@ -3558,7 +3558,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function abrirLectura(m){
     mdEd = m; mdFotoD = null; mdForzar = false;
     $("mdTitle").textContent = "Anotar lectura · " + m.nombre; $("mdFecha").value = fecha(); $("mdFecha").max = fecha(); $("mdValor").value = ""; $("mdNota").value = "";
-    $("mdValorL").textContent = "Número que marca (" + (m.unidad || "") + ")"; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura";
+    $("mdValorL").textContent = "Número que marca (" + (m.unidad || "") + ")"; /* El ejemplo es al azar y lejos de las lecturas reales, para no confundirlo con el número del medidor. */ var ej = 10000 + Math.floor(Math.random() * 80000); $("mdValor").placeholder = "Ej: " + fmtNum(ej, 0).replace(/\./g, "") + (m.tipo === "luz" ? "" : "," + String(10 + Math.floor(Math.random() * 90))); $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura";
     $("mdRelBox").hidden = m.tipo !== "agua"; $("mdRelC").value = ""; $("mdRelG").value = ""; $("mdRelRes").textContent = ""; $("mdRelUsar").hidden = true;
     $("mdGuiaFoto").textContent = m.tipo === "agua" ? GUIA_FOTO_AGUA : m.tipo === "luz" ? GUIA_FOTO_LUZ : GUIA_FOTO_OTRO;
     $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Elegir una foto de la galería"; mdFoto2D = null; mdRes = { 1: null, 2: null }; mdAutoOn = false; mdAutoR = null;

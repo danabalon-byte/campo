@@ -84,6 +84,7 @@ service cloud.firestore {
       allow delete: if isOwner();
     }
     match /permisos/{d} { allow read, write: if isMember(); }
+    match /agendados/{d} { allow read, write: if isMember(); }
     // Cosechas (kilos por sector): una encargada solo puede crear con rev "pendiente" (o sin rev) y no puede cambiar la revisión; la autoriza el dueño.
     match /cosechas/{d} {
       allow read: if isAdmin();

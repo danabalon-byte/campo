@@ -505,6 +505,30 @@ span.ag-ck{border-style:dashed}
 .hu-dot{width:16px; height:16px; border-radius:50%; flex:none; border:1px solid rgba(0,0,0,.35)} .hu-dot.pol{border:3px solid var(--water)}
 .hu-cab{display:grid; grid-template-columns:1fr 54px 1fr; gap:6px; align-items:center} .hu-cb{display:flex; align-items:center; gap:6px; min-height:48px; padding:4px 8px; font-size:15px; text-align:left} .hu-cb.hu-mk{border:3px solid var(--fg); font-weight:700} .hu-cb{white-space:nowrap}
 .sbody > div.ajs-seg:not(.field){display:flex; flex-wrap:wrap; gap:8px} .sbody div.ajs-seg button{flex:1 1 auto; min-height:46px; padding:6px 12px; margin:0} .hu-h{text-align:center; font-weight:800}
+/* Árboles · estilo Camino: verde = normal, rojo = preocupante */
+.hu-top{display:flex; justify-content:space-between; align-items:center; margin:0 0 2px} .hu-top .hu-back{background:transparent; min-height:44px; padding:0 6px; color:var(--muted); font-weight:600; border-radius:12px}
+.hu-sv{border-radius:999px !important; min-height:40px !important; padding:6px 16px !important; background:var(--surface-2); box-shadow:inset 0 2px 3px rgba(255,255,255,.5),0 3px 7px rgba(0,0,0,.2); font-size:15px}
+.hu-h1{font-size:30px; font-weight:800; letter-spacing:-.5px; line-height:1.05; margin:8px 0 6px}
+.hu-cam{border:2px solid var(--line) !important; border-radius:26px !important}
+.hu-cam .ajs-seg button,.hu-fil button,.hu-hil button,.hu-sheet .ajs-seg button{border:2px solid var(--line); background:transparent; color:var(--fg); border-radius:999px}
+.hu-cam .ajs-seg button[aria-pressed=true],.hu-fil button[aria-pressed=true],.hu-hil button[aria-pressed=true],.hu-sheet .ajs-seg button[aria-pressed=true]{background:var(--surface-2); color:var(--accent); border-color:var(--line); box-shadow:inset 0 2px 3px rgba(255,255,255,.45),0 3px 7px rgba(0,0,0,.22)}
+.hu-sheet button.primary,.hu-cam button.ajs-main{border-radius:999px; box-shadow:0 4px 0 color-mix(in srgb,var(--accent) 55%,#000)}
+.hu-sheet button.primary:disabled{box-shadow:none}
+.hu-map{border:2px solid var(--line); border-radius:26px}
+.hu-filas{display:grid; gap:10px; margin:6px 0 4px} .hu-fila{display:flex; align-items:center; justify-content:space-between; width:100%; min-height:62px; padding:0 22px; border:2px solid var(--line); border-radius:26px; background:transparent; color:var(--fg); font-size:20px; font-weight:700; text-align:left}
+.hu-fila[aria-pressed=true]{background:var(--surface-2); border-color:var(--line); box-shadow:inset 0 2px 3px rgba(255,255,255,.45),0 3px 7px rgba(0,0,0,.22)}
+.hu-sev{width:84px; height:8px; border-radius:9px; background:var(--line); position:relative; flex:none} .hu-sev i{position:absolute; inset:0 auto 0 0; border-radius:9px; background:var(--alert)}
+.hu-prog{height:11px; border-radius:9px; background:var(--line); overflow:hidden; margin:6px 0 4px} .hu-prog i{display:block; height:100%; border-radius:9px; background:var(--accent)} .hu-prog.al i{background:var(--alert)}
+.hu-paso{color:var(--muted); font-size:14px; margin:0 0 6px}
+.hu-card{background:var(--surface); border:2px solid var(--line); border-radius:26px; padding:14px 18px; margin:0 0 12px} .hu-card.al{border-color:color-mix(in srgb,var(--alert) 45%,var(--line))}
+.hu-lab{font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--muted)} .hu-card.al .hu-lab{color:var(--alert)}
+.hu-big{font-size:42px; font-weight:800; line-height:1.05; color:var(--accent)} .hu-big.al{color:var(--alert)} .hu-big small{font-size:16px; color:var(--muted); font-weight:600}
+.hu-est{font-size:22px; font-weight:700} .hu-stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.hu-leg{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--muted); margin:8px 0 0} .hu-leg i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px}
+.nav.hu7{grid-template-columns:repeat(7,1fr); gap:0} .nav.hu7 button{font-size:11px; padding:5px 0; min-height:56px} .nav.hu7 .ni{width:44px; height:28px} .nav.hu7 .ni svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.nav.hu7 button[aria-pressed=true]{color:var(--accent)} .nav.hu7 button[aria-pressed=true] .ni{background:var(--surface-2); box-shadow:inset 0 2px 3px rgba(255,255,255,.45),0 2px 5px rgba(0,0,0,.22)}
+.hu-capas{display:flex; gap:4px; overflow-x:auto; margin:8px 0} .hu-capas button{flex:none; display:grid; justify-items:center; min-height:56px; width:62px; padding:4px 0; font-size:11px; background:transparent; color:var(--muted)} .hu-capas .ni svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round} .hu-capas button[aria-pressed=true]{color:var(--accent); background:var(--surface-2)}
+
 .huBorrarBtn{color:var(--alert)}
 .ajs-main{background:var(--accent); color:var(--on-accent); border-color:var(--accent); font-weight:700; text-align:center} .ajs-main:disabled{opacity:.6}
 .ajs-a{display:flex; align-items:center; min-height:48px; margin:6px 0; padding:10px 14px; border:1px solid var(--line,#cfcab8); border-radius:12px; color:var(--fg); text-decoration:none; box-sizing:border-box}
@@ -687,6 +711,22 @@ html.pc .cmdk:not([hidden]){display:flex}
   .nav,.pcbar,.rg-ctl,.rg-bar,.cmdk,.sheet,.toast,#toast{display:none !important}
   html.pc .wrap{margin:0; padding:0} body{background:#fff}
 }
+/* Árboles: botones rectangulares, filete fino, selección hundida */
+.hu-cam .ajs-seg button,.hu-fil button,.hu-hil button,.hu-sheet .ajs-seg button{border:1px solid var(--line); border-radius:9px; padding:4px 12px; min-height:38px; font-size:15px}
+.hu-sheet .ajs-seg button,.hu-sheet .sbody div.ajs-seg button{flex:0 0 auto; min-height:40px; padding:4px 14px}
+.hu-fil button,.hu-bar button{min-height:38px; padding:4px 12px}
+.hu-fila{border:1px solid var(--line); border-radius:12px; min-height:54px; padding:0 18px; font-size:18px}
+.hu-card,.hu-cam,.hu-map{border-width:1px !important; border-radius:14px !important}
+.hu-sv{border-radius:9px !important; min-height:36px !important; padding:4px 14px !important}
+.hu-sheet button.primary,.hu-cam button.ajs-main{border-radius:12px; box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 55%,#000)}
+.hu-capas button,.nav.hu7 .ni{border-radius:10px}
+.hu-sev{height:6px}
+
+
+.hu-cam .ajs-seg button[aria-pressed=true],.hu-fil button[aria-pressed=true],.hu-hil button[aria-pressed=true],.hu-sheet .ajs-seg button[aria-pressed=true],.hu-fila[aria-pressed=true],.hu-capas button[aria-pressed=true]{background:color-mix(in srgb,var(--surface-2) 82%,var(--line)); border-color:color-mix(in srgb,var(--line) 70%,var(--fg)); box-shadow:inset 0 2px 5px rgba(0,0,0,.30),inset 0 -1px 0 rgba(255,255,255,.55); color:var(--accent)}
+.nav.hu7 button[aria-pressed=true] .ni{background:color-mix(in srgb,var(--surface-2) 82%,var(--line)); box-shadow:inset 0 2px 4px rgba(0,0,0,.30),inset 0 -1px 0 rgba(255,255,255,.55)}
+.hu-sv{background:transparent; border:1px solid var(--line); box-shadow:none}
+.hu-sheet button.primary,.hu-cam button.ajs-main{box-shadow:none}
 </style>
 
 
@@ -1601,7 +1641,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""],
-    ["Árboles del huerto", "«Árboles del huerto»: esta sección la ves tú (Diego o Yolanda) y se enciende o apaga en «Ajustes», en «Árboles». Encendida, en «Campo» aparece «Abrir mapa de árboles»: cada círculo es un nogal. Tócalo para ver su ficha (por ejemplo H15-N3: hilera 15, lado norte, árbol 3 contando desde el camino). Con «Nuevo registro» anotas si está sano o enfermo, la foto y lo que ves. Si lo marcas enfermo, sale una alerta en el inicio hasta que lo pases a «Recuperado».", 39, "manager"],
+    ["Árboles del huerto", "«Árboles del huerto»: esta sección la ves tú (Diego o Yolanda) y se enciende o apaga en «Ajustes», en «Árboles». Encendida, en «Campo» aparece «Abrir mapa de árboles»: cada círculo es un nogal. Tócalo para ver su ficha (por ejemplo H15-N3: hilera 15, lado norte, árbol 3 contando desde el camino). Abajo tienes las capas del mapa: «Salud», «Plagas», «Hongos», «Flor», «Fruta», «Cosecha» y «Fotos» (las últimas aún sin datos). Con «Nuevo registro» anotas, en tres pasos, si está sano o enfermo, la gravedad, la foto y lo que ves. Para volver al inicio toca «Guardar y salir». Si lo marcas enfermo, sale una alerta en el inicio hasta que lo pases a «Recuperado».", 39, "manager"],
     ["Configurar sectores", "En «Ajustes», dentro de «Árboles», enciende «Configurar sectores». Luego, en el mapa de árboles, toca «Configurar sectores»: toca el primer árbol de cada sector y todas las hileras siguientes quedan en ese sector hasta la próxima marca. Hazlo para el norte y para el sur. Cuando termines, apágalo en «Ajustes».", 39, "owner"]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -2623,6 +2663,9 @@ html.pc .cmdk:not([hidden]){display:flex}
   var HU_POR = {}; HU.forEach(function(t){ HU_POR[t.cod] = t; });
   var HU_SEC = { 0: "#B9B7A6", 1: "#8DB07A", 2: "#6FA3C4", 3: "#E4B91C", 4: "#C9A27A" };
   var HU_FLUJO = ["Sospecha", "Confirmado", "En tratamiento", "Recuperado"];
+  var HU_CAPAS = [["salud", "Salud"], ["plaga", "Plagas"], ["hongo", "Hongos"], ["flor", "Flor"], ["fruta", "Fruta"], ["cosecha", "Cosecha"], ["fotos", "Fotos"]];
+  var HU_IC = { salud: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/><path d="M7 12h3l1.5-3 2 6 1.5-3h2"/>', plaga: '<ellipse cx="12" cy="14" rx="4.5" ry="6"/><path d="M12 8V4M9 5l1.5 2M15 5l-1.5 2M7.5 12H4M7.5 16H4.5M16.5 12H20M16.5 16h3M12 8v12"/>', hongo: '<path d="M4 12a8 7 0 0 1 16 0z"/><path d="M10 12v6a2 2 0 0 0 4 0v-6"/>', flor: '<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 11 3 12 3s2 3 0 6.5M12 14.5c2 3.5 1 6.500 0 6.500s-2-3 0-6.500M9.5 12C6 10 3 11 3 12s3 2 6.5 0M14.5 12c3.5-2 6.5-1 6.5 0s-3 2-6.5 0"/>', fruta: '<circle cx="12" cy="13.5" r="6.5"/><path d="M12 7c0-2 1-3 3-3"/>', cosecha: '<path d="M3 10h18l-2 9H5z"/><path d="M8 10l3-6M16 10l-3-6"/>', fotos: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>' };
+  var HU_C = { sano: "#8DB07A", sosp: "#C4410C", conf: "#A31621", ok: "#2C5234", vacio: "#8DB07A55" };
   var HU_TIPOS = ["Plaga", "Hongo", "Otro"], HU_PARTES = ["Hoja", "Fruto", "Tronco", "Cuello / raíz"];
   /* Guía de referencia del nogal (resumen de la auditoría del 12 nov). Es una ayuda para comparar con lo que se ve: siempre confirmar con el asesor antes de tratar. */
   var HU_CAT = [
@@ -2635,7 +2678,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     { n: "Arañita bimaculada y roja europea", t: "Plaga", p: ["Hoja"], d: "Hojas con punteado amarillo o bronceado, finas telas por el envés y ácaros diminutos. Más en verano seco y caluroso." },
     { n: "Escama de San José", t: "Plaga", p: ["Tronco", "Hoja"], d: "Costras grises circulares pequeñas en ramas y corteza; debilita el árbol." }
   ];
-  S.hv = { vista: "mapa", filtro: "todos", sector: 0, norte: true, sur: true, z: 0, hil: 1, sx: 0, sy: 0, ficha: "" };
+  S.hv = { capa: "salud", vista: "mapa", filtro: "todos", sector: 0, norte: true, sur: true, z: 0, hil: 1, sx: 0, sy: 0, ficha: "" };
   function hu(){ var c = S.huerto || {}; return { marcas: c.marcas || { N: {}, S: {} }, cfgOn: c.cfgOn !== false, eliminados: c.eliminados || {}, centinelas: c.centinelas || {}, rinconada: c.rinconada || { sector: 4, arboles: 114 } }; }
   async function huGuardar(parche){
     var c = hu(), n = { marcas: c.marcas, cfgOn: c.cfgOn, eliminados: c.eliminados, centinelas: c.centinelas, rinconada: c.rinconada };
@@ -2655,10 +2698,13 @@ html.pc .cmdk:not([hidden]){display:flex}
   function huEnfermo(cod){ var o = huUlt(cod); return !!(o && o.estado === "Enfermo" && o.flujo !== "Recuperado"); }
   function huEnfermos(){ return Object.keys(huMapa2()).filter(function(c){ return HU_POR[c] && !hu().eliminados[c] && huEnfermo(c); }); }
   function huColor(t, porSector){
-    var o = huUlt(t.cod), en = huEnfermo(t.cod);
-    if (en) return o.flujo === "Sospecha" ? "#F2C230" : "#C2593A";
+    var o = huUlt(t.cod), en = huEnfermo(t.cod), cp = S.hv.capa || "salud";
+    if (cp === "flor" || cp === "fruta" || cp === "cosecha") return HU_C.vacio;
+    if (cp === "plaga" || cp === "hongo"){ var ti = cp === "plaga" ? "Plaga" : "Hongo"; if (!(en && o.tipo === ti)) return HU_C.vacio; }
+    if (en) return o.flujo === "Sospecha" ? HU_C.sosp : HU_C.conf;
+    if (o && o.estado === "Enfermo" && o.flujo === "Recuperado") return HU_C.ok;
     if (porSector) return HU_SEC[huSector(t)] || HU_SEC[0];
-    return "#8DB07A";
+    return HU_C.sano;
   }
   function huEstadoTxt(cod){
     var o = huUlt(cod); if (!o) return "Sin registros";
@@ -2721,41 +2767,65 @@ html.pc .cmdk:not([hidden]){display:flex}
     c.appendChild(el("p", "note", "El plano de La Rinconada se cargará más adelante, con el número de árboles de cada hilera. Cuando esté, sus árboles aparecerán aquí con su ficha, igual que los demás."));
     return c;
   }
+  function huTop(titulo, atras){
+    var w = el("div"), r = el("div", "hu-top");
+    var b = huBtn("Atrás", function(){ S.screen = atras; render(); }, "hu-back"); b.id = "huAtras"; r.appendChild(b);
+    var g = huBtn("Guardar y salir", function(){ S.screen = "home"; render(); }, "hu-sv"); g.id = "huSalir"; r.appendChild(g);
+    w.appendChild(r); w.appendChild(el("h1", "hu-h1", titulo)); return w;
+  }
+  function huCapasBar(){
+    var w = el("div", "hu-capas"); w.setAttribute("role", "group"); w.setAttribute("aria-label", "Qué mostrar en el mapa");
+    HU_CAPAS.forEach(function(x){
+      var b = el("button"); b.type = "button"; b.dataset.capa = x[0]; b.setAttribute("aria-pressed", (S.hv.capa || "salud") === x[0] ? "true" : "false");
+      var i = el("span", "ni"); i.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + HU_IC[x[0]] + '</svg>'; b.appendChild(i); b.appendChild(el("span", null, x[1]));
+      b.onclick = function(){ S.hv.capa = x[0]; S.hv.z = 0; render(); }; w.appendChild(b);
+    });
+    return w;
+  }
+  function huNavCapas(){
+    var nv = $("nav"), bar = huCapasBar(); nv.replaceChildren(); nv.classList.remove("sc"); nv.classList.add("hu7"); nv.setAttribute("aria-label", "Capas del mapa");
+    while (bar.firstChild) nv.appendChild(bar.firstChild);
+  }
   function buildArbolesPantalla(){
-    var f = document.createDocumentFragment(); f.appendChild(ph("arboles"));
-    var h = S.hv, vivos = huVivos(), en = huEnfermos();
-    var c = el("section", "card sect"); c.id = "huPantalla";
-    c.appendChild(el("h2", null, "Nogales · " + nf(vivos.length, 0) + " árboles"));
-    c.appendChild(el("p", "note", HU_ESPECIE + ", plantados el " + HU_ANIO + ". Toca un árbol para abrir su ficha."));
-    if (en.length){ var al = el("p", "note warn", en.length === 1 ? "1 árbol enfermo en seguimiento" : en.length + " árboles enfermos en seguimiento"); al.setAttribute("role", "status"); c.appendChild(al); }
-    var vt = el("div", "ajs-seg"); vt.setAttribute("role", "group"); vt.setAttribute("aria-label", "Cómo ver los árboles");
-    vt.appendChild(huBtn("Mapa", function(){ h.vista = "mapa"; render(); }, null, h.vista === "mapa"));
-    vt.appendChild(huBtn("Lista", function(){ h.vista = "lista"; render(); }, null, h.vista === "lista"));
-    c.appendChild(vt);
-    var fl = el("div", "hu-fil"); fl.setAttribute("role", "group"); fl.setAttribute("aria-label", "Filtro de árboles");
+    var f = document.createDocumentFragment(); f.appendChild(huTop("Árboles del huerto", "campo"));
+    var h = S.hv, vivos = huVivos(), en = huEnfermos(), cp = h.capa || "salud";
+    var c = el("section", "card sect hu-cam"); c.id = "huPantalla";
+    c.appendChild(el("h2", null, nf(vivos.length, 0) + " nogales"));
+    c.querySelector("h2").textContent = nf(vivos.length, 0) + " nogales" + (en.length ? " · " + en.length + " con alerta" : "");
+    if (en.length) c.querySelector("h2").style.color = "var(--alert)";
+    if (cp === "fotos"){
+      c.appendChild(el("h3", null, "Fotos del campo"));
+      c.appendChild(el("p", "note", "Aquí irán las fotos generales del campo (vista del huerto, riego, malezas, estado de los paños). Todavía no hay fotos guardadas."));
+      f.appendChild(c); if (PC) c.insertBefore(huCapasBar(), c.firstChild); return f;
+    }
+    var ra = el("div", "hu-bar hu-fil"); ra.setAttribute("role", "group"); ra.setAttribute("aria-label", "Cómo ver los árboles");
+    ra.appendChild(huBtn("Mapa", function(){ h.vista = "mapa"; render(); }, null, h.vista === "mapa"));
+    ra.appendChild(huBtn("Lista", function(){ h.vista = "lista"; render(); }, null, h.vista === "lista"));
+    if (h.vista === "mapa"){
+      ra.appendChild(el("span", "gap"));
+      var zi = Math.max(0, HU_Z.indexOf(huZ0())), bm = huBtn("−", function(){ h.z = HU_Z[Math.max(0, zi - 1)]; render(); }), bp = huBtn("+", function(){ h.z = HU_Z[Math.min(HU_Z.length - 1, zi + 1)]; render(); });
+      bm.setAttribute("aria-label", "Alejar el mapa"); bp.setAttribute("aria-label", "Acercar el mapa"); ra.appendChild(bm); ra.appendChild(bp);
+    }
+    c.appendChild(ra);
+    var fl = el("div", "hu-fil"); fl.setAttribute("role", "group"); fl.setAttribute("aria-label", "Filtros del mapa");
     [["todos", "Todos"], ["enfermos", "Enfermos (" + en.length + ")"], ["polin", "Polinizantes"]].forEach(function(x){ fl.appendChild(huBtn(x[1], function(){ h.filtro = x[0]; h.z = 0; render(); }, null, h.filtro === x[0])); });
-    c.appendChild(fl);
+    fl.appendChild(huBtn("Norte", function(){ h.norte = !h.norte; if (!h.norte && !h.sur) h.sur = true; render(); }, null, h.norte));
+    fl.appendChild(huBtn("Sur", function(){ h.sur = !h.sur; if (!h.norte && !h.sur) h.norte = true; render(); }, null, h.sur));
     var us = huSectoresUsados();
     if (us.length){
-      var sf = el("div", "hu-fil"); sf.setAttribute("role", "group"); sf.setAttribute("aria-label", "Sector");
-      sf.appendChild(huBtn("Todo el huerto", function(){ h.sector = 0; h.z = 0; render(); }, null, !h.sector));
-      us.forEach(function(s){ sf.appendChild(huBtn("Sector " + s, function(){ h.sector = s; h.z = 0; h.sx = 0; h.sy = 0; render(); }, null, h.sector === s)); });
-      c.appendChild(sf);
+      fl.appendChild(huBtn("Todo el huerto", function(){ h.sector = 0; h.z = 0; render(); }, null, !h.sector));
+      us.forEach(function(s2){ fl.appendChild(huBtn("Sector " + s2, function(){ h.sector = s2; h.z = 0; h.sx = 0; h.sy = 0; render(); }, null, h.sector === s2)); });
     }
-    var ns = el("div", "hu-bar hu-fil"); ns.setAttribute("role", "group"); ns.setAttribute("aria-label", "Lado del camino y zoom");
-    ns.appendChild(huBtn("Norte", function(){ h.norte = !h.norte; if (!h.norte && !h.sur) h.sur = true; render(); }, null, h.norte));
-    ns.appendChild(huBtn("Sur", function(){ h.sur = !h.sur; if (!h.norte && !h.sur) h.norte = true; render(); }, null, h.sur));
-    if (h.vista === "mapa"){
-      ns.appendChild(el("span", "gap"));
-      var zi = Math.max(0, HU_Z.indexOf(huZ0())), bm = huBtn("−", function(){ h.z = HU_Z[Math.max(0, zi - 1)]; render(); }), bp = huBtn("+", function(){ h.z = HU_Z[Math.min(HU_Z.length - 1, zi + 1)]; render(); });
-      bm.setAttribute("aria-label", "Alejar el mapa"); bp.setAttribute("aria-label", "Acercar el mapa"); ns.appendChild(bm); ns.appendChild(bp);
-    }
-    c.appendChild(ns);
+    c.appendChild(fl);
     var vis = huVisibles();
     if (!vis.length) c.appendChild(el("p", "note", h.filtro === "enfermos" ? "No hay árboles enfermos en seguimiento." : "No hay árboles con este filtro."));
     else if (h.vista === "mapa") c.appendChild(huMapaVista(vis, !!h.sector || us.length > 0 && h.filtro === "todos" && false));
     else c.appendChild(huListaVista(vis));
+    var vac = { flor: "floración", fruta: "fruta", cosecha: "cosecha" }[cp];
+    if (vac) c.appendChild(el("p", "note", "Todavía no hay datos de " + vac + ". Cuando se registren, los árboles se pintarán aquí."));
+    else { var lg = el("div", "hu-leg"); [["sano", "Sano"], ["sosp", "Sospecha"], ["conf", "Confirmado"], ["ok", "Tratado"]].forEach(function(x){ var sp = el("span"), d = el("i"); d.style.background = HU_C[x[0]]; sp.appendChild(d); sp.appendChild(document.createTextNode(x[1])); lg.appendChild(sp); }); c.appendChild(lg); }
     c.appendChild(huResumen(vis));
+    if (PC) c.insertBefore(huCapasBar(), c.firstChild);
     f.appendChild(c);
     var rc = huRinconadaCard(); if (rc) f.appendChild(rc);
     if (S.owner){
@@ -2793,7 +2863,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Hojas (ventanas) */
   function huHoja(id, titulo){
     var viejo = document.getElementById(id); if (viejo) viejo.remove();
-    var sh = el("div", "sheet"); sh.id = id; var box = el("div", "box"); box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    var sh = el("div", "sheet hu-sheet"); sh.id = id; var box = el("div", "box"); box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
     var h2 = el("h2", null, titulo); box.appendChild(h2); var body = el("div", "sbody"), foot = el("div", "sfoot"); box.appendChild(body); box.appendChild(foot); sh.appendChild(box);
     sh.onclick = function(ev){ if (ev.target === sh) sh.remove(); };
     document.body.appendChild(sh); return { sh: sh, h2: h2, body: body, foot: foot };
@@ -2823,7 +2893,16 @@ html.pc .cmdk:not([hidden]){display:flex}
     var regs = huRegs(cod), ult = regs[0] || null, cf = hu(), sc = huSector(t);
     sh.querySelector("h2").textContent = cod;
     body.appendChild(el("p", "sub", "Hilera " + t.h + " · árbol " + t.n + " desde el camino (" + (t.l === "N" ? "Norte" : "Sur") + ")"));
-    if (huEnfermo(cod)) body.appendChild(el("p", "note warn", "En seguimiento: " + (ult.tipo ? ult.tipo.toLowerCase() + " · " : "") + (ult.flujo || "Sospecha")));
+    if (huEnfermo(cod)){
+      var sg = el("div", "hu-card al"); sg.setAttribute("role", "status"); sg.appendChild(el("div", "hu-lab", "En seguimiento"));
+      sg.appendChild(el("div", "hu-est", (ult.tipo ? ult.tipo + " · " : "") + (ult.flujo || "Sospecha")));
+      var pg = el("div", "hu-prog al"), pi = el("i"); pi.style.width = ((HU_FLUJO.indexOf(ult.flujo || "Sospecha") + 1) * 25) + "%"; pg.appendChild(pi); sg.appendChild(pg);
+      sg.appendChild(el("p", "note", HU_FLUJO.join(" → "))); body.appendChild(sg);
+    }
+    var stt = el("div", "hu-stats"), sv = ult && ult.estado === "Enfermo" && ult.sev != null ? ult.sev : null;
+    var c1 = el("div", "hu-card"); c1.appendChild(el("div", "hu-lab", "Severidad")); var b1 = el("div", "hu-big" + (sv ? " al" : "")); b1.textContent = sv != null ? String(sv) : "—"; if (sv != null){ b1.appendChild(el("small", null, " de 3")); } c1.appendChild(b1);
+    var c2 = el("div", "hu-card"); c2.appendChild(el("div", "hu-lab", "Registros")); c2.appendChild(el("div", "hu-big", String(regs.length)));
+    stt.appendChild(c1); stt.appendChild(c2); body.appendChild(stt);
     body.appendChild(el("h3", null, "Árbol"));
     var a = el("div");
     a.appendChild(huRow("Identificador", cod)); a.appendChild(huRow("Especie", HU_ESPECIE)); a.appendChild(huRow("Año de plantación", String(HU_ANIO)));
@@ -2894,25 +2973,36 @@ html.pc .cmdk:not([hidden]){display:flex}
     var g = el("div", "ajs-seg"); g.setAttribute("role", "group"); g.setAttribute("aria-label", aria);
     etiquetas.forEach(function(x){ g.appendChild(huBtn(String(x), function(){ alCambiar(valor === x ? "" : x); }, null, valor === x)); }); return g;
   }
+  function huFilas(items, valor, alCambiar, aria){
+    var g = el("div", "hu-filas"); g.setAttribute("role", "group"); g.setAttribute("aria-label", aria);
+    items.forEach(function(x){
+      var b = el("button", "hu-fila"); b.type = "button"; b.setAttribute("aria-pressed", valor === x.v ? "true" : "false"); b.appendChild(el("span", null, x.l));
+      if (x.barra != null){ var sv = el("span", "hu-sev"), i = el("i"); i.style.width = x.barra + "%"; sv.appendChild(i); sv.setAttribute("aria-hidden", "true"); b.appendChild(sv); }
+      b.onclick = function(){ alCambiar(valor === x.v ? "" : x.v); }; g.appendChild(b);
+    }); return g;
+  }
   function huNuevoReg(cod){
     var t = HU_POR[cod], prev = huUlt(cod), st = { estado: "", tipo: "", parte: "", sev: "", flujo: "Sospecha", foto: null, coincide: {} };
     var H = huHoja("huRegSheet", "Nuevo registro · " + cod), body = H.body, foot = H.foot;
     var vistaFoto = null;
     function pintar(){
       body.replaceChildren(); foot.replaceChildren();
-      body.appendChild(el("h3", null, "Estado"));
-      body.appendChild(huSeg(["Sano", "Enfermo"], st.estado, function(v){ st.estado = v; pintar(); }, "Estado del árbol"));
-      if (st.estado === "Enfermo"){
-        body.appendChild(el("h3", null, "Qué es"));
-        body.appendChild(huSeg(HU_TIPOS, st.tipo, function(v){ st.tipo = v; pintar(); }, "Tipo de problema"));
+      var enf = st.estado === "Enfermo", total = enf ? 3 : 2, paso = Math.min(st.paso || 1, total), ult = paso === total;
+      var pg = el("div", "hu-prog"), pi = el("i"); pi.style.width = Math.round(paso / total * 100) + "%"; pg.appendChild(pi); body.appendChild(pg);
+      body.appendChild(el("p", "hu-paso", "Paso " + paso + " de " + total));
+      if (paso === 1){
+        body.appendChild(el("h3", null, "¿Cómo está el árbol?"));
+        body.appendChild(huFilas([{ v: "Sano", l: "Sano" }, { v: "Enfermo", l: "Enfermo" }], st.estado, function(v){ st.estado = v; pintar(); }, "Estado del árbol"));
+        if (enf){ body.appendChild(el("h3", null, "Qué es")); body.appendChild(huSeg(HU_TIPOS, st.tipo, function(v){ st.tipo = v; pintar(); }, "Tipo de problema")); }
+      } else if (paso === 2 && enf){
+        body.appendChild(el("h3", null, "¿Qué gravedad tiene?"));
+        body.appendChild(huFilas([{ v: 0, l: "Leve", barra: 15 }, { v: 1, l: "Moderada", barra: 45 }, { v: 2, l: "Fuerte", barra: 75 }, { v: 3, l: "Muy grave", barra: 100 }], st.sev === "" ? "" : Number(st.sev), function(v){ st.sev = v === "" ? "" : v; pintar(); }, "Gravedad"));
         body.appendChild(el("h3", null, "Parte afectada"));
         body.appendChild(huSeg(HU_PARTES, st.parte, function(v){ st.parte = v; pintar(); }, "Parte afectada"));
-        body.appendChild(el("h3", null, "Severidad (0 leve a 3 grave)"));
-        body.appendChild(huSeg([0, 1, 2, 3], st.sev === "" ? "" : Number(st.sev), function(v){ st.sev = v === "" ? "" : v; pintar(); }, "Severidad"));
         body.appendChild(el("h3", null, "Etapa"));
         body.appendChild(huSeg(HU_FLUJO, st.flujo, function(v){ st.flujo = v || "Sospecha"; pintar(); }, "Etapa del problema"));
-      }
-      body.appendChild(el("h3", null, "Foto"));
+      } else {
+        body.appendChild(el("h3", null, "Foto y notas"));
       var fb = huBtn(st.foto ? "Cambiar la foto" : "Tomar o elegir una foto", function(){ fi.click(); }); fb.id = "huFotoBtn"; body.appendChild(fb);
       if (st.foto){ var im = el("img"); im.src = st.foto; im.alt = "Vista previa de la foto"; im.style.cssText = "width:100%;border-radius:14px"; body.appendChild(im); body.appendChild(huBtn("Quitar foto", function(){ st.foto = null; pintar(); }, "link")); }
       if (st.estado === "Enfermo"){
@@ -2929,7 +3019,11 @@ html.pc .cmdk:not([hidden]){display:flex}
       dd.appendChild(el("p", "ajs-t", "Productivo")); dd.appendChild(huSeg(["Sí", "No"], st.prod || "", function(v){ st.prod = v; pintar(); }, "Productivo"));
       var f3 = el("div", "field"), l3 = el("label", null, "Próxima revisión"); l3.htmlFor = "huProx"; var i3 = el("input"); i3.id = "huProx"; i3.type = "date"; i3.value = st.proxima || ""; i3.oninput = function(){ st.proxima = i3.value; }; f3.appendChild(l3); f3.appendChild(i3); dd.appendChild(f3);
       dt.appendChild(dd); if (st.abierto) dt.open = true; dt.ontoggle = function(){ st.abierto = dt.open; }; body.appendChild(dt);
-      var ok = huBtn("Guardar registro", guardar, "primary"); ok.id = "huGuardar"; foot.appendChild(ok); foot.appendChild(huBtn("Cancelar", function(){ huCerrarHoja("huRegSheet"); }));
+      }
+      if (ult){ var ok = huBtn("Guardar registro", guardar, "primary"); ok.id = "huGuardar"; foot.appendChild(ok); }
+      else { var sg2 = huBtn("Siguiente", function(){ if (!st.estado){ toast("Elige si el árbol está sano o enfermo."); return; } if (paso === 1 && enf && !st.tipo){ toast("Indica si es plaga, hongo u otro."); return; } st.paso = paso + 1; pintar(); }, "primary"); sg2.id = "huSig"; foot.appendChild(sg2); }
+      if (paso > 1) foot.appendChild(huBtn("Atrás", function(){ st.paso = paso - 1; pintar(); }));
+      foot.appendChild(huBtn("Cancelar", function(){ huCerrarHoja("huRegSheet"); }));
     }
     var fi = document.createElement("input"); fi.type = "file"; fi.accept = "image/*"; fi.hidden = true; fi.id = "huFoto"; H.sh.appendChild(fi);
     fi.onchange = async function(){ var f = fi.files && fi.files[0]; fi.value = ""; if (!f) return; try { st.foto = await comprimirFoto(f); pintar(); } catch (err){ toast("No se pudo leer la foto. Prueba con otra."); } };
@@ -2980,8 +3074,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     H.foot.appendChild(huBtn("Cancelar", function(){ huCerrarHoja("huSecSheet"); }));
   }
   function buildSectores(){
-    var f = document.createDocumentFragment(); f.appendChild(ph("sectores"));
-    var c = el("section", "card sect"); c.id = "huSectores";
+    var f = document.createDocumentFragment(); f.appendChild(huTop("Configurar sectores", "arboles"));
+    var c = el("section", "card sect hu-cam"); c.id = "huSectores";
     c.appendChild(el("h2", null, "Configurar sectores"));
     c.appendChild(el("p", "sub", "Toca el primer árbol de cada sector. Todas las hileras siguientes quedan en ese sector hasta la próxima marca. Hazlo para el norte y para el sur."));
     var cab = el("div", "hu-cab"); cab.appendChild(el("b", null, "Norte")); cab.appendChild(el("b", null, "Hilera")); cab.appendChild(el("b", null, "Sur")); c.appendChild(cab);
@@ -6654,7 +6748,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     pcSync();
     $("fechaHoy").textContent = fechaCorta(new Date());
     var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
-    $("nav").hidden = !listo; if (listo) (PC ? buildNavPC() : buildNav());
+    $("nav").hidden = !listo; if (listo){ var nv0 = $("nav"); nv0.classList.remove("hu7"); nv0.setAttribute("aria-label", "Módulos"); if (PC) buildNavPC(); else if (S.screen === "arboles" && huOn()) huNavCapas(); else buildNav(); }
     if (S.screen !== lastScreen){ lastScreen = S.screen; try { window.scrollTo(0, 0); } catch (e0) {} }
     if (!S.db) return setView("nodb", msg("Abre esta página desde Claude", "Necesita tu sesión iniciada para guardar los registros del campo."));
     if (!S.uid) return setView("noid", msg("No pude identificarte", "Pídele a Diego que te invite de nuevo y abre el enlace desde ese correo."));

@@ -1520,7 +1520,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 37;
+  var GUIA_V = 38;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1550,9 +1550,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Autorizar feriados", "En «Terceros y jornadas», cuando alguien registra un día feriado aparece «Feriados por autorizar» con los botones «Autorizar» y «No autorizar». Lo que tú registres en un feriado queda autorizado de una vez.", 12, "owner"],
     ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
     ["Horarios del equipo", "En «Inicio», el módulo «Horarios del equipo» muestra quién está en el campo y a qué hora entra y sale cada persona. Solo lo ves tú.", 2, "owner"],
-    ["Letra grande para el sol", "En «Inicio», abajo, abre la casilla «Uso y apariencia». Ahí el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
-    ["Claro o nocturno", "En el computador, el botón «Apariencia» está arriba a la derecha. En el teléfono, en «Campo», abre la casilla «Uso y apariencia». El botón «Apariencia» cambia entre automática (como tenga el teléfono), clara y nocturna. Tócalo hasta que aparezca la que prefieres; queda guardada en ese teléfono.", 4, ""],
-    ["Dónde quedó la guía", "En «Inicio», abajo, la casilla «Uso y apariencia» reúne la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
+    ["Letra grande para el sol", "En «Ajustes» (el último botón de la barra de abajo; si tu barra no se desliza, al final de «Inicio») está el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
+    ["Claro o nocturno", "En el computador, el botón «Apariencia» está arriba a la derecha. En el teléfono, abre «Ajustes» (último botón de la barra de abajo) y elige «Automática» (como tenga el teléfono), «Día» o «Noche». Queda guardada en ese teléfono.", 4, ""],
+    ["Dónde quedó la guía", "En «Ajustes» (último botón de la barra de abajo) está la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
     ["Alertas en Inicio", "Si algo necesita atención, «Inicio» muestra la tarjeta «Alertas» justo bajo tu saludo, con lo más importante primero: «No entrar» (hasta cuándo no se debe entrar a un sector tras una aplicación), «Carencia» (hasta cuándo no se puede cosechar) y «Riego atrasado» (un riego programado que ya pasó y no se registró). Se ven las 3 primeras; toca el botón «Ver las» (con el número) para ver todas. Se apagan solas cuando vence el plazo o se hace la tarea. Los íconos de «Campo» y «Riego» muestran un número cuando tienen alertas.", 8, ""],
     ["Stock y aplicaciones en las alertas", "En «Alertas» aparece «Stock bajo» cuando un producto llega al 15 % o menos de lo ingresado, y «No alcanza» cuando lo agendado supera lo que hay en bodega. También aparece «Aplicación atrasada» para una aplicación agendada que ya pasó de fecha; toca «Hacerla ahora». Al agendar, la app avisa si el stock no alcanza. «Hoy toca» muestra solo lo de hoy.", 9, "manager"],
     ["Riego atrasado", "En «Alertas», toca «Ya lo regué» para registrar el riego con el sector y las horas ya puestos. Si registras un riego en «Riego» para un sector que tenía uno atrasado, la app cierra esa tarea sola y te lo avisa.", 8, ""],
@@ -1578,11 +1578,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Legal y horas extras", "En «Inicio», el módulo «Legal» (solo tú) reúne lo que informó la contadora —vacaciones, jornada y extras, terceros— y las consultas pendientes. «Agregar dato o consulta» sirve para anotar nuevas condiciones o preguntas; en una pendiente, «Anotar respuesta» la pasa a respondida. Los montos y porcentajes los anotas tú ahí. En «Inicio» sale un aviso cuando alguien supera las 42 horas de la semana.", 21, "owner"],
     ["Sector Vivero", "En «Campo», «Agregar sector» → especie «Vivero (varias especies)». Marca las especies en cuidado (palto, olivo, quillay, peumo, limonero, kumquat, flores, cipreses, ornamentales, jacaranda) o toca «Todas»; si falta alguna, escríbela en «Otras» y toca «Agregar»: queda disponible para los próximos viveros. El riego es manual con manguera: al registrarlo eliges minutos y anotas qué se regó, sin cálculo de agua. El vivero no cuenta en los totales de nogal ni limón, ni en la cosecha.", 20, "owner"],
     ["Planificación y Registros en el computador", "En modo escritorio, «Planificación» muestra la semana en filas (riegos, aplicaciones, trabajos y tareas): arrastra un bloque a otro día para reprogramarlo, o ábrelo y usa «Mover» con el teclado. «Registros» reúne trabajos, riegos, cosechas, aplicaciones y permisos en tablas con filtros por mes, sector y estado; marca varias filas para autorizarlas, cambiarles la fecha o quitarlas, y exporta a CSV o imprime.", 19, "owner"],
-    ["Preparar para uso real", "En «Campo», dentro de «Uso y apariencia», el botón «Preparar para uso real» borra los datos de prueba. Primero cuenta los registros de cada tipo y tú eliges cuáles borrar. Luego descarga un respaldo y, para borrar, escribes BORRAR. No toca productos, stock, personal, terceros, sectores, medidores, lecturas, cosechas, bodega ni ventas.", 17, "owner"],
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
-    ["Ajustes: color y respaldo", "Al final de Inicio, «Ajustes» reúne la ayuda y la apariencia: elige «Automática», «Día» o «Noche» según te acomode. Diego además ve «Respaldar ahora» (copia todo al Sheets y a Drive; empieza en un minuto) y accesos al acervo y a la carpeta de fotos. «Preparar para uso real» quedó al final, en «Zona delicada».", 37, ""],
+    ["Ajustes: color y respaldo", "«Ajustes» es el último botón de la barra de abajo, a la derecha de «Cosecha». Reúne la ayuda y la apariencia: elige «Automática», «Día» o «Noche» según te acomode. Diego además ve «Respaldar ahora» (copia todo al Sheets y a Drive; empieza en un minuto) y accesos al acervo y a la carpeta de fotos. Si tu barra no se desliza, «Ajustes» está al final de «Inicio».", 38, ""],
     ["Registros de Yolanda y aviso", "Lo que Yolanda registra (trabajo, cosecha, riego o aplicación) queda aprobado de inmediato, sin «Por revisar». Cada registro suma un aviso y un script del respaldo te envía un solo WhatsApp con todo lo nuevo (si falla, te llega un correo). Lo antiguo que quedó pendiente se sigue autorizando como siempre.", 36, "owner"],
     ["Personal y trabajadores agendados", "En la barra de abajo, «Personal» (se abre como «Trabajadores») junta lo del equipo: lo que requiere tu respuesta, accesos a «Pedir días», «Agendar trabajador», «Calendario», «Terceros y jornadas» y «Horarios del equipo», y quién trabaja hoy. Con «Agendar trabajador» anotas quién viene, qué días y a cargo de quién. Aparece en el «Calendario» con borde de línea continua y no descuenta días de nadie.", 35, "manager"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
@@ -1602,6 +1601,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 38, f: "2026-11-12", t: "Ajustes en la barra", d: "«Ajustes» pasa a ser el último botón de la barra de abajo, a la derecha de «Cosecha». La barra tiene los bordes difuminados cuando hay más botones por deslizar, y «Medidores» ahora dice «Medidor».", g: "Ajustes: color y respaldo" },
     { v: 37, f: "2026-11-12", t: "Ajustes", d: "«Uso y apariencia» pasa a llamarse Ajustes. Puedes elegir pantalla Día, Noche o Automática con un toque. Diego tiene «Respaldar ahora» y accesos al acervo; las fotos del respaldo ahora tienen nombres legibles.", g: "Ajustes: color y respaldo" },
     { v: 36, f: "2026-11-12", t: "Registros directos y aviso", d: "Lo que registra Yolanda ya no queda por revisar: cuenta al tiro y te llega un solo WhatsApp con el resumen.", g: "Registros de Yolanda y aviso" },
     { v: 35, f: "2026-11-12", t: "Personal y trabajadores agendados", d: "Nueva pestaña Personal (Trabajadores) con accesos rápidos, quién requiere tu respuesta y quién trabaja hoy. Puedes agendar a un trabajador que viene ciertos días y a cargo de quién; se ve en el calendario y no descuenta días.", g: "Personal y trabajadores agendados" },
@@ -2075,7 +2075,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Trabajadores", "Quién trabaja hoy, permisos y agendados"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], ajustes: ["Ajustes", "Ayuda, apariencia y respaldo"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Trabajadores", "Quién trabaja hoy, permisos y agendados"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -2210,7 +2210,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var nav = $("nav"), cur = S.screen === "legal" ? "" : S.manager && (S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "personal" : !S.manager && (S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
-    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
+    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"], ["ajustes", "Ajustes"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -2249,6 +2249,43 @@ html.pc .cmdk:not([hidden]){display:flex}
     fl.appendChild(l); fl.appendChild(i); b2.appendChild(fl); b2.appendChild(b); c.appendChild(b2); return c;
   }
 
+  /* Cuerpo de Ajustes: ayuda, apariencia, datos y respaldo (solo Diego) y zona delicada. Va en la pantalla «Ajustes» (barra de abajo, a la derecha de «Cosecha»); quien no tiene esa barra lo ve al final de Inicio. */
+  function ajustesCuerpo(){
+    var ay = el("div", "sect");
+    ay.appendChild(el("p", "ajs-t", "Ayuda"));
+    var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
+    var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
+    ay.appendChild(el("p", "ajs-t", "Apariencia"));
+    var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
+    [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"]].forEach(function(x){
+      var bt = el("button", null, x[1]); bt.id = x[2]; bt.type = "button"; bt.setAttribute("aria-pressed", tm === x[0] ? "true" : "false");
+      bt.onclick = function(){ try { localStorage.setItem("campo_tema", x[0]); } catch (e2) {} aplicarTema(x[0]); render(); }; grpT.appendChild(bt);
+    });
+    ay.appendChild(grpT);
+    ay.appendChild(el("p", "note", "Automática sigue el modo claro u oscuro de tu teléfono."));
+    var on = document.documentElement.classList.contains("sol");
+    var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
+    bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
+    ay.appendChild(bs);
+    if (S.owner){
+      ay.appendChild(el("p", "ajs-t", "Datos y respaldo"));
+      var rs = S.respEst || {}, ahoraMs = Date.now(),
+        trab = (rs.estado === "trabajando" && ahoraMs - Date.parse(rs.inicio || 0) < 15 * 60000) || !!(S.respPedido && (!rs.pedidoTs || S.respPedido > rs.pedidoTs) && ahoraMs - Date.parse(S.respPedido) < 10 * 60000);
+      var br = el("button", "ajs-main", trab ? "Respaldando… (puede tardar unos minutos)" : "Respaldar ahora"); br.id = "btnRespaldar"; br.type = "button"; br.disabled = !!trab;
+      br.onclick = async function(){ br.disabled = true; try { var t = new Date().toISOString(); await S.db.doc("config/respaldoPedido").set({ ts: t, por: S.nombre }); S.respPedido = t; toast("Pedido enviado. En un minuto empieza a respaldar."); render(); } catch (e3){ br.disabled = false; toast("No se pudo enviar el pedido. Revisa tu señal."); } };
+      ay.appendChild(br);
+      var ult = rs.estado === "error" ? "El último respaldo falló: " + (rs.mensaje || "revisa tu correo") : rs.fecha ? "Último respaldo: " + rs.fecha + (rs.pestanas ? " · " + rs.pestanas + " pestañas, " + (rs.fotos || 0) + " fotos" : "") + (rs.estado === "parcial" ? " (faltan fotos; sigue solo)" : "") : "Todavía no hay un respaldo registrado aquí. Cada día a las 04:00 se hace uno solo.";
+      ay.appendChild(el("p", "note", ult));
+      var ls = el("a", "ajs-a", "Abrir el acervo (Google Sheets)"); ls.href = "https://docs.google.com/spreadsheets/d/" + ACERVO_SHEET + "/"; ls.target = "_blank"; ls.rel = "noopener"; ay.appendChild(ls);
+      var lf = el("a", "ajs-a", "Abrir la carpeta de fotos (Drive)"); lf.href = "https://drive.google.com/drive/folders/" + ACERVO_CARPETA; lf.target = "_blank"; lf.rel = "noopener"; ay.appendChild(lf);
+    }
+    return ay;
+  }
+  function buildAjustes(){
+    var f = document.createDocumentFragment(); f.appendChild(ph("ajustes"));
+    var c = el("section", "card"); c.id = "ajustes"; c.appendChild(ajustesCuerpo()); f.appendChild(c);
+    return f;
+  }
   function buildHome(){
     var now = Date.now(), e = estado(S.dias, now), wk = semana(S.dias, now);
     var f = document.createDocumentFragment();
@@ -2393,40 +2430,12 @@ html.pc .cmdk:not([hidden]){display:flex}
       });
       adm.appendChild(rs); f.appendChild(adm);
     }
-    var ua = document.createElement("details"); ua.className = "card ua"; ua.id = "usoApar"; ua.open = !!S.uaAb;
-    var us = el("summary", null, ""); var usi = el("span", "ti"); usi.appendChild(ico("ajustes")); us.appendChild(usi); us.appendChild(el("b", null, "Ajustes")); ua.appendChild(us);
-    ua.addEventListener("toggle", function(){ S.uaAb = ua.open; });
-    var ay = el("div", "sect");
-    ay.appendChild(el("p", "ajs-t", "Ayuda"));
-    var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
-    var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
-    ay.appendChild(el("p", "ajs-t", "Apariencia"));
-    var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
-    [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"]].forEach(function(x){
-      var bt = el("button", null, x[1]); bt.id = x[2]; bt.type = "button"; bt.setAttribute("aria-pressed", tm === x[0] ? "true" : "false");
-      bt.onclick = function(){ try { localStorage.setItem("campo_tema", x[0]); } catch (e2) {} aplicarTema(x[0]); render(); }; grpT.appendChild(bt);
-    });
-    ay.appendChild(grpT);
-    ay.appendChild(el("p", "note", "Automática sigue el modo claro u oscuro de tu teléfono."));
-    var on = document.documentElement.classList.contains("sol");
-    var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
-    bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
-    ay.appendChild(bs);
-    if (S.owner){
-      ay.appendChild(el("p", "ajs-t", "Datos y respaldo"));
-      var rs = S.respEst || {}, ahoraMs = Date.now(),
-        trab = (rs.estado === "trabajando" && ahoraMs - Date.parse(rs.inicio || 0) < 15 * 60000) || !!(S.respPedido && (!rs.pedidoTs || S.respPedido > rs.pedidoTs) && ahoraMs - Date.parse(S.respPedido) < 10 * 60000);
-      var br = el("button", "ajs-main", trab ? "Respaldando… (puede tardar unos minutos)" : "Respaldar ahora"); br.id = "btnRespaldar"; br.type = "button"; br.disabled = !!trab;
-      br.onclick = async function(){ br.disabled = true; try { var t = new Date().toISOString(); await S.db.doc("config/respaldoPedido").set({ ts: t, por: S.nombre }); S.respPedido = t; toast("Pedido enviado. En un minuto empieza a respaldar."); render(); } catch (e3){ br.disabled = false; toast("No se pudo enviar el pedido. Revisa tu señal."); } };
-      ay.appendChild(br);
-      var ult = rs.estado === "error" ? "El último respaldo falló: " + (rs.mensaje || "revisa tu correo") : rs.fecha ? "Último respaldo: " + rs.fecha + (rs.pestanas ? " · " + rs.pestanas + " pestañas, " + (rs.fotos || 0) + " fotos" : "") + (rs.estado === "parcial" ? " (faltan fotos; sigue solo)" : "") : "Todavía no hay un respaldo registrado aquí. Cada día a las 04:00 se hace uno solo.";
-      ay.appendChild(el("p", "note", ult));
-      var ls = el("a", "ajs-a", "Abrir el acervo (Google Sheets)"); ls.href = "https://docs.google.com/spreadsheets/d/" + ACERVO_SHEET + "/"; ls.target = "_blank"; ls.rel = "noopener"; ay.appendChild(ls);
-      var lf = el("a", "ajs-a", "Abrir la carpeta de fotos (Drive)"); lf.href = "https://drive.google.com/drive/folders/" + ACERVO_CARPETA; lf.target = "_blank"; lf.rel = "noopener"; ay.appendChild(lf);
-      ay.appendChild(el("p", "ajs-t warn", "Zona delicada"));
-      var bl = el("button", "ajs-peligro", "Preparar para uso real (borrar datos de prueba)"); bl.onclick = abrirLimp; ay.appendChild(bl);
+    if (!S.manager){
+      var ua = document.createElement("details"); ua.className = "card ua"; ua.id = "usoApar"; ua.open = !!S.uaAb;
+      var us = el("summary", null, ""); var usi = el("span", "ti"); usi.appendChild(ico("ajustes")); us.appendChild(usi); us.appendChild(el("b", null, "Ajustes")); ua.appendChild(us);
+      ua.addEventListener("toggle", function(){ S.uaAb = ua.open; });
+      ua.appendChild(ajustesCuerpo()); f.appendChild(ua);
     }
-    ua.appendChild(ay); f.appendChild(ua);
     return f;
   }
 
@@ -5501,7 +5510,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var PC_ITEMS = [
     ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Planificación", "2"], ["Resumen", "trabajo", "Registros", "3"],
     ["Campo", "riego", "Riego", "4"], ["Campo", "aplic", "Aplicaciones y stock", "5"], ["Campo", "cosecha", "Cosecha y bodega", "6"], ["Campo", "medidores", "Medidores", "7"], ["Campo", "campo", "Mi campo", "8"],
-    ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""], ["Personas", "legal", "Legal", ""]
+    ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""], ["Personas", "legal", "Legal", ""], ["Sistema", "ajustes", "Ajustes", ""]
   ];
   function pcTitulo(k){ var r = PC_ITEMS.filter(function(x){ return x[1] === k; })[0]; return r ? r[2] : "Centro de control"; }
   function pcSync(){
@@ -6231,6 +6240,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.screen === "terceros" && S.manager) return setView("terceros", buildTerceros);
     if (S.screen === "medidores" && S.manager) return setView("medidores", buildMedidores);
     if (S.screen === "cosecha" && S.manager) return setView("cosecha", buildCosecha);
+    if (S.screen === "ajustes" && S.manager) return setView("ajustes", buildAjustes);
     if (PC) return setView("homepc", buildCentro);
     setView("home", buildHome);
   }

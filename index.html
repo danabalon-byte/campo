@@ -243,6 +243,7 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .cal .d.fin{opacity:.7}
 .cal .b{font:700 13px/1 var(--font-body); min-width:22px; text-align:center; padding:3px 4px; border-radius:7px; background:var(--accent); color:var(--on-accent)}
 .cal .b.w{background:var(--wood); color:#fff}
+.cal .b.a{background:transparent; color:var(--fg); border:1.5px solid var(--accent)}
 .cal .b.p{background:transparent; color:var(--fg); border:1.5px dashed var(--muted)}
 .mes{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .mes b{font-family:var(--font-display); font-size:18px; text-transform:capitalize}
@@ -1012,6 +1013,21 @@ html.pc .cmdk:not([hidden]){display:flex}
     <button id="pmCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="agSheet" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="agTitle">
+    <h2 id="agTitle">Agendar trabajador</h2>
+<div class="sbody">
+    <div class="field"><label for="agNombre">¿Quién viene?</label><input type="text" id="agNombre" maxlength="60" placeholder="Ej: Corina"></div>
+    <div class="field"><label for="agCargo">A cargo de</label><select id="agCargo"></select></div>
+    <div class="field"><label for="agDesde">Desde</label><input type="date" id="agDesde"></div>
+    <div class="field"><label for="agHasta">Hasta (último día)</label><input type="date" id="agHasta"></div>
+    <div class="field"><label for="agNota">Qué hará o nota (opcional)</label><textarea id="agNota" maxlength="300" placeholder="Ej: apoyo en riego y limpieza"></textarea></div>
+    <p class="note">Queda anotado en el «Calendario» y en «Personal». No descuenta días de nadie.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="agOk">Agendar</button>
+    <button id="agCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="auSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="auTitle">
     <h2 id="auTitle">Registrar ausencia</h2>
@@ -1374,7 +1390,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
   }
   aplicarTema(temaGuardado());
-  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, corr:[], psSkip:{}, consAb:null, consTxt:null, consDraft:{}, permisos:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
+  var S = { db:null, uid:null, owner:false, nombre:"", dias:[], okEq:false, okDias:false, noWrite:false, team:{}, subs:{}, view:"", cuarteles:[], screen:"home", manager:false, personal:[], jornada:null, jFecha:"", arboles:[], filtroSector:"", trabajos:[], consultas:[], legal:[], ausDet:{}, corr:[], psSkip:{}, consAb:null, consTxt:null, consDraft:{}, permisos:[], agendados:[], pres:{}, saldos:{}, pmMes:"", productos:[], aplicaciones:[], movimientos:[], solicitudes:[], riegos:[], plan:[], tareas:[], ideas:[], agVista:"dia", agFecha:"", agMes:"", idTag:"Todas", idRes:false, cuaAb:{}, terceros:[], jterc:[], tarifas:{}, abonos:[], semT:{}, jconf:{ sem:42 }, medidores:[], lecturas:[], medSel:"", cosechas:[], cosconf:{}, cosSel:0, cosTab:"cosecha", bodega:[], ventas:[] };
 
   var fmtF = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
   var fmtH = new Intl.DateTimeFormat("es-CL",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
@@ -1492,7 +1508,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 34;
+  var GUIA_V = 35;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1554,10 +1570,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
+    ["Personal y trabajadores agendados", "En la barra de abajo, «Personal» (se abre como «Trabajadores») junta lo del equipo: lo que requiere tu respuesta, accesos a «Pedir días», «Agendar trabajador», «Calendario», «Terceros y jornadas» y «Horarios del equipo», y quién trabaja hoy. Con «Agendar trabajador» anotas quién viene, qué días y a cargo de quién. Aparece en el «Calendario» con borde de línea continua y no descuenta días de nadie.", 35, "manager"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
     ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un círculo para encuadrar el medidor; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto».", 34, "manager"],
-    ["Fecha de la lectura y de la foto", "La fecha de la lectura es la que está escrita en «Anotar lectura» (por defecto, hoy). Si anotas una lectura de otro día, cámbiala a mano. Ayuda de la app: al elegir una foto de la galería, si la foto trae la fecha en que se sacó y es distinta de la escrita, aparece «La foto se sacó el… » y el botón «Usar la fecha de la foto»; la app nunca cambia la fecha sola. NO avisa en estos casos: (1) fotos tomadas con «Tomar foto con marco guía», que se sacan en el momento y no traen fecha; (2) fotos que llegaron por WhatsApp, capturas de pantalla o fotos editadas, porque pierden la fecha; (3) la segunda foto, que no cambia la fecha de la lectura. En esos casos, revisa tú la fecha antes de guardar. Ejemplo: la foto del viernes que se sube el lunes desde la galería se ofrece con fecha del viernes; si te llegó por WhatsApp, escribe tú el viernes.", 34, "manager"],
+    ["Fecha de la lectura y de la foto", "La fecha de la lectura es la que está escrita en «Anotar lectura» (por defecto, hoy). Si anotas una lectura de otro día, cámbiala a mano. Ayuda de la app: al elegir una foto de la galería, si la foto trae la fecha en que se sacó y es distinta de la escrita, aparece “La foto se sacó el…” y el botón «Usar la fecha de la foto»; la app nunca cambia la fecha sola. NO avisa en estos casos: (1) fotos tomadas con «Tomar foto con marco guía», que se sacan en el momento y no traen fecha; (2) fotos que llegaron por WhatsApp, capturas de pantalla o fotos editadas, porque pierden la fecha; (3) la segunda foto, que no cambia la fecha de la lectura. En esos casos, revisa tú la fecha antes de guardar. Ejemplo: la foto del viernes que se sube el lunes desde la galería se ofrece con fecha del viernes; si te llegó por WhatsApp, escribe tú el viernes.", 34, "manager"],
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
@@ -1571,6 +1588,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 35, f: "2026-11-12", t: "Personal y trabajadores agendados", d: "Nueva pestaña Personal (Trabajadores) con accesos rápidos, quién requiere tu respuesta y quién trabaja hoy. Puedes agendar a un trabajador que viene ciertos días y a cargo de quién; se ve en el calendario y no descuenta días.", g: "Personal y trabajadores agendados" },
     { v: 34, f: "2026-11-12", t: "Lectura automática del caudalímetro", d: "En el pozo la app lee sola las agujas de los dos relojes desde la foto y propone la lectura con dos decimales; tú la confirmas. Hay cámara con marco guía, opción de 2ª foto y una regla para el último dígito del tambor.", g: "Calcular con los relojes" },
     { v: 33, f: "2026-11-12", t: "Dosis por bomba y calendario de permisos", d: "En Aplicar indicas lo que lleva cada bomba, en mL o g, y cuántas bombas; el litraje se puede cambiar. Los días del calendario de Permisos se tocan para pedir días libres. La barra de abajo muestra cinco accesos completos.", g: "Dosis por bomba" },
     { v: 32, f: "2026-11-09", t: "Lecturas de los medidores más ordenadas", d: "Un gráfico con el consumo de cada lectura y las lecturas agrupadas por mes, con el total del mes y una sola línea por lectura.", g: "Lecturas por mes y consumo" },
@@ -1701,6 +1719,29 @@ html.pc .cmdk:not([hidden]){display:flex}
   $("pmDesde").onchange = $("pmHasta").onchange = pmRefrescar;
   $("pmDur").onchange = $("pmModo").onchange = function(){ if ($("pmModo").value === "total" && !$("pmDur").value && !$("pmDias").value) $("pmDias").value = "1"; pmRefrescar(); };
   $("pmDias").oninput = pmRefrescar;
+  /* Agendar trabajador: quién viene, qué días y a cargo de quién. No toca los saldos de días de nadie. */
+  function agVigentes(hoy){ return S.agendados.filter(function(a){ return a.hasta >= hoy; }).slice().sort(function(a, b){ return a.desde < b.desde ? -1 : a.desde > b.desde ? 1 : 0; }); }
+  function abrirAgenda(d1){
+    if (typeof d1 !== "string") d1 = null;
+    $("agNombre").value = ""; $("agNota").value = "";
+    var sel = $("agCargo"); sel.replaceChildren(); var v = auPersonas(), vistos = [];
+    Object.keys(v).forEach(function(k){ if (vistos.indexOf(v[k]) < 0){ vistos.push(v[k]); var o = document.createElement("option"); o.textContent = v[k]; sel.appendChild(o); } });
+    if (S.nombre && vistos.indexOf(S.nombre) >= 0) sel.value = S.nombre;
+    var hoy = fecha(); $("agDesde").value = d1 || hoy; $("agHasta").value = d1 || hoy; $("agSheet").hidden = false;
+  }
+  $("agDesde").onchange = function(){ if (!$("agHasta").value || $("agHasta").value < $("agDesde").value) $("agHasta").value = $("agDesde").value; };
+  $("agCancel").onclick = function(){ $("agSheet").hidden = true; };
+  $("agOk").onclick = async function(){
+    var nom = $("agNombre").value.trim(), d = $("agDesde").value, h = $("agHasta").value;
+    if (nom.length < 2){ toast("Escribe quién viene."); $("agNombre").focus(); return; }
+    if (!d || !h || h < d){ toast("Revisa las fechas: el último día no puede ser antes del primero."); return; }
+    var b = $("agOk"); b.disabled = true;
+    try {
+      await S.db.collection("agendados").doc().set({ nombre: nom, aCargo: $("agCargo").value, desde: d, hasta: h, dias: contarDias(d, h), nota: $("agNota").value.trim(), descuenta: false, uid: S.uid, por: S.nombre, ts: new Date().toISOString() });
+      $("agSheet").hidden = true; toast("Trabajador agendado");
+    } catch (err){ toast("No se pudo agendar. Revisa tu señal e intenta de nuevo."); }
+    b.disabled = false;
+  };
   function abrirPermiso(d1){
     if (typeof d1 !== "string") d1 = null;
     $("pmTipo").selectedIndex = 0; $("pmDur").value = ""; $("pmModo").value = "hasta"; var hoy = fecha(); $("pmDesde").min = hoy; $("pmHasta").min = hoy; var sig = addDays(hoy, 1); while ([0, 6].indexOf(new Date(sig + "T12:00:00Z").getUTCDay()) >= 0) sig = addDays(sig, 1); $("pmDesde").value = d1 || sig; $("pmHasta").value = d1 || sig;
@@ -1902,10 +1943,12 @@ html.pc .cmdk:not([hidden]){display:flex}
       vivos.filter(function(x){ return x.desde <= fd && x.hasta >= fd; }).slice(0, 2).forEach(function(x){
         c.appendChild(el("span", "b " + (pmEstado(x) === "pendiente" ? "p " : "") + (colores[x.uid] ? "w" : ""), iniciales(x.por)));
       });
+      var nPm = c.querySelectorAll(".b").length;
+      S.agendados.filter(function(a){ return a.desde <= fd && a.hasta >= fd; }).slice(0, Math.max(0, 2 - nPm)).forEach(function(a){ var m = el("span", "b a", iniciales(a.nombre)); m.setAttribute("title", a.nombre + " (agendado, a cargo de " + a.aCargo + ")"); c.appendChild(m); });
       g.appendChild(c);
     }
     cal.appendChild(g);
-    cal.appendChild(el("p", "note", "Relleno: aprobado. Borde punteado: por aprobar. Número rojo y subrayado: feriado."));
+    cal.appendChild(el("p", "note", "Relleno: aprobado. Borde punteado: por aprobar. Borde con línea continua: trabajador agendado. Número rojo y subrayado: feriado."));
     var pf = feriadosProx(hoy, 6), fd2 = document.createElement("details"); fd2.appendChild(el("summary", null, "Próximos feriados"));
     var fl = el("div", "fl");
     pf.forEach(function(k){ var r2 = el("div", "row"); r2.appendChild(el("span", null, FERIADOS[k])); r2.appendChild(el("b", null, dia(k))); fl.appendChild(r2); });
@@ -1946,7 +1989,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     aplic: "M9 3h6M10 3v6.500L4.800 19a2 2 0 0 0 1.800 3h10.800a2 2 0 0 0 1.800-3L14 9.500V3M7.500 15h9",
     riego: "M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z",
     campo: "M12 21V11M12 11C6 11 4 7 4 3.500c6 0 8 3 8 7.500zM12 16c5 0 8-3 8-7.500-5 0-8 3-8 7.500z",
-    personal: "M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM20 20v-1a4 4 0 0 0-3-3.800M15.500 4.300a3.500 3.500 0 0 1 0 6.400",
+    personal: "M12 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM5 21v-1.500a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5V21M7.500 6.500h9",
     calendario: "M7 3v3M17 3v3M4 8.500h16M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
     caja: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
@@ -1964,7 +2007,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     aplic:"M7.500 15h9l2.500 4a2 2 0 0 1-1.600 3H6.600A2 2 0 0 1 5 19z",
     riego:"M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z",
     campo:"M12 11C6 11 4 7 4 3.500c6 0 8 3 8 7.500zM12 16c5 0 8-3 8-7.500-5 0-8 3-8 7.500z",
-    personal:"M10 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM4 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1z",
+    personal:"M12 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM5 21v-1.500a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5V21z",
     calendario:"M4 8.500h16V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z",
     caja:"M3 7l9 4 9-4-9-4z",
     alerta:"M12 4l9 16H3z",
@@ -1972,7 +2015,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     permisos:"M5 4h14v17H5z",
     agenda:"M4 8.500h16V6a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z"
   };
-  ICON.terceros = ICON.personal;
+  ICON.terceros = "M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7zM20 20v-1a4 4 0 0 0-3-3.800M15.500 4.300a3.500 3.500 0 0 1 0 6.400";
   function ico(name){
     var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
@@ -2016,7 +2059,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var t = el("div", "hero-top"); t.appendChild(arte());
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
-  var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Personal", "Quién trabaja hoy"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Trabajadores", "Quién trabaja hoy, permisos y agendados"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
@@ -2121,6 +2164,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (S.manager) medPendientes().forEach(function(m){
       out.push({ sev: 3, titulo: "Anota la lectura: " + m.nombre, lineas: [["pm", "Medidor", m.frec === "diaria" ? "hoy no hay lectura" : "esta semana no hay lectura (se anota los lunes)"]], acciones: [{ txt: "Anotar lectura", pri: true, aria: "Anotar la lectura de " + m.nombre, fn: function(){ S.screen = "medidores"; S.medSel = m.id; render(); abrirLectura(m); } }], ir: function(){ S.screen = "medidores"; S.medSel = m.id; render(); } });
     });
+    if (S.manager) agVigentes(fecha()).filter(function(a){ return a.desde <= fecha(); }).forEach(function(a){
+      out.push({ sev: 4, titulo: "Hoy viene " + a.nombre, lineas: [["pm", "Agendado", "a cargo de " + a.aCargo + " · hasta el " + fmtD2(a.hasta)]], acciones: [], ir: function(){ S.screen = "personal"; render(); } });
+    });
     if (S.owner && corrPend().length){ var ncp = corrPend().length; out.push({ sev: 3, titulo: ncp + (ncp === 1 ? " corrección de horario por aprobar" : " correcciones de horario por aprobar"), lineas: [["pm", "Horarios", "las horas cuentan cuando las apruebes"]], acciones: [], ir: function(){ S.screen = "horarios"; render(); } }); }
     (function(){ var e0 = estado(S.dias, Date.now()); if (e0.st === "open" && e0.min >= 600) out.push({ sev: 2, titulo: "Llevas " + dur(e0.min) + " en turno", lineas: [["pm", "Salida", "si ya terminaste, registra tu salida"]], acciones: [{ txt: "Registrar salida", pri: true, aria: "Registrar tu salida", fn: function(){ pedir("out"); } }], ir: function(){ pedir("out"); } }); })();
     if (S.owner) ausPorDefinir().forEach(function(x){
@@ -2145,10 +2191,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     return out.sort(function(a, b){ return a.sev - b.sev; });
   }
   function buildNav(){
-    var nav = $("nav"), cur = S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros" || S.screen === "legal" ? "" : S.screen, hy = fecha();
+    var nav = $("nav"), cur = S.screen === "legal" ? "" : S.manager && (S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "personal" : !S.manager && (S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
-    NAV.concat(S.manager ? [["medidores", "Medidores"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
+    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidores"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -4743,6 +4789,29 @@ html.pc .cmdk:not([hidden]){display:flex}
   function buildPersonal(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("personal"));
+    var hoyP = fecha();
+    if (S.owner){
+      var nPen = nPend(); if (nPen){
+        var rq = el("section", "card sect prio"); rq.appendChild(el("h2", null, "Requiere tu respuesta"));
+        rq.appendChild(el("p", "sub", nPen === 1 ? "1 permiso por aprobar" : nPen + " permisos por aprobar"));
+        var rb = el("button", "primary", "Revisar permisos"); rb.type = "button"; rb.onclick = function(){ S.screen = "permisos"; render(); }; rq.appendChild(rb); f.appendChild(rq);
+      }
+    }
+    var acc = el("section", "sect"); var ag0 = el("div", "tiles");
+    [["Pedir días", "Vacaciones o permiso", "permisos", function(){ abrirPermiso(); }], ["Agendar trabajador", "Quién viene y a cargo de quién", "personal", function(){ abrirAgenda(); }], ["Calendario", "Permisos y agendados", "calendario", function(){ S.screen = "permisos"; render(); }], ["Terceros y jornadas", "Quién trabajó y cuánto", "terceros", function(){ S.screen = "terceros"; render(); }], ["Horarios del equipo", "Entradas y salidas", "horarios", function(){ S.screen = "horarios"; render(); }]].forEach(function(t){
+      var tb = el("button", "tile"); tb.type = "button"; var ti = el("span", "ti"); ti.appendChild(ico(t[2])); tb.appendChild(ti); tb.appendChild(el("b", null, t[0])); tb.appendChild(el("small", null, t[1])); tb.onclick = t[3]; ag0.appendChild(tb);
+    });
+    acc.appendChild(ag0); f.appendChild(acc);
+    var vg = agVigentes(hoyP);
+    var agc = el("section", "card sect"); agc.id = "agendados"; agc.appendChild(el("h2", null, "Trabajadores agendados"));
+    if (!vg.length) agc.appendChild(el("p", "note", "No hay trabajadores agendados. Usa «Agendar trabajador» cuando alguien vaya a venir."));
+    vg.slice(0, 20).forEach(function(a){
+      var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, a.nombre));
+      if (a.desde <= hoyP) wo.appendChild(el("span", "chip ok", "Hoy")); bx.appendChild(wo);
+      bx.appendChild(el("p", "sub", (a.desde === a.hasta ? fmtD2(a.desde) : "Del " + fmtD2(a.desde) + " al " + fmtD2(a.hasta)) + " · a cargo de " + a.aCargo + (a.nota ? " · " + a.nota : "")));
+      var qb = el("button", "small", "Quitar"); qb.type = "button"; qb.onclick = async function(){ qb.disabled = true; try { await S.db.doc("agendados/" + a.id).delete(); toast("Quitado de la agenda"); } catch (e){ qb.disabled = false; toast("No se pudo quitar."); } }; bx.appendChild(qb); agc.appendChild(bx);
+    });
+    f.appendChild(agc);
     var asg = asignaciones(), now = Date.now();
     var activos = asg.filter(function(a){ return a.hi && !a.hs; }).length;
     var c = el("section", "card sect");
@@ -6153,6 +6222,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     }, function(){});
     db.collection("aplicaciones").orderBy("ts", "desc").limit(1000).onSnapshot(function(s){
       S.aplicaciones = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+    }, function(){});
+    db.collection("agendados").orderBy("desde", "desc").limit(300).onSnapshot(function(s){
+      S.agendados = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
     }, function(){});
     db.collection("permisos").orderBy("ts", "desc").limit(500).onSnapshot(function(s){
       S.permisos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();

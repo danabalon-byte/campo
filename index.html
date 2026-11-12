@@ -1293,7 +1293,14 @@ html.pc .cmdk:not([hidden]){display:flex}
     <div class="field"><label for="mdFecha">Fecha de la lectura</label><input type="date" id="mdFecha"></div>
     <div class="field"><label for="mdValor" id="mdValorL">Número que marca</label><input type="text" id="mdValor" inputmode="decimal" maxlength="14" placeholder="Ej: 178363,03"></div>
     <p class="note" id="mdPrev"></p>
+    <div id="mdRelBox" hidden>
+      <div class="field"><label for="mdRelC">Relojes del caudalímetro (opcional): reloj chico «×0.1»</label><input type="text" id="mdRelC" inputmode="decimal" maxlength="5" placeholder="Número al que apunta la punta. Ej: 4"></div>
+      <div class="field"><label for="mdRelG">Reloj grande «×0.01»</label><input type="text" id="mdRelG" inputmode="decimal" maxlength="5" placeholder="Ej: 3,6"></div>
+      <p class="note" id="mdRelRes" aria-live="polite"></p>
+      <button type="button" id="mdRelUsar" hidden>Usar este valor</button>
+    </div>
     <div class="field"><label for="mdFotoBtn">Foto del medidor (opcional)</label>
+      <p class="note" id="mdGuiaFoto"></p>
       <input type="file" id="mdFoto" accept="image/*" hidden>
       <button type="button" id="mdFotoBtn">Tomar o elegir una foto</button>
       <img id="mdFotoVista" alt="Vista previa de la foto del medidor" hidden style="width:100%;border-radius:14px;margin-top:8px">
@@ -1466,7 +1473,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 33;
+  var GUIA_V = 34;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1530,6 +1537,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
+    ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar o elegir una foto» del medidor. Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, toma otra desde más lejos.", 34, "manager"],
+    ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
+    ["Calcular con los relojes", "En el caudalímetro del pozo, escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -1541,6 +1551,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 34, f: "2026-11-12", t: "Lectura del caudalímetro con los relojes", d: "En el pozo puedes escribir lo que marcan los dos relojes rojos y la app calcula la lectura con dos decimales. Hay una guía para tomar la foto del medidor y una regla para el último dígito del tambor.", g: "Calcular con los relojes" },
     { v: 33, f: "2026-11-12", t: "Dosis por bomba y calendario de permisos", d: "En Aplicar indicas lo que lleva cada bomba, en mL o g, y cuántas bombas; el litraje se puede cambiar. Los días del calendario de Permisos se tocan para pedir días libres. La barra de abajo muestra cinco accesos completos.", g: "Dosis por bomba" },
     { v: 32, f: "2026-11-09", t: "Lecturas de los medidores más ordenadas", d: "Un gráfico con el consumo de cada lectura y las lecturas agrupadas por mes, con el total del mes y una sola línea por lectura.", g: "Lecturas por mes y consumo" },
     { v: 31, f: "2026-11-09", t: "Nueva vista de riegos programados", d: "Un tablero de la semana por sector y día, la línea de tiempo del día y la «Vista en vivo» con pulsador: qué se riega ahora, cuánto falta y qué sigue.", g: "Vista de riegos programados" },
@@ -3380,6 +3391,25 @@ html.pc .cmdk:not([hidden]){display:flex}
     var n = Number(x); return isFinite(n) ? n : null;
   }
   function fmtNum(n, d){ return Number(n).toLocaleString("es-CL", { minimumFractionDigits: d == null ? 0 : d, maximumFractionDigits: d == null ? 2 : d }); }
+  /* LECTURA-AGUA:INICIO (la revisa pruebas/lectura-agua.js; no cambies estos marcadores)
+     Caudalímetro del pozo (DN 50): tambor de 7 dígitos = m³ enteros; reloj chico «×0.1» (una vuelta = 1 m³) y reloj grande «×0.01» (una vuelta = 0,1 m³).
+     s = posición de la punta del reloj chico (0 a 10), b = posición de la punta del reloj grande (0 a 10).
+     El reloj grande da las centésimas; el chico solo decide la décima: t = redondear(s − b/10 + 0,3). El +0,3 corrige que la aguja chica queda en promedio
+     0,3 bajo lo ideal (calibrado con lecturas a ojo de Diego, 12 nov 2026). Lectura = tambor + t/10 + b/100. Precisión: ±0,05 m³ con la décima bien elegida.
+     Dudosa si el residuo pasa de 0,4 (la décima queda entre dos valores) o si cae en el acarreo (cerca del 0 o del 10). */
+  function lecturaAgua(tambor, s, b){
+    if (!isFinite(tambor) || !isFinite(s) || !isFinite(b) || s < 0 || s > 10 || b < 0 || b > 10) return null;
+    if (b >= 10) b = 0;
+    if (s >= 10) s = 0;
+    var d = s - b / 10 + 0.3, t0 = Math.round(d), res = d - t0, t = ((t0 % 10) + 10) % 10;
+    var acarreo = t0 < 0 || t0 >= 10, aviso = "";
+    var valor = Math.round((Math.floor(tambor) + t / 10 + b / 100) * 100 + 1e-6) / 100;
+    if (acarreo) aviso = "Los relojes están justo en el cambio de m³: revisa que el último dígito del tambor esté bien anotado.";
+    else if (t >= 8) aviso = "El reloj chico va por el 8 o el 9: el último dígito del tambor debe ser el de abajo (el que todavía no avanzó).";
+    else if (t <= 1) aviso = "El reloj chico va por el 0 o el 1: el último dígito del tambor debe ser el que ya avanzó.";
+    return { valor: valor, t: t, residuo: Math.round(res * 100) / 100, dudosa: acarreo || Math.abs(res) > 0.4, aviso: aviso };
+  }
+  /* LECTURA-AGUA:FIN */
   function medidoresAct(){ return S.medidores.filter(function(m){ return m.activo !== false; }).sort(function(a, b){ return (a.orden || 99) - (b.orden || 99); }); }
   function medLect(mid){ return S.lecturas.filter(function(l){ return l.mid === mid; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (String(a.ts) < String(b.ts) ? -1 : 1); }); }
   function difDias(a, b){ return Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 86400000); }
@@ -3402,10 +3432,29 @@ html.pc .cmdk:not([hidden]){display:flex}
     return o;
   }
   var mdEd = null, mdFotoD = null, mdForzar = false, mmEd = null, quitarL = null;
+  /* Notas bajo «Foto del medidor». El texto largo está en la guía (pasos «Foto del medidor» y «Último dígito girando»). */
+  var GUIA_FOTO_AGUA = "De frente, nítida y con la tapa abierta del todo. Que se vean el tambor, los dos relojes y el «m³», sin reflejos. Si sale recortada, toma otra más lejos.";
+  var GUIA_FOTO_LUZ = "De frente y nítida, con el medidor completo (marco, placa y ventana de dígitos); si sale recortada, toma otra desde más lejos. Si el último dígito está girando, anota el número que está subiendo.";
+  var GUIA_FOTO_OTRO = "De frente, nítida y con el medidor completo. Evita los reflejos.";
+  function mdRelCalc(){
+    var m = mdEd; if (!m || m.tipo !== "agua"){ return; }
+    var c = $("mdRelC").value.trim(), g = $("mdRelG").value.trim(), r = $("mdRelRes"), u = $("mdRelUsar"); u.hidden = true;
+    if (!c && !g){ r.textContent = ""; return; }
+    var tam = leeNum($("mdValor").value);
+    if (tam == null){ r.textContent = "Escribe primero el número del tambor arriba."; return; }
+    var s = leeNum(c), b = leeNum(g);
+    if (s == null || b == null || s < 0 || s > 10 || b < 0 || b > 10){ r.textContent = "Escribe un número entre 0 y 10 en cada reloj."; return; }
+    var x = lecturaAgua(tam, s, b);
+    r.textContent = "Con los relojes: " + fmtNum(x.valor, 2) + " " + (m.unidad || "m³") + (x.dudosa ? ". Revisa las agujas: no calzan entre sí o están en el cambio de m³. " : ". ") + x.aviso;
+    u.hidden = false; u.onclick = function(){ $("mdValor").value = String(x.valor).replace(".", ","); mdForzar = false; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura"; };
+  }
+  ["mdValor", "mdRelC", "mdRelG"].forEach(function(id){ $(id).addEventListener("input", mdRelCalc); });
   function abrirLectura(m){
     mdEd = m; mdFotoD = null; mdForzar = false;
     $("mdTitle").textContent = "Anotar lectura · " + m.nombre; $("mdFecha").value = fecha(); $("mdFecha").max = fecha(); $("mdValor").value = ""; $("mdNota").value = "";
     $("mdValorL").textContent = "Número que marca (" + (m.unidad || "") + ")"; $("mdAviso").hidden = true; $("mdOk").textContent = "Guardar lectura";
+    $("mdRelBox").hidden = m.tipo !== "agua"; $("mdRelC").value = ""; $("mdRelG").value = ""; $("mdRelRes").textContent = ""; $("mdRelUsar").hidden = true;
+    $("mdGuiaFoto").textContent = m.tipo === "agua" ? GUIA_FOTO_AGUA : m.tipo === "luz" ? GUIA_FOTO_LUZ : GUIA_FOTO_OTRO;
     $("mdFotoVista").hidden = true; $("mdFotoQuitar").hidden = true; $("mdFotoBtn").textContent = "Tomar o elegir una foto";
     var L = medLect(m.id), u = L[L.length - 1]; $("mdPrev").textContent = u ? "Lectura anterior: " + fmtNum(u.valor, 2) + " " + (m.unidad || "") + " el " + fmtD2(u.fecha) + "." : "Es la primera lectura: sirve como punto de partida.";
     $("mdSheet").hidden = false; $("mdValor").focus();
@@ -3435,7 +3484,10 @@ html.pc .cmdk:not([hidden]){display:flex}
         try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: mdFotoD, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotoId = fr.id; }
         catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
       }
-      await S.db.collection("lecturas").add({ mid: m.id, nombre: m.nombre, fecha: f, valor: v, unidad: m.unidad || "", fotoId: fotoId, nota: $("mdNota").value.trim(), uid: S.uid, por: S.nombre, ts: new Date().toISOString() });
+      var lec = { mid: m.id, nombre: m.nombre, fecha: f, valor: v, unidad: m.unidad || "", fotoId: fotoId, nota: $("mdNota").value.trim(), uid: S.uid, por: S.nombre, ts: new Date().toISOString() };
+      /* Si se usaron los relojes, se guardan las posiciones de las agujas para medir después qué tan precisa fue la lectura. */
+      if (m.tipo === "agua"){ var rc = leeNum($("mdRelC").value), rg = leeNum($("mdRelG").value); if (rc != null && rg != null && rc >= 0 && rc <= 10 && rg >= 0 && rg <= 10){ lec.rc = rc; lec.rg = rg; } }
+      await S.db.collection("lecturas").add(lec);
       $("mdSheet").hidden = true; toast("Lectura guardada");
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;

@@ -493,6 +493,11 @@ span.ag-ck{border-style:dashed}
 .cua-alert{display:inline-block; font-size:14px; font-weight:700; padding:1px 9px; border-radius:99px; background:var(--alert-bg); color:var(--alert); margin-top:4px}
 .cua-all{display:flex; justify-content:flex-end; margin:4px 0}
 @media (prefers-reduced-motion: no-preference){ .cua-t .chev{transition:transform .2s} }
+.ajs-t{margin:14px 0 2px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted,#7a7561); font-weight:700} .ajs-t.warn{color:var(--bad,#c0392b)}
+.ajs-seg{display:flex; gap:8px} .ajs-seg button{flex:1; text-align:center; margin:6px 0} .ajs-seg button[aria-pressed=true]{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.ajs-main{background:var(--accent); color:var(--on-accent); border-color:var(--accent); font-weight:700; text-align:center} .ajs-main:disabled{opacity:.6}
+.ajs-a{display:flex; align-items:center; min-height:48px; margin:6px 0; padding:10px 14px; border:1px solid var(--line,#cfcab8); border-radius:12px; color:var(--fg); text-decoration:none; box-sizing:border-box}
+.ajs-peligro{border-color:var(--bad,#c0392b); color:var(--bad,#c0392b)}
 .ua{padding:6px 14px} .ua summary{list-style:none; gap:12px; color:var(--fg); min-height:60px} .ua summary::-webkit-details-marker{display:none} .ua summary b{font-family:var(--font-display); font-size:17px; flex:1} .ua summary .ti{width:40px;height:40px;border-radius:12px;background:var(--slate-bg);color:var(--slate);display:grid;place-items:center} .ua summary .ti svg{width:23px;height:23px} .ua summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin-right:6px;transition:transform .15s} .ua[open] summary::after{transform:rotate(-135deg)} .ua .sect{padding:4px 0 10px}.cua-t .ti{width:40px;height:40px;border-radius:12px;background:var(--wood-bg);color:var(--wood);display:grid;place-items:center;flex:none} .cua-t .ti svg{width:23px;height:23px} .sec-r{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 4px;box-shadow:none;color:var(--fg)} .sec-r:first-child{border-top:0} .sec-r .tx{flex:1;display:grid;gap:1px;min-width:0} .sec-r .tx b{font-family:var(--font-display);font-size:17px} .sec-r .rs{font-size:14px;color:var(--muted);font-weight:400;display:block} .sec-r .chev{flex:none;width:24px;height:24px;color:var(--muted)} .sec-r .chev{transition:transform .15s} .sec-r.on .chev{transform:rotate(180deg)}  .sec-d{background:var(--bg);border-radius:14px;padding:12px 14px;margin:2px 0 10px;display:grid;gap:8px}.nav button.hay-alerta:not([aria-current=page]) .ni{background:var(--alert-bg); color:var(--alert)} .nav button.hay-alerta .nb i{background:var(--alert)} .nav button.hay-aviso:not([aria-current=page]) .ni{background:var(--lemon-bg); color:var(--lemon-fg)} .nav button.hay-aviso .nb i{background:var(--lemon-fg); color:var(--lemon-bg)}
 .tile.tile-alerta{border-color:var(--alert)} .tile.tile-alerta{--mc:var(--alert); --mb:var(--alert-bg)} .tile.tile-alerta small{color:var(--alert); font-weight:700}
 .alerta-campo{background:var(--alert-bg); border:1.5px solid var(--alert); border-radius:20px; padding:14px; display:grid; gap:8px} .alerta-campo.suave{background:var(--lemon-bg); border-color:var(--lemon-fg)}
@@ -1377,6 +1382,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var TZ = "America/Santiago";
   var $ = function(id){ return document.getElementById(id); };
   try { if (localStorage.getItem("campo_sol") === "1") document.documentElement.classList.add("sol"); } catch (e0) {}
+  var ACERVO_SHEET = "1KcjwMJd_H9Z7YKZmVmK0OkdSNM9MT16Bf0RiE_eoWRQ", ACERVO_CARPETA = "1rqYqv8zA77rr7oOmibhOI3AILDj2f-_l";
   var TEMAS = ["auto", "light", "dark"], TEMA_TXT = { auto: "automática", light: "clara", dark: "nocturna" };
   function temaGuardado(){ try { var t = localStorage.getItem("campo_tema"); return TEMAS.indexOf(t) >= 0 ? t : "auto"; } catch (e) { return "auto"; } }
   function aplicarTema(t){
@@ -1513,7 +1519,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 36;
+  var GUIA_V = 37;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1575,6 +1581,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
+    ["Ajustes: color y respaldo", "Al final de Inicio, «Ajustes» reúne la ayuda y la apariencia: elige «Automática», «Día» o «Noche» según te acomode. Diego además ve «Respaldar ahora» (copia todo al Sheets y a Drive; empieza en un minuto) y accesos al acervo y a la carpeta de fotos. «Preparar para uso real» quedó al final, en «Zona delicada».", 37, ""],
     ["Registros de Yolanda y aviso", "Lo que Yolanda registra (trabajo, cosecha, riego o aplicación) queda aprobado de inmediato, sin «Por revisar». Cada registro suma un aviso y un script del respaldo te envía un solo WhatsApp con todo lo nuevo (si falla, te llega un correo). Lo antiguo que quedó pendiente se sigue autorizando como siempre.", 36, "owner"],
     ["Personal y trabajadores agendados", "En la barra de abajo, «Personal» (se abre como «Trabajadores») junta lo del equipo: lo que requiere tu respuesta, accesos a «Pedir días», «Agendar trabajador», «Calendario», «Terceros y jornadas» y «Horarios del equipo», y quién trabaja hoy. Con «Agendar trabajador» anotas quién viene, qué días y a cargo de quién. Aparece en el «Calendario» con borde de línea continua y no descuenta días de nadie.", 35, "manager"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
@@ -1594,6 +1601,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 37, f: "2026-11-12", t: "Ajustes", d: "«Uso y apariencia» pasa a llamarse Ajustes. Puedes elegir pantalla Día, Noche o Automática con un toque. Diego tiene «Respaldar ahora» y accesos al acervo; las fotos del respaldo ahora tienen nombres legibles.", g: "Ajustes: color y respaldo" },
     { v: 36, f: "2026-11-12", t: "Registros directos y aviso", d: "Lo que registra Yolanda ya no queda por revisar: cuenta al tiro y te llega un solo WhatsApp con el resumen.", g: "Registros de Yolanda y aviso" },
     { v: 35, f: "2026-11-12", t: "Personal y trabajadores agendados", d: "Nueva pestaña Personal (Trabajadores) con accesos rápidos, quién requiere tu respuesta y quién trabaja hoy. Puedes agendar a un trabajador que viene ciertos días y a cargo de quién; se ve en el calendario y no descuenta días.", g: "Personal y trabajadores agendados" },
     { v: 34, f: "2026-11-12", t: "Lectura automática del caudalímetro", d: "En el pozo la app lee sola las agujas de los dos relojes desde la foto y propone la lectura con dos decimales; tú la confirmas. Hay cámara con marco guía, opción de 2ª foto y una regla para el último dígito del tambor.", g: "Calcular con los relojes" },
@@ -2385,20 +2393,38 @@ html.pc .cmdk:not([hidden]){display:flex}
       adm.appendChild(rs); f.appendChild(adm);
     }
     var ua = document.createElement("details"); ua.className = "card ua"; ua.id = "usoApar"; ua.open = !!S.uaAb;
-    var us = el("summary", null, ""); var usi = el("span", "ti"); usi.appendChild(ico("ajustes")); us.appendChild(usi); us.appendChild(el("b", null, "Uso y apariencia")); ua.appendChild(us);
+    var us = el("summary", null, ""); var usi = el("span", "ti"); usi.appendChild(ico("ajustes")); us.appendChild(usi); us.appendChild(el("b", null, "Ajustes")); ua.appendChild(us);
     ua.addEventListener("toggle", function(){ S.uaAb = ua.open; });
     var ay = el("div", "sect");
+    ay.appendChild(el("p", "ajs-t", "Ayuda"));
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
     var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
+    ay.appendChild(el("p", "ajs-t", "Apariencia"));
+    var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
+    [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"]].forEach(function(x){
+      var bt = el("button", null, x[1]); bt.id = x[2]; bt.type = "button"; bt.setAttribute("aria-pressed", tm === x[0] ? "true" : "false");
+      bt.onclick = function(){ try { localStorage.setItem("campo_tema", x[0]); } catch (e2) {} aplicarTema(x[0]); render(); }; grpT.appendChild(bt);
+    });
+    ay.appendChild(grpT);
+    ay.appendChild(el("p", "note", "Automática sigue el modo claro u oscuro de tu teléfono."));
     var on = document.documentElement.classList.contains("sol");
     var bs = el("button", null, on ? "Letra grande y contraste: activado" : "Letra grande y más contraste (para el sol)"); bs.setAttribute("aria-pressed", on ? "true" : "false");
     bs.onclick = function(){ var h = document.documentElement.classList; h.toggle("sol"); try { localStorage.setItem("campo_sol", h.contains("sol") ? "1" : "0"); } catch (e1) {} render(); };
     ay.appendChild(bs);
-    var tm = temaGuardado();
-    var bt = el("button", null, "Apariencia: " + TEMA_TXT[tm]); bt.id = "btnTema";
-    bt.onclick = function(){ var n = TEMAS[(TEMAS.indexOf(temaGuardado()) + 1) % TEMAS.length]; try { localStorage.setItem("campo_tema", n); } catch (e2) {} aplicarTema(n); render(); };
-    ay.appendChild(bt);
-    if (S.owner){ var bl = el("button", null, "Preparar para uso real (borrar datos de prueba)"); bl.onclick = abrirLimp; ay.appendChild(bl); }
+    if (S.owner){
+      ay.appendChild(el("p", "ajs-t", "Datos y respaldo"));
+      var rs = S.respEst || {}, ahoraMs = Date.now(),
+        trab = (rs.estado === "trabajando" && ahoraMs - Date.parse(rs.inicio || 0) < 15 * 60000) || !!(S.respPedido && (!rs.pedidoTs || S.respPedido > rs.pedidoTs) && ahoraMs - Date.parse(S.respPedido) < 10 * 60000);
+      var br = el("button", "ajs-main", trab ? "Respaldando… (puede tardar unos minutos)" : "Respaldar ahora"); br.id = "btnRespaldar"; br.type = "button"; br.disabled = !!trab;
+      br.onclick = async function(){ br.disabled = true; try { var t = new Date().toISOString(); await S.db.doc("config/respaldoPedido").set({ ts: t, por: S.nombre }); S.respPedido = t; toast("Pedido enviado. En un minuto empieza a respaldar."); render(); } catch (e3){ br.disabled = false; toast("No se pudo enviar el pedido. Revisa tu señal."); } };
+      ay.appendChild(br);
+      var ult = rs.estado === "error" ? "El último respaldo falló: " + (rs.mensaje || "revisa tu correo") : rs.fecha ? "Último respaldo: " + rs.fecha + (rs.pestanas ? " · " + rs.pestanas + " pestañas, " + (rs.fotos || 0) + " fotos" : "") + (rs.estado === "parcial" ? " (faltan fotos; sigue solo)" : "") : "Todavía no hay un respaldo registrado aquí. Cada día a las 04:00 se hace uno solo.";
+      ay.appendChild(el("p", "note", ult));
+      var ls = el("a", "ajs-a", "Abrir el acervo (Google Sheets)"); ls.href = "https://docs.google.com/spreadsheets/d/" + ACERVO_SHEET + "/"; ls.target = "_blank"; ls.rel = "noopener"; ay.appendChild(ls);
+      var lf = el("a", "ajs-a", "Abrir la carpeta de fotos (Drive)"); lf.href = "https://drive.google.com/drive/folders/" + ACERVO_CARPETA; lf.target = "_blank"; lf.rel = "noopener"; ay.appendChild(lf);
+      ay.appendChild(el("p", "ajs-t warn", "Zona delicada"));
+      var bl = el("button", "ajs-peligro", "Preparar para uso real (borrar datos de prueba)"); bl.onclick = abrirLimp; ay.appendChild(bl);
+    }
     ua.appendChild(ay); f.appendChild(ua);
     return f;
   }
@@ -6275,6 +6301,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     db.collection("cuarteles").onSnapshot(function(s){
       S.cuarteles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
     }, function(){});
+    if (S.owner){ db.doc("config/respaldoEstado").onSnapshot(function(s2){ S.respEst = s2.exists ? s2.data() : {}; render(); }, function(){}); db.doc("config/respaldoPedido").onSnapshot(function(s3){ S.respPedido = s3.exists ? (s3.data().ts || "") : ""; render(); }, function(){}); }
     db.doc("config/jornada").onSnapshot(function(s){ var d = s.exists ? s.data() : {}; S.jconf = { sem: Number(d.sem) || 42 }; render(); }, function(){});
     if (S.manager){
       var qT = function(n){ var c = db.collection(n); return S.owner ? c : c.where("uid", "==", S.uid); };

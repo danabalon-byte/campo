@@ -1437,6 +1437,11 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
 
   var toastT;
+  /* AVISOS: cuando Yolanda registra, queda anotado para que un script envíe UN solo WhatsApp a Diego */
+  function avisar(tipo, texto){
+    if (!(S.manager && !S.owner)) return;
+    try { S.db.collection("avisos").add({ tipo: tipo, texto: texto, por: S.nombre, uid: S.uid, ts: new Date().toISOString(), enviado: false }).catch(function(){}); } catch (e){}
+  }
   function toast(msg){
     var t = $("toast"); t.hidden = false; t.replaceChildren();
     if (/(registrad|guardad|aprobad|cancelad|enviad|agregad|agendad|actualizad|listo)/i.test(msg)){
@@ -1508,7 +1513,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 35;
+  var GUIA_V = 36;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1570,6 +1575,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
+    ["Registros de Yolanda y aviso", "Lo que Yolanda registra (trabajo, cosecha, riego o aplicación) queda aprobado de inmediato, sin «Por revisar». Cada registro suma un aviso y un script del respaldo te envía un solo WhatsApp con todo lo nuevo (si falla, te llega un correo). Lo antiguo que quedó pendiente se sigue autorizando como siempre.", 36, "owner"],
     ["Personal y trabajadores agendados", "En la barra de abajo, «Personal» (se abre como «Trabajadores») junta lo del equipo: lo que requiere tu respuesta, accesos a «Pedir días», «Agendar trabajador», «Calendario», «Terceros y jornadas» y «Horarios del equipo», y quién trabaja hoy. Con «Agendar trabajador» anotas quién viene, qué días y a cargo de quién. Aparece en el «Calendario» con borde de línea continua y no descuenta días de nadie.", 35, "manager"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
@@ -1588,6 +1594,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 36, f: "2026-11-12", t: "Registros directos y aviso", d: "Lo que registra Yolanda ya no queda por revisar: cuenta al tiro y te llega un solo WhatsApp con el resumen.", g: "Registros de Yolanda y aviso" },
     { v: 35, f: "2026-11-12", t: "Personal y trabajadores agendados", d: "Nueva pestaña Personal (Trabajadores) con accesos rápidos, quién requiere tu respuesta y quién trabaja hoy. Puedes agendar a un trabajador que viene ciertos días y a cargo de quién; se ve en el calendario y no descuenta días.", g: "Personal y trabajadores agendados" },
     { v: 34, f: "2026-11-12", t: "Lectura automática del caudalímetro", d: "En el pozo la app lee sola las agujas de los dos relojes desde la foto y propone la lectura con dos decimales; tú la confirmas. Hay cámara con marco guía, opción de 2ª foto y una regla para el último dígito del tambor.", g: "Calcular con los relojes" },
     { v: 33, f: "2026-11-12", t: "Dosis por bomba y calendario de permisos", d: "En Aplicar indicas lo que lleva cada bomba, en mL o g, y cuántas bombas; el litraje se puede cambiar. Los días del calendario de Permisos se tocan para pedir días libres. La barra de abajo muestra cinco accesos completos.", g: "Dosis por bomba" },
@@ -2699,6 +2706,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     try {
       var apRef = await S.db.collection("aplicaciones").add({ fecha: hoy, ts: now.toISOString(), items: items, productoId: p.id, producto: lista.map(function(it){ return it.p.nombre; }).join(" + "), unidad: p.unidad, cantidad: lista[0].cant, aguaTotalL: numI($("apAguaTot")), sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", ha: numI($("apHa")), equipo: eq, bombas: usaB ? bom : null, litrosBomba: usaB ? numI($("apTanque")) : null, notas: $("apNotas").value.trim(), reingresoHasta: rein, cosechaDesde: dias != null ? addDays(hoy, dias) : null, uid: S.uid, por: S.nombre });
       if (apPlan){ try { await S.db.doc("plan/" + apPlan.id).update({ estado: "hecha", aplicacionId: apRef && apRef.id || "", hechaPor: S.nombre, hechaTs: now.toISOString() }); } catch (e2){} apPlan = null; }
+      avisar("aplicacion", "Aplicación " + lista.map(function(it){ return it.p.nombre; }).join(" + ") + (cu ? ", " + cu.nombre : ""));
       $("apSheet").hidden = true; apForzar = false; $("apOk").textContent = "Guardar aplicación"; toast("Aplicación registrada");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
@@ -3147,6 +3155,7 @@ html.pc .cmdk:not([hidden]){display:flex}
         else tarea = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === it.c.id && t.fecha && t.fecha <= it.f && !usados[t.id] && !(rgTarea && t.id === rgTarea.id); }).sort(function(a, bb){ var ea = a.fecha === it.f ? 0 : 1, eb = bb.fecha === it.f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
         if (tarea){ usados[tarea.id] = 1; try { await S.db.doc("tareas/" + tarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: it.h }); cerradas++; cerrada = tarea; } catch (e4){} }
       }
+      avisar("riego", "Riego, " + items.map(function(x){ return x.c.nombre + " " + String(x.h).replace(".", ",") + " h"; }).join("; "));
       rgTarea = null; $("rgSheet").hidden = true;
       toast(creados === 1 ? (cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado") : creados + " riegos registrados" + (cerradas ? ". Cerré " + cerradas + " programado" + (cerradas > 1 ? "s" : "") : ""));
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
@@ -4007,9 +4016,9 @@ html.pc .cmdk:not([hidden]){display:flex}
         catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
       }
       var doc = { fecha: f, sectorId: cu.id, sector: cu.nombre, esp: esp, kg: kg, medida: medida, destino: $("csDestino").value, quienes: sel.map(function(g){ return g.nombre; }).concat(otros ? [otros] : []).join(", "), nota: $("csNota").value.trim(), fotoId: fotoId, ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
-      if (motivos.length){ doc.rev = "pendiente"; doc.motivos = motivos; }
       await S.db.collection("cosechas").add(doc);
-      S.cosSel = cosTempDe(f); $("csSheet").hidden = true; toast(motivos.length ? "Quedó pendiente: Diego debe revisarlo" : "Cosecha registrada");
+      avisar("cosecha", "Cosecha " + esp + ", " + cu.nombre + ", " + fmtNum(kg, 0) + " kg" + (motivos.length ? " · Sin verificar: " + motivos.join("; ") : ""));
+      S.cosSel = cosTempDe(f); $("csSheet").hidden = true; toast("Cosecha registrada");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
@@ -4577,9 +4586,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     var b = $("trOk"); b.disabled = true;
     try {
       var doc = { fecha: hy, actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: quienes, maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
-      if (motivos.length){ doc.rev = "pendiente"; doc.motivos = motivos; }
       await S.db.collection("trabajos").add(doc);
-      $("trSheet").hidden = true; toast(motivos.length ? "Quedó pendiente: Diego debe revisarlo" : "Trabajo registrado");
+      avisar("trabajo", doc.actividad + ", " + doc.sector + ", " + String(h).replace(".", ",") + " h" + (quienes ? " (" + quienes + ")" : "") + (motivos.length ? " · Sin verificar: " + motivos.join("; ") : ""));
+      $("trSheet").hidden = true; toast("Trabajo registrado");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };

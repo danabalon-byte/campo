@@ -85,6 +85,8 @@ service cloud.firestore {
     }
     match /permisos/{d} { allow read, write: if isMember(); }
     match /agendados/{d} { allow read, write: if isMember(); }
+    // Avisos para el WhatsApp de Diego: los crea quien registra; los lee y marca el script (con permisos del dueño) o el dueño.
+    match /avisos/{d} { allow create: if isMember() && request.resource.data.uid == request.auth.uid; allow read, update, delete: if isOwner(); }
     // Cosechas (kilos por sector): una encargada solo puede crear con rev "pendiente" (o sin rev) y no puede cambiar la revisión; la autoriza el dueño.
     match /cosechas/{d} {
       allow read: if isAdmin();

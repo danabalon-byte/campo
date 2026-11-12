@@ -217,9 +217,10 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .cal .d.fer .n{color:var(--alert); font-weight:700; text-decoration:underline}
 .nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity}
 .nav.sc::-webkit-scrollbar{display:none}
-.nav.sc::after{content:"›"; position:sticky; right:0; flex:0 0 26px; margin-left:-26px; align-self:stretch; display:grid; place-items:center; font:700 26px/1 var(--font-body); color:var(--accent); background:linear-gradient(90deg,transparent,var(--surface) 65%); pointer-events:none}
-.nav.sc.fin::after{display:none}
-.nav.sc button{flex:0 0 20%; min-width:62px; scroll-snap-align:start}
+/* Bordes que se desvanecen: avisan que hay más botones fuera de la pantalla (a la izquierda y/o a la derecha) */
+.nav.sc{--ml:26px; --mr:26px; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--ml),#000 calc(100% - var(--mr)),transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 var(--ml),#000 calc(100% - var(--mr)),transparent 100%)}
+.nav.sc.ini{--ml:0px} .nav.sc.fin{--mr:0px}
+.nav.sc button{flex:0 0 22%; min-width:74px; scroll-snap-align:start}
 .nav button[data-s=medidores][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
 .nav button[data-s=cosecha][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
@@ -1523,7 +1524,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
-    ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final están «Medidores» y «Cosecha». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
+    ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final están «Medidor» y «Cosecha». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
     ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
     ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
     ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
@@ -1562,7 +1563,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Quiénes trabajaron", "En «Registrar trabajo realizado», «Quiénes trabajaron» ahora es una lista: toca a cada persona que trabajó. Bajo cada nombre ves si hoy tiene asistencia. Si marcas a alguien sin asistencia, o quien registra no tiene llegada, el trabajo queda «Pendiente» y no suma horas hasta que Diego lo revise.", 13, "manager"],
     ["Revisar trabajos", "En «Trabajo», la tarjeta «Por revisar» muestra los trabajos pendientes con la razón. Toca «Autorizar» para que cuenten o «Rechazar». Tú no necesitas revisarte a ti mismo: lo que registras queda aprobado.", 13, "owner"],
     ["Fichas y cumpleaños", "En «Personal», cada persona tiene «Fecha de nacimiento», «Teléfono» y el botón «Mostrar la edad en esta ficha». Si falta la fecha o el teléfono, la ficha queda «Incompleta». En «Alertas» aparece el cumpleaños el día, 3 días antes y 5 días antes.", 13, "manager"],
-    ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidores». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
+    ["Medidores", "Al final de la barra de abajo (deslízala de lado) está «Medidor». Elige un medidor arriba, por ejemplo «Caudalímetro del pozo» o «Tablero eléctrico», y toca «Anotar lectura»: escribe el número que marca y, si quieres, toma una foto. Los lunes «Inicio» te recuerda anotarlas.", 14, "manager"],
     ["Lecturas por mes y consumo", "En «Medidores», «Consumo por lectura» dibuja una barra por cada lectura con lo consumido desde la anterior (m³ en el caudalímetro, kWh en el tablero eléctrico); toca una barra para ver esa lectura. Más abajo, «Lecturas» se ordena por mes: cada mes muestra cuántas lecturas tiene y su consumo total, y se abre o se cierra con un toque. Cada lectura ocupa una línea con la fecha, el número del medidor y el consumo; tócala para ver quién la anotó, la nota y la foto. Solo Diego ve «Quitar».", 32, "manager"],
     ["Cosecha", "Al final de la barra de abajo está «Cosecha». Toca «Registrar cosecha»: elige el sector, escribe los kilos y marca quiénes cosecharon. En nogales indica si pesaste seco (kilos finales) o al día, con cáscara verde; en limones son los kilos del día. El resumen muestra kg por hectárea y por árbol y compara con la temporada anterior. Si marcas a alguien sin asistencia ese día, tu registro queda pendiente hasta que Diego lo autorice.", 15, "manager"],
     ["Bodega de nueces", "En «Cosecha», la pestaña «Bodega» muestra cuánta nuez hay guardada, con cáscara y en pulpa, y dónde está. «Anotar movimiento» registra lo que entra, lo que se envía a partir y lo que sale por consumo, semilla o merma. Cuando llega la pulpa, toca «Recibir pulpa partida» y anota los kilos de mariposa y de resto. El aviso verde confirma que lo guardado y lo vendido cuadra con lo cosechado.", 16, "manager"],
@@ -2209,7 +2210,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var nav = $("nav"), cur = S.screen === "legal" ? "" : S.manager && (S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "personal" : !S.manager && (S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
-    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidores"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
+    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -2222,7 +2223,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     });
     if (S.manager){
       nav.scrollLeft = sl0; var cb = nav.querySelector("[aria-current=page]"); if (cb && !S.navVisto){ S.navVisto = true; nav.scrollLeft = Math.max(0, cb.offsetLeft - 8); }
-      var marca = function(){ nav.classList.toggle("fin", nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4); }; nav.onscroll = marca; marca();
+      var marca = function(){ nav.classList.toggle("fin", nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4); nav.classList.toggle("ini", nav.scrollLeft <= 12); }; nav.onscroll = marca; marca();
     }
   }
   function iniciales(n){ var p = String(n || "?").trim().split(/\s+/); return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase(); }

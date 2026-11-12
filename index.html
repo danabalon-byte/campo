@@ -135,10 +135,11 @@ button[disabled]{cursor:default; opacity:.55}
 details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; align-items:center; color:var(--accent)}
 /* listas */
 .rows{display:grid; gap:0}
-.row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:10px 0; border-top:1px solid var(--line); min-width:0}
+.row{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 12px; padding:10px 0; border-top:1px solid var(--line); min-width:0}
 .row:first-child{border-top:0}
-.row .l{min-width:0; overflow-wrap:anywhere}
-.row .r{font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; color:var(--muted)}
+.row .l{min-width:0; overflow-wrap:anywhere; flex:1 1 9ch}
+.row .r{font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; max-width:100%; color:var(--muted)}
+.row.stack{display:grid; gap:2px} .row.stack .r{white-space:normal; text-align:left}
 .row .r b{color:var(--fg)}
 .asg{display:grid; gap:8px; padding:14px 0; border-top:1px solid var(--line)}
 .asg:first-of-type{border-top:0; padding-top:0}
@@ -209,13 +210,16 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 .cal .h{font-size:14px; color:var(--muted); text-align:center; padding-bottom:2px}
 .cal .d{min-height:50px; border-radius:10px; background:var(--surface-2); padding:4px 2px; display:grid; align-content:start; justify-items:center; gap:2px; font-size:14px; font-variant-numeric:tabular-nums}
 .cal .d.off{background:transparent}
+.cal button.d{font:inherit; font-weight:400; color:var(--fg); border:0; width:100%; min-height:50px; padding:4px 2px; text-align:center; cursor:pointer}
+.cal button.d:active{transform:scale(.96)}
 .cal .d.fer{background:var(--alert-bg)}
 .cal .d .n{font-weight:400}
 .cal .d.fer .n{color:var(--alert); font-weight:700; text-decoration:underline}
-.nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent); mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity}
 .nav.sc::-webkit-scrollbar{display:none}
-.nav.sc.fin{-webkit-mask-image:none; mask-image:none}
-.nav.sc button{flex:0 0 17.4%; min-width:62px; scroll-snap-align:start}
+.nav.sc::after{content:"›"; position:sticky; right:0; flex:0 0 26px; margin-left:-26px; align-self:stretch; display:grid; place-items:center; font:700 26px/1 var(--font-body); color:var(--accent); background:linear-gradient(90deg,transparent,var(--surface) 65%); pointer-events:none}
+.nav.sc.fin::after{display:none}
+.nav.sc button{flex:0 0 20%; min-width:62px; scroll-snap-align:start}
 .nav button[data-s=medidores][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
 .nav button[data-s=cosecha][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
@@ -769,8 +773,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     <h3>Agua de la mezcla</h3>
     <div class="field"><label for="apHa">Superficie tratada (ha)</label><input type="text" id="apHa" inputmode="decimal" placeholder="Ej: 0,5"></div>
     <div class="field"><label for="apAgua">Agua por ha (L), si aplica</label><input type="text" id="apAgua" inputmode="decimal" placeholder="Ej: 100"></div>
+    <div class="field" id="apBombasF" hidden><label for="apBombas">Número de bombas (pasadas)</label><input type="text" id="apBombas" inputmode="numeric" maxlength="3" placeholder="Ej: 10"></div>
     <div class="field"><label for="apAguaTot">Agua total para diluir (L)</label><input type="text" id="apAguaTot" inputmode="decimal" placeholder="Ej: 20"></div>
-    <div class="field"><label for="apTanque">Capacidad del estanque o tambor (L)</label><input type="text" id="apTanque" inputmode="decimal" placeholder="Ej: 20"></div>
+    <div class="field"><label for="apTanque">Litros de cada bomba o estanque (L)</label><input type="text" id="apTanque" inputmode="decimal" placeholder="Ej: 15"></div>
     <button type="button" class="link" id="apLlenar">Usar la capacidad completa como agua total</button>
     <p class="note warn" id="apAviso" hidden></p>
     <p class="calc" id="apCalc"></p>
@@ -804,6 +809,8 @@ html.pc .cmdk:not([hidden]){display:flex}
       <div class="field" id="plCant2F" hidden><label for="plCant2" id="plCant2Lbl">Cantidad del secundario</label><input type="text" id="plCant2" inputmode="decimal" placeholder="Ej: 4"></div>
     </div>
     <h3>Agua de la mezcla</h3>
+    <div class="field" id="plBombasF" hidden><label for="plBombas">Número de bombas (pasadas)</label><input type="text" id="plBombas" inputmode="numeric" maxlength="3" placeholder="Ej: 10"></div>
+    <div class="field" id="plLitrosF" hidden><label for="plLitros">Litros de cada bomba (L)</label><input type="text" id="plLitros" inputmode="decimal" placeholder="Ej: 15"></div>
     <div class="field"><label for="plAguaTot">Agua total para diluir (L)</label><input type="text" id="plAguaTot" inputmode="decimal" placeholder="Ej: 200"></div>
     <button type="button" class="link" id="plLlenar">Usar la capacidad completa del equipo</button>
     <p class="calc" id="plCalc" hidden></p>
@@ -1459,7 +1466,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 32;
+  var GUIA_V = 33;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1521,6 +1528,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Temporada de cosecha", "En «Cosecha», «Inicio de temporada» cambia el mes en que parte la temporada; por defecto es marzo (de marzo a febrero). «Por revisar» muestra las cosechas pendientes: «Autorizar» o «Rechazar». Con «Quitar» borras un registro equivocado.", 15, "owner"],
     ["Qué calcula cada medidor", "Cada lectura se resta de la anterior. En el pozo se compara con el riego registrado y avisa si la diferencia pasa del 15 %. En el tablero se muestra el consumo por día, cuánto se va en la bomba y los kWh por m³. Si el número es menor que el anterior, la app pregunta antes de guardar.", 14, "manager"],
     ["Agregar medidores", "En «Medidores», «+ Agregar medidor» crea otro: nombre, detalle (marca, número de serie), qué mide, unidad y cada cuánto se lee. «Editar medidor» cambia sus datos y guarda el valor del kWh.", 14, "owner"],
+    ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
+    ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -1532,6 +1541,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 33, f: "2026-11-12", t: "Dosis por bomba y calendario de permisos", d: "En Aplicar indicas lo que lleva cada bomba, en mL o g, y cuántas bombas; el litraje se puede cambiar. Los días del calendario de Permisos se tocan para pedir días libres. La barra de abajo muestra cinco accesos completos.", g: "Dosis por bomba" },
     { v: 32, f: "2026-11-09", t: "Lecturas de los medidores más ordenadas", d: "Un gráfico con el consumo de cada lectura y las lecturas agrupadas por mes, con el total del mes y una sola línea por lectura.", g: "Lecturas por mes y consumo" },
     { v: 31, f: "2026-11-09", t: "Nueva vista de riegos programados", d: "Un tablero de la semana por sector y día, la línea de tiempo del día y la «Vista en vivo» con pulsador: qué se riega ahora, cuánto falta y qué sigue.", g: "Vista de riegos programados" },
     { v: 30, f: "2026-11-02", t: "Mi tiempo", d: "Una tarjeta solo tuya que cuenta el tiempo que usas la app, con cronómetro, tiempo manual y planilla.", g: "Mi tiempo" },
@@ -1660,8 +1670,9 @@ html.pc .cmdk:not([hidden]){display:flex}
   $("pmDesde").onchange = $("pmHasta").onchange = pmRefrescar;
   $("pmDur").onchange = $("pmModo").onchange = function(){ if ($("pmModo").value === "total" && !$("pmDur").value && !$("pmDias").value) $("pmDias").value = "1"; pmRefrescar(); };
   $("pmDias").oninput = pmRefrescar;
-  function abrirPermiso(){
-    $("pmTipo").selectedIndex = 0; $("pmDur").value = ""; $("pmModo").value = "hasta"; var hoy = fecha(); $("pmDesde").min = hoy; $("pmHasta").min = hoy; var sig = addDays(hoy, 1); while ([0, 6].indexOf(new Date(sig + "T12:00:00Z").getUTCDay()) >= 0) sig = addDays(sig, 1); $("pmDesde").value = sig; $("pmHasta").value = sig;
+  function abrirPermiso(d1){
+    if (typeof d1 !== "string") d1 = null;
+    $("pmTipo").selectedIndex = 0; $("pmDur").value = ""; $("pmModo").value = "hasta"; var hoy = fecha(); $("pmDesde").min = hoy; $("pmHasta").min = hoy; var sig = addDays(hoy, 1); while ([0, 6].indexOf(new Date(sig + "T12:00:00Z").getUTCDay()) >= 0) sig = addDays(sig, 1); $("pmDesde").value = d1 || sig; $("pmHasta").value = d1 || sig;
     $("pmMotivo").value = ""; pmRefrescar(); $("pmSheet").hidden = false;
   }
   $("pmCancel").onclick = function(){ $("pmSheet").hidden = true; };
@@ -1838,7 +1849,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var rsm = {}; S.permisos.forEach(function(x){ if (x.tipo !== "Ausencia" || pmEstado(x) !== "aprobado" || String(x.desde).slice(0, 4) !== pmAnio()) return; var d = S.ausDet[x.id] || {}, r = rsm[x.uid] || (rsm[x.uid] = { nombre: x.por, dias: 0, con: 0, sin: 0, pd: 0 }), n = Number(x.dias) || 0; r.dias += n; if (d.lic === "otorgada") r.con += n; else r.sin += n; if (!d.trato || d.trato === "por_definir") r.pd += n; });
       var ks = Object.keys(rsm);
       if (ks.length){ var ac = el("section", "card sect"); ac.id = "ausResumen"; ac.appendChild(el("h2", null, "Ausencias del año")); var ar = el("div", "rows");
-        ks.forEach(function(k){ var r = rsm[k], rw = el("div", "row"); rw.appendChild(el("span", "l", r.nombre)); rw.appendChild(el("span", "r", nf(r.dias, r.dias % 1 ? 1 : 0) + (r.dias === 1 ? " día" : " días") + " · con licencia " + nf(r.con, 0) + " · sin licencia " + nf(r.sin, 0) + " · por definir " + nf(r.pd, 0))); ar.appendChild(rw); });
+        ks.forEach(function(k){ var r = rsm[k], rw = el("div", "row stack"); rw.appendChild(el("span", "l", r.nombre)); rw.appendChild(el("span", "r", nf(r.dias, r.dias % 1 ? 1 : 0) + (r.dias === 1 ? " día" : " días") + " · con licencia " + nf(r.con, 0) + " · sin licencia " + nf(r.sin, 0) + " · por definir " + nf(r.pd, 0))); ar.appendChild(rw); });
         ac.appendChild(ar); f.appendChild(ac); }
     }
     var cal = el("section", "card sect"); cal.appendChild(el("h2", null, "Calendario"));
@@ -1854,7 +1865,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     vivos.forEach(function(x){ if (!(x.uid in colores)) colores[x.uid] = n++ % 2; });
     for (var dd = 1; dd <= nd; dd++){
       var fd = anio + "-" + String(mes + 1).padStart(2, "0") + "-" + String(dd).padStart(2, "0"), dw = new Date(fd + "T12:00:00Z").getUTCDay();
-      var fer = esFeriado(fd), c = el("span", "d" + (fd === hoy ? " hoy" : "") + (dw === 0 || dw === 6 ? " fin" : "") + (fer ? " fer" : "")); c.appendChild(el("span", "n", String(dd)));
+      var fer = esFeriado(fd), cls = "d" + (fd === hoy ? " hoy" : "") + (dw === 0 || dw === 6 ? " fin" : "") + (fer ? " fer" : ""), c = fd >= hoy ? el("button", cls) : el("span", cls); c.appendChild(el("span", "n", String(dd)));
+      if (fd >= hoy){ c.type = "button"; c.setAttribute("aria-label", "Pedir días libres desde el " + dia(fd)); (function(f0){ c.onclick = function(){ abrirPermiso(f0); }; })(fd); }
       if (fer) c.setAttribute("title", "Feriado: " + FERIADOS[fd]);
       vivos.filter(function(x){ return x.desde <= fd && x.hasta >= fd; }).slice(0, 2).forEach(function(x){
         c.appendChild(el("span", "b " + (pmEstado(x) === "pendiente" ? "p " : "") + (colores[x.uid] ? "w" : ""), iniciales(x.por)));
@@ -2456,7 +2468,8 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
 
   var EQUIPOS = ["Bomba de espalda eléctrica (herbicidas)", "Bomba de espalda eléctrica (foliares)", "Tambor 200 L (herbicida)", "Fertirriego · tambor 200 L (fertilización)", "Manual (al voleo)", "Otro"];
-  var EQUIPO_CAP = { "Bomba de espalda eléctrica (herbicidas)": 20, "Bomba de espalda eléctrica (foliares)": 20, "Tambor 200 L (herbicida)": 200, "Fertirriego · tambor 200 L (fertilización)": 200 };
+  function esBomba(eq){ return /^Bomba de espalda/.test(eq || ""); }
+  var EQUIPO_CAP = { "Bomba de espalda eléctrica (herbicidas)": 15, "Bomba de espalda eléctrica (foliares)": 15, "Tambor 200 L (herbicida)": 200, "Fertirriego · tambor 200 L (fertilización)": 200 };
   function sinHerbicida(eq){ return /foliares|fertiliz/i.test(eq); }
   var NO_HERB = "Un herbicida no va en la bomba de foliares ni en el tambor de fertilización. Cambia el equipo.";
   function addDays(f, n){ var d = new Date(f + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
@@ -2478,16 +2491,17 @@ html.pc .cmdk:not([hidden]){display:flex}
     return { rein: rein, cos: cos };
   }
   function prodOrden(){ return S.productos.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }); }
-  var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "directa", label: "Cantidad directa" }];
+  var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "bomba", label: "Por bomba (mL o g)" }, { value: "directa", label: "Cantidad directa" }];
   function prodById(id){ return S.productos.filter(function(p){ return p.id === id; })[0]; }
   function pSel(){ return prodById($("apProd").value); }
   function p2Sel(){ return $("apProd2").value ? prodById($("apProd2").value) : null; }
   function secSel(){ return S.cuarteles.filter(function(c){ return c.id === $("apSector").value; })[0]; }
   function menor(u){ return u === "L" ? "mL" : u === "kg" ? "g" : u; }
   function mil(u){ return u === "L" || u === "kg" ? 1000 : 1; }
-  var man = { c1: false, c2: false, aw: false, tk: false };
-  function monto(modo, v, ha, aguaTot){
+  var man = { c1: false, c2: false, aw: false, tk: false, mo: false }, apForzar = false;
+  function monto(modo, v, ha, aguaTot, bombas, un){
     if (!(v > 0)) return null;
+    if (modo === "bomba") return bombas > 0 ? v * bombas / mil(un) : null;
     if (modo === "ha") return ha > 0 ? v * ha : null;
     if (modo === "pct") return aguaTot > 0 ? v / 100 * aguaTot : null;
     return null;
@@ -2495,23 +2509,27 @@ html.pc .cmdk:not([hidden]){display:flex}
   function refrescarAp(){
     var p = pSel(), p2 = p2Sel(), cu = secSel(), out = [], av = [];
     var m1 = $("apModo").value, m2 = $("apModo2").value;
+    if (apForzar){ apForzar = false; $("apOk").textContent = "Guardar aplicación"; }
+    var usaB = m1 === "bomba" || (!!p2 && m2 === "bomba"), bom = numI($("apBombas")); $("apBombasF").hidden = !usaB;
     $("ap2Box").hidden = !p2; $("ap2Hint").hidden = !!p2; $("apCant2F").hidden = !p2;
     $("apDosisF").hidden = m1 === "directa"; $("apDosis2F").hidden = m2 === "directa";
-    $("apDosisL").textContent = m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
-    $("apDosis2L").textContent = m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("apDosisL").textContent = m1 === "bomba" ? "Cantidad por bomba (" + menor(p ? p.unidad : "") + ")" : m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("apDosis2L").textContent = m2 === "bomba" ? "Cantidad por bomba (" + menor(p2 ? p2.unidad : "") + ")" : m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
     $("apCantLbl").textContent = "Producto principal usado (" + (p ? p.unidad : "") + ")";
     $("apCant2Lbl").textContent = "Producto secundario usado (" + (p2 ? p2.unidad : "") + ")";
     var ha = numI($("apHa")), aHa = numI($("apAgua"));
-    if (!man.aw && ha > 0 && aHa > 0) $("apAguaTot").value = String(Math.round(ha * aHa * 100) / 100).replace(".", ",");
-    var aguaTot = numI($("apAguaTot")), t = numI($("apTanque"));
+    var t = numI($("apTanque"));
+    if (!man.aw && usaB && bom > 0 && t > 0) $("apAguaTot").value = String(Math.round(bom * t * 100) / 100).replace(".", ",");
+    else if (!man.aw && ha > 0 && aHa > 0) $("apAguaTot").value = String(Math.round(ha * aHa * 100) / 100).replace(".", ",");
+    var aguaTot = numI($("apAguaTot"));
     var items = [[p, m1, numI($("apDosis")), "apCant", "c1", "Principal"], [p2, m2, numI($("apDosis2")), "apCant2", "c2", "Secundario"]];
     items.forEach(function(it){
       var pr = it[0]; if (!pr) return;
-      var q = monto(it[1], it[2], ha, aguaTot);
+      var q = monto(it[1], it[2], ha, aguaTot, bom, pr.unidad);
       if (q != null){
-        out.push(it[5] + " · " + pr.nombre + ": " + nf(q, 2) + " " + pr.unidad + " en total");
+        out.push(it[5] + " · " + pr.nombre + ": " + nf(q, 2) + " " + pr.unidad + " en total" + (it[1] === "bomba" ? " (" + nf(it[2], 0) + " " + menor(pr.unidad) + " por bomba × " + nf(bom, 0) + (bom === 1 ? " bomba)" : " bombas)") : ""));
         if (aguaTot > 0) out.push("   equivale a " + nf(q / aguaTot * 100, 2) + " % de la mezcla");
-        if (t > 0 && aguaTot > 0){ var porTanque = q * t / aguaTot; out.push("   en cada estanque de " + nf(t, 0) + " L: " + nf(porTanque * mil(pr.unidad), 0) + " " + menor(pr.unidad)); }
+        if (t > 0 && aguaTot > 0 && it[1] !== "bomba"){ var porTanque = q * t / aguaTot; out.push("   en cada estanque de " + nf(t, 0) + " L: " + nf(porTanque * mil(pr.unidad), 0) + " " + menor(pr.unidad)); }
         if (!man[it[4]]) $(it[3]).value = String(Math.round(q * 1000) / 1000).replace(".", ",");
       }
     });
@@ -2529,8 +2547,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("apAviso").textContent = av.join("\n"); $("apAviso").hidden = !av.length; $("apAviso").style.whiteSpace = "pre-line";
     $("apCalc").textContent = out.join("\n"); $("apCalc").hidden = !out.length;
   }
-  ["apProd", "apProd2", "apModo", "apModo2"].forEach(function(id){ $(id).onchange = refrescarAp; });
-  $("apEquipo").onchange = function(){ var cap = EQUIPO_CAP[$("apEquipo").value]; if (!man.tk) $("apTanque").value = cap ? String(cap) : ""; refrescarAp(); };
+  ["apProd", "apProd2"].forEach(function(id){ $(id).onchange = refrescarAp; });
+  ["apModo", "apModo2"].forEach(function(id){ $(id).onchange = function(){ man.mo = true; refrescarAp(); }; });
+  $("apBombas").oninput = refrescarAp;
+  $("apEquipo").onchange = function(){ var eq = $("apEquipo").value, cap = EQUIPO_CAP[eq]; if (!man.tk) $("apTanque").value = cap ? String(cap) : ""; if (!man.mo){ $("apModo").value = esBomba(eq) ? "bomba" : "ha"; $("apModo2").value = esBomba(eq) ? "bomba" : "pct"; } refrescarAp(); };
   $("apSector").onchange = function(){ var cu = secSel(); $("apHa").value = cu && cu.ha ? String(cu.ha).replace(".", ",") : ""; refrescarAp(); };
   ["apHa", "apDosis", "apDosis2", "apAgua"].forEach(function(id){ $(id).oninput = refrescarAp; });
   $("apTanque").oninput = function(){ man.tk = true; refrescarAp(); };
@@ -2547,13 +2567,16 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill($("apModo"), MODOS, "ha"); fill($("apModo2"), MODOS, "pct");
     fill($("apSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     fill($("apEquipo"), EQUIPOS);
-    ["apHa", "apDosis", "apDosis2", "apAgua", "apAguaTot", "apTanque", "apCant", "apCant2", "apNotas"].forEach(function(id){ $(id).value = ""; });
-    man = { c1: false, c2: false, aw: false, tk: false };
+    ["apHa", "apDosis", "apDosis2", "apAgua", "apAguaTot", "apTanque", "apBombas", "apCant", "apCant2", "apNotas"].forEach(function(id){ $(id).value = ""; });
+    man = { c1: false, c2: false, aw: false, tk: false, mo: false }; apForzar = false; $("apOk").textContent = "Guardar aplicación";
     if (apPlan){
       if (prodById(apPlan.productoId)) $("apProd").value = apPlan.productoId;
       if (apPlan.productoId2 && prodById(apPlan.productoId2)) $("apProd2").value = apPlan.productoId2;
       $("apSector").value = apPlan.sectorId || ""; $("apSector").onchange();
       if (apPlan.equipo && EQUIPOS.indexOf(apPlan.equipo) >= 0) $("apEquipo").value = apPlan.equipo;
+      if (apPlan.bombas) $("apBombas").value = String(apPlan.bombas).replace(".", ",");
+      if (apPlan.litrosBomba){ $("apTanque").value = String(apPlan.litrosBomba).replace(".", ","); man.tk = true; }
+      if (apPlan.modo || apPlan.modo2) man.mo = true;
       if (apPlan.modo){ $("apModo").value = apPlan.modo; if (apPlan.dosis) $("apDosis").value = String(apPlan.dosis).replace(".", ","); }
       if (apPlan.modo2){ $("apModo2").value = apPlan.modo2; if (apPlan.dosis2) $("apDosis2").value = String(apPlan.dosis2).replace(".", ","); }
       if (apPlan.aguaTotalL){ $("apAguaTot").value = String(apPlan.aguaTotalL).replace(".", ","); man.aw = true; }
@@ -2568,14 +2591,22 @@ html.pc .cmdk:not([hidden]){display:flex}
     var p = pSel(), p2 = p2Sel(), cu = secSel(), eq = $("apEquipo").value;
     if (!p) return;
     if (p2 && p2.id === p.id){ toast("El producto secundario debe ser distinto del principal."); return; }
+    var usaB = $("apModo").value === "bomba" || (!!p2 && $("apModo2").value === "bomba"), bom = numI($("apBombas"));
+    if (usaB && !(bom > 0)){ toast("Escribe cuántas bombas aplicaste."); $("apBombas").focus(); return; }
     var lista = [{ p: p, cant: numI($("apCant")), modo: $("apModo").value, valor: numI($("apDosis")), rol: "Principal" }];
     if (p2) lista.push({ p: p2, cant: numI($("apCant2")), modo: $("apModo2").value, valor: numI($("apDosis2")), rol: "Secundario" });
+    var faltan = [];
     for (var k = 0; k < lista.length; k++){
       var it = lista[k];
       if (!(it.cant > 0)){ toast("Escribe cuánto usaste de " + it.p.nombre + "."); $(k ? "apCant2" : "apCant").focus(); return; }
       if (it.p.tipo === "Herbicida" && sinHerbicida(eq)){ toast(NO_HERB); return; }
       var st = stockDe(it.p);
-      if (it.cant > st + 1e-9){ toast("De " + it.p.nombre + " quedan " + nf(st, 2) + " " + it.p.unidad + " en bodega. Revisa la cantidad."); return; }
+      if (it.cant > st + 1e-9) faltan.push("de " + it.p.nombre + " quedan " + nf(st, 2) + " " + it.p.unidad + " y usaste " + nf(it.cant, 2));
+    }
+    if (faltan.length && !apForzar){
+      apForzar = true; $("apOk").textContent = "Guardar de todas formas";
+      $("apAviso").textContent = "En bodega " + faltan.join("; ") + ". Si usaste producto que no estaba anotado, toca «Guardar de todas formas» y después corrige el stock en la bodega."; $("apAviso").hidden = false; $("apAviso").style.whiteSpace = "pre-line";
+      toast("Revisa el aviso de stock"); return;
     }
     var now = new Date(), hoy = fecha(now), dias = null, rh = 0;
     lista.forEach(function(it){
@@ -2589,9 +2620,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     var items = lista.map(function(it){ return { productoId: it.p.id, nombre: it.p.nombre, unidad: it.p.unidad, cantidad: it.cant, rol: it.rol, modo: it.modo, valor: it.valor }; });
     var b = $("apOk"); b.disabled = true;
     try {
-      var apRef = await S.db.collection("aplicaciones").add({ fecha: hoy, ts: now.toISOString(), items: items, productoId: p.id, producto: lista.map(function(it){ return it.p.nombre; }).join(" + "), unidad: p.unidad, cantidad: lista[0].cant, aguaTotalL: numI($("apAguaTot")), sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", ha: numI($("apHa")), equipo: eq, notas: $("apNotas").value.trim(), reingresoHasta: rein, cosechaDesde: dias != null ? addDays(hoy, dias) : null, uid: S.uid, por: S.nombre });
+      var apRef = await S.db.collection("aplicaciones").add({ fecha: hoy, ts: now.toISOString(), items: items, productoId: p.id, producto: lista.map(function(it){ return it.p.nombre; }).join(" + "), unidad: p.unidad, cantidad: lista[0].cant, aguaTotalL: numI($("apAguaTot")), sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", ha: numI($("apHa")), equipo: eq, bombas: usaB ? bom : null, litrosBomba: usaB ? numI($("apTanque")) : null, notas: $("apNotas").value.trim(), reingresoHasta: rein, cosechaDesde: dias != null ? addDays(hoy, dias) : null, uid: S.uid, por: S.nombre });
       if (apPlan){ try { await S.db.doc("plan/" + apPlan.id).update({ estado: "hecha", aplicacionId: apRef && apRef.id || "", hechaPor: S.nombre, hechaTs: now.toISOString() }); } catch (e2){} apPlan = null; }
-      $("apSheet").hidden = true; toast("Aplicación registrada");
+      $("apSheet").hidden = true; apForzar = false; $("apOk").textContent = "Guardar aplicación"; toast("Aplicación registrada");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
@@ -2629,17 +2660,22 @@ html.pc .cmdk:not([hidden]){display:flex}
   function plCalcular(){
     var cu = plSector(), ha = cu && cu.ha ? cu.ha : null, aguaTot = numI($("plAguaTot"));
     var x = plProdSel("plProd"), x2 = plProdSel("plProd2"), m1 = $("plModo").value, m2 = $("plModo2").value;
-    var q1 = x ? (m1 === "directa" ? numI($("plCant")) : monto(m1, numI($("plDosis")), ha, aguaTot)) : null;
-    var q2 = x2 ? (m2 === "directa" ? numI($("plCant2")) : monto(m2, numI($("plDosis2")), ha, aguaTot)) : null;
+    var bomP = numI($("plBombas"));
+    var q1 = x ? (m1 === "directa" ? numI($("plCant")) : monto(m1, numI($("plDosis")), ha, aguaTot, bomP, x.unidad)) : null;
+    var q2 = x2 ? (m2 === "directa" ? numI($("plCant2")) : monto(m2, numI($("plDosis2")), ha, aguaTot, bomP, x2.unidad)) : null;
     return { x: x, x2: x2, q1: q1, q2: q2, m1: m1, m2: m2, ha: ha, aguaTot: aguaTot };
   }
+  var plMan = { aw: false, mo: false };
   function plRefrescar(){
+    var usaBP = $("plModo").value === "bomba" || (!!$("plProd2").value && $("plModo2").value === "bomba"), bP = numI($("plBombas")), lP = numI($("plLitros"));
+    $("plBombasF").hidden = !usaBP; $("plLitrosF").hidden = !usaBP;
+    if (usaBP && !plMan.aw && bP > 0 && lP > 0) $("plAguaTot").value = String(Math.round(bP * lP * 100) / 100).replace(".", ",");
     var c = plCalcular();
     $("pl2Box").hidden = !c.x2; $("pl2Hint").hidden = !!c.x2;
     $("plDosisF").hidden = c.m1 === "directa"; $("plCantF").hidden = c.m1 !== "directa";
     $("plDosis2F").hidden = c.m2 === "directa"; $("plCant2F").hidden = c.m2 !== "directa";
-    $("plDosisL").textContent = c.m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
-    $("plDosis2L").textContent = c.m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("plDosisL").textContent = c.m1 === "bomba" ? "Cantidad por bomba (" + menor(c.x ? c.x.unidad : "") + ")" : c.m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("plDosis2L").textContent = c.m2 === "bomba" ? "Cantidad por bomba (" + menor(c.x2 ? c.x2.unidad : "") + ")" : c.m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
     $("plCantLbl").textContent = "Cantidad del principal (" + (c.x ? c.x.unidad : "") + ")";
     $("plCant2Lbl").textContent = "Cantidad del secundario (" + (c.x2 ? c.x2.unidad : "") + ")";
     var out = [];
@@ -2649,9 +2685,12 @@ html.pc .cmdk:not([hidden]){display:flex}
     if ((c.m1 === "ha" || c.m2 === "ha") && !c.ha) out.push("La dosis por hectárea necesita un sector con superficie.");
     $("plCalc").textContent = out.join("\n"); $("plCalc").hidden = !out.length;
   }
-  ["plProd", "plProd2", "plModo", "plModo2", "plSector", "plEquipo"].forEach(function(id){ $(id).onchange = plRefrescar; });
-  ["plDosis", "plDosis2", "plCant", "plCant2", "plAguaTot"].forEach(function(id){ $(id).oninput = plRefrescar; });
-  $("plLlenar").onclick = function(){ var cap = EQUIPO_CAP[$("plEquipo").value]; if (!cap){ toast("Este equipo no tiene una capacidad definida. Escribe el agua total."); return; } $("plAguaTot").value = String(cap); plRefrescar(); };
+  ["plProd", "plProd2", "plSector"].forEach(function(id){ $(id).onchange = plRefrescar; });
+  ["plModo", "plModo2"].forEach(function(id){ $(id).onchange = function(){ plMan.mo = true; plRefrescar(); }; });
+  $("plEquipo").onchange = function(){ var eq = $("plEquipo").value, cap = EQUIPO_CAP[eq]; if (cap) $("plLitros").value = String(cap); if (!plMan.mo){ $("plModo").value = esBomba(eq) ? "bomba" : "ha"; $("plModo2").value = esBomba(eq) ? "bomba" : "pct"; } plRefrescar(); };
+  ["plDosis", "plDosis2", "plCant", "plCant2", "plBombas", "plLitros"].forEach(function(id){ $(id).oninput = plRefrescar; });
+  $("plAguaTot").oninput = function(){ plMan.aw = true; plRefrescar(); };
+  $("plLlenar").onclick = function(){ var cap = EQUIPO_CAP[$("plEquipo").value]; if (!cap){ toast("Este equipo no tiene una capacidad definida. Escribe el agua total."); return; } $("plAguaTot").value = String(cap); plMan.aw = true; plRefrescar(); };
   function abrirPlan(){
     if (!S.productos.length){ toast("Aún no hay productos en la bodega."); return; }
     var po = prodOrden().map(function(x){ return { value: x.id, label: x.nombre }; });
@@ -2660,8 +2699,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill($("plSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     fill($("plEquipo"), EQUIPOS);
     $("plFecha").value = addDays(fecha(), 1); $("plFecha").min = fecha();
-    ["plDosis", "plDosis2", "plCant", "plCant2", "plAguaTot", "plNotas"].forEach(function(id){ $(id).value = ""; });
-    plRefrescar(); $("plSheet").hidden = false;
+    ["plDosis", "plDosis2", "plCant", "plCant2", "plAguaTot", "plBombas", "plLitros", "plNotas"].forEach(function(id){ $(id).value = ""; });
+    plMan = { aw: false, mo: false }; $("plEquipo").onchange(); $("plSheet").hidden = false;
   }
   $("plCancel").onclick = function(){ $("plSheet").hidden = true; };
   $("plOk").onclick = async function(){
@@ -2670,9 +2709,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     var eq = $("plEquipo").value;
     if (x2 && x2.id === x.id){ toast("El producto secundario debe ser distinto del principal."); return; }
     if ((x.tipo === "Herbicida" || (x2 && x2.tipo === "Herbicida")) && sinHerbicida(eq)){ toast(NO_HERB); return; }
+    var usaBP = c.m1 === "bomba" || (!!x2 && c.m2 === "bomba");
+    if (usaBP && !(numI($("plBombas")) > 0)){ toast("Escribe cuántas bombas se van a aplicar."); $("plBombas").focus(); return; }
     var b = $("plOk"); b.disabled = true;
     try {
-      await S.db.collection("plan").add({ fecha: fe, productoId: x.id, producto: x.nombre, unidad: x.unidad, modo: c.m1, dosis: numI($("plDosis")), cantidad: c.q1,
+      await S.db.collection("plan").add({ bombas: usaBP ? numI($("plBombas")) : null, litrosBomba: usaBP ? numI($("plLitros")) : null, fecha: fe, productoId: x.id, producto: x.nombre, unidad: x.unidad, modo: c.m1, dosis: numI($("plDosis")), cantidad: c.q1,
         productoId2: x2 ? x2.id : "", producto2: x2 ? x2.nombre : "", unidad2: x2 ? x2.unidad : "", modo2: x2 ? c.m2 : "", dosis2: x2 ? numI($("plDosis2")) : null, cantidad2: x2 ? c.q2 : null,
         aguaTotalL: c.aguaTot, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", equipo: eq, notas: $("plNotas").value.trim(), estado: "pendiente", ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
       var avs = []; var need0 = necesidadPlan(); [[x, c.q1], [x2, c.q2]].forEach(function(q){ if (q[0]){ var tot = (need0[q[0].id] || 0) + (Number(q[1]) || 0), st0 = stockDe(q[0]); if (tot > st0 + 1e-9) avs.push("de " + q[0].nombre + " hay " + nf(st0, 2) + " " + q[0].unidad + " y lo agendado suma " + nf(tot, 2)); } });
@@ -2683,12 +2724,13 @@ html.pc .cmdk:not([hidden]){display:flex}
   function dosisTxt(modo, val, cant, un){
     if (modo === "ha" && val) return nf(val, 2) + " " + un + "/ha";
     if (modo === "pct" && val) return nf(val, 2) + " %";
+    if (modo === "bomba" && val) return nf(val, 0) + " " + menor(un) + " por bomba";
     return cant != null ? nf(cant, 2) + " " + un : "";
   }
   function mezclaPlan(x){
     var a = x.producto + " " + dosisTxt(x.modo, x.dosis, x.cantidad, x.unidad);
     var s = x.producto2 ? " + " + x.producto2 + " " + dosisTxt(x.modo2, x.dosis2, x.cantidad2, x.unidad2 || "") : "";
-    return (a + s).replace(/\s+/g, " ").trim() + (x.aguaTotalL ? " · " + nf(x.aguaTotalL, 0) + " L de agua" : "");
+    return (a + s).replace(/\s+/g, " ").trim() + (x.bombas ? " · " + nf(x.bombas, 0) + (x.bombas === 1 ? " bomba" : " bombas") + (x.litrosBomba ? " de " + nf(x.litrosBomba, 0) + " L" : "") : "") + (x.aguaTotalL ? " · " + nf(x.aguaTotalL, 0) + " L de agua" : "");
   }
   function tituloPlan(x){ return x.producto2 ? x.producto + " + " + x.producto2 : x.producto; }
   function pendHoy(){ var hy = fecha(); return S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; }); }

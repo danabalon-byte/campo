@@ -4,7 +4,7 @@ var fs = require("fs"), path = require("path"), vm = require("vm");
 var jpeg; try { jpeg = require("jpeg-js"); } catch (e){ console.log("Falta jpeg-js (npm i jpeg-js). Prueba omitida."); process.exit(0); }
 var src = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 function bloque(n){ var m = src.match(new RegExp("/\\* " + n + ":INICIO[\\s\\S]*?/\\* " + n + ":FIN \\*/")); if (!m) throw new Error("No encuentro el bloque " + n); return m[0]; }
-var ctx = {}; vm.createContext(ctx); vm.runInContext(bloque("LECTURA-AGUA") + "\n" + bloque("LECTURA-FOTO") + "\nthis.lecturaAgua = lecturaAgua; this.fotoRelojes = fotoRelojes; this.fotoTira = fotoTira;", ctx);
+var ctx = {}; vm.createContext(ctx); vm.runInContext(bloque("LECTURA-AGUA") + "\n" + bloque("LECTURA-FOTO") + "\nthis.lecturaAgua = lecturaAgua; this.fotoRelojes = fotoRelojes; this.fotoTira = fotoTira; this.fotoFechaExif = fotoFechaExif;", ctx);
 /* [archivo, tambor, lectura esperada de la tabla (con relojes)]. Las lecturas a ojo de Diego o las estimadas de las fotos. */
 var casos = [
   ["27292", 27292, 27292.46], ["178363", 178363, 178363.04], ["179321", 179321, 179321.44], ["41822", 41822, 41822.11], ["41689", 41689, 41689.04],
@@ -26,5 +26,8 @@ var okRec = rr.ok && rr.recortada; if (!okRec) fallas++; console.log((okRec ? "O
 /* Sin agujas (foto de algo gris) */
 var gris = { width: 300, height: 300, data: new Uint8ClampedArray(300 * 300 * 4).fill(128) }, rg = ctx.fotoRelojes(gris);
 var okG = !rg.ok; if (!okG) fallas++; console.log((okG ? "OK  " : "MAL ") + "sin agujas → " + rg.aviso);
+/* Fecha de la foto (EXIF) */
+var fe = ctx.fotoFechaExif(new Uint8Array(fs.readFileSync(path.join(__dirname, "fotos", "con-fecha.jpg")))), fs0 = ctx.fotoFechaExif(new Uint8Array(fs.readFileSync(path.join(__dirname, "fotos", "sin-fecha.jpg"))));
+var okF = fe === "2026-11-06" && fs0 === null; if (!okF) fallas++; console.log((okF ? "OK  " : "MAL ") + "fecha EXIF: " + fe + " / sin datos: " + fs0);
 console.log(fallas ? "\nFALLAS: " + fallas : "\nTodo bien");
 process.exit(fallas ? 1 : 0);

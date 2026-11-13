@@ -1641,7 +1641,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
     ["Si algo falla", "En «Inicio», el módulo «Tengo un problema o una idea» le manda tu mensaje a Diego. Escríbelo con tus palabras, no importa si no sabes el nombre técnico.", 1, ""],
-    ["Árboles del huerto", "«Árboles del huerto»: esta sección la ves tú (Diego o Yolanda) y se enciende o apaga en «Ajustes», en «Árboles». Encendida, en «Campo» aparece «Abrir mapa de árboles»: cada círculo es un nogal. Tócalo para ver su ficha (por ejemplo H15-N3: hilera 15, lado norte, árbol 3 contando desde el camino). Abajo tienes las capas del mapa: «Salud», «Plagas», «Hongos», «Flor», «Fruta», «Cosecha» y «Bitácora» (las últimas aún sin datos). Con «Nuevo registro» anotas, en tres pasos, si está sano o enfermo, la gravedad, la foto y lo que ves. Para volver al inicio toca «Guardar y salir». Si lo marcas enfermo, sale una alerta en el inicio hasta que lo pases a «Recuperado».", 39, "manager"],
+    ["Árboles del huerto", "«Árboles del huerto»: esta sección la ves tú (Diego o Yolanda) y se enciende o apaga en «Ajustes», en «Árboles». Encendida, en «Campo» aparece «Abrir mapa de árboles»: cada círculo es un nogal. Tócalo para ver su ficha (por ejemplo H15-N3: hilera 15, lado norte, árbol 3 contando desde el camino). Abajo tienes las capas del mapa: «Salud», «Plagas», «Hongos», «Flor», «Fruta», «Cosecha» y «Bitácora» (las últimas aún sin datos). Si un árbol tiene dudas (por ejemplo, puede no existir), Diego lo marca con «Marcar para comprobar» y aparece en el filtro «Por comprobar» hasta que se confirme en terreno. Con «Nuevo registro» anotas, en tres pasos, si está sano o enfermo, la gravedad, la foto y lo que ves. Para volver al inicio toca «Guardar y salir». Si lo marcas enfermo, sale una alerta en el inicio hasta que lo pases a «Recuperado».", 39, "manager"],
     ["Configurar sectores", "En «Ajustes», dentro de «Árboles», enciende «Configurar sectores». Luego, en el mapa de árboles, toca «Configurar sectores»: toca el primer árbol de cada sector y todas las hileras siguientes quedan en ese sector hasta la próxima marca. Hazlo para el norte y para el sur. Cuando termines, apágalo en «Ajustes».", 39, "owner"]
   ];
   window.__guia = function(){ return { v: GUIA_V, pasos: GUIA }; };
@@ -2679,9 +2679,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     { n: "Escama de San José", t: "Plaga", p: ["Tronco", "Hoja"], d: "Costras grises circulares pequeñas en ramas y corteza; debilita el árbol." }
   ];
   S.hv = { capa: "salud", vista: "mapa", filtro: "todos", sector: 0, norte: true, sur: true, z: 0, hil: 1, sx: 0, sy: 0, ficha: "" };
-  function hu(){ var c = S.huerto || {}; return { marcas: c.marcas || { N: {}, S: {} }, cfgOn: c.cfgOn !== false, eliminados: c.eliminados || {}, centinelas: c.centinelas || {}, rinconada: c.rinconada || { sector: 4, arboles: 114 } }; }
+  function hu(){ var c = S.huerto || {}; return { marcas: c.marcas || { N: {}, S: {} }, cfgOn: c.cfgOn !== false, eliminados: c.eliminados || {}, centinelas: c.centinelas || {}, rinconada: c.rinconada || { sector: 4, arboles: 114 }, verificar: c.verificar !== undefined ? c.verificar : { "H17-N10": "Anomalía del plano: aparece entre dos árboles (posible error al guardar el archivo original). Comprobar si existe." } }; }
+  function huPorVerificar(){ var v = hu().verificar; return Object.keys(v).filter(function(c){ return HU_POR[c] && !hu().eliminados[c]; }); }
   async function huGuardar(parche){
-    var c = hu(), n = { marcas: c.marcas, cfgOn: c.cfgOn, eliminados: c.eliminados, centinelas: c.centinelas, rinconada: c.rinconada };
+    var c = hu(), n = { marcas: c.marcas, cfgOn: c.cfgOn, eliminados: c.eliminados, centinelas: c.centinelas, rinconada: c.rinconada, verificar: c.verificar };
     Object.keys(parche).forEach(function(k){ n[k] = parche[k]; });
     S.huerto = n; render(); huRefrescar();
     try { await S.db.doc("config/huerto").set(n); } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
@@ -2719,6 +2720,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       if (h.sector && huSector(t) !== h.sector) return false;
       if (h.filtro === "enfermos" && !set[t.cod]) return false;
       if (h.filtro === "polin" && !t.p) return false;
+      if (h.filtro === "verificar" && !hu().verificar[t.cod]) return false;
       return true;
     });
   }
@@ -2737,7 +2739,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     var vistos = {};
     lista.forEach(function(t){ if (!vistos[t.h]){ vistos[t.h] = 1; svgN("text", { x: t.x, y: 892, "text-anchor": "middle", "font-size": 17, "font-weight": 700, style: "fill:var(--fg)" }, s, (t.h < 10 ? "0" : "") + t.h); } });
     lista.forEach(function(t){
-      var c = svgN("circle", { cx: t.x, cy: t.y, r: t.p ? 11 : 9, fill: huColor(t, porSector), stroke: t.p ? "#27688A" : "#3d5a33", "stroke-width": t.p ? 3.5 : 1.2 }, s);
+      var c = svgN("circle", { cx: t.x, cy: t.y, r: t.p ? 11 : 9, fill: huColor(t, porSector), stroke: hu().verificar[t.cod] ? "#C4410C" : t.p ? "#27688A" : "#3d5a33", "stroke-width": hu().verificar[t.cod] ? 2.5 : t.p ? 3.5 : 1.2 }, s);
+      if (hu().verificar[t.cod]) c.setAttribute("stroke-dasharray", "4 3");
       var hit = svgN("circle", { cx: t.x, cy: t.y, r: 18, fill: "transparent" }, s); hit.style.cursor = "pointer"; hit.setAttribute("data-cod", t.cod);
       hit.onclick = function(){ huAbrirFicha(t.cod); }; if (c) c.setAttribute("data-c", t.cod);
     });
@@ -2758,7 +2761,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function huResumen(vis){
     var en = huEnfermos(), set = {}; vis.forEach(function(t){ set[t.cod] = 1; });
     var enVis = en.filter(function(c){ return set[c]; }).length;
-    var d = el("div"); d.appendChild(huRow("Árboles a la vista", nf(vis.length, 0))); d.appendChild(huRow("Enfermos en seguimiento", nf(enVis, 0))); return d;
+    var d = el("div"); d.appendChild(huRow("Árboles a la vista", nf(vis.length, 0))); d.appendChild(huRow("Enfermos en seguimiento", nf(enVis, 0))); var nv = huPorVerificar().length; if (nv) d.appendChild(huRow("Por comprobar en terreno", nf(nv, 0))); return d;
   }
   function huRinconadaCard(){
     var r = hu().rinconada; if (S.hv.sector && S.hv.sector !== Number(r.sector)) return null;
@@ -2808,7 +2811,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     }
     c.appendChild(ra);
     var fl = el("div", "hu-fil"); fl.setAttribute("role", "group"); fl.setAttribute("aria-label", "Filtros del mapa");
-    [["todos", "Todos"], ["enfermos", "Enfermos (" + en.length + ")"], ["polin", "Polinizantes"]].forEach(function(x){ fl.appendChild(huBtn(x[1], function(){ h.filtro = x[0]; h.z = 0; render(); }, null, h.filtro === x[0])); });
+    [["todos", "Todos"], ["enfermos", "Enfermos (" + en.length + ")"], ["polin", "Polinizantes"]].concat(huPorVerificar().length ? [["verificar", "Por comprobar (" + huPorVerificar().length + ")"]] : []).forEach(function(x){ fl.appendChild(huBtn(x[1], function(){ h.filtro = x[0]; h.z = 0; render(); }, null, h.filtro === x[0])); });
     fl.appendChild(huBtn("Norte", function(){ h.norte = !h.norte; if (!h.norte && !h.sur) h.sur = true; render(); }, null, h.norte));
     fl.appendChild(huBtn("Sur", function(){ h.sur = !h.sur; if (!h.norte && !h.sur) h.norte = true; render(); }, null, h.sur));
     var us = huSectoresUsados();
@@ -2853,7 +2856,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       ts.forEach(function(t){
         var b = el("button", "hu-it"); b.type = "button"; b.dataset.cod = t.cod;
         var dot = el("i", "hu-dot"); dot.style.background = huColor(t, false); if (t.p) dot.classList.add("pol"); b.appendChild(dot);
-        var tx = el("span", "tx"); tx.appendChild(el("b", null, t.cod)); if (t.p) tx.appendChild(el("span", "chip inc", "Polinizante")); b.appendChild(tx);
+        var tx = el("span", "tx"); tx.appendChild(el("b", null, t.cod)); if (t.p) tx.appendChild(el("span", "chip inc", "Polinizante")); if (hu().verificar[t.cod]) tx.appendChild(el("span", "chip warn", "Comprobar")); b.appendChild(tx);
         b.appendChild(el("span", "hu-es" + (huEnfermo(t.cod) ? " mal" : ""), huEstadoTxt(t.cod)));
         b.onclick = function(){ huAbrirFicha(t.cod); }; w.appendChild(b);
       });
@@ -2899,6 +2902,12 @@ html.pc .cmdk:not([hidden]){display:flex}
       var pg = el("div", "hu-prog al"), pi = el("i"); pi.style.width = ((HU_FLUJO.indexOf(ult.flujo || "Sospecha") + 1) * 25) + "%"; pg.appendChild(pi); sg.appendChild(pg);
       sg.appendChild(el("p", "note", HU_FLUJO.join(" → "))); body.appendChild(sg);
     }
+    var vf = hu().verificar[cod];
+    if (vf){
+      var vc = el("div", "hu-card al"); vc.id = "huVerif"; vc.appendChild(el("div", "hu-lab", "Comprobar su existencia")); vc.appendChild(el("p", null, vf));
+      if (S.owner) vc.appendChild(huBtn("Existe: quitar la marca", function(){ var n = Object.assign({}, hu().verificar); delete n[cod]; huGuardar({ verificar: n }); toast("Marca quitada"); }));
+      body.appendChild(vc);
+    }
     var stt = el("div", "hu-stats"), sv = ult && ult.estado === "Enfermo" && ult.sev != null ? ult.sev : null;
     var c1 = el("div", "hu-card"); c1.appendChild(el("div", "hu-lab", "Severidad")); var b1 = el("div", "hu-big" + (sv ? " al" : "")); b1.textContent = sv != null ? String(sv) : "—"; if (sv != null){ b1.appendChild(el("small", null, " de 3")); } c1.appendChild(b1);
     var c2 = el("div", "hu-card"); c2.appendChild(el("div", "hu-lab", "Registros")); c2.appendChild(el("div", "hu-big", String(regs.length)));
@@ -2936,6 +2945,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     body.appendChild(hi);
     var nuevo = huBtn("Nuevo registro", function(){ huNuevoReg(cod); }, "primary"); nuevo.id = "huNuevo"; foot.appendChild(nuevo);
     if (S.owner){
+      if (!vf){ var mv = huBtn("Marcar para comprobar", function(){ var n = Object.assign({}, hu().verificar); n[cod] = "Comprobar en terreno si este árbol existe."; huGuardar({ verificar: n }); toast("Marcado para comprobar"); }); mv.id = "huMarcarVerif"; foot.appendChild(mv); }
       foot.appendChild(huBtn(cf.centinelas[cod] ? "Quitar de árboles centinela" : "Marcar como árbol centinela", function(){ var c2 = Object.assign({}, cf.centinelas); if (c2[cod]) delete c2[cod]; else c2[cod] = true; huGuardar({ centinelas: c2 }); }));
       var bb = huBtn("Borrar árbol", function(){ huBorrar(cod); }, "huBorrarBtn"); bb.id = "huBorrar"; foot.appendChild(bb);
     }

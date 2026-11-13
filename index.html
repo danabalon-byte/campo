@@ -308,9 +308,11 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .pl-vivero{fill:var(--wood); fill-opacity:.45; stroke:var(--wood)}
 .pl-palto{fill:var(--accent); fill-opacity:.3; stroke:var(--accent)}
 .pl-otro{fill:var(--water); fill-opacity:.55; stroke:var(--water); cursor:default}
-.pl-porcargar,.pl-apagado,.pl-sinvinc{stroke-width:2; stroke-dasharray:6 4}
-.pl-apagado{fill-opacity:.12}
+.pl-sinvinc{stroke-width:2; stroke-dasharray:6 4}
+.pl-sinvinc.pl-pub{stroke-width:1.4; stroke-dasharray:none}
+.pl-off{fill:var(--line); fill-opacity:.9; stroke:none}
 .pl-z.sel{fill-opacity:.72; stroke-width:3}
+.pl-off.sel{fill-opacity:1; stroke:var(--fg); stroke-width:2.5}
 .pl-z:focus-visible{stroke:var(--focus); stroke-width:3.5}
 .pl-wrap svg text{fill:var(--fg); font-weight:700; text-anchor:middle; pointer-events:none; paint-order:stroke; stroke:var(--bg); stroke-width:4px; stroke-linejoin:round; font-family:var(--font-display)}
 .pl-leg{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:14px; color:var(--muted)}
@@ -1607,7 +1609,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
-    ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (cada sector con su lado norte y sur), La Rinconada, los limones, el vivero y el acumulador. Toca un sector para ver su ficha. Si estás en «Ver árboles», se abre el árbol por árbol de ese sector. Diego toca «Cargar los sectores que faltan» para crear los de limón, «Vivero» y «V-Huerto»; lo apagado se enciende con «Encender este sector» cuando esté listo.", 41, ""],
+    ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (sectores 1 al 4, cada uno con su lado norte y sur), La Rinconada, los limones (el 1 al este y el 6 al oeste), el vivero, V-Huerto y el acumulador. Toca un sector para ver su ficha. Con «Ocultar nombres» o «Mostrar nombres» eliges si ves las etiquetas (cada persona en su teléfono). Yolanda ve solo los sectores en uso. Diego, en un sector sin enlazar, elige el de la app con «Enlazar con este sector» (o «Crear un sector nuevo»); los apagados salen en gris y los prende con «Encender este sector», y con «Apagar este sector» deja de usarse sin perder su historial. «Ver árboles» abre el árbol por árbol del sector.", 41, ""],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
@@ -1677,7 +1679,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
-    { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo: nogales por sector (norte y sur), La Rinconada, limones, vivero y acumulador. Toca un sector para ver su ficha. Diego puede cargar los sectores que faltan y encender los que están apagados.", g: "Sectores en el plano" },
+    { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo con sus sectores. Toca uno para ver su ficha. Diego enlaza cada sector con los que ya usa, y enciende o apaga los que no están en uso; Yolanda ve solo los que están en uso. Cada persona puede ocultar o mostrar los nombres.", g: "Sectores en el plano" },
     { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
     { v: 39, f: "2026-11-12", t: "Árboles del huerto", d: "Nueva sección, que se enciende o apaga en Ajustes: mapa de los nogales con la ficha de cada árbol (por ejemplo H15-N3), registros de sano o enfermo con foto, alerta de árboles enfermos y sectores por hilera. La ven Diego y Yolanda.", g: "Árboles del huerto" },
     { v: 38, f: "2026-11-12", t: "Ajustes en la barra", d: "«Ajustes» pasa a ser el último botón de la barra de abajo, a la derecha de «Cosecha». La barra tiene los bordes difuminados cuando hay más botones por deslizar, y «Medidores» ahora dice «Medidor».", g: "Ajustes: color y respaldo" },
@@ -5245,7 +5247,7 @@ html.pc .cmdk:not([hidden]){display:flex}
 
   /* ---- Sectores en el plano: dibujo esquemático del campo (polígonos de Diego, 13 nov). Cada sector del plano se enlaza con un sector de «Campo» (cuartel). Los apagados no existen en la app hasta que Diego los enciende. ---- */
   var PL_W = 749, PL_H = 922;
-  var PL = [{"id":"n1","n":"Nogales sector 1","g":"nogal","z":[{"l":"Norte","p":"587,108 474,191 550,321 656,228","c":[567,212],"t":"1N"},{"l":"Sur","p":"735,365 660,235 554,328 645,486 671,470 650,433","c":[653,386],"t":"1S"}],"on":0},{"id":"n2","n":"Nogales sector 2","g":"nogal","z":[{"l":"Norte","p":"471,192 388,267 462,398 547,324","c":[467,295],"t":"2N"},{"l":"Sur","p":"551,555 642,488 551,331 466,405","c":[553,445],"t":"2S"}],"on":0},{"id":"n3","n":"Nogales sector 3","g":"nogal","z":[{"l":"Norte","p":"385,269 273,354 353,494 459,401","c":[368,380],"t":"3N"},{"l":"Sur","p":"435,639 548,557 463,408 357,502","c":[451,526],"t":"3S"}],"on":0},{"id":"n4","n":"Nogales sector 4","g":"nogal","z":[{"l":"Norte","p":"268,357 206,398 293,547 349,498","c":[279,450],"t":"4N"},{"l":"Sur","p":"373,684 432,642 353,505 297,554","c":[364,596],"t":"4S"}],"on":0},{"id":"nR","n":"Nogales sector 4 Rinconada","g":"nogal","z":[{"l":"","p":"427,815 260,908 149,722 362,697","c":[299,786],"t":"R"}],"on":0},{"id":"l1","n":"Limón sector 1","g":"limon","z":[{"l":"","p":"215,481 85,578 44,522 168,406","c":[128,497],"t":"1"}],"on":1},{"id":"l2","n":"Limón sector 2","g":"limon","z":[{"l":"","p":"113,436 42,517 14,481 80,391","c":[62,456],"t":"2"}],"on":1},{"id":"l3","n":"Limón sector 3","g":"limon","z":[{"l":"","p":"167,377 117,433 82,385 128,327","c":[124,381],"t":"3"}],"on":1},{"id":"l4","n":"Limón sector 4","g":"limon","z":[{"l":"","p":"290,308 172,375 130,321 226,219","c":[205,306],"t":"4"}],"on":1},{"id":"l5","n":"Limón sector 5","g":"limon","z":[{"l":"","p":"432,182 296,303 231,215 378,108","c":[334,202],"t":"5"}],"on":1},{"id":"l6","n":"Limón sector 6","g":"limon","z":[{"l":"","p":"384,104 507,14 560,87 437,177","c":[472,95],"t":"6"}],"on":1},{"id":"vA","n":"Vivero","g":"vivero","z":[{"l":"","p":"167,535 223,495 239,517 183,558","c":[203,526],"t":""}],"on":1},{"id":"vH","n":"V-Huerto","g":"vivero","z":[{"l":"","p":"208,592 264,551 272,562 216,603","c":[240,577],"t":""}],"on":1},{"id":"vB","n":"Vivero B","g":"vivero","z":[{"l":"","p":"93,589 163,539 212,606 143,657","c":[153,598],"t":"B"}],"on":0},{"id":"vC","n":"Vivero C","g":"vivero","z":[{"l":"","p":"183,558 239,517 247,529 192,569","c":[215,543],"t":""}],"on":0},{"id":"vD","n":"Vivero D","g":"vivero","z":[{"l":"","p":"192,569 247,529 255,540 200,580","c":[224,554],"t":""}],"on":0},{"id":"vE","n":"Vivero E","g":"vivero","z":[{"l":"","p":"200,580 255,540 264,551 208,592","c":[232,566],"t":""}],"on":0},{"id":"pal","n":"Paltos","g":"palto","z":[{"l":"","p":"221,491 91,586 87,580 216,484","c":[154,535],"t":""}],"on":0},{"id":"acu","n":"Acumulador de agua","g":"otro","z":[{"l":"","p":"235,606 285,570 307,600 257,637","c":[271,603],"t":""}],"on":0}];
+  var PL = [{"id":"n1","n":"Nogales sector 1","g":"nogal","z":[{"l":"Norte","p":"587,108 474,191 550,321 656,228","c":[567,212],"t":"1N"},{"l":"Sur","p":"735,365 660,235 554,328 645,486 671,470 650,433","c":[653,386],"t":"1S"}],"on":0},{"id":"n2","n":"Nogales sector 2","g":"nogal","z":[{"l":"Norte","p":"471,192 388,267 462,398 547,324","c":[467,295],"t":"2N"},{"l":"Sur","p":"551,555 642,488 551,331 466,405","c":[553,445],"t":"2S"}],"on":0},{"id":"n3","n":"Nogales sector 3","g":"nogal","z":[{"l":"Norte","p":"385,269 273,354 353,494 459,401","c":[368,380],"t":"3N"},{"l":"Sur","p":"435,639 548,557 463,408 357,502","c":[451,526],"t":"3S"}],"on":0},{"id":"n4","n":"Nogales sector 4","g":"nogal","z":[{"l":"Norte","p":"268,357 206,398 293,547 349,498","c":[279,450],"t":"4N"},{"l":"Sur","p":"373,684 432,642 353,505 297,554","c":[364,596],"t":"4S"}],"on":0},{"id":"nR","n":"Nogales sector 4 Rinconada","g":"nogal","z":[{"l":"","p":"427,815 260,908 149,722 362,697","c":[299,786],"t":"R"}],"on":0},{"id":"l1","n":"Limón sector 1","g":"limon","z":[{"l":"","p":"384,104 507,14 560,87 437,177","c":[472,95],"t":"1"}],"on":1},{"id":"l2","n":"Limón sector 2","g":"limon","z":[{"l":"","p":"432,182 296,303 231,215 378,108","c":[334,202],"t":"2"}],"on":1},{"id":"l3","n":"Limón sector 3","g":"limon","z":[{"l":"","p":"290,308 172,375 130,321 226,219","c":[205,306],"t":"3"}],"on":1},{"id":"l4","n":"Limón sector 4","g":"limon","z":[{"l":"","p":"167,377 117,433 82,385 128,327","c":[124,381],"t":"4"}],"on":1},{"id":"l5","n":"Limón sector 5","g":"limon","z":[{"l":"","p":"113,436 42,517 14,481 80,391","c":[62,456],"t":"5"}],"on":1},{"id":"l6","n":"Limón sector 6","g":"limon","z":[{"l":"","p":"215,481 85,578 44,522 168,406","c":[128,497],"t":"6"}],"on":1},{"id":"vA","n":"Vivero","g":"vivero","z":[{"l":"","p":"167,535 223,495 239,517 183,558","c":[203,526],"t":""}],"on":1},{"id":"vH","n":"V-Huerto","g":"vivero","z":[{"l":"","p":"208,592 264,551 272,562 216,603","c":[240,577],"t":""}],"on":1},{"id":"vB","n":"Vivero B","g":"vivero","z":[{"l":"","p":"93,589 163,539 212,606 143,657","c":[153,598],"t":"B"}],"on":0},{"id":"vC","n":"Vivero C","g":"vivero","z":[{"l":"","p":"183,558 239,517 247,529 192,569","c":[215,543],"t":""}],"on":0},{"id":"vD","n":"Vivero D","g":"vivero","z":[{"l":"","p":"192,569 247,529 255,540 200,580","c":[224,554],"t":""}],"on":0},{"id":"vE","n":"Vivero E","g":"vivero","z":[{"l":"","p":"200,580 255,540 264,551 208,592","c":[232,566],"t":""}],"on":0},{"id":"pal","n":"Paltos","g":"palto","z":[{"l":"","p":"221,491 91,586 87,580 216,484","c":[154,535],"t":""}],"on":0},{"id":"acu","n":"Acumulador de agua","g":"otro","z":[{"l":"","p":"235,606 285,570 307,600 257,637","c":[271,603],"t":""}],"on":0}];
   var PL_REF = { n1: 0.65, n2: 0.53, n3: 0.53, n4: 0.26, nR: 0.37 };
   var PL_DEF = {
     vA: { especie: "Vivero", especies: ["Frutales", "Ornamentales"] }, vH: { especie: "Vivero", especies: ["Hortalizas"] },
@@ -5255,6 +5257,10 @@ html.pc .cmdk:not([hidden]){display:flex}
   function plPorId(id){ return PL.filter(function(p){ return p.id === id; })[0]; }
   function plCuartel(p){
     var cs = S.cuarteles || [], x = cs.filter(function(c){ return c.planoId === p.id; })[0]; if (x) return x;
+    if (plApagadoDoc(p)) return null;
+    if (p.id === "vA" || p.id === "vH"){
+      return cs.filter(function(c){ if (!esViv(c) || c.planoId) return false; var n = String(c.nombre || ""); return p.id === "vH" ? /huerto/i.test(n) : /^vivero(\s+(sector\s+)?a)?\s*$/i.test(n); })[0] || null;
+    }
     if (p.g !== "nogal") return null;
     return cs.filter(function(c){
       var n = String(c.nombre || ""); if (esViv(c) || c.especie === "Limón") return false;
@@ -5263,8 +5269,9 @@ html.pc .cmdk:not([hidden]){display:flex}
       var m = n.match(/(?:sector|s)\s*(\d)/i); return !!m && ("n" + m[1]) === p.id;
     })[0] || null;
   }
-  function plEstado(p){ if (p.g === "otro") return "otro"; if (plCuartel(p)) return "cargado"; if (p.on) return "porcargar"; return p.g === "nogal" ? "sinvinc" : "apagado"; }
-  var PL_TXT = { cargado: "Cargado en la app", porcargar: "Por cargar", apagado: "Apagado", sinvinc: "Sin sector en la app", otro: "" };
+  function plApagadoDoc(p){ return (S.cuartelesOff || []).filter(function(c){ return c.planoId === p.id; })[0] || null; }
+  function plEstado(p){ if (p.g === "otro") return "otro"; if (plCuartel(p)) return "cargado"; if (plApagadoDoc(p)) return "apagado"; if (p.on) return "sinvinc"; return p.g === "nogal" ? "sinvinc" : "apagado"; }
+  var PL_TXT = { cargado: "Enlazado con un sector de la app", porcargar: "Por cargar", apagado: "Apagado", sinvinc: "Sin enlazar", otro: "" };
   function plDatos(p){
     var d = PL_DEF[p.id] || { especie: p.g === "limon" ? "Limón" : "Nogal" };
     var o = { nombre: p.n, especie: d.especie, variedad: "", anio: null, ha: null, arboles: null, planoId: p.id };
@@ -5275,29 +5282,43 @@ html.pc .cmdk:not([hidden]){display:flex}
     var ord = S.cuarteles.reduce(function(m, c){ return Math.max(m, c.orden || 0); }, 0), n = 0;
     for (var i = 0; i < ids.length; i++){
       var p = plPorId(ids[i]); if (!p || plCuartel(p)) continue;
+      var off = plApagadoDoc(p);
+      if (off){ try { await S.db.doc("cuarteles/" + off.id).update({ apagado: false }); n++; } catch (e1){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return; } continue; }
       var d = plDatos(p); d.orden = ++ord;
       try { await S.db.doc("cuarteles/plano_" + p.id).set(d); n++; } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return; }
     }
     if (n) toast(n === 1 ? "Sector cargado" : n + " sectores cargados");
   }
+  function plLibres(p){
+    var usados = {}; PL.forEach(function(q){ var c = plCuartel(q); if (c) usados[c.id] = 1; });
+    return (S.cuarteles || []).filter(function(c){ if (usados[c.id] || c.planoId) return false; if (p.g === "limon") return esLimon(c); if (p.g === "vivero") return esViv(c); if (p.g === "nogal") return !esViv(c) && !esLimon(c); return false; });
+  }
+  async function plEnlazar(p, id){
+    try { await S.db.doc("cuarteles/" + id).update({ planoId: p.id }); toast("Sector enlazado"); } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+  }
+  async function plApagar(c){
+    try { await S.db.doc("cuarteles/" + c.id).update({ apagado: true }); toast("Sector apagado"); } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+  }
+  function plNombres(){ try { return localStorage.getItem("pl_nombres") !== "0"; } catch (e){ return true; } }
   function plSvg(){
     var NS = "http://www.w3.org/2000/svg", s = document.createElementNS(NS, "svg");
     s.setAttribute("viewBox", "0 0 " + PL_W + " " + PL_H); s.setAttribute("role", "group"); s.setAttribute("aria-label", "Sectores del campo en el plano");
     var etq = [];
     PL.forEach(function(p){
       var est = plEstado(p), sel = S.plSel === p.id;
+      if (!S.owner && (est === "apagado" || est === "porcargar")) return;
       p.z.forEach(function(z){
         var g = document.createElementNS(NS, "polygon"); g.setAttribute("points", z.p);
-        g.setAttribute("class", "pl-z pl-" + p.g + " pl-" + est + (sel ? " sel" : "")); g.dataset.id = p.id;
+        g.setAttribute("class", "pl-z pl-" + (est === "apagado" || est === "porcargar" ? "off" : p.g) + " pl-" + est + (S.owner ? "" : " pl-pub") + (sel ? " sel" : "")); g.dataset.id = p.id;
         if (p.g !== "otro"){
           g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); g.setAttribute("aria-label", p.n + (z.l ? " " + z.l : "") + ", " + PL_TXT[est]);
           var ir = function(){ S.plSel = p.id; S.plLado = z.l; render(); };
           g.onclick = ir; g.onkeydown = function(ev){ if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); ir(); } };
         }
-        s.appendChild(g); if (z.t) etq.push(z);
+        s.appendChild(g); if (z.t && est !== "apagado" && est !== "porcargar") etq.push(z);
       });
     });
-    etq.forEach(function(z){ var t = document.createElementNS(NS, "text"); t.setAttribute("x", z.c[0]); t.setAttribute("y", z.c[1] + 7); t.setAttribute("font-size", z.t.length > 1 || isNaN(Number(z.t)) ? 22 : 24); t.textContent = z.t; s.appendChild(t); });
+    if (plNombres()) etq.forEach(function(z){ var t = document.createElementNS(NS, "text"); t.setAttribute("x", z.c[0]); t.setAttribute("y", z.c[1] + 7); t.setAttribute("font-size", z.t.length > 1 || isNaN(Number(z.t)) ? 22 : 24); t.textContent = z.t; s.appendChild(t); });
     return s;
   }
   function plFicha(){
@@ -5317,7 +5338,19 @@ html.pc .cmdk:not([hidden]){display:flex}
     } else if (p.g === "limon") box.appendChild(el("p", "note", "Limón · el plan de limones suma 0,85 ha en total (Google Earth, referencial)."));
     else if (p.g === "vivero" || p.g === "palto"){ var dd = PL_DEF[p.id] || {}; box.appendChild(el("p", "note", p.g === "palto" ? "Paltos" : "Vivero" + (dd.especies && dd.especies.length ? " · " + dd.especies.join(", ").toLowerCase() : ""))); }
     if (est === "apagado") box.appendChild(el("p", "note", "Está apagado: aún no aparece en agenda, riego ni registros."));
+    if (S.owner && est === "sinvinc" && p.g !== "otro"){
+      var lib = plLibres(p), fl = el("div", "field");
+      fl.appendChild(el("p", "note", lib.length ? "Este sector del plano aún no está enlazado con uno de la app. Elige cuál es:" : "No hay sectores de la app sin enlazar para este tipo."));
+      if (lib.length){
+        var sel = el("select"); sel.id = "plLibre"; sel.setAttribute("aria-label", "Sector de la app");
+        lib.forEach(function(x){ var o = el("option", null, x.nombre); o.value = x.id; sel.appendChild(o); }); fl.appendChild(sel);
+        var be = el("button", "primary small", "Enlazar con este sector"); be.type = "button"; be.id = "plEnlazar"; be.onclick = function(){ be.disabled = true; plEnlazar(p, sel.value); }; fl.appendChild(be);
+      }
+      var bn = el("button", "small", "Crear un sector nuevo"); bn.type = "button"; bn.onclick = function(){ bn.disabled = true; plCrear([p.id]); }; fl.appendChild(bn);
+      box.appendChild(fl);
+    }
     var ac = el("div", "tm-acts");
+    if (S.owner && c && p.g !== "nogal"){ var b0 = el("button", "small", "Apagar este sector"); b0.type = "button"; b0.onclick = function(){ b0.disabled = true; S.plSel = null; plApagar(c); }; ac.appendChild(b0); }
     if (S.owner && (est === "porcargar" || est === "apagado")){ var b1 = el("button", "primary small", est === "apagado" ? "Encender este sector" : "Cargar este sector"); b1.type = "button"; b1.onclick = function(){ b1.disabled = true; plCrear([p.id]); }; ac.appendChild(b1); }
     if (S.owner && c){ var b2 = el("button", "small", "Editar sector"); b2.type = "button"; b2.onclick = function(){ abrirEdit(c); }; ac.appendChild(b2); }
     if (p.g === "nogal" && p.id !== "nR" && huOn()){ var b3 = el("button", "small", "Ver árboles"); b3.type = "button"; b3.onclick = function(){ S.hv.sector = Number(p.id.charAt(1)); S.hv.norte = S.plLado !== "Sur"; S.hv.sur = S.plLado !== "Norte"; S.screen = "arboles"; render(); }; ac.appendChild(b3); }
@@ -5328,10 +5361,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     var sec = el("section", "card sect pl-wrap"); sec.id = "plPlano"; sec.appendChild(el("h2", null, "Sectores en el plano"));
     sec.appendChild(plSvg());
     var lg = el("div", "pl-leg"); [["nogal", "Nogales"], ["limon", "Limones"], ["vivero", "Vivero"], ["otro", "Acumulador"]].forEach(function(x){ var sp = el("span", null, x[1]); sp.className = "pl-k-" + x[0]; lg.appendChild(sp); }); sec.appendChild(lg);
-    sec.appendChild(el("p", "note", "Contorno punteado: sector por cargar o apagado. 1N es el sector 1, lado norte."));
-    var falta = PL.filter(function(p){ return plEstado(p) === "porcargar"; }), apag = PL.filter(function(p){ return plEstado(p) === "apagado"; });
-    if (S.owner && falta.length){ var bc = el("button", "primary", "Cargar los sectores que faltan"); bc.type = "button"; bc.id = "plCargar"; bc.onclick = function(){ bc.disabled = true; plCrear(falta.map(function(p){ return p.id; })); }; sec.appendChild(bc); sec.appendChild(el("p", "note", "Crea " + falta.length + (falta.length === 1 ? " sector" : " sectores") + ": " + falta.map(function(p){ return p.n; }).join(", ") + ".")); }
-    if (apag.length) sec.appendChild(el("p", "note", "Apagados: " + apag.map(function(p){ return p.n; }).join(", ") + (S.owner ? ". Tócalos en el plano para encenderlos." : ".")));
+    var nm = el("button", "small", plNombres() ? "Ocultar nombres" : "Mostrar nombres"); nm.type = "button"; nm.id = "plNombres"; nm.onclick = function(){ try { localStorage.setItem("pl_nombres", plNombres() ? "0" : "1"); } catch (e){} render(); }; sec.appendChild(nm);
+    sec.appendChild(el("p", "note", (S.owner ? "Gris liso: sector apagado o por cargar. " : "") + "1N es el sector 1, lado norte. Limones: el 1 al este y el 6 al oeste."));
+    var apag = PL.filter(function(p){ return plEstado(p) === "apagado"; }), sinv = PL.filter(function(p){ return plEstado(p) === "sinvinc" && p.on; });
+    if (S.owner && sinv.length) sec.appendChild(el("p", "note", "Sin enlazar: " + sinv.map(function(p){ return p.n; }).join(", ") + ". Tócalos en el plano para enlazarlos con los sectores que ya usas."));
+    if (S.owner && apag.length) sec.appendChild(el("p", "note", "Apagados: " + apag.map(function(p){ return p.n; }).join(", ") + (S.owner ? ". Tócalos en el plano para encenderlos." : ".")));
     sec.appendChild(plFicha());
     return sec;
   }
@@ -7013,7 +7047,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       S.trabajos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
     }, function(){});
     db.collection("cuarteles").onSnapshot(function(s){
-      S.cuarteles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render();
+      var todos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); S.cuartelesOff = todos.filter(function(c){ return c.apagado; }); S.cuarteles = todos.filter(function(c){ return !c.apagado; }); render();
     }, function(){});
     if (S.owner){ db.doc("config/respaldoEstado").onSnapshot(function(s2){ S.respEst = s2.exists ? s2.data() : {}; render(); }, function(){}); db.doc("config/respaldoPedido").onSnapshot(function(s3){ S.respPedido = s3.exists ? (s3.data().ts || "") : ""; render(); }, function(){}); }
     db.doc("config/jornada").onSnapshot(function(s){ var d = s.exists ? s.data() : {}; S.jconf = { sem: Number(d.sem) || 42 }; render(); }, function(){});

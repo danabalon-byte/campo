@@ -772,6 +772,59 @@ html.pc .cmdk:not([hidden]){display:flex}
 .nav.hu7 button[aria-pressed=true] .ni{background:color-mix(in srgb,var(--surface-2) 82%,var(--line)); box-shadow:inset 0 2px 4px rgba(0,0,0,.30),inset 0 -1px 0 rgba(255,255,255,.55)}
 .hu-sv{background:transparent; border:1px solid var(--line); box-shadow:none}
 .hu-sheet button.primary,.hu-cam button.ajs-main{box-shadow:none}
+/* Bienvenida con animación y lista de labores del día (Inicio) */
+.hy-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:12px}
+.hy-an{width:100%; aspect-ratio:250/170; position:relative; overflow:hidden; background:linear-gradient(#CFE6F2,#EAF3DA)}
+.hy-st{position:absolute; inset:0}
+.stage{position:relative; overflow:hidden}
+.hy-st.stage{position:absolute; inset:0}
+.stage>svg.bg,.stage>svg.fg{position:absolute; inset:0; width:100%!important; height:100%!important; pointer-events:none}
+.stage>.sc{position:absolute; inset:0; filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.28))}
+.stage svg.sc2{position:absolute; inset:0; width:100%; height:100%}
+@keyframes sw1{0%,100%{transform:skewX(-3deg)}50%{transform:skewX(4deg)}}
+@keyframes smk{0%{transform:translate(0,0) scale(.6);opacity:.7}100%{transform:translate(8px,-22px) scale(1.4);opacity:0}}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes cl1{from{transform:translateX(-30px)}to{transform:translateX(280px)}}
+@keyframes mill{to{transform:rotate(360deg)}}
+.hy-tx{padding:12px 14px 2px}
+.hy-tx h2{margin:0 0 2px; font-size:20px}
+.hy-tx p{margin:0; color:var(--muted); font-size:15px}
+.hy-bt{display:flex; gap:8px; padding:12px 14px 14px}
+.hy-bt button{flex:1}
+.hy-no{background:var(--surface-2); color:var(--fg); border:1px solid var(--line)}
+.hy-tl{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 14px 4px; margin-bottom:12px}
+.hy-h{display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:10px; width:100%; background:none; border:0; padding:0 0 12px; margin:0; font:inherit; color:inherit; text-align:left; cursor:pointer; min-height:44px}
+.hy-h h2{margin:0; font-size:18px; white-space:nowrap}
+.hy-pg{grid-column:1/-1; margin:4px 0 0; font-size:14px; color:var(--muted)}
+.hy-nx{grid-column:1/-1; margin:4px 0 0; font-size:14px; color:var(--fg)}
+.hy-chev{position:relative; width:30px; height:30px; box-sizing:border-box; border-radius:50%; border:1.5px solid #9DB39F; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--fg); font-weight:700; transition:box-shadow .14s}
+.hy-chev:before{content:""; position:absolute; inset:-8px}
+.hy-h:active .hy-chev{box-shadow:inset 2px 3px 6px rgba(0,0,0,.4)}
+.hy-tl.op .hy-chev{border-color:#D3D5C9; transform:translateY(2px); background:linear-gradient(160deg,#B3B7AC 0,#CDD0C5 45%,#E2E3D9 100%); color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.5),inset -2px -3px 5px rgba(255,255,255,.75),0 0 0 3px #EEEFE7,0 1px 0 3px #fff}
+.hy-body{display:grid; grid-template-rows:0fr}
+.hy-tl.op .hy-body{grid-template-rows:1fr}
+.hy-body>div{overflow:hidden; min-height:0}
+.hy-it{position:relative; display:flex; gap:12px; padding-bottom:14px}
+.hy-it:not(:last-child):before{content:""; position:absolute; left:20.5px; top:40px; bottom:0; width:3px; background:var(--line); border-radius:2px}
+.hy-it.dn:not(:last-child):before{background:var(--accent)}
+.hy-dot{flex:none; position:relative; box-sizing:border-box; width:44px; height:44px; min-height:44px; min-width:44px; margin:0 -4px 0 -4px; padding:0; border:0; background:none; display:flex; align-items:center; justify-content:center; z-index:1; cursor:pointer}
+.hy-c{box-sizing:border-box; width:36px; height:36px; border-radius:50%; border:2.5px solid var(--accent); background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:18px; font-weight:700; box-shadow:none}
+.hy-dot:active .hy-c{box-shadow:inset 2px 3px 6px rgba(0,0,0,.4)}
+.hy-it.u .hy-c{border-color:var(--alert)}
+.hy-it.s .hy-c{border-color:#A9A27F}
+.hy-it.dn .hy-c,.hy-it.dn.u .hy-c,.hy-it.dn.s .hy-c{border-color:#C9CABD; background:linear-gradient(160deg,#B3B7AC 0,#CDD0C5 45%,#E2E3D9 100%); transform:translateY(3px); box-shadow:inset 3px 4px 8px rgba(0,0,0,.5),inset -2px -3px 5px rgba(255,255,255,.75),0 0 0 4px #E6E7DE,0 1px 0 4px #fff}
+.hy-w{flex:1; min-width:0}
+.hy-itb{display:block; width:100%; background:none; border:0; padding:0; margin:0; font:inherit; color:inherit; text-align:left; cursor:pointer; min-height:44px}
+.hy-itb b{display:block; font-size:16px; line-height:1.25}
+.hy-itb .s{display:block; color:var(--muted); font-size:14px; margin-top:2px}
+.hy-it.dn .hy-itb b{color:var(--muted); text-decoration:line-through}
+.hy-tag{display:block; width:fit-content; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-bottom:3px}
+.hy-tag.u{background:var(--alert-bg); color:var(--alert)}
+.hy-tag.h{background:var(--ok-bg); color:var(--ok-fg)}
+.hy-tag.s{background:var(--idle-bg); color:var(--idle-fg)}
+.hy-dtl{margin-top:8px; background:var(--surface-2); border-radius:6px; padding:10px 12px; font-size:14px; line-height:1.45}
+.hy-dtl button{margin-top:8px; width:100%}
+@media (prefers-reduced-motion: no-preference){ .hy-body{transition:grid-template-rows .3s ease} .hy-c{transition:box-shadow .14s,transform .14s,background .14s} }
 </style>
 
 
@@ -1615,10 +1668,12 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 43;
+  var GUIA_V = 44;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
-    ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
+    ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
+    ["Saludo del día", "Al abrir «Inicio» te saluda por tu nombre con una escena animada que cambia cada vez, y en fechas especiales (cumpleaños, Navidad, Semana Santa y otras) aparece la de esa fecha. La tarjeta trae «Llegué» y «Hoy no trabajo»; desaparece al registrar tu llegada, al tocar «Hoy no trabajo» y los domingos.", 44, ""],
+    ["Esto tenemos para hoy", "Bajo el saludo, «¡Esto tenemos para hoy!» reúne las labores del día en orden de prioridad: «Urgente» (atrasadas y la foto del tablero eléctrico), «Hoy» y «Si alcanza». Toca el título para abrir la lista y toca una labor para ver su detalle justo debajo. El círculo de la izquierda marca una tarea como hecha; en la foto del tablero, las aplicaciones y los riegos abre «Tomar la foto del tablero eléctrico», «Hacerla ahora» o «Registrar riego» para dejar el registro completo.", 44, ""],
     ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final están «Medidor» y «Cosecha». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
     ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
     ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
@@ -1701,6 +1756,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 44, f: "2026-11-13", t: "Saludo y labores del día", d: "«Inicio» te saluda por tu nombre con una escena animada y ahora trae «¡Esto tenemos para hoy!»: las labores del día en orden de prioridad, con un círculo para marcarlas. La foto del tablero eléctrico es lo primero cada día.", g: "Esto tenemos para hoy" },
     { v: 43, f: "2026-11-13", t: "En el campo ahora", d: "En «Inicio» ves de un vistazo quién está en el campo: iniciales con un punto verde para quien ya llegó. «Ver detalle» abre «Trabajadores».", g: "En el campo ahora", r: "manager" },
     { v: 42, f: "2026-11-13", t: "¡Ahora tenemos Huerto! 🍅🥬", d: "Revisa la actualización y agrega los detalles de cada especie del huerto y del vivero: fotos, estado y notas para cuidarlas y así disfrutarlas día a día. Tócalas en «Sectores en el plano» (en «Campo»). Ah, y los viveros y paltos se amplían al tocarlos. 🌱", g: "Fichas por especie", ico: "tomate" },
     { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo con sus sectores. Toca uno para ver su ficha. Diego enlaza cada sector con los que ya usa, y enciende o apaga los que no están en uso; Yolanda ve solo los que están en uso. Cada persona puede ocultar o mostrar los nombres.", g: "Sectores en el plano" },
@@ -2417,6 +2473,163 @@ html.pc .cmdk:not([hidden]){display:flex}
     (S.agendados || []).forEach(function(a){ var k = String(a.nombre || "").toLowerCase(); if (a.desde <= hoy && a.hasta >= hoy && !vistos[k]){ vistos[k] = 1; out.push({ nombre: a.nombre, est: "wait", sub: "Agendado" }); } });
     return out;
   }
+  /* ---- Bienvenida con animación y «¡Esto tenemos para hoy!» (Inicio) ---- */
+  var HY_APODOS = { yolanda: "Yoli" };
+  function hyNombre(){
+    var n = String(S.nombre || "").trim().split(/\s+/)[0] || "";
+    var k = n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    return HY_APODOS[k] || n;
+  }
+  function hyPascua(y){
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+      mes = Math.floor((h + l - 7 * m + 114) / 31), dia = ((h + l - 7 * m + 114) % 31) + 1;
+    return y + "-" + String(mes).padStart(2, "0") + "-" + String(dia).padStart(2, "0");
+  }
+  /* Fecha especial de hoy: devuelve { sp: texto de la fecha, t: parte del título de la escena, saludo } o null. Las escenas se buscan por su título. */
+  function hyEspecial(f){
+    var md = f.slice(5), y = Number(f.slice(0, 4)), pa = hyPascua(y);
+    var T = {
+      "01-01": ["Año Nuevo", "Cuenta regresiva"], "12-31": ["Año Nuevo", "Cuenta regresiva"], "12-24": ["Navidad", "Pino navideño"], "12-25": ["Navidad", "Viejito Pascuero"],
+      "09-17": ["Fiestas Patrias", "Cueca"], "09-18": ["Fiestas Patrias", "Cueca"], "09-19": ["Fiestas Patrias", "Cueca"], "06-21": ["We Tripantu", "Amanecer, fogata"],
+      "11-01": ["Todos los Santos", "Velas y flores"], "06-29": ["San Pedro y San Pablo", "San Pedro"], "07-16": ["Virgen del Carmen", "La Tirana"],
+      "08-15": ["Asunción de la Virgen", "Andas con flores blancas"], "12-08": ["Inmaculada Concepción", "Peregrinación"], "10-12": ["Encuentro de Dos Mundos", "Mesa compartida"]
+    };
+    var r = T[md];
+    if (!r){
+      var dp = Math.round((Date.parse(f + "T12:00:00Z") - Date.parse(pa + "T12:00:00Z")) / 86400000);
+      if (dp === -2) r = ["Viernes Santo", "Procesión silenciosa"]; else if (dp === -1) r = ["Sábado Santo", "Vigilia"]; else if (dp === 0) r = ["Domingo de Resurrección", "Resurrección"]; else if (dp === 7) r = ["Domingo de Cuasimodo", "Cuasimodo"];
+    }
+    if (!r){
+      var g = gente().filter(function(x){ return S.nombre && mismaPersona(x.nombre, S.nombre) && x.nac && x.nac.slice(5) === md; })[0];
+      if (g) r = ["Cumpleaños", "Torta con velas|Regalo que se abre"];
+    }
+    return r ? { sp: r[0], t: r[1] } : null;
+  }
+  function hyTitulo(esp){
+    var hr = Number(new Intl.DateTimeFormat("es-CL", { timeZone: TZ, hour: "2-digit", hour12: false }).format(new Date())) % 24;
+    var s = hr < 12 ? "¡Buenos días, " : "¡Buenas tardes, "; s += hyNombre() + "!";
+    if (esp && esp.sp === "Cumpleaños") s = "¡Feliz cumpleaños, " + hyNombre() + "!";
+    else if (esp && esp.sp === "Navidad") s = "¡Feliz Navidad, " + hyNombre() + "!";
+    else if (esp && esp.sp === "Año Nuevo") s = "¡Feliz Año Nuevo, " + hyNombre() + "!";
+    return s;
+  }
+  var HY = { cargando: false, listo: false, idx: -1, el: null, dia: "", abre: false, ab: null, ver: false };
+  function hyCargar(cb){
+    if (window.ANIM){ HY.listo = true; cb(); return; }
+    if (HY.cargando) return; HY.cargando = true;
+    var s = document.createElement("script"); s.src = "animaciones.js"; s.async = true;
+    s.onload = function(){ HY.listo = !!window.ANIM; HY.cargando = false; if (HY.listo) cb(); };
+    s.onerror = function(){ HY.cargando = false; };
+    document.head.appendChild(s);
+  }
+  function hyElegir(esp){
+    var G = window.ANIM.G, i, c = [];
+    if (esp){
+      var partes = esp.t.split("|");
+      G.forEach(function(x, k){ if (x.sp && x.sp.indexOf(esp.sp) === 0 && partes.some(function(p){ return x.t.indexOf(p) >= 0; })) c.push(k); });
+      if (c.length) return c[Math.floor(Math.random() * c.length)];
+    }
+    G.forEach(function(x, k){ if (!x.sp) c.push(k); });
+    var ult = -1; try { ult = Number(localStorage.getItem("hy_ult")); } catch (e){}
+    var c2 = c.filter(function(k){ return k !== ult; }); if (c2.length) c = c2;
+    i = c[Math.floor(Math.random() * c.length)];
+    try { localStorage.setItem("hy_ult", String(i)); } catch (e){}
+    return i;
+  }
+  function hyNoTrabajo(){ try { return localStorage.getItem("hy_nt") === fecha(); } catch (e){ return false; } }
+  /* ¿Se muestra la bienvenida? Solo si aún no hay llegada hoy, no marcó «Hoy no trabajo» y no es domingo (salvo fecha especial). */
+  function hySaludo(e){
+    if (e.st !== "none" || hyNoTrabajo() || S.noWrite) return null;
+    var f = fecha(), esp = hyEspecial(f);
+    if (esDomingo(f) && !esp) return null;
+    return esp || { sp: "", t: "" };
+  }
+  function buildSaludo(esp){
+    var f = fecha(), dom = esDomingo(f);
+    var c = el("section", "hy-card"); c.id = "saludoCard";
+    var an = el("div", "hy-an"); an.setAttribute("aria-hidden", "true");
+    if (HY.dia !== f + (esp.sp || "")){ HY.dia = f + (esp.sp || ""); HY.idx = -1; if (HY.el){ if (window.ANIM) ANIM.stop(HY.el); HY.el = null; } }
+    if (!HY.el){ HY.el = el("div", "hy-st"); }
+    an.appendChild(HY.el); c.appendChild(an);
+    var tx = el("div", "hy-tx"); tx.appendChild(el("h2", null, hyTitulo(esp.sp ? esp : null)));
+    tx.appendChild(el("p", null, esp.sp ? esp.sp + (dom ? "" : " · no olvides tu registro.") : "No olvides tu registro.")); c.appendChild(tx);
+    var bt = el("div", "hy-bt");
+    var b1 = el("button", "primary", "Llegué"); b1.type = "button"; b1.onclick = function(){ pedir("in"); }; bt.appendChild(b1);
+    var b2 = el("button", "hy-no", "Hoy no trabajo"); b2.type = "button"; b2.onclick = function(){ try { localStorage.setItem("hy_nt", fecha()); } catch (e){} if (window.ANIM && HY.el) ANIM.stop(HY.el); HY.el = null; render(); }; bt.appendChild(b2);
+    c.appendChild(bt);
+    if (HY.idx < 0){
+      hyCargar(function(){
+        if (HY.idx >= 0 || !HY.el) return;
+        HY.idx = hyElegir(esp.sp ? esp : null);
+        var hr = Number(new Intl.DateTimeFormat("es-CL", { timeZone: TZ, hour: "2-digit", hour12: false }).format(new Date())) % 24;
+        setTimeout(function(){ if (HY.el) { try { ANIM.mount(HY.el, HY.idx, hr >= 19 ? "dusk" : "day"); } catch (er){} } }, 30);
+      });
+    }
+    return c;
+  }
+  /* Lista de labores del día, ordenada por prioridad: urgente (atrasadas y foto del tablero), hoy (aplicaciones, riegos y lecturas) y si alcanza (otras tareas). */
+  var HY_TG = { u: "Urgente", h: "Hoy", s: "Si alcanza" }, HY_RK = { u: 0, h: 1, s: 2 };
+  function hyLabores(){
+    var hy = fecha(), L = [];
+    medidoresAct().forEach(function(m){
+      var Lc = medLect(m.id), ult = Lc.length ? Lc[Lc.length - 1].fecha : "";
+      var diaria = m.tipo === "luz" || m.frec === "diaria", pend = m.frec === "libre" && m.tipo !== "luz" ? false : (diaria ? ult < hy : ult < weekStart(hy));
+      if (!pend && !(ult === hy && diaria)) return;
+      var luz = m.tipo === "luz";
+      L.push({ id: "m" + m.id, p: luz ? "u" : "h", done: !pend, t: luz ? "Tomar la foto del tablero eléctrico" : "Tomar la lectura de " + m.nombre.toLowerCase(), s: diaria ? "Todos los días, al llegar" : "Una vez por semana",
+        d: luz ? "Toma la foto del medidor al llegar. La app propone los kWh y tú los confirmas con un toque." : "Anota la lectura con la foto del medidor.", b: "Tomar la foto", go: function(){ S.screen = "medidores"; render(); abrirMedidor(m); } });
+    });
+    S.plan.forEach(function(x){
+      if (x.estado === "cancelada") return;
+      var hecha = x.estado === "hecha";
+      if (hecha ? x.fecha !== hy : x.fecha > hy) return;
+      var late = !hecha && x.fecha < hy;
+      L.push({ id: "p" + x.id, p: late ? "u" : "h", done: hecha, t: (late ? "Aplicación atrasada: " : "Aplicar ") + tituloPlan(x) + " · " + x.sector, s: late ? "Debía hacerse el " + fmtD2(x.fecha) : "Para hoy" + (x.equipo ? " · " + x.equipo : ""),
+        d: x.notas || "Al confirmar queda registrada y se descuenta de la bodega.", b: "Hacerla ahora", go: function(){ S.screen = "aplic"; render(); abrirAp(x); } });
+    });
+    S.tareas.forEach(function(t){
+      var hecha = t.estado === "hecha";
+      if (hecha ? t.fecha !== hy : (!t.fecha || t.fecha > hy)) return;
+      var late = !hecha && t.fecha < hy, rg = t.tipo === "riego";
+      var pr = late ? "u" : (rg || t.tipo === "aplic" ? "h" : "s");
+      var sub = (late ? "Pendiente desde el " + fmtD2(t.fecha) : (MOM[t.momento] || "Hoy")) + (t.quien ? " · " + t.quien : "") + (rg && t.horas ? " · " + nf(t.horas, 1) + " h" : "");
+      L.push({ id: "t" + t.id, p: pr, done: hecha, t: t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub,
+        d: rg ? "Al registrar el riego quedan anotadas las horas y el agua." : "Cuando termines, márcala como hecha.", b: rg ? "Registrar riego" : "Marcar como hecha", pulsa: !rg, tarea: t, go: function(){ if (rg){ S.screen = "riego"; render(); } marcarTarea(t); } });
+    });
+    return L.sort(function(a, b){ return (a.done ? 1 : 0) - (b.done ? 1 : 0) || HY_RK[a.p] - HY_RK[b.p]; });
+  }
+  function buildHoyLista(){
+    var L = hyLabores(); if (!L.length) return null;
+    var n = L.filter(function(x){ return x.done; }).length, sig = L.filter(function(x){ return !x.done; })[0];
+    var sec = el("section", "hy-tl" + (HY.abre ? " op" : "")); sec.id = "hoyLista";
+    var h = el("button", "hy-h"); h.type = "button"; h.setAttribute("aria-expanded", HY.abre ? "true" : "false");
+    h.appendChild(el("h2", null, "¡Esto tenemos para hoy!"));
+    var ch = el("span", "hy-chev"); ch.appendChild(document.createTextNode("▾")); ch.setAttribute("aria-hidden", "true"); h.appendChild(ch);
+    h.appendChild(el("p", "hy-pg", n + " de " + L.length + (L.length === 1 ? " hecha" : " hechas") + " · ordenadas por prioridad"));
+    if (!HY.abre && sig){ var nx = el("p", "hy-nx"); nx.appendChild(el("b", null, "Sigue: ")); nx.appendChild(document.createTextNode(sig.t)); h.appendChild(nx); }
+    h.onclick = function(){ HY.abre = !HY.abre; render(); };
+    sec.appendChild(h);
+    var bd = el("div", "hy-body"), in2 = el("div");
+    L.forEach(function(x){
+      var it = el("div", "hy-it " + x.p + (x.done ? " dn" : ""));
+      var dot = el("button", "hy-dot"); dot.type = "button"; dot.appendChild(el("span", "hy-c", x.done ? "✓" : "")); dot.setAttribute("aria-pressed", x.done ? "true" : "false");
+      dot.setAttribute("aria-label", x.done ? "Hecha: " + x.t : (x.pulsa ? "Marcar como hecha: " : "Abrir: ") + x.t);
+      dot.onclick = function(){ if (x.tarea && x.pulsa) marcarTarea(x.tarea); else if (!x.done) x.go(); };
+      it.appendChild(dot);
+      var w = el("div", "hy-w"), tb = el("button", "hy-itb"); tb.type = "button";
+      if (!x.done) tb.appendChild(el("span", "hy-tag " + x.p, HY_TG[x.p]));
+      tb.appendChild(el("b", null, x.t)); tb.appendChild(el("span", "s", x.done ? "Hecha" : x.s));
+      tb.onclick = function(){ HY.ab = HY.ab === x.id ? null : x.id; render(); };
+      w.appendChild(tb);
+      if (HY.ab === x.id && !x.done){
+        var dt = el("div", "hy-dtl"); dt.appendChild(document.createTextNode(x.d));
+        var go = el("button", "primary", x.b); go.type = "button"; go.onclick = function(){ HY.ab = null; x.go(); }; dt.appendChild(go); w.appendChild(dt);
+      }
+      it.appendChild(w); in2.appendChild(it);
+    });
+    bd.appendChild(in2); sec.appendChild(bd); return sec;
+  }
   function buildEnCampo(){
     if (!S.manager) return null;
     var gente = ecGente(), on = gente.filter(function(g){ return g.est === "on"; }).length, esp = gente.filter(function(g){ return g.est === "wait"; }).length;
@@ -2438,6 +2651,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     var now = Date.now(), e = estado(S.dias, now), wk = semana(S.dias, now);
     var f = document.createDocumentFragment();
 
+    var espH = hySaludo(e);
+    if (espH){ f.appendChild(buildSaludo(espH)); }
+    else {
+      if (HY.el){ if (window.ANIM) ANIM.stop(HY.el); HY.el = null; HY.idx = -1; }
     var hero = el("section", "hero");
     hero.appendChild(portada("Hola, " + S.nombre, "Chincolco, Petorca"));
     var hb = el("div", "hero-body");
@@ -2448,6 +2665,8 @@ html.pc .cmdk:not([hidden]){display:flex}
     btn.onclick = function(){ pedir(e.st === "open" ? "out" : "in"); };
     if (S.noWrite){ btn.disabled = true; hb.appendChild(el("p", "note warn", "Tu acceso no permite registrar. Avísale a Diego para que te invite como colaboradora.")); }
     hb.appendChild(btn); hero.appendChild(hb); f.appendChild(hero);
+    }
+    var hl = buildHoyLista(); if (hl) f.appendChild(hl);
     var al = alertasHome();
     if (al.length){
       var sevMax = al.reduce(function(m, z){ return Math.min(m, z.sev); }, 9);

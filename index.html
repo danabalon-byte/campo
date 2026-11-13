@@ -1066,6 +1066,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     <div class="field" id="trFechaF" hidden><label for="trFecha">Fecha del trabajo</label><input type="date" id="trFecha"></div>
     <div class="field"><label for="trAct">¿Qué se hizo?</label><select id="trAct"></select></div>
     <div class="field"><label for="trSector">¿Dónde?</label><select id="trSector"></select></div>
+    <div class="note warn" id="trMod" hidden role="status"><span id="trModT"></span> <button type="button" class="small" id="trModIr"></button></div>
     <div class="field"><label for="trHoras">Horas de trabajo</label><input type="text" id="trHoras" inputmode="decimal" maxlength="5" placeholder="Ej: 3,5"></div>
     <div class="field" id="trListaF" hidden><label id="trListaL">Quiénes trabajaron</label><div class="gt" id="trLista" role="group" aria-labelledby="trListaL"></div></div>
     <div class="field"><label for="trQuienes" id="trQuienesL">Quiénes trabajaron (opcional)</label><input type="text" id="trQuienes" maxlength="80" placeholder="Ej: Yolanda y Juan"></div>
@@ -1676,7 +1677,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 46;
+  var GUIA_V = 47;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1699,6 +1700,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["En el campo ahora", "En «Inicio», bajo las alertas, la tarjeta «En el campo ahora» muestra con iniciales a quienes trabajan hoy: punto verde si ya llegó, color claro si falta por llegar (o está agendado) y tenue si ya salió. Mantén el dedo sobre una inicial para ver el nombre. Abajo dice cuántas personas hay en el campo. «Ver detalle» abre «Trabajadores». Sale de «Quién trabaja hoy» y de los trabajadores agendados.", 43, "manager"],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
+    ["Cada cosa se anota en un solo lugar", "Para que nada quede repetido: el riego se registra en «Riego», las aplicaciones y la fertilización en «Aplicar» y la cosecha en «Cosecha». Si en «Registrar trabajo realizado» eliges «Riego», «Aplicación», «Fertilización» o «Cosecha», la app avisa y te ofrece un botón “Ir a Riego” (o al módulo que corresponda); no deja guardarlo ahí. «Trabajo» queda para el resto: desmalezado, poda, mantención, replante y otras. Además, si repites el mismo registro (mismo día, sector y horas, o la misma aplicación o cosecha), el botón dice “Ya hay uno igual: toca otra vez para guardar”, para que solo se repita si es a propósito. Los registros antiguos de «Riego» en «Trabajo» se pueden corregir o cambiar de actividad.", 47, ""],
     ["Corregir o quitar un registro", "En «Trabajo», en «Últimos registros», toca un registro: debajo aparecen «Corregir» y «Quitar». «Corregir» abre la misma hoja de «Registrar trabajo» con los datos ya puestos (puedes cambiar el día, la actividad, el sector, las horas, quiénes y el detalle) y no crea un registro nuevo. «Quitar» pide un segundo toque para confirmar. En «Aplicar», «Últimas aplicaciones» también se toca para «Quitar»: el producto vuelve a la bodega; para cambiar una mezcla, quita la aplicación y regístrala de nuevo. Las colaboradoras solo corrigen lo que ellas anotaron. Para cambiar la fecha o quitar muchos a la vez, usa «Registros» en el computador.", 46, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1767,6 +1769,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 47, f: "2026-11-13", t: "Cada cosa en un solo lugar", d: "«Registrar trabajo» ya no acepta riego, aplicación, fertilización ni cosecha: te lleva al módulo que corresponde. Además avisa cuando vas a repetir un trabajo, una aplicación o una cosecha idénticos.", g: "Cada cosa se anota en un solo lugar" },
     { v: 46, f: "2026-11-13", t: "Corregir y quitar registros", d: "En «Trabajo» ahora puedes tocar un registro para «Corregir» (misma hoja, sin duplicar) o «Quitar». En «Aplicar» también se puede quitar una aplicación, y el producto vuelve a la bodega.", g: "Corregir o quitar un registro" },
     { v: 45, f: "2026-11-13", t: "Pendientes y foto del tablero en dos pasos", d: "Bajo las labores de hoy hay una caja «Pendientes» con lo que quedó sin hacer de días anteriores, y puedes «Dejar para otro día». Se retiró la tarjeta «Hoy toca» del Inicio. La foto del tablero eléctrico ahora se toma en dos pasos: el número de cerca y luego el medidor completo.", g: "Pendientes" },
     { v: 44, f: "2026-11-13", t: "Saludo y labores del día", d: "«Inicio» te saluda por tu nombre con una escena animada y ahora trae «¡Esto tenemos para hoy!»: las labores del día en orden de prioridad, con un círculo para marcarlas. La foto del tablero eléctrico es lo primero cada día.", g: "Esto tenemos para hoy" },
@@ -3488,7 +3491,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function secSel(){ return S.cuarteles.filter(function(c){ return c.id === $("apSector").value; })[0]; }
   function menor(u){ return u === "L" ? "mL" : u === "kg" ? "g" : u; }
   function mil(u){ return u === "L" || u === "kg" ? 1000 : 1; }
-  var man = { c1: false, c2: false, aw: false, tk: false, mo: false }, apForzar = false;
+  var man = { c1: false, c2: false, aw: false, tk: false, mo: false }, apForzar = false, apDup = false;
   function monto(modo, v, ha, aguaTot, bombas, un){
     if (!(v > 0)) return null;
     if (modo === "bomba") return bombas > 0 ? v * bombas / mil(un) : null;
@@ -3558,7 +3561,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill($("apSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     fill($("apEquipo"), EQUIPOS);
     ["apHa", "apDosis", "apDosis2", "apAgua", "apAguaTot", "apTanque", "apBombas", "apCant", "apCant2", "apNotas"].forEach(function(id){ $(id).value = ""; });
-    man = { c1: false, c2: false, aw: false, tk: false, mo: false }; apForzar = false; $("apOk").textContent = "Guardar aplicación";
+    man = { c1: false, c2: false, aw: false, tk: false, mo: false }; apForzar = false; apDup = false; $("apOk").textContent = "Guardar aplicación";
     if (apPlan){
       if (prodById(apPlan.productoId)) $("apProd").value = apPlan.productoId;
       if (apPlan.productoId2 && prodById(apPlan.productoId2)) $("apProd2").value = apPlan.productoId2;
@@ -3599,6 +3602,9 @@ html.pc .cmdk:not([hidden]){display:flex}
       toast("Revisa el aviso de stock"); return;
     }
     var now = new Date(), hoy = fecha(now), dias = null, rh = 0;
+    var claveAp = lista.map(function(it){ return it.p.id; }).sort().join("|");
+    var yaAp = !apPlan && S.aplicaciones.some(function(a){ return a.fecha === hoy && (a.sectorId || "") === (cu ? cu.id : "") && itemsDe(a).map(function(i){ return i.productoId; }).sort().join("|") === claveAp; });
+    if (yaAp && !apDup){ apDup = true; $("apOk").textContent = "Ya hay una igual hoy: toca otra vez para guardar"; toast("Hoy ya se registró esta misma aplicación en ese sector. Si es otra pasada, toca otra vez."); return; }
     lista.forEach(function(it){
       var car = it.p.carencias || {}, d = null;
       if (cu){ if (car[cu.especie] != null) d = car[cu.especie]; }
@@ -3613,7 +3619,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var apRef = await S.db.collection("aplicaciones").add({ fecha: hoy, ts: now.toISOString(), items: items, productoId: p.id, producto: lista.map(function(it){ return it.p.nombre; }).join(" + "), unidad: p.unidad, cantidad: lista[0].cant, aguaTotalL: numI($("apAguaTot")), sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", ha: numI($("apHa")), equipo: eq, bombas: usaB ? bom : null, litrosBomba: usaB ? numI($("apTanque")) : null, notas: $("apNotas").value.trim(), reingresoHasta: rein, cosechaDesde: dias != null ? addDays(hoy, dias) : null, uid: S.uid, por: S.nombre });
       if (apPlan){ try { await S.db.doc("plan/" + apPlan.id).update({ estado: "hecha", aplicacionId: apRef && apRef.id || "", hechaPor: S.nombre, hechaTs: now.toISOString() }); } catch (e2){} apPlan = null; }
       avisar("aplicacion", "Aplicación " + lista.map(function(it){ return it.p.nombre; }).join(" + ") + (cu ? ", " + cu.nombre : ""));
-      $("apSheet").hidden = true; apForzar = false; $("apOk").textContent = "Guardar aplicación"; toast("Aplicación registrada");
+      $("apSheet").hidden = true; apForzar = false; apDup = false; $("apOk").textContent = "Guardar aplicación"; toast("Aplicación registrada");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
@@ -4855,7 +4861,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     }
     return res;
   }
-  var csG = [], csSel = {}, csFotoD = null, csForzar = false, quitarC = null;
+  var csG = [], csSel = {}, csFotoD = null, csForzar = false, csDup = false, quitarC = null;
   function pintaCsLista(){
     var box = $("csLista"); box.replaceChildren(); var f = $("csFecha").value || fecha();
     csG.forEach(function(g, i){
@@ -4867,7 +4873,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   function csCuartel(){ if ($("csSector").value === "__todo") return { id: "", nombre: "Todo el campo", especie: "Nogal" }; return S.cuarteles.filter(function(c){ return c.id === $("csSector").value; })[0]; }
   function pintaCsMed(){ var c = csCuartel(); $("csMedF").hidden = !c || esLimon(c); }
-  function csReset(){ csForzar = false; $("csAviso").hidden = true; $("csOk").textContent = "Guardar cosecha"; }
+  function csReset(){ csForzar = false; csDup = false; $("csAviso").hidden = true; $("csOk").textContent = "Guardar cosecha"; }
   var csEd = null;
   function abrirCosecha(ed){
     csEd = ed || null;
@@ -4877,7 +4883,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("csTitle").textContent = ed ? "Editar cosecha" : "Registrar cosecha"; $("csOk").textContent = ed ? "Guardar cambios" : "Guardar cosecha";
     $("csFecha").value = ed ? ed.fecha : fecha(); $("csFecha").max = fecha(); $("csKg").value = ed ? String(ed.kg).replace(".", ",") : ""; $("csOtros").value = ed ? (ed.quienes || "") : ""; $("csNota").value = ed ? (ed.nota || "") : ""; $("csDestino").value = ed ? (ed.destino || "") : ""; $("csMed").value = ed && ed.medida !== "seco" ? "dia" : "seco";
     if (ed) $("csSector").value = ed.sectorId && S.cuarteles.some(function(c){ return c.id === ed.sectorId; }) ? ed.sectorId : "__todo";
-    csFotoD = null; $("csFotoVista").hidden = true; $("csFotoQuitar").hidden = true; $("csFotoBtn").textContent = "Tomar o elegir una foto"; csForzar = false; $("csAviso").hidden = true;
+    csFotoD = null; $("csFotoVista").hidden = true; $("csFotoQuitar").hidden = true; $("csFotoBtn").textContent = "Tomar o elegir una foto"; csForzar = false; csDup = false; $("csAviso").hidden = true;
     csG = ed ? [] : gente(); csSel = {}; $("csListaF").hidden = !csG.length; $("csOtrosL").textContent = ed ? "Quiénes cosecharon (opcional)" : (csG.length ? "Otros que cosecharon (opcional)" : "Quiénes cosecharon (opcional)");
     pintaCsMed(); pintaCsLista(); $("csSheet").hidden = false; $("csKg").focus();
   }
@@ -4913,6 +4919,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!csForzar && prev.length >= 3){
       var prom = prev.reduce(function(a, c){ return a + (Number(c.kg) || 0); }, 0) / prev.length;
       if (kg > prom * 3){ csForzar = true; $("csAviso").textContent = "Es mucho más que lo habitual en este sector (promedio de " + prev.length + " registros: " + fmtNum(prom, 0) + " kg). ¿Escribiste de más? Si es correcto, toca «Guardar igual»."; $("csAviso").hidden = false; $("csOk").textContent = "Guardar igual"; return; }
+    }
+    if (!csDup && cosAct().some(function(c){ return c.sectorId === cu.id && c.fecha === f && c.medida === medida && Number(c.kg) === kg; })){
+      csDup = true; $("csOk").textContent = "Ya hay una igual: toca otra vez para guardar"; toast("Ya hay una cosecha con los mismos kilos ese día en ese sector."); return;
     }
     var sel = csG.filter(function(g, i){ return csSel[i]; }), otros = $("csOtros").value.trim(), motivos = [];
     if (S.manager && !S.owner){
@@ -5476,7 +5485,15 @@ html.pc .cmdk:not([hidden]){display:flex}
       box.appendChild(b);
     });
   }
-  var trEd = null, TRAB = { ab: null, del: false };
+  var trEd = null, TRAB = { ab: null, del: false }, trDup = false;
+  /* Lo que tiene su propio módulo se registra allí, para que no quede anotado dos veces (ni con horas repetidas). */
+  var TR_MOD = { "Riego": ["riego", "Riego", "el riego se registra en «Riego», que calcula el agua y avisa si ya hay uno ese día"], "Aplicación": ["aplic", "Aplicar", "las aplicaciones se registran en «Aplicar», que descuenta la bodega"], "Fertilización": ["aplic", "Aplicar", "la fertilización se registra en «Aplicar», que descuenta la bodega"], "Cosecha": ["cosecha", "Cosecha", "la cosecha se registra en «Cosecha», que suma los kilos"] };
+  function trModulo(){
+    var a = $("trAct").value, m = TR_MOD[a], legado = trEd && trEd.actividad === a, hay = !!m && !legado;
+    $("trMod").hidden = !hay; $("trOk").disabled = hay;
+    if (hay){ $("trModT").textContent = "Aquí no: " + m[2] + "."; $("trModIr").textContent = "Ir a " + m[1]; $("trModIr").onclick = function(){ $("trSheet").hidden = true; trEd = null; S.screen = m[0]; render(); }; }
+  }
+  $("trAct").onchange = function(){ trDup = false; $("trOk").textContent = trEd ? "Guardar cambios" : "Guardar trabajo"; trModulo(); };
   /* Registro tocable (Trabajo, Aplicar): al tocarlo se abre «Corregir» (si se puede) y «Quitar» (pide un segundo toque). Una sola pieza para todas las listas. */
   function regToca(box, tap, ruta, puede, onEdit, msgDel){
     var abre = TRAB.ab === ruta; tap.setAttribute("aria-expanded", abre ? "true" : "false");
@@ -5499,21 +5516,24 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill($("trSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     $("trHoras").value = ""; $("trQuienes").value = ""; $("trDetalle").value = "";
     $("trTitle").textContent = trEd ? "Corregir trabajo" : "Registrar trabajo"; $("trOk").textContent = trEd ? "Guardar cambios" : "Guardar trabajo";
-    $("trFechaF").hidden = !trEd; $("trFecha").max = fecha();
+    $("trFechaF").hidden = !trEd; $("trFecha").max = fecha(); trDup = false;
     if (trEd){
       $("trFecha").value = trEd.fecha || fecha(); $("trAct").value = trEd.actividad || "Otra"; $("trSector").value = trEd.sectorId || ""; $("trMaq").value = trEd.maquina || "Sin máquina";
       $("trHoras").value = String(trEd.horas || "").replace(".", ","); $("trQuienes").value = trEd.quienes || ""; $("trDetalle").value = trEd.detalle || "";
-      trG = []; trSel = {}; $("trListaF").hidden = true; $("trQuienesL").textContent = "Quiénes trabajaron (opcional)"; pintaTrLista();
+      trG = []; trSel = {}; $("trListaF").hidden = true; $("trQuienesL").textContent = "Quiénes trabajaron (opcional)"; pintaTrLista(); trModulo();
       $("trSheet").hidden = false; $("trHoras").focus(); return;
     }
     trG = S.manager ? gente() : []; trSel = {}; $("trListaF").hidden = !trG.length; $("trQuienesL").textContent = trG.length ? "Otros que trabajaron (opcional)" : "Quiénes trabajaron (opcional)"; pintaTrLista();
-    $("trSheet").hidden = false; $("trHoras").focus();
+    trModulo(); $("trSheet").hidden = false; $("trHoras").focus();
   }
   $("trCancel").onclick = function(){ $("trSheet").hidden = true; };
   $("trOk").onclick = async function(){
     var h = parseFloat($("trHoras").value.replace(",", "."));
     if (!(h > 0) || h > 24){ toast("Escribe las horas de trabajo, entre 0,5 y 24."); $("trHoras").focus(); return; }
     var cu = S.cuarteles.filter(function(c){ return c.id === $("trSector").value; })[0];
+    if (TR_MOD[$("trAct").value] && !(trEd && trEd.actividad === $("trAct").value)){ trModulo(); toast("Eso se registra en su propio módulo."); return; }
+    var yaTr = S.trabajos.some(function(x){ return (!trEd || x.id !== trEd.id) && x.fecha === (trEd ? $("trFecha").value : fecha()) && x.actividad === $("trAct").value && (x.sectorId || "") === (cu ? cu.id : "") && Number(x.horas) === h; });
+    if (yaTr && !trDup){ trDup = true; $("trOk").textContent = "Ya hay uno igual: toca otra vez para guardar"; toast("Ya hay un trabajo igual ese día, en el mismo sector y con las mismas horas."); return; }
     if (trEd){
       var fe = $("trFecha").value || trEd.fecha;
       if (fe > fecha()){ toast("Elige una fecha que no sea futura."); return; }
@@ -5537,7 +5557,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var doc = { fecha: hy, actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: quienes, maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
       await S.db.collection("trabajos").add(doc);
       avisar("trabajo", doc.actividad + ", " + doc.sector + ", " + String(h).replace(".", ",") + " h" + (quienes ? " (" + quienes + ")" : "") + (motivos.length ? " · Sin verificar: " + motivos.join("; ") : ""));
-      $("trSheet").hidden = true; toast("Trabajo registrado");
+      $("trSheet").hidden = true; trDup = false; $("trOk").textContent = "Guardar trabajo"; toast("Trabajo registrado");
     } catch (err){ toast(err && err.code === "invalid_argument" ? "No tienes permiso para registrar. Avísale a Diego." : "No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };

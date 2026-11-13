@@ -321,6 +321,14 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .pl-k-olivo{--c:#7a8f3a}.pl-k-nogal{--c:var(--accent)}.pl-k-limon{--c:var(--lemon)}.pl-k-vivero{--c:var(--wood)}.pl-k-otro{--c:var(--water)}
 .pl-ficha{border:1px solid var(--line); border-radius:14px; padding:12px; background:var(--surface-2); display:grid; gap:8px}
 .pl-ref{font-style:italic}
+.pl-esp{display:grid; gap:8px}
+.pl-esp .sp{display:flex; gap:10px; align-items:center; text-align:left; width:100%; padding:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--fg); font:inherit}
+.pl-esp .sp.sel{border-color:var(--accent); border-width:2px}
+.pl-esp .sp .t b{display:block}.pl-esp .sp .t span{font-size:13px; color:var(--muted)}
+.pl-esp-det,.pl-esp-form{display:grid; gap:8px; padding:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface)}
+.pl-esp .ph3{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+.pl-addfoto{height:78px; border:1px dashed var(--line); border-radius:10px; background:var(--surface-2); color:var(--fg); font:inherit}
+.pl-esp .warn,.pl-esp-q .warn{border:1px solid var(--lemon); background:var(--lemon-bg); color:var(--lemon-fg); border-radius:12px; padding:10px}
 .pl-wrap svg text.pl-zt{font-size:7px; stroke-width:1.8px}
 .pl-zoom .pl-off{stroke:var(--muted); stroke-width:.9}
 
@@ -1598,7 +1606,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 41;
+  var GUIA_V = 42;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1613,6 +1621,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
     ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (sectores 1 al 4, cada uno con su lado norte y sur), La Rinconada, los limones (el 1 al oeste, junto al vivero, y el 6 al este), el vivero, V-Huerto y el acumulador. Toca un sector para ver su ficha. Con «Ocultar nombres» o «Mostrar nombres» eliges si ves las etiquetas (cada persona en su teléfono). Yolanda ve solo los sectores en uso. Diego, en un sector sin enlazar, elige el de la app con «Enlazar con este sector» (o «Crear un sector nuevo»); los apagados salen en gris y los prende con «Encender este sector», y con «Apagar este sector» deja de usarse sin perder su historial. «Ver árboles» abre el árbol por árbol del sector.", 41, ""],
+    ["Fichas por especie", "En «Campo», en «Sectores en el plano», toca un sector de vivero (Vivero, V-Huerto, Vivero B): el plano se amplía para elegir bien y luego vuelve. Debajo ves «Especies»: cada una tiene una sola ficha, aunque tenga muchas plantas. Toca una especie para abrir su ficha justo debajo: hasta 3 fotos con «＋ Foto», el estado, las plantas aproximadas, la fecha de siembra y notas, y «Guardar ficha». Con «Nuevo registro» anotas qué ves, con foto si quieres. «Agregar especie» crea una especie nueva. Si un sector no tiene especies, aparece «Sin descripción» y la pregunta «¿Qué hay en este sector?»: con «Subir plano de plantación» o «Aún no hay plantación» lo dejas anotado.", 42, ""],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
@@ -1682,6 +1691,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 42, f: "2026-11-13", t: "Fichas por especie en el vivero", d: "En «Campo», al tocar un sector de vivero en «Sectores en el plano», ves sus especies. Cada especie tiene su ficha con fotos, estado, cantidad y registros. Diego y Yolanda pueden anotar. Al tocar los viveros y paltos el plano se amplía para elegir más fácil.", g: "Fichas por especie" },
     { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo con sus sectores. Toca uno para ver su ficha. Diego enlaza cada sector con los que ya usa, y enciende o apaga los que no están en uso; Yolanda ve solo los que están en uso. Cada persona puede ocultar o mostrar los nombres.", g: "Sectores en el plano" },
     { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
     { v: 39, f: "2026-11-12", t: "Árboles del huerto", d: "Nueva sección, que se enciende o apaga en Ajustes: mapa de los nogales con la ficha de cada árbol (por ejemplo H15-N3), registros de sano o enfermo con foto, alerta de árboles enfermos y sectores por hilera. La ven Diego y Yolanda.", g: "Árboles del huerto" },
@@ -2656,7 +2666,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     fill(sel, [{ value: "", label: "Todos los sectores" }].concat(cs.map(function(x){ return { value: x.id, label: x.nombre }; })), S.filtroSector);
     sel.onchange = function(){ S.filtroSector = sel.value; render(); };
     fld.appendChild(lb); fld.appendChild(sel); c.appendChild(fld);
-    var obs = S.arboles.filter(function(o){ return !o.cod && (!S.filtroSector || o.sectorId === S.filtroSector); });
+    var obs = S.arboles.filter(function(o){ return !o.cod && !o.kind && (!S.filtroSector || o.sectorId === S.filtroSector); });
     var list = el("div");
     if (!obs.length) list.appendChild(el("p", "note", "Todavía no hay registros."));
     obs.slice(0, S.verMasArb ? 30 : 5).forEach(function(o){
@@ -5340,6 +5350,115 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (plNombres()) etq.forEach(function(z){ var t = document.createElementNS(NS, "text"); t.setAttribute("x", z.c[0]); t.setAttribute("y", z.c[1] + 7); t.setAttribute("font-size", z.t.length > 1 || isNaN(Number(z.t)) ? 22 : 24); t.textContent = z.t; s.appendChild(t); });
     return s;
   }
+  /* ---- Fichas por especie (vivero, V-Huerto, Vivero B): una ficha por especie, no por planta. Se guardan en «arboles» con kind "espFicha"; los registros con kind "espReg"; el plano de plantación con kind "plant". Las fotos van en «fotos». ---- */
+  var ESP_EST = ["Sano", "Observación", "Con problema"], ESP_FMAX = 3;
+  function espSlug(n){ return String(n || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "especie"; }
+  function espFichas(c){ return (S.arboles || []).filter(function(o){ return o.kind === "espFicha" && o.sectorId === c.id; }); }
+  function espNombres(c){
+    var n = {}, out = []; (c.especies || []).forEach(function(x){ if (!n[x]){ n[x] = 1; out.push(x); } });
+    espFichas(c).forEach(function(f){ if (!n[f.especie]){ n[f.especie] = 1; out.push(f.especie); } }); return out;
+  }
+  function espFicha(c, nombre){ return (S.arboles || []).filter(function(o){ return o.kind === "espFicha" && o.id === "esp_" + c.id + "_" + espSlug(nombre); })[0] || null; }
+  function espRegs(c, nombre){ return (S.arboles || []).filter(function(o){ return o.kind === "espReg" && o.sectorId === c.id && o.especie === nombre; }); }
+  function espPlant(c){ return (S.arboles || []).filter(function(o){ return o.id === "plant_" + c.id; })[0] || null; }
+  function espBase(c, nombre){ return { kind: "espFicha", sectorId: c.id, sector: c.nombre, especie: nombre }; }
+  function espAuto(o){ o.ts = new Date().toISOString(); o.uid = S.uid; o.por = S.nombre; return o; }
+  async function espSubeFoto(file){ var d = await comprimirFoto(file), fr = S.db.collection("fotos").doc(); await fr.set({ data: d, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotosCache[fr.id] = d; return fr.id; }
+  function espImg(id, alt){
+    var im = el("img"); im.alt = alt; im.style.cssText = "width:100%; height:78px; object-fit:cover; border-radius:10px; background:var(--surface-2)";
+    (async function(){ try { var d = fotosCache[id]; if (!d){ var sn = await S.db.doc("fotos/" + id).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[id] = d; } if (d) im.src = d; } catch (e){} })();
+    return im;
+  }
+  function espFotoInput(onFile){ var fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.hidden = true; fi.onchange = function(){ var f = fi.files && fi.files[0]; fi.value = ""; if (f) onFile(f); }; return fi; }
+  function espAgregar(c){
+    var box = el("div", "pl-esp-form"), dr = S.plDraft = S.plDraft || {};
+    var inp = el("input"); inp.type = "text"; inp.id = "espNueva"; inp.maxLength = 40; inp.placeholder = "Nombre de la especie (ej. lechuga)"; inp.value = dr.nueva || ""; inp.oninput = function(){ dr.nueva = inp.value; };
+    var ok = el("button", "primary small", "Guardar especie"); ok.type = "button"; ok.id = "espNuevaOk";
+    ok.onclick = async function(){
+      var n = inp.value.trim(); if (!n){ toast("Escribe el nombre de la especie."); return; }
+      ok.disabled = true;
+      try { await S.db.doc("arboles/esp_" + c.id + "_" + espSlug(n)).set(espAuto(Object.assign(espBase(c, n), { estado: "Sano", cantidad: null, siembra: "", notas: "", fotoIds: [] }))); S.plDraft = {}; S.plForm = null; S.plEsp = n; toast("Especie agregada"); }
+      catch (e){ ok.disabled = false; toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    };
+    var no = el("button", "small", "Cancelar"); no.type = "button"; no.onclick = function(){ S.plForm = null; S.plDraft = {}; render(); };
+    box.appendChild(inp); var ac = el("div", "tm-acts"); ac.appendChild(ok); ac.appendChild(no); box.appendChild(ac); return box;
+  }
+  function espDetalle(c, nombre){
+    var f = espFicha(c, nombre), box = el("div", "pl-esp-det"), dr = S.plDraft = S.plDraft || {}, id = "esp_" + c.id + "_" + espSlug(nombre);
+    var fids = (f && f.fotoIds) || [];
+    var g = el("div", "ph3");
+    fids.forEach(function(x){ var w = el("div"); w.appendChild(espImg(x, "Foto de " + nombre)); if (S.owner){ var q = el("button", "link", "Quitar"); q.type = "button"; q.onclick = async function(){ try { await S.db.doc("arboles/" + id).update({ fotoIds: fids.filter(function(y){ return y !== x; }) }); } catch (e){ toast("No se pudo quitar la foto."); } }; w.appendChild(q); } g.appendChild(w); });
+    var fi = espFotoInput(async function(file){
+      try { var fid = await espSubeFoto(file); var base = f ? {} : espAuto(Object.assign(espBase(c, nombre), { estado: "Sano", cantidad: null, siembra: "", notas: "" })); await S.db.doc("arboles/" + id).set(Object.assign(base, { fotoIds: fids.concat([fid]) }), { merge: true }); toast("Foto guardada"); }
+      catch (e){ toast("No se pudo guardar la foto. Revisa tu señal o prueba con otra."); }
+    });
+    if (fids.length < ESP_FMAX){ var fb = el("button", "pl-addfoto", "＋ Foto"); fb.type = "button"; fb.onclick = function(){ fi.click(); }; g.appendChild(fb); }
+    box.appendChild(g); box.appendChild(fi);
+    var f1 = el("div", "field"); f1.appendChild(el("label", null, "Estado")); var se = el("select"); se.id = "espEstado"; fill(se, ESP_EST, dr.estado || (f && f.estado) || "Sano"); se.onchange = function(){ dr.estado = se.value; }; f1.appendChild(se); box.appendChild(f1);
+    var f2 = el("div", "field"); f2.appendChild(el("label", null, "Plantas (aprox.)")); var ca = el("input"); ca.type = "number"; ca.inputMode = "numeric"; ca.min = "0"; ca.id = "espCant"; ca.value = dr.cantidad != null ? dr.cantidad : (f && f.cantidad != null ? f.cantidad : ""); ca.oninput = function(){ dr.cantidad = ca.value; }; f2.appendChild(ca); box.appendChild(f2);
+    var f3 = el("div", "field"); f3.appendChild(el("label", null, "Siembra o plantación")); var si = el("input"); si.type = "date"; si.id = "espSiembra"; si.value = dr.siembra != null ? dr.siembra : ((f && f.siembra) || ""); si.oninput = function(){ dr.siembra = si.value; }; f3.appendChild(si); box.appendChild(f3);
+    var f4 = el("div", "field"); f4.appendChild(el("label", null, "Notas")); var no = el("input"); no.type = "text"; no.id = "espNotas"; no.maxLength = 160; no.value = dr.notas != null ? dr.notas : ((f && f.notas) || ""); no.oninput = function(){ dr.notas = no.value; }; f4.appendChild(no); box.appendChild(f4);
+    var gb = el("button", "primary", "Guardar ficha"); gb.type = "button"; gb.id = "espGuardar";
+    gb.onclick = async function(){
+      gb.disabled = true;
+      try {
+        var d = { estado: se.value, cantidad: ca.value === "" ? null : Math.max(0, parseInt(ca.value, 10) || 0), siembra: si.value, notas: no.value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre };
+        await S.db.doc("arboles/" + id).set(f ? d : Object.assign(espBase(c, nombre), d, { fotoIds: [] }), { merge: true }); S.plDraft = {}; toast("Ficha guardada");
+      } catch (e){ gb.disabled = false; toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    };
+    box.appendChild(gb);
+    if (S.plForm === "reg:" + nombre) box.appendChild(espRegForm(c, nombre, id, f));
+    else { var rb = el("button", "small", "Nuevo registro"); rb.type = "button"; rb.id = "espReg"; rb.onclick = function(){ S.plForm = "reg:" + nombre; render(); }; box.appendChild(rb); }
+    var rg = espRegs(c, nombre).slice(0, 3);
+    if (rg.length){ box.appendChild(el("p", "ajs-t", "Últimos registros")); rg.forEach(function(r){ var row = el("div", "row"); row.appendChild(el("span", null, (r.ts ? fecha(new Date(r.ts)) : "") + " · " + (r.estado || "") + (r.texto ? " · " + r.texto : ""))); box.appendChild(row); if (r.fotoId) box.appendChild(huFotoBox(r)); }); }
+    return box;
+  }
+  function espRegForm(c, nombre, id, f){
+    var box = el("div", "pl-esp-form"), dr = S.plDraft = S.plDraft || {}, foto = null;
+    var se = el("select"); se.id = "espRegEstado"; fill(se, ESP_EST, dr.regEstado || (f && f.estado) || "Sano"); se.onchange = function(){ dr.regEstado = se.value; };
+    var tx = el("input"); tx.type = "text"; tx.id = "espRegTexto"; tx.maxLength = 160; tx.placeholder = "Qué ves (opcional)"; tx.value = dr.regTexto || ""; tx.oninput = function(){ dr.regTexto = tx.value; };
+    var fi = espFotoInput(function(file){ foto = file; fb.textContent = "Foto lista: " + file.name.slice(0, 24); });
+    var fb = el("button", "small", "Tomar o elegir una foto"); fb.type = "button"; fb.onclick = function(){ fi.click(); };
+    var ok = el("button", "primary small", "Guardar registro"); ok.type = "button"; ok.id = "espRegOk";
+    ok.onclick = async function(){
+      ok.disabled = true;
+      try {
+        var fid = foto ? await espSubeFoto(foto) : "";
+        await S.db.collection("arboles").add(espAuto({ kind: "espReg", sectorId: c.id, sector: c.nombre, especie: nombre, estado: se.value, texto: tx.value.trim(), fotoId: fid }));
+        var up = { estado: se.value, ts: new Date().toISOString() };
+        await S.db.doc("arboles/" + id).set(f ? up : Object.assign(espBase(c, nombre), up, { cantidad: null, siembra: "", notas: "", fotoIds: [], uid: S.uid, por: S.nombre }), { merge: true });
+        S.plForm = null; S.plDraft = {}; toast("Registro guardado");
+      } catch (e){ ok.disabled = false; toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+    };
+    var no = el("button", "small", "Cancelar"); no.type = "button"; no.onclick = function(){ S.plForm = null; S.plDraft = {}; render(); };
+    box.appendChild(se); box.appendChild(tx); box.appendChild(fb); box.appendChild(fi); var ac = el("div", "tm-acts"); ac.appendChild(ok); ac.appendChild(no); box.appendChild(ac); return box;
+  }
+  function espPlantaCard(c){
+    var pl = espPlant(c), box = el("div", "pl-esp-q");
+    if (pl && pl.hay === false){ box.appendChild(el("p", "note", "Sin plantación por ahora.")); var bq = el("button", "small", "Sí hay plantación"); bq.type = "button"; bq.onclick = function(){ S.db.doc("arboles/plant_" + c.id).set(espAuto({ kind: "plant", sectorId: c.id, sector: c.nombre, hay: null })); }; box.appendChild(bq); return box; }
+    var t = el("div", "warn"); t.appendChild(el("b", null, "¿Qué hay en este sector?")); t.appendChild(el("p", "note", "Anota las especies con «Agregar especie». Si hay plantación ordenada (hileras o filas), sube el plano para verla árbol por árbol."));
+    box.appendChild(t);
+    var fi = espFotoInput(async function(file){ try { var fid = await espSubeFoto(file); await S.db.doc("arboles/plant_" + c.id).set(espAuto({ kind: "plant", sectorId: c.id, sector: c.nombre, hay: true, fotoId: fid })); toast("Plano guardado"); } catch (e){ toast("No se pudo guardar el plano. Revisa tu señal."); } });
+    var b1 = el("button", "small", "Subir plano de plantación"); b1.type = "button"; b1.id = "espPlano"; b1.onclick = function(){ fi.click(); };
+    var b2 = el("button", "small", "Aún no hay plantación"); b2.type = "button"; b2.id = "espNoPlant"; b2.onclick = function(){ S.db.doc("arboles/plant_" + c.id).set(espAuto({ kind: "plant", sectorId: c.id, sector: c.nombre, hay: false })); };
+    var ac = el("div", "tm-acts"); ac.appendChild(b1); ac.appendChild(b2); box.appendChild(ac); box.appendChild(fi); return box;
+  }
+  function plEspecies(c){
+    var sec = el("div", "pl-esp"), nom = espNombres(c), pl = espPlant(c);
+    sec.appendChild(el("p", "ajs-t", "Especies"));
+    if (!nom.length) sec.appendChild(el("p", "note", "Sin descripción"));
+    nom.forEach(function(n){
+      var f = espFicha(c, n), abierto = S.plEsp === n, row = el("button", "sp" + (abierto ? " sel" : "")); row.type = "button"; row.setAttribute("aria-expanded", abierto ? "true" : "false");
+      var t = el("div", "t"); t.appendChild(el("b", null, n)); var nf2 = (f && f.cantidad != null ? "≈ " + f.cantidad + " plantas · " : "") + (f ? f.estado : "Sin ficha aún") + ((f && f.fotoIds && f.fotoIds.length) ? " · " + f.fotoIds.length + " foto" + (f.fotoIds.length > 1 ? "s" : "") : " · sin fotos todavía"); t.appendChild(el("span", null, nf2)); row.appendChild(t);
+      row.onclick = function(){ S.plEsp = abierto ? null : n; S.plForm = null; S.plDraft = {}; render(); };
+      sec.appendChild(row); if (abierto) sec.appendChild(espDetalle(c, n));
+    });
+    if (S.plForm === "nueva") sec.appendChild(espAgregar(c));
+    else { var ba = el("button", "small", "Agregar especie"); ba.type = "button"; ba.id = "espAgregar"; ba.onclick = function(){ S.plForm = "nueva"; render(); }; sec.appendChild(ba); }
+    if (!nom.length) sec.appendChild(espPlantaCard(c));
+    else if (pl && pl.fotoId){ var vp = huFotoBox({ fotoId: pl.fotoId }); sec.appendChild(el("p", "note", "Plano de plantación subido.")); sec.appendChild(vp); }
+    return sec;
+  }
   function plFicha(){
     var p = S.plSel && plPorId(S.plSel), box = el("div", "pl-ficha");
     if (!p){ box.appendChild(el("p", "note", "Toca un sector del plano para ver su ficha, con sus árboles enfermos y en observación.")); return box; }
@@ -5357,6 +5476,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     } else if (p.g === "limon") box.appendChild(el("p", "note", "Limón · el plan de limones suma 0,85 ha en total (Google Earth, referencial)."));
     else if (p.g === "olivo") box.appendChild(el("p", "note", "Olivos ya plantados en la mitad este del sector 6. Aún no tiene sector en la app: se habilita cuando lo pidas."));
     else if (p.g === "vivero" || p.g === "palto"){ var dd = PL_DEF[p.id] || {}; box.appendChild(el("p", "note", p.g === "palto" ? "Paltos" : "Vivero" + (dd.especies && dd.especies.length ? " · " + dd.especies.join(", ").toLowerCase() : ""))); }
+    if (p.g === "vivero" && c && esViv(c)) box.appendChild(plEspecies(c));
     if (est === "apagado") box.appendChild(el("p", "note", "Está apagado: aún no aparece en agenda, riego ni registros."));
     if (S.owner && est === "sinvinc" && p.g !== "otro"){
       var lib = plLibres(p), fl = el("div", "field");

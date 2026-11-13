@@ -321,6 +321,11 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .pl-k-olivo{--c:#7a8f3a}.pl-k-nogal{--c:var(--accent)}.pl-k-limon{--c:var(--lemon)}.pl-k-vivero{--c:var(--wood)}.pl-k-otro{--c:var(--water)}
 .pl-ficha{border:1px solid var(--line); border-radius:14px; padding:12px; background:var(--surface-2); display:grid; gap:8px}
 .pl-ref{font-style:italic}
+.ec-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0}
+.ec-av{width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-weight:700; background:var(--line); color:var(--fg); position:relative}
+.ec-av.on{background:var(--accent); color:var(--on-accent)}
+.ec-av.on:after{content:""; position:absolute; right:-1px; bottom:-1px; width:12px; height:12px; border-radius:50%; background:#3fae5a; border:2px solid var(--surface)}
+.ec-av.out{opacity:.5}
 .nv-ico{display:flex; justify-content:center; margin:2px 0 4px; color:var(--fg)}
 .nv-bota{transform-origin:32px 56px; animation:nvSalta 1.6s ease-in-out infinite}
 @keyframes nvSalta{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.06,.92)}40%{transform:translateY(-9px) scale(.97,1.04)}60%{transform:translateY(-9px) scale(.97,1.04)}85%{transform:translateY(0) scale(1.05,.94)}}
@@ -1610,7 +1615,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 42;
+  var GUIA_V = 43;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1626,6 +1631,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
     ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (sectores 1 al 4, cada uno con su lado norte y sur), La Rinconada, los limones (el 1 al oeste, junto al vivero, y el 6 al este), el vivero, V-Huerto y el acumulador. Toca un sector para ver su ficha. Con «Ocultar nombres» o «Mostrar nombres» eliges si ves las etiquetas (cada persona en su teléfono). Yolanda ve solo los sectores en uso. Diego, en un sector sin enlazar, elige el de la app con «Enlazar con este sector» (o «Crear un sector nuevo»); los apagados salen en gris y los prende con «Encender este sector», y con «Apagar este sector» deja de usarse sin perder su historial. «Ver árboles» abre el árbol por árbol del sector.", 41, ""],
     ["Fichas por especie", "En «Campo», en «Sectores en el plano», toca un sector de vivero (Vivero, V-Huerto, Vivero B): el plano se amplía para elegir bien y luego vuelve. Debajo ves «Especies»: cada una tiene una sola ficha, aunque tenga muchas plantas. Toca una especie para abrir su ficha justo debajo: hasta 3 fotos con «＋ Foto», el estado, las plantas aproximadas, la fecha de siembra y notas, y «Guardar ficha». Con «Nuevo registro» anotas qué ves, con foto si quieres. «Agregar especie» crea una especie nueva. Si un sector no tiene especies, aparece «Sin descripción» y la pregunta «¿Qué hay en este sector?»: con «Subir plano de plantación» o «Aún no hay plantación» lo dejas anotado.", 42, ""],
+    ["En el campo ahora", "En «Inicio», bajo las alertas, la tarjeta «En el campo ahora» muestra con iniciales a quienes trabajan hoy: punto verde si ya llegó, color claro si falta por llegar (o está agendado) y tenue si ya salió. Mantén el dedo sobre una inicial para ver el nombre. Abajo dice cuántas personas hay en el campo. «Ver detalle» abre «Trabajadores». Sale de «Quién trabaja hoy» y de los trabajadores agendados.", 43, "manager"],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
@@ -1695,6 +1701,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 43, f: "2026-11-13", t: "En el campo ahora", d: "En «Inicio» ves de un vistazo quién está en el campo: iniciales con un punto verde para quien ya llegó. «Ver detalle» abre «Trabajadores».", g: "En el campo ahora", r: "manager" },
     { v: 42, f: "2026-11-13", t: "¡Ahora tenemos Huerto! 🍅🥬", d: "Revisa la actualización y agrega los detalles de cada especie del huerto y del vivero: fotos, estado y notas para cuidarlas y así disfrutarlas día a día. Tócalas en «Sectores en el plano» (en «Campo»). Ah, y los viveros y paltos se amplían al tocarlos. 🌱", g: "Fichas por especie", ico: "tomate" },
     { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo con sus sectores. Toca uno para ver su ficha. Diego enlaza cada sector con los que ya usa, y enciende o apaga los que no están en uso; Yolanda ve solo los que están en uso. Cada persona puede ocultar o mostrar los nombres.", g: "Sectores en el plano" },
     { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
@@ -2404,6 +2411,29 @@ html.pc .cmdk:not([hidden]){display:flex}
     var c = el("section", "card"); c.id = "ajustes"; c.appendChild(ajustesCuerpo()); f.appendChild(c);
     return f;
   }
+  function ecGente(){
+    var hoy = fecha(), out = [], vistos = {};
+    asignaciones().forEach(function(a){ var k = String(a.nombre || "").toLowerCase(); vistos[k] = 1; out.push({ nombre: a.nombre, est: a.hs ? "out" : a.hi ? "on" : "wait", sub: a.hs ? "Salió " + hora(a.hs) : a.hi ? "Desde " + hora(a.hi) : "Por llegar" }); });
+    (S.agendados || []).forEach(function(a){ var k = String(a.nombre || "").toLowerCase(); if (a.desde <= hoy && a.hasta >= hoy && !vistos[k]){ vistos[k] = 1; out.push({ nombre: a.nombre, est: "wait", sub: "Agendado" }); } });
+    return out;
+  }
+  function buildEnCampo(){
+    if (!S.manager) return null;
+    var gente = ecGente(), on = gente.filter(function(g){ return g.est === "on"; }).length, esp = gente.filter(function(g){ return g.est === "wait"; }).length;
+    var c = el("section", "card sect ec"); c.id = "enCampo"; c.appendChild(el("h2", null, "En el campo ahora"));
+    if (!gente.length) c.appendChild(el("p", "note", "Nadie en el campo todavía."));
+    else {
+      var row = el("div", "ec-row"); row.setAttribute("role", "list");
+      gente.slice(0, 8).forEach(function(g){
+        var a = el("div", "ec-av " + g.est, String(g.nombre || "?").trim().charAt(0).toUpperCase()); a.setAttribute("role", "listitem"); a.setAttribute("aria-label", g.nombre + ", " + g.sub); a.title = g.nombre + " · " + g.sub; row.appendChild(a);
+      });
+      if (gente.length > 8) row.appendChild(el("span", "note", "+" + (gente.length - 8)));
+      c.appendChild(row);
+      c.appendChild(el("p", "sub", on + (on === 1 ? " persona en el campo" : " personas en el campo") + (esp ? " · " + esp + " por llegar" : "")));
+    }
+    var b = el("button", null, "Ver detalle"); b.type = "button"; b.id = "ecVer"; b.onclick = function(){ S.screen = "personal"; render(); }; c.appendChild(b);
+    return c;
+  }
   function buildHome(){
     var now = Date.now(), e = estado(S.dias, now), wk = semana(S.dias, now);
     var f = document.createDocumentFragment();
@@ -2442,6 +2472,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       f.appendChild(ab);
     }
 
+    var ecc = buildEnCampo(); if (ecc) f.appendChild(ecc);
     var evh = eventosDia(fecha()).filter(function(e){ return !e.nc; });
     if (evh.length){
       var hh2 = evh.filter(function(e){ return e.hecho; }).length, ag = el("section", "card sect");

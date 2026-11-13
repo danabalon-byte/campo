@@ -391,6 +391,7 @@ details.ml-m > summary .r em::before{content:"▸"} details.ml-m[open] > summary
 button.ml-r{width:100%; display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; min-height:52px; padding:4px 6px; background:transparent; border-radius:14px; text-align:left; font-weight:400; color:var(--fg)}
 button.ml-r .d{font-size:16px; font-weight:700} button.ml-r .v{font-size:15px; color:var(--muted); text-align:right} button.ml-r .c{font-size:17px; font-weight:700; color:var(--water); min-width:84px; text-align:right}
 button.ml-r.open{background:var(--surface-2)}
+button.ml-r.an .c{color:var(--alert)}
 .ml-det{display:grid; gap:6px; background:var(--surface-2); border-radius:0 0 14px 14px; padding:0 10px 10px; margin:-6px 0 6px}
 /* riegos programados: tablero + línea de tiempo + vista en vivo */
 .rv-sw{display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface-2); border-radius:16px; padding:8px 12px 8px 14px; min-height:60px}
@@ -1677,7 +1678,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 47;
+  var GUIA_V = 48;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1753,6 +1754,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
     ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un marco para encuadrar el medidor: un círculo en el pozo y, en la luz, dos pasos, primero el número de cerca y luego el medidor completo; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto».", 34, "manager"],
+    ["Lecturas que bajan", "Un medidor no puede marcar menos que antes. Repetir el mismo número en otro día es normal (a veces el pozo no corre), pero si una lectura es menor que una anterior queda marcada «A revisar» en la lista de lecturas y aparece en «Alertas» como «Lectura a revisar». Toca la lectura, mira la foto y, si el número está mal, quítala y anótala de nuevo. Si es correcta (por ejemplo, el medidor se reinició), el dueño toca «Es correcta» y deja de avisar. Mientras esté marcada, esa lectura no entra en el consumo.", 48, "manager"],
     ["Fecha de la lectura y de la foto", "La fecha de la lectura es la que está escrita en «Anotar lectura» (por defecto, hoy). Si anotas una lectura de otro día, cámbiala a mano. Ayuda de la app: al elegir una foto de la galería, si la foto trae la fecha en que se sacó y es distinta de la escrita, aparece “La foto se sacó el…” y el botón «Usar la fecha de la foto»; la app nunca cambia la fecha sola. NO avisa en estos casos: (1) fotos tomadas con «Tomar foto con marco guía», que se sacan en el momento y no traen fecha; (2) fotos que llegaron por WhatsApp, capturas de pantalla o fotos editadas, porque pierden la fecha; (3) la segunda foto, que no cambia la fecha de la lectura. En esos casos, revisa tú la fecha antes de guardar. Ejemplo: la foto del viernes que se sube el lunes desde la galería se ofrece con fecha del viernes; si te llegó por WhatsApp, escribe tú el viernes.", 34, "manager"],
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
@@ -1769,6 +1771,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 48, f: "2026-11-13", t: "Lecturas que bajan", d: "Repetir el mismo número en otro día es normal. Una lectura menor que una anterior queda «A revisar» en el medidor y en «Alertas»; el dueño puede confirmar con «Es correcta».", g: "Lecturas que bajan" },
     { v: 47, f: "2026-11-13", t: "Cada cosa en un solo lugar", d: "«Registrar trabajo» ya no acepta riego, aplicación, fertilización ni cosecha: te lleva al módulo que corresponde. Además avisa cuando vas a repetir un trabajo, una aplicación o una cosecha idénticos.", g: "Cada cosa se anota en un solo lugar" },
     { v: 46, f: "2026-11-13", t: "Corregir y quitar registros", d: "En «Trabajo» ahora puedes tocar un registro para «Corregir» (misma hoja, sin duplicar) o «Quitar». En «Aplicar» también se puede quitar una aplicación, y el producto vuelve a la bodega.", g: "Corregir o quitar un registro" },
     { v: 45, f: "2026-11-13", t: "Pendientes y foto del tablero en dos pasos", d: "Bajo las labores de hoy hay una caja «Pendientes» con lo que quedó sin hacer de días anteriores, y puedes «Dejar para otro día». Se retiró la tarjeta «Hoy toca» del Inicio. La foto del tablero eléctrico ahora se toma en dos pasos: el número de cerca y luego el medidor completo.", g: "Pendientes" },
@@ -2344,6 +2347,11 @@ html.pc .cmdk:not([hidden]){display:flex}
       var acc = S.owner ? [{ txt: "Revisar", aria: "Revisar avisos de " + z.nombre, fn: function(){ abrirAvisos(z.id, z.nombre); } }] : [];
       out.push({ sev: z.rein ? 1 : 2, titulo: z.nombre, lineas: lineas, acciones: acc, ir: function(){ S.screen = "campo"; S.sectAb = true; S.sectSel = z.id; render(); } });
     });
+    if (S.manager){
+      medAnomalias().forEach(function(z){
+        out.push({ sev: 2, titulo: "Lectura a revisar: " + z.m.nombre, lineas: [["cos", "Baja", "del " + fmtNum(z.ref, 2) + " al " + fmtNum(z.l.valor, 2) + " " + (z.m.unidad || "") + " el " + fmtD2(z.l.fecha)]], acciones: [], ir: function(){ S.screen = "medidores"; S.medSel = z.m.id; S.medLSel = z.l.id; if (!S.medAb) S.medAb = {}; S.medAb[z.m.id + "|" + z.l.fecha.slice(0, 7)] = true; render(); } });
+      });
+    }
     if (huOn()){
       var enf = huEnfermos();
       if (enf.length) out.push({ sev: 2, titulo: enf.length === 1 ? "1 árbol enfermo en seguimiento" : enf.length + " árboles enfermos en seguimiento", lineas: enf.slice(0, 3).map(function(c){ var o = huUlt(c); return ["cos", c, (o.tipo ? o.tipo.toLowerCase() : "enfermo") + " · " + (o.flujo || "Sospecha")]; }), acciones: [], ir: function(){ S.hv.filtro = "enfermos"; S.hv.vista = "lista"; S.screen = "arboles"; render(); } });
@@ -4516,6 +4524,17 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   /* LECTURA-FOTO:FIN */
   function medidoresAct(){ return S.medidores.filter(function(m){ return m.activo !== false; }).sort(function(a, b){ return (a.orden || 99) - (b.orden || 99); }); }
+  /* Una lectura nunca puede ser menor que una anterior (repetir el mismo número sí vale: a veces el pozo no corre). Si lo es, queda "a revisar" hasta que se corrija, se quite o el dueño confirme que es correcta (por ejemplo, un medidor reiniciado). */
+  function medFilas(L){
+    var base = null, out = [];
+    L.forEach(function(l){
+      var an = base != null && l.valor < base && !l.okAnom;
+      out.push({ l: l, d: an || base == null ? null : l.valor - base, an: an, ref: an ? base : null });
+      if (!an) base = l.valor;
+    });
+    return out;
+  }
+  function medAnomalias(){ var out = []; medidoresAct().forEach(function(m){ medFilas(medLect(m.id)).forEach(function(x){ if (x.an) out.push({ m: m, l: x.l, ref: x.ref }); }); }); return out; }
   function medLect(mid){ return S.lecturas.filter(function(l){ return l.mid === mid; }).sort(function(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (String(a.ts) < String(b.ts) ? -1 : 1); }); }
   function difDias(a, b){ return Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 86400000); }
   function medPendientes(){
@@ -4776,7 +4795,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var bl = el("button", "primary", "Anotar lectura"); bl.onclick = function(){ abrirLectura(m); }; c.appendChild(bl);
     if (S.owner){ var be = el("button", "link", "Editar medidor"); be.onclick = function(){ abrirMedidor(m); }; c.appendChild(be); }
     f.appendChild(c);
-    var rowsL = L.map(function(l, i){ return { l: l, d: i > 0 ? l.valor - L[i - 1].valor : null }; });
+    var rowsL = medFilas(L);
     function medFC(fe){ var dd = new Date(fe + "T12:00:00Z"); return ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dd.getUTCDay()] + " " + dd.getUTCDate() + " " + RV_MES[dd.getUTCMonth()]; }
     function medDelta(d){ return (d >= 0 ? "+" : "−") + fmtNum(Math.abs(d), 1) + " " + un; }
     var conC = rowsL.filter(function(x){ return x.d != null; }).slice(-12);
@@ -4805,12 +4824,15 @@ html.pc .cmdk:not([hidden]){display:flex}
       var rr = el("span", "r"); rr.appendChild(el("span", null, g.rows.length + (g.rows.length === 1 ? " lectura" : " lecturas"))); rr.appendChild(el("strong", null, fmtNum(g.tot, 1) + " " + un)); rr.appendChild(el("em")); sm.appendChild(rr); dt.appendChild(sm);
       g.rows.forEach(function(x){
         var l = x.l, op = S.medLSel === l.id, rb = el("button", "ml-r" + (op ? " open" : "")); rb.type = "button"; rb.setAttribute("aria-expanded", op ? "true" : "false");
-        rb.appendChild(el("span", "d", medFC(l.fecha))); rb.appendChild(el("span", "v", fmtNum(l.valor, 2))); rb.appendChild(el("span", "c", x.d == null ? "inicial" : medDelta(x.d)));
+        rb.appendChild(el("span", "d", medFC(l.fecha))); rb.appendChild(el("span", "v", fmtNum(l.valor, 2))); rb.appendChild(el("span", "c", x.an ? "A revisar" : x.d == null ? "inicial" : medDelta(x.d)));
+        if (x.an) rb.classList.add("an");
         rb.onclick = function(){ S.medLSel = op ? "" : l.id; render(); }; dt.appendChild(rb);
         if (!op) return;
         var bx = el("div", "ml-det");
         bx.appendChild(el("p", "note", fmtNum(l.valor, 2) + " " + un + " · " + (l.por || "") + " · " + fmtFH.format(new Date(l.ts))));
         if (l.nota) bx.appendChild(el("p", "sub", l.nota));
+        if (x.an) bx.appendChild(el("p", "note warn", "Es menor que una lectura anterior (" + fmtNum(x.ref, 2) + " " + un + "). Un medidor no baja: revisa la foto. Si el número está mal, quita esta lectura y anótala de nuevo."));
+        if (x.an && S.owner){ var okb = el("button", "small", "Es correcta"); okb.type = "button"; okb.onclick = async function(){ try { await S.db.doc("lecturas/" + l.id).update({ okAnom: true }); toast("Marcada como correcta"); } catch (err){ toast("No se pudo guardar."); } }; bx.appendChild(okb); }
         [[l.fotoId, "Ver foto", "Ocultar foto"], [l.fotoId2, "Ver 2ª foto", "Ocultar 2ª foto"]].forEach(function(ft){
           var fid = ft[0]; if (!fid) return;
           var vb = el("button", "link", ft[1]), im = el("img"); im.alt = "Foto del medidor"; im.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; im.hidden = true;

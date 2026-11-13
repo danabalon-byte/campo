@@ -5363,13 +5363,13 @@ html.pc .cmdk:not([hidden]){display:flex}
   function buildPlano(){
     var sec = el("section", "card sect pl-wrap"); sec.id = "plPlano"; sec.appendChild(el("h2", null, "Sectores en el plano"));
     sec.appendChild(plSvg());
+    sec.appendChild(plFicha());
     var lg = el("div", "pl-leg"); [["nogal", "Nogales"], ["limon", "Limones"], ["olivo", "Olivos"], ["vivero", "Vivero"], ["otro", "Acumulador"]].forEach(function(x){ var sp = el("span", null, x[1]); sp.className = "pl-k-" + x[0]; lg.appendChild(sp); }); sec.appendChild(lg);
     var nm = el("button", "small", plNombres() ? "Ocultar nombres" : "Mostrar nombres"); nm.type = "button"; nm.id = "plNombres"; nm.onclick = function(){ try { localStorage.setItem("pl_nombres", plNombres() ? "0" : "1"); } catch (e){} render(); }; sec.appendChild(nm);
     sec.appendChild(el("p", "note", (S.owner ? "Gris liso: sector apagado o por cargar. " : "") + "1N es el sector 1, lado norte. Limones: del 1 (oeste, junto al vivero) al 6 (este). El 6 se divide: 6A limones por plantar y 6B olivos."));
     var apag = PL.filter(function(p){ return plEstado(p) === "apagado"; }), sinv = PL.filter(function(p){ return plEstado(p) === "sinvinc" && p.on; });
     if (S.owner && sinv.length) sec.appendChild(el("p", "note", "Sin enlazar: " + sinv.map(function(p){ return p.n; }).join(", ") + ". Tócalos en el plano para enlazarlos con los sectores que ya usas."));
     if (S.owner && apag.length) sec.appendChild(el("p", "note", "Apagados: " + apag.map(function(p){ return p.n; }).join(", ") + (S.owner ? ". Tócalos en el plano para encenderlos." : ".")));
-    sec.appendChild(plFicha());
     return sec;
   }
   function buildCampo(){

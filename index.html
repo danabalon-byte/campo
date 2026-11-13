@@ -301,6 +301,24 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .tm-grid .n{text-align:right; font-weight:700}
 .tm-grid .t{font-weight:800; border-top:1px solid var(--line); padding-top:6px}
 .tm-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.pl-wrap svg{width:100%; max-height:60vh; background:var(--bg); border:1px solid var(--line); border-radius:14px}
+.pl-z{stroke-width:1.4; cursor:pointer; outline:none}
+.pl-nogal{fill:var(--accent); fill-opacity:.26; stroke:var(--accent)}
+.pl-limon{fill:var(--lemon); fill-opacity:.5; stroke:var(--lemon)}
+.pl-vivero{fill:var(--wood); fill-opacity:.45; stroke:var(--wood)}
+.pl-palto{fill:var(--accent); fill-opacity:.3; stroke:var(--accent)}
+.pl-otro{fill:var(--water); fill-opacity:.55; stroke:var(--water); cursor:default}
+.pl-porcargar,.pl-apagado,.pl-sinvinc{stroke-width:2; stroke-dasharray:6 4}
+.pl-apagado{fill-opacity:.12}
+.pl-z.sel{fill-opacity:.72; stroke-width:3}
+.pl-z:focus-visible{stroke:var(--focus); stroke-width:3.5}
+.pl-wrap svg text{fill:var(--fg); font-weight:700; text-anchor:middle; pointer-events:none; paint-order:stroke; stroke:var(--bg); stroke-width:4px; stroke-linejoin:round; font-family:var(--font-display)}
+.pl-leg{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:14px; color:var(--muted)}
+.pl-leg span:before{content:""; display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:-1px; background:var(--c)}
+.pl-k-nogal{--c:var(--accent)}.pl-k-limon{--c:var(--lemon)}.pl-k-vivero{--c:var(--wood)}.pl-k-otro{--c:var(--water)}
+.pl-ficha{border:1px solid var(--line); border-radius:14px; padding:12px; background:var(--surface-2); display:grid; gap:8px}
+.pl-ref{font-style:italic}
+
 .tm-nuevo{border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); border-radius:12px; padding:12px; margin:0 0 12px}
 .tm-nuevo b{display:block; margin-bottom:2px}
 .tm-nuevo .l{display:flex; justify-content:space-between; gap:8px; font-size:15px; padding:2px 0}
@@ -528,7 +546,8 @@ span.ag-ck{border-style:dashed}
 .hu-lab{font-size:12px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--muted)} .hu-card.al .hu-lab{color:var(--alert)}
 .hu-big{font-size:42px; font-weight:800; line-height:1.05; color:var(--accent)} .hu-big.al{color:var(--alert)} .hu-big small{font-size:16px; color:var(--muted); font-weight:600}
 .hu-est{font-size:22px; font-weight:700} .hu-stats{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-.hu-leg{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--muted); margin:8px 0 0} .hu-leg i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px}
+.hu-leg{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--muted); margin:8px 0 0} .hu-leg i.pol{background:transparent !important; border:2px dashed #27688A; box-sizing:border-box}
+.hu-leg i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px}
 .nav.hu7{grid-template-columns:repeat(7,1fr); gap:0} .nav.hu7 button{font-size:11px; padding:5px 0; min-height:56px} .nav.hu7 .ni{width:44px; height:28px} .nav.hu7 .ni svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
 .nav.hu7 button[aria-pressed=true]{color:var(--accent)} .nav.hu7 button[aria-pressed=true] .ni{background:var(--surface-2); box-shadow:inset 0 2px 3px rgba(255,255,255,.45),0 2px 5px rgba(0,0,0,.22)}
 .hu-capas{display:flex; gap:4px; overflow-x:auto; margin:8px 0} .hu-capas button{flex:none; display:grid; justify-items:center; min-height:56px; width:62px; padding:4px 0; font-size:11px; background:transparent; color:var(--muted)} .hu-capas .ni svg{width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round} .hu-capas button[aria-pressed=true]{color:var(--accent); background:var(--surface-2)}
@@ -1574,7 +1593,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 40;
+  var GUIA_V = 41;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1588,6 +1607,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
+    ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (cada sector con su lado norte y sur), La Rinconada, los limones, el vivero y el acumulador. Toca un sector para ver su ficha. Si estás en «Ver árboles», se abre el árbol por árbol de ese sector. Diego toca «Cargar los sectores que faltan» para crear los de limón, «Vivero» y «V-Huerto»; lo apagado se enciende con «Encender este sector» cuando esté listo.", 41, ""],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
@@ -1657,6 +1677,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo: nogales por sector (norte y sur), La Rinconada, limones, vivero y acumulador. Toca un sector para ver su ficha. Diego puede cargar los sectores que faltan y encender los que están apagados.", g: "Sectores en el plano" },
     { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
     { v: 39, f: "2026-11-12", t: "Árboles del huerto", d: "Nueva sección, que se enciende o apaga en Ajustes: mapa de los nogales con la ficha de cada árbol (por ejemplo H15-N3), registros de sano o enfermo con foto, alerta de árboles enfermos y sectores por hilera. La ven Diego y Yolanda.", g: "Árboles del huerto" },
     { v: 38, f: "2026-11-12", t: "Ajustes en la barra", d: "«Ajustes» pasa a ser el último botón de la barra de abajo, a la derecha de «Cosecha». La barra tiene los bordes difuminados cuando hay más botones por deslizar, y «Medidores» ahora dice «Medidor».", g: "Ajustes: color y respaldo" },
@@ -2670,7 +2691,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var HU_FLUJO = ["Sospecha", "Confirmado", "En tratamiento", "Recuperado"];
   var HU_CAPAS = [["salud", "Salud"], ["plaga", "Plagas"], ["hongo", "Hongos"], ["flor", "Flor"], ["fruta", "Fruta"], ["cosecha", "Cosecha"], ["bitacora", "Bitácora"]];
   var HU_IC = { salud: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/><path d="M7 12h3l1.5-3 2 6 1.5-3h2"/>', plaga: '<ellipse cx="12" cy="14" rx="4.5" ry="6"/><path d="M12 8V4M9 5l1.5 2M15 5l-1.5 2M7.5 12H4M7.5 16H4.5M16.5 12H20M16.5 16h3M12 8v12"/>', hongo: '<path d="M4 12a8 7 0 0 1 16 0z"/><path d="M10 12v6a2 2 0 0 0 4 0v-6"/>', flor: '<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 11 3 12 3s2 3 0 6.5M12 14.5c2 3.5 1 6.500 0 6.500s-2-3 0-6.500M9.5 12C6 10 3 11 3 12s3 2 6.5 0M14.5 12c3.5-2 6.5-1 6.5 0s-3 2-6.5 0"/>', fruta: '<circle cx="12" cy="13.5" r="6.5"/><path d="M12 7c0-2 1-3 3-3"/>', cosecha: '<path d="M3 10h18l-2 9H5z"/><path d="M8 10l3-6M16 10l-3-6"/>', bitacora: '<path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6z"/><path d="M6 3v18M9.5 8h5M9.5 12h5M9.5 16h3"/>' };
-  var HU_C = { sano: "#8DB07A", sosp: "#C4410C", conf: "#A31621", ok: "#2C5234", vacio: "#8DB07A55" };
+  var HU_C = { sano: "#8DB07A", sosp: "#F28C0F", conf: "#B3121F", ok: "#2C5234", vacio: "#8DB07A55" };
   var HU_TIPOS = ["Plaga", "Hongo", "Otro"], HU_PARTES = ["Hoja", "Fruto", "Tronco", "Cuello / raíz"];
   /* Guía de referencia del nogal (resumen de la auditoría del 12 nov). Es una ayuda para comparar con lo que se ve: siempre confirmar con el asesor antes de tratar. */
   var HU_CAT = [
@@ -2745,7 +2766,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     lista.forEach(function(t){ if (!vistos[t.h]){ vistos[t.h] = 1; svgN("text", { x: t.x, y: 892, "text-anchor": "middle", "font-size": 17, "font-weight": 700, style: "fill:var(--fg)" }, s, (t.h < 10 ? "0" : "") + t.h); } });
     lista.forEach(function(t){
       var c = svgN("circle", { cx: t.x, cy: t.y, r: t.p ? 11 : 9, fill: huColor(t, porSector), stroke: hu().verificar[t.cod] ? "#C4410C" : t.p ? "#27688A" : "#3d5a33", "stroke-width": hu().verificar[t.cod] ? 2.5 : t.p ? 3.5 : 1.2 }, s);
-      if (hu().verificar[t.cod]) c.setAttribute("stroke-dasharray", "4 3");
+      if (t.p && !hu().verificar[t.cod]) c.setAttribute("stroke-dasharray", "5 3");
+      if (hu().verificar[t.cod]){ c.setAttribute("stroke-dasharray", "1 4"); c.setAttribute("stroke-linecap", "round"); }
+      if (huEnfermo(t.cod) && (huUlt(t.cod) || {}).flujo !== "Sospecha") svgN("circle", { cx: t.x, cy: t.y, r: 3, fill: "#fff", "pointer-events": "none" }, s);
       var hit = svgN("circle", { cx: t.x, cy: t.y, r: 18, fill: "transparent" }, s); hit.style.cursor = "pointer"; hit.setAttribute("data-cod", t.cod);
       hit.onclick = function(){ huAbrirFicha(t.cod); }; if (c) c.setAttribute("data-c", t.cod);
     });
@@ -2831,7 +2854,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     else c.appendChild(huListaVista(vis));
     var vac = { flor: "floración", fruta: "fruta", cosecha: "cosecha" }[cp];
     if (vac) c.appendChild(el("p", "note", "Todavía no hay datos de " + vac + ". Cuando se registren, los árboles se pintarán aquí."));
-    else { var lg = el("div", "hu-leg"); [["sano", "Sano"], ["sosp", "Sospecha"], ["conf", "Confirmado"], ["ok", "Tratado"]].forEach(function(x){ var sp = el("span"), d = el("i"); d.style.background = HU_C[x[0]]; sp.appendChild(d); sp.appendChild(document.createTextNode(x[1])); lg.appendChild(sp); }); c.appendChild(lg); }
+    else { var lg = el("div", "hu-leg"); [["sano", "Sano"], ["sosp", "En observación (sospecha)"], ["conf", "Enfermo confirmado"], ["ok", "Tratado"]].forEach(function(x){ var sp = el("span"), d = el("i"); d.style.background = HU_C[x[0]]; sp.appendChild(d); sp.appendChild(document.createTextNode(x[1])); lg.appendChild(sp); }); var sp2 = el("span"), d2 = el("i"); d2.className = "pol"; sp2.appendChild(d2); sp2.appendChild(document.createTextNode("Polinizante (borde segmentado)")); lg.appendChild(sp2); c.appendChild(lg); }
     c.appendChild(huResumen(vis));
     if (PC) c.insertBefore(huCapasBar(), c.firstChild);
     f.appendChild(c);
@@ -5220,6 +5243,98 @@ html.pc .cmdk:not([hidden]){display:flex}
     f.appendChild(l); return f;
   }
 
+  /* ---- Sectores en el plano: dibujo esquemático del campo (polígonos de Diego, 13 nov). Cada sector del plano se enlaza con un sector de «Campo» (cuartel). Los apagados no existen en la app hasta que Diego los enciende. ---- */
+  var PL_W = 749, PL_H = 922;
+  var PL = [{"id":"n1","n":"Nogales sector 1","g":"nogal","z":[{"l":"Norte","p":"587,108 474,191 550,321 656,228","c":[567,212],"t":"1N"},{"l":"Sur","p":"735,365 660,235 554,328 645,486 671,470 650,433","c":[653,386],"t":"1S"}],"on":0},{"id":"n2","n":"Nogales sector 2","g":"nogal","z":[{"l":"Norte","p":"471,192 388,267 462,398 547,324","c":[467,295],"t":"2N"},{"l":"Sur","p":"551,555 642,488 551,331 466,405","c":[553,445],"t":"2S"}],"on":0},{"id":"n3","n":"Nogales sector 3","g":"nogal","z":[{"l":"Norte","p":"385,269 273,354 353,494 459,401","c":[368,380],"t":"3N"},{"l":"Sur","p":"435,639 548,557 463,408 357,502","c":[451,526],"t":"3S"}],"on":0},{"id":"n4","n":"Nogales sector 4","g":"nogal","z":[{"l":"Norte","p":"268,357 206,398 293,547 349,498","c":[279,450],"t":"4N"},{"l":"Sur","p":"373,684 432,642 353,505 297,554","c":[364,596],"t":"4S"}],"on":0},{"id":"nR","n":"Nogales sector 4 Rinconada","g":"nogal","z":[{"l":"","p":"427,815 260,908 149,722 362,697","c":[299,786],"t":"R"}],"on":0},{"id":"l1","n":"Limón sector 1","g":"limon","z":[{"l":"","p":"215,481 85,578 44,522 168,406","c":[128,497],"t":"1"}],"on":1},{"id":"l2","n":"Limón sector 2","g":"limon","z":[{"l":"","p":"113,436 42,517 14,481 80,391","c":[62,456],"t":"2"}],"on":1},{"id":"l3","n":"Limón sector 3","g":"limon","z":[{"l":"","p":"167,377 117,433 82,385 128,327","c":[124,381],"t":"3"}],"on":1},{"id":"l4","n":"Limón sector 4","g":"limon","z":[{"l":"","p":"290,308 172,375 130,321 226,219","c":[205,306],"t":"4"}],"on":1},{"id":"l5","n":"Limón sector 5","g":"limon","z":[{"l":"","p":"432,182 296,303 231,215 378,108","c":[334,202],"t":"5"}],"on":1},{"id":"l6","n":"Limón sector 6","g":"limon","z":[{"l":"","p":"384,104 507,14 560,87 437,177","c":[472,95],"t":"6"}],"on":1},{"id":"vA","n":"Vivero","g":"vivero","z":[{"l":"","p":"167,535 223,495 239,517 183,558","c":[203,526],"t":""}],"on":1},{"id":"vH","n":"V-Huerto","g":"vivero","z":[{"l":"","p":"208,592 264,551 272,562 216,603","c":[240,577],"t":""}],"on":1},{"id":"vB","n":"Vivero B","g":"vivero","z":[{"l":"","p":"93,589 163,539 212,606 143,657","c":[153,598],"t":"B"}],"on":0},{"id":"vC","n":"Vivero C","g":"vivero","z":[{"l":"","p":"183,558 239,517 247,529 192,569","c":[215,543],"t":""}],"on":0},{"id":"vD","n":"Vivero D","g":"vivero","z":[{"l":"","p":"192,569 247,529 255,540 200,580","c":[224,554],"t":""}],"on":0},{"id":"vE","n":"Vivero E","g":"vivero","z":[{"l":"","p":"200,580 255,540 264,551 208,592","c":[232,566],"t":""}],"on":0},{"id":"pal","n":"Paltos","g":"palto","z":[{"l":"","p":"221,491 91,586 87,580 216,484","c":[154,535],"t":""}],"on":0},{"id":"acu","n":"Acumulador de agua","g":"otro","z":[{"l":"","p":"235,606 285,570 307,600 257,637","c":[271,603],"t":""}],"on":0}];
+  var PL_REF = { n1: 0.65, n2: 0.53, n3: 0.53, n4: 0.26, nR: 0.37 };
+  var PL_DEF = {
+    vA: { especie: "Vivero", especies: ["Frutales", "Ornamentales"] }, vH: { especie: "Vivero", especies: ["Hortalizas"] },
+    vB: { especie: "Vivero", especies: [] }, vC: { especie: "Vivero", especies: [] }, vD: { especie: "Vivero", especies: [] }, vE: { especie: "Vivero", especies: [] },
+    pal: { especie: "Palto" }
+  };
+  function plPorId(id){ return PL.filter(function(p){ return p.id === id; })[0]; }
+  function plCuartel(p){
+    var cs = S.cuarteles || [], x = cs.filter(function(c){ return c.planoId === p.id; })[0]; if (x) return x;
+    if (p.g !== "nogal") return null;
+    return cs.filter(function(c){
+      var n = String(c.nombre || ""); if (esViv(c) || c.especie === "Limón") return false;
+      if (p.id === "nR") return /rinconada/i.test(n);
+      if (/rinconada/i.test(n)) return false;
+      var m = n.match(/(?:sector|s)\s*(\d)/i); return !!m && ("n" + m[1]) === p.id;
+    })[0] || null;
+  }
+  function plEstado(p){ if (p.g === "otro") return "otro"; if (plCuartel(p)) return "cargado"; if (p.on) return "porcargar"; return p.g === "nogal" ? "sinvinc" : "apagado"; }
+  var PL_TXT = { cargado: "Cargado en la app", porcargar: "Por cargar", apagado: "Apagado", sinvinc: "Sin sector en la app", otro: "" };
+  function plDatos(p){
+    var d = PL_DEF[p.id] || { especie: p.g === "limon" ? "Limón" : "Nogal" };
+    var o = { nombre: p.n, especie: d.especie, variedad: "", anio: null, ha: null, arboles: null, planoId: p.id };
+    if (d.especie === "Vivero"){ o.especies = (d.especies || []).slice(); o.riego = "manual"; }
+    return o;
+  }
+  async function plCrear(ids){
+    var ord = S.cuarteles.reduce(function(m, c){ return Math.max(m, c.orden || 0); }, 0), n = 0;
+    for (var i = 0; i < ids.length; i++){
+      var p = plPorId(ids[i]); if (!p || plCuartel(p)) continue;
+      var d = plDatos(p); d.orden = ++ord;
+      try { await S.db.doc("cuarteles/plano_" + p.id).set(d); n++; } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return; }
+    }
+    if (n) toast(n === 1 ? "Sector cargado" : n + " sectores cargados");
+  }
+  function plSvg(){
+    var NS = "http://www.w3.org/2000/svg", s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", "0 0 " + PL_W + " " + PL_H); s.setAttribute("role", "group"); s.setAttribute("aria-label", "Sectores del campo en el plano");
+    var etq = [];
+    PL.forEach(function(p){
+      var est = plEstado(p), sel = S.plSel === p.id;
+      p.z.forEach(function(z){
+        var g = document.createElementNS(NS, "polygon"); g.setAttribute("points", z.p);
+        g.setAttribute("class", "pl-z pl-" + p.g + " pl-" + est + (sel ? " sel" : "")); g.dataset.id = p.id;
+        if (p.g !== "otro"){
+          g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); g.setAttribute("aria-label", p.n + (z.l ? " " + z.l : "") + ", " + PL_TXT[est]);
+          var ir = function(){ S.plSel = p.id; S.plLado = z.l; render(); };
+          g.onclick = ir; g.onkeydown = function(ev){ if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); ir(); } };
+        }
+        s.appendChild(g); if (z.t) etq.push(z);
+      });
+    });
+    etq.forEach(function(z){ var t = document.createElementNS(NS, "text"); t.setAttribute("x", z.c[0]); t.setAttribute("y", z.c[1] + 7); t.setAttribute("font-size", z.t.length > 1 || isNaN(Number(z.t)) ? 22 : 24); t.textContent = z.t; s.appendChild(t); });
+    return s;
+  }
+  function plFicha(){
+    var p = S.plSel && plPorId(S.plSel), box = el("div", "pl-ficha");
+    if (!p){ box.appendChild(el("p", "note", "Toca un sector del plano para ver su ficha, con sus árboles enfermos y en observación.")); return box; }
+    var est = plEstado(p), c = plCuartel(p), nombre = p.n + (p.g === "nogal" && p.id !== "nR" && S.plLado ? " " + S.plLado : "");
+    var hd = el("div", "who"); hd.appendChild(el("h3", null, nombre)); hd.appendChild(el("span", "chip " + (est === "cargado" ? "ok" : "idle"), PL_TXT[est])); box.appendChild(hd);
+    if (p.g === "nogal"){
+      var ref = PL_REF[p.id]; box.appendChild(el("p", "note", "Nogal" + (c && c.ha != null ? " · " + nf(c.ha, 2) + " ha" : " · superficie sin definir")));
+      if (ref) box.appendChild(el("p", "note pl-ref", "≈ " + nf(ref, 2) + " ha según Google Earth (referencial: no entra en los cálculos)"));
+      if (huOn() && p.id !== "nR"){
+        var k = Number(p.id.charAt(1)), nn = 0, ss = 0; huVivos().forEach(function(t){ if (huSector(t) === k){ if (t.l === "N") nn++; else ss++; } });
+        box.appendChild(el("p", "note", nn + ss ? "Árboles: Norte " + nn + " · Sur " + ss : "Aún sin sectorizar en el árbol por árbol."));
+        var en = 0, ob = 0; huEnfermos().forEach(function(cd){ var t = HU_POR[cd]; if (t && huSector(t) === k && (!S.plLado || (S.plLado === "Norte") === (t.l === "N"))){ if ((huUlt(cd) || {}).flujo === "Sospecha") ob++; else en++; } });
+        box.appendChild(el("p", "note", en || ob ? en + " enfermos · " + ob + " en observación" : "Sin árboles enfermos ni en observación."));
+      }
+    } else if (p.g === "limon") box.appendChild(el("p", "note", "Limón · el plan de limones suma 0,85 ha en total (Google Earth, referencial)."));
+    else if (p.g === "vivero" || p.g === "palto"){ var dd = PL_DEF[p.id] || {}; box.appendChild(el("p", "note", p.g === "palto" ? "Paltos" : "Vivero" + (dd.especies && dd.especies.length ? " · " + dd.especies.join(", ").toLowerCase() : ""))); }
+    if (est === "apagado") box.appendChild(el("p", "note", "Está apagado: aún no aparece en agenda, riego ni registros."));
+    var ac = el("div", "tm-acts");
+    if (S.owner && (est === "porcargar" || est === "apagado")){ var b1 = el("button", "primary small", est === "apagado" ? "Encender este sector" : "Cargar este sector"); b1.type = "button"; b1.onclick = function(){ b1.disabled = true; plCrear([p.id]); }; ac.appendChild(b1); }
+    if (S.owner && c){ var b2 = el("button", "small", "Editar sector"); b2.type = "button"; b2.onclick = function(){ abrirEdit(c); }; ac.appendChild(b2); }
+    if (p.g === "nogal" && p.id !== "nR" && huOn()){ var b3 = el("button", "small", "Ver árboles"); b3.type = "button"; b3.onclick = function(){ S.hv.sector = Number(p.id.charAt(1)); S.hv.norte = S.plLado !== "Sur"; S.hv.sur = S.plLado !== "Norte"; S.screen = "arboles"; render(); }; ac.appendChild(b3); }
+    if (ac.childNodes.length) box.appendChild(ac);
+    return box;
+  }
+  function buildPlano(){
+    var sec = el("section", "card sect pl-wrap"); sec.id = "plPlano"; sec.appendChild(el("h2", null, "Sectores en el plano"));
+    sec.appendChild(plSvg());
+    var lg = el("div", "pl-leg"); [["nogal", "Nogales"], ["limon", "Limones"], ["vivero", "Vivero"], ["otro", "Acumulador"]].forEach(function(x){ var sp = el("span", null, x[1]); sp.className = "pl-k-" + x[0]; lg.appendChild(sp); }); sec.appendChild(lg);
+    sec.appendChild(el("p", "note", "Contorno punteado: sector por cargar o apagado. 1N es el sector 1, lado norte."));
+    var falta = PL.filter(function(p){ return plEstado(p) === "porcargar"; }), apag = PL.filter(function(p){ return plEstado(p) === "apagado"; });
+    if (S.owner && falta.length){ var bc = el("button", "primary", "Cargar los sectores que faltan"); bc.type = "button"; bc.id = "plCargar"; bc.onclick = function(){ bc.disabled = true; plCrear(falta.map(function(p){ return p.id; })); }; sec.appendChild(bc); sec.appendChild(el("p", "note", "Crea " + falta.length + (falta.length === 1 ? " sector" : " sectores") + ": " + falta.map(function(p){ return p.n; }).join(", ") + ".")); }
+    if (apag.length) sec.appendChild(el("p", "note", "Apagados: " + apag.map(function(p){ return p.n; }).join(", ") + (S.owner ? ". Tócalos en el plano para encenderlos." : ".")));
+    sec.appendChild(plFicha());
+    return sec;
+  }
   function buildCampo(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("campo"));
@@ -5234,6 +5349,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var faltan = cs.filter(function(c){ return c.ha == null; }).length;
     sum.appendChild(el("p", "note", "Superficies medidas en Google Earth. No incluyen el huerto, las bodegas ni los caminos." + (faltan ? " Faltan las superficies de " + faltan + (faltan === 1 ? " sector." : " sectores.") : "")));
     f.appendChild(sum);
+    f.appendChild(buildPlano());
     if (huOn()) f.appendChild(buildArbolesTile());
     f.appendChild(buildArboles());
     if (!cs.length) f.appendChild(el("p", "note", "Aún no hay sectores cargados."));

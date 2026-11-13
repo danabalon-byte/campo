@@ -803,6 +803,7 @@ html.pc .cmdk:not([hidden]){display:flex}
 .hy-tl.op .hy-chev{border-color:#D3D5C9; transform:translateY(2px); background:linear-gradient(160deg,#B3B7AC 0,#CDD0C5 45%,#E2E3D9 100%); color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.5),inset -2px -3px 5px rgba(255,255,255,.75),0 0 0 3px #EEEFE7,0 1px 0 3px #fff}
 .hy-body{display:grid; grid-template-rows:0fr}
 .hy-tl.op .hy-body{grid-template-rows:1fr}
+.hy-tl.pend{border-color:var(--alert)}
 .hy-body>div{overflow:hidden; min-height:0}
 .hy-it{position:relative; display:flex; gap:12px; padding-bottom:14px}
 .hy-it:not(:last-child):before{content:""; position:absolute; left:20.5px; top:40px; bottom:0; width:3px; background:var(--line); border-radius:2px}
@@ -1457,7 +1458,8 @@ html.pc .cmdk:not([hidden]){display:flex}
   </div>
 </div>
 <div id="camOv" hidden style="position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column" role="dialog" aria-modal="true" aria-label="Cámara con marco guía">
-  <p id="camTxt" style="flex:none;color:#fff;font-size:18px;font-weight:700;text-align:center;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 10px"></p>
+  <p id="camTxt" style="flex:none;color:#fff;font-size:18px;font-weight:700;text-align:center;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 4px"></p>
+  <p id="camSub" hidden style="flex:none;color:#E5E7DD;font-size:15px;line-height:1.35;text-align:center;padding:0 20px 10px"></p>
   <div style="flex:1;min-height:0;position:relative;overflow:hidden">
     <video id="camVid" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></video>
     <div id="camMarco" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:3px solid #fff;box-shadow:0 0 0 100vmax rgba(0,0,0,.45);pointer-events:none"></div>
@@ -1668,12 +1670,14 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 44;
+  var GUIA_V = 45;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
     ["Saludo del día", "Al abrir «Inicio» te saluda por tu nombre con una escena animada que cambia cada vez, y en fechas especiales (cumpleaños, Navidad, Semana Santa y otras) aparece la de esa fecha. La tarjeta trae «Llegué» y «Hoy no trabajo»; desaparece al registrar tu llegada, al tocar «Hoy no trabajo» y los domingos.", 44, ""],
-    ["Esto tenemos para hoy", "Bajo el saludo, «¡Esto tenemos para hoy!» reúne las labores del día en orden de prioridad: «Urgente» (atrasadas y la foto del tablero eléctrico), «Hoy» y «Si alcanza». Toca el título para abrir la lista y toca una labor para ver su detalle justo debajo. El círculo de la izquierda marca una tarea como hecha; en la foto del tablero, las aplicaciones y los riegos abre «Tomar la foto del tablero eléctrico», «Hacerla ahora» o «Registrar riego» para dejar el registro completo.", 44, ""],
+    ["Esto tenemos para hoy", "Bajo el saludo, «¡Esto tenemos para hoy!» reúne las labores del día en orden de prioridad: «Urgente» (la foto del tablero eléctrico), «Hoy» (aplicaciones, riegos y lecturas) y «Si alcanza» (otras tareas). Lo que quedó sin hacer de días anteriores ya no se mezcla aquí: está en «Pendientes». Toca el título para abrir la lista y toca una labor para ver su detalle justo debajo. El círculo de la izquierda marca una tarea como hecha; en la foto del tablero, las aplicaciones y los riegos abre «Tomar la foto del tablero eléctrico», «Hacerla ahora» o «Registrar riego» para dejar el registro completo. La tarjeta amarilla «Hoy toca» que estaba más abajo se retiró: esta lista la reemplaza.", 44, ""],
+    ["Pendientes", "Bajo «¡Esto tenemos para hoy!» aparece la caja «Pendientes» con las labores de días anteriores que quedaron sin hacer: aplicaciones, riegos y tareas, la más antigua primero y con la etiqueta “Hace 2 días”, por ejemplo. Toca una para ver el detalle justo debajo; el botón principal la hace ahora. «Dejar para otro día» te deja elegir una nueva fecha y la labor pasa a esa fecha. Toca el título para plegar o abrir la caja. Si no hay nada atrasado, la caja no aparece.", 45, ""],
+    ["Foto del tablero en dos pasos", "En «Medidores», para la luz, «Tomar foto con marco guía» saca dos fotos seguidas, sin girar el teléfono. «Foto 1 de 2 · El número»: acércate hasta que la ventana de los dígitos llene el marco (es la obligatoria). «Foto 2 de 2 · Todo el medidor»: aléjate para que se vea completo; si no la necesitas, toca «Omitir». El pozo (agua) sigue igual, con su círculo.", 45, "manager"],
     ["Barra de abajo", "Con los botones de abajo cambias de pantalla: «Inicio», «Agenda», «Trabajo», «Aplicar», «Riego» y «Campo». Si administras, la barra se desliza de lado y al final están «Medidor» y «Cosecha». El número rojo en «Aplicar» avisa cuántas aplicaciones tocan hoy.", 2, ""],
     ["Agenda", "En «Agenda» ves lo que toca. «Día» muestra las tareas de hoy con una barra de avance; «Semana» muestra los siete días y el porcentaje cumplido; «Mes» sirve para ubicarte y, al tocar un día, lo abre. Para dar una tarea por hecha, toca el círculo de su izquierda.", 2, ""],
     ["Agendar una tarea", "En «Agenda», vista «Día», el botón «Agendar tarea» deja anotado qué hay que hacer, en qué sector, qué día, a qué hora y quién lo hace. Si el tipo es «Riego», indica también las «Horas de riego programadas».", 2, "manager"],
@@ -1739,7 +1743,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Personal y trabajadores agendados", "En la barra de abajo, «Personal» (se abre como «Trabajadores») junta lo del equipo: lo que requiere tu respuesta, accesos a «Pedir días», «Agendar trabajador», «Calendario», «Terceros y jornadas» y «Horarios del equipo», y quién trabaja hoy. Con «Agendar trabajador» anotas quién viene, qué días y a cargo de quién. Aparece en el «Calendario» con borde de línea continua y no descuenta días de nadie.", 35, "manager"],
     ["Calendario de permisos", "En «Permisos», toca cualquier día del «Calendario», de hoy en adelante, y se abre «Pedir días libres» con ese día ya elegido. Después solo cambias el último día si hace falta y envías.", 33, ""],
     ["Dosis por bomba", "En «Aplicar», con una bomba de espalda, la dosis se indica «Por bomba (mL o g)»: lo que lleva cada bomba de cada producto. Escribe el «Número de bombas (pasadas)» y los «Litros de cada bomba o estanque (L)»; la app calcula el producto total y el agua total. Si usaste más producto del que figura en bodega, avisa y puedes tocar «Guardar de todas formas»; después corrige el stock.", 33, ""],
-    ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un círculo para encuadrar el medidor; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto».", 34, "manager"],
+    ["Foto del medidor", "En «Medidores», al «Anotar lectura», puedes «Tomar foto con marco guía» (se abre la cámara con un marco para encuadrar el medidor: un círculo en el pozo y, en la luz, dos pasos, primero el número de cerca y luego el medidor completo; si tu teléfono no la deja abrir, elige la foto de la galería). Tómala de frente, con el celular paralelo al medidor y a unos 15 a 20 cm; toca la pantalla para enfocar y no uses zoom. Abre la tapa del todo y limpia el vidrio. Evita los reflejos: sombrea el vidrio con el cuerpo y, de noche, usa el flash de lado. Debe verse el medidor completo: si la foto sale recortada, la app te avisa y conviene tomar otra desde más lejos. Si hay reflejo o la aguja se está moviendo, usa «Agregar 2ª foto».", 34, "manager"],
     ["Fecha de la lectura y de la foto", "La fecha de la lectura es la que está escrita en «Anotar lectura» (por defecto, hoy). Si anotas una lectura de otro día, cámbiala a mano. Ayuda de la app: al elegir una foto de la galería, si la foto trae la fecha en que se sacó y es distinta de la escrita, aparece “La foto se sacó el…” y el botón «Usar la fecha de la foto»; la app nunca cambia la fecha sola. NO avisa en estos casos: (1) fotos tomadas con «Tomar foto con marco guía», que se sacan en el momento y no traen fecha; (2) fotos que llegaron por WhatsApp, capturas de pantalla o fotos editadas, porque pierden la fecha; (3) la segunda foto, que no cambia la fecha de la lectura. En esos casos, revisa tú la fecha antes de guardar. Ejemplo: la foto del viernes que se sube el lunes desde la galería se ofrece con fecha del viernes; si te llegó por WhatsApp, escribe tú el viernes.", 34, "manager"],
     ["Último dígito girando", "Cuando el último dígito del tambor está a medio girar, en el tablero eléctrico anota siempre el número que está subiendo, para que las lecturas sean comparables. En el caudalímetro del pozo, decide con los relojes: si el reloj chico va por el 8 o el 9, anota el dígito de abajo; si va por el 0 o el 1, el que ya avanzó.", 34, "manager"],
     ["Calcular con los relojes", "En el caudalímetro del pozo, al sacar la foto la app lee sola las dos agujas y propone los relojes; revisa que coincida con la foto y corrígela si hace falta. El tambor de 7 dígitos aparece enderezado y ampliado bajo la foto: escríbelo tú arriba. Si prefieres hacerlo a mano: escribe primero el número del tambor. Luego, en «Relojes del caudalímetro (opcional)», escribe el número al que apunta la punta fina de cada reloj rojo: el chico «×0.1» y el grande «×0.01» (puedes usar decimales, por ejemplo 3,6). La app calcula la lectura con dos decimales y avisa si las agujas no calzan. Toca «Usar este valor» para pasarla al número que marca.", 34, "manager"],
@@ -1756,6 +1760,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 45, f: "2026-11-13", t: "Pendientes y foto del tablero en dos pasos", d: "Bajo las labores de hoy hay una caja «Pendientes» con lo que quedó sin hacer de días anteriores, y puedes «Dejar para otro día». Se retiró la tarjeta «Hoy toca» del Inicio. La foto del tablero eléctrico ahora se toma en dos pasos: el número de cerca y luego el medidor completo.", g: "Pendientes" },
     { v: 44, f: "2026-11-13", t: "Saludo y labores del día", d: "«Inicio» te saluda por tu nombre con una escena animada y ahora trae «¡Esto tenemos para hoy!»: las labores del día en orden de prioridad, con un círculo para marcarlas. La foto del tablero eléctrico es lo primero cada día.", g: "Esto tenemos para hoy" },
     { v: 43, f: "2026-11-13", t: "En el campo ahora", d: "En «Inicio» ves de un vistazo quién está en el campo: iniciales con un punto verde para quien ya llegó. «Ver detalle» abre «Trabajadores».", g: "En el campo ahora", r: "manager" },
     { v: 42, f: "2026-11-13", t: "¡Ahora tenemos Huerto! 🍅🥬", d: "Revisa la actualización y agrega los detalles de cada especie del huerto y del vivero: fotos, estado y notas para cuidarlas y así disfrutarlas día a día. Tócalas en «Sectores en el plano» (en «Campo»). Ah, y los viveros y paltos se amplían al tocarlos. 🌱", g: "Fichas por especie", ico: "tomate" },
@@ -2514,7 +2519,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     else if (esp && esp.sp === "Año Nuevo") s = "¡Feliz Año Nuevo, " + hyNombre() + "!";
     return s;
   }
-  var HY = { cargando: false, listo: false, idx: -1, el: null, dia: "", abre: false, ab: null, ver: false };
+  var HY = { cargando: false, listo: false, idx: -1, el: null, dia: "", abre: false, ab: null, ver: false, mv: null, abrePend: true };
   function hyCargar(cb){
     if (window.ANIM){ HY.listo = true; cb(); return; }
     if (HY.cargando) return; HY.cargando = true;
@@ -2585,7 +2590,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var hecha = x.estado === "hecha";
       if (hecha ? x.fecha !== hy : x.fecha > hy) return;
       var late = !hecha && x.fecha < hy;
-      L.push({ id: "p" + x.id, p: late ? "u" : "h", done: hecha, t: (late ? "Aplicación atrasada: " : "Aplicar ") + tituloPlan(x) + " · " + x.sector, s: late ? "Debía hacerse el " + fmtD2(x.fecha) : "Para hoy" + (x.equipo ? " · " + x.equipo : ""),
+      L.push({ id: "p" + x.id, late: late, col: "plan", rid: x.id, fe: x.fecha, p: late ? "u" : "h", done: hecha, t: (late ? "Aplicación atrasada: " : "Aplicar ") + tituloPlan(x) + " · " + x.sector, s: late ? "Debía hacerse el " + fmtD2(x.fecha) : "Para hoy" + (x.equipo ? " · " + x.equipo : ""),
         d: x.notas || "Al confirmar queda registrada y se descuenta de la bodega.", b: "Hacerla ahora", go: function(){ S.screen = "aplic"; render(); abrirAp(x); } });
     });
     S.tareas.forEach(function(t){
@@ -2594,40 +2599,71 @@ html.pc .cmdk:not([hidden]){display:flex}
       var late = !hecha && t.fecha < hy, rg = t.tipo === "riego";
       var pr = late ? "u" : (rg || t.tipo === "aplic" ? "h" : "s");
       var sub = (late ? "Pendiente desde el " + fmtD2(t.fecha) : (MOM[t.momento] || "Hoy")) + (t.quien ? " · " + t.quien : "") + (rg && t.horas ? " · " + nf(t.horas, 1) + " h" : "");
-      L.push({ id: "t" + t.id, p: pr, done: hecha, t: t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub,
+      L.push({ id: "t" + t.id, late: late, col: "tareas", rid: t.id, fe: t.fecha, p: pr, done: hecha, t: t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub,
         d: rg ? "Al registrar el riego quedan anotadas las horas y el agua." : "Cuando termines, márcala como hecha.", b: rg ? "Registrar riego" : "Marcar como hecha", pulsa: !rg, tarea: t, go: function(){ if (rg){ S.screen = "riego"; render(); } marcarTarea(t); } });
     });
     return L.sort(function(a, b){ return (a.done ? 1 : 0) - (b.done ? 1 : 0) || HY_RK[a.p] - HY_RK[b.p]; });
   }
-  function buildHoyLista(){
-    var L = hyLabores(); if (!L.length) return null;
-    var n = L.filter(function(x){ return x.done; }).length, sig = L.filter(function(x){ return !x.done; })[0];
-    var sec = el("section", "hy-tl" + (HY.abre ? " op" : "")); sec.id = "hoyLista";
-    var h = el("button", "hy-h"); h.type = "button"; h.setAttribute("aria-expanded", HY.abre ? "true" : "false");
-    h.appendChild(el("h2", null, "¡Esto tenemos para hoy!"));
-    var ch = el("span", "hy-chev"); ch.appendChild(document.createTextNode("▾")); ch.setAttribute("aria-hidden", "true"); h.appendChild(ch);
-    h.appendChild(el("p", "hy-pg", n + " de " + L.length + (L.length === 1 ? " hecha" : " hechas") + " · ordenadas por prioridad"));
-    if (!HY.abre && sig){ var nx = el("p", "hy-nx"); nx.appendChild(el("b", null, "Sigue: ")); nx.appendChild(document.createTextNode(sig.t)); h.appendChild(nx); }
-    h.onclick = function(){ HY.abre = !HY.abre; render(); };
-    sec.appendChild(h);
-    var bd = el("div", "hy-body"), in2 = el("div");
-    L.forEach(function(x){
-      var it = el("div", "hy-it " + x.p + (x.done ? " dn" : ""));
-      var dot = el("button", "hy-dot"); dot.type = "button"; dot.appendChild(el("span", "hy-c", x.done ? "✓" : "")); dot.setAttribute("aria-pressed", x.done ? "true" : "false");
-      dot.setAttribute("aria-label", x.done ? "Hecha: " + x.t : (x.pulsa ? "Marcar como hecha: " : "Abrir: ") + x.t);
-      dot.onclick = function(){ if (x.tarea && x.pulsa) marcarTarea(x.tarea); else if (!x.done) x.go(); };
-      it.appendChild(dot);
-      var w = el("div", "hy-w"), tb = el("button", "hy-itb"); tb.type = "button";
-      if (!x.done) tb.appendChild(el("span", "hy-tag " + x.p, HY_TG[x.p]));
-      tb.appendChild(el("b", null, x.t)); tb.appendChild(el("span", "s", x.done ? "Hecha" : x.s));
-      tb.onclick = function(){ HY.ab = HY.ab === x.id ? null : x.id; render(); };
-      w.appendChild(tb);
-      if (HY.ab === x.id && !x.done){
-        var dt = el("div", "hy-dtl"); dt.appendChild(document.createTextNode(x.d));
-        var go = el("button", "primary", x.b); go.type = "button"; go.onclick = function(){ HY.ab = null; x.go(); }; dt.appendChild(go); w.appendChild(dt);
+  /* Una fila de la lista (hoy o pendientes): pulsador, etiqueta, y el detalle justo debajo de la fila tocada. */
+  function hyFila(x, lista, key, tagTxt){
+    var it = el("div", "hy-it " + x.p + (x.done ? " dn" : ""));
+    var dot = el("button", "hy-dot"); dot.type = "button"; dot.appendChild(el("span", "hy-c", x.done ? "✓" : "")); dot.setAttribute("aria-pressed", x.done ? "true" : "false");
+    dot.setAttribute("aria-label", x.done ? "Hecha: " + x.t : (x.pulsa ? "Marcar como hecha: " : "Abrir: ") + x.t);
+    dot.onclick = function(){ if (x.tarea && x.pulsa) marcarTarea(x.tarea); else if (!x.done) x.go(); };
+    it.appendChild(dot);
+    var w = el("div", "hy-w"), tb = el("button", "hy-itb"); tb.type = "button";
+    if (!x.done) tb.appendChild(el("span", "hy-tag " + x.p, tagTxt || HY_TG[x.p]));
+    tb.appendChild(el("b", null, x.t)); tb.appendChild(el("span", "s", x.done ? "Hecha" : x.s));
+    tb.onclick = function(){ HY.ab = HY.ab === key ? null : key; HY.mv = null; render(); };
+    w.appendChild(tb);
+    if (HY.ab === key && !x.done){
+      var dt = el("div", "hy-dtl"); dt.appendChild(document.createTextNode(x.d));
+      var go = el("button", "primary", x.b); go.type = "button"; go.onclick = function(){ HY.ab = null; x.go(); }; dt.appendChild(go);
+      if (x.late && x.col && !S.noWrite){
+        if (HY.mv === key){
+          var lb = el("label", null, "Nueva fecha"); lb.setAttribute("for", "hyMvF"); dt.appendChild(lb);
+          var inp = el("input"); inp.type = "date"; inp.id = "hyMvF"; inp.min = fecha(); inp.value = fecha(); dt.appendChild(inp);
+          var ok = el("button", null, "Cambiar la fecha"); ok.type = "button"; ok.id = "hyMvOk";
+          ok.onclick = async function(){
+            var v = inp.value; if (!v || v < fecha()){ toast("Elige una fecha de hoy en adelante."); return; }
+            try { await S.db.doc(x.col + "/" + x.rid).update({ fecha: v }); HY.ab = null; HY.mv = null; toast("Quedó para el " + fmtD2(v)); }
+            catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+          };
+          dt.appendChild(ok);
+        } else {
+          var mv = el("button", null, "Dejar para otro día"); mv.type = "button"; mv.id = "hyMv"; mv.onclick = function(){ HY.mv = key; render(); }; dt.appendChild(mv);
+        }
       }
-      it.appendChild(w); in2.appendChild(it);
-    });
+      w.appendChild(dt);
+    }
+    it.appendChild(w); lista.appendChild(it);
+  }
+  function hyCaja(id, cls, titulo, pg, nx, abierto, alt){
+    var sec = el("section", "hy-tl" + cls + (abierto ? " op" : "")); sec.id = id;
+    var h = el("button", "hy-h"); h.type = "button"; h.setAttribute("aria-expanded", abierto ? "true" : "false");
+    h.appendChild(el("h2", null, titulo));
+    var ch = el("span", "hy-chev"); ch.appendChild(document.createTextNode("▾")); ch.setAttribute("aria-hidden", "true"); h.appendChild(ch);
+    h.appendChild(el("p", "hy-pg", pg));
+    if (!abierto && nx){ var q = el("p", "hy-nx"); q.appendChild(el("b", null, "Sigue: ")); q.appendChild(document.createTextNode(nx)); h.appendChild(q); }
+    h.onclick = alt; sec.appendChild(h);
+    return sec;
+  }
+  function buildHoyLista(){
+    var L = hyLabores().filter(function(x){ return !x.late; }); if (!L.length) return null;
+    var n = L.filter(function(x){ return x.done; }).length, sig = L.filter(function(x){ return !x.done; })[0];
+    var sec = hyCaja("hoyLista", "", "¡Esto tenemos para hoy!", n + " de " + L.length + (L.length === 1 ? " hecha" : " hechas") + " · ordenadas por prioridad", sig && sig.t, HY.abre, function(){ HY.abre = !HY.abre; render(); });
+    var bd = el("div", "hy-body"), in2 = el("div");
+    L.forEach(function(x){ hyFila(x, in2, x.id); });
+    bd.appendChild(in2); sec.appendChild(bd); return sec;
+  }
+  /* Lo que quedó sin hacer de días anteriores: aplicaciones, riegos y tareas atrasadas, la más antigua primero. */
+  function buildPendientes(){
+    var L = hyLabores().filter(function(x){ return x.late && !x.done; }); if (!L.length) return null;
+    L.sort(function(a, b){ return a.fe < b.fe ? -1 : a.fe > b.fe ? 1 : 0; });
+    var abierto = HY.abrePend !== false;
+    var sec = hyCaja("hoyPend", " pend", "Pendientes (" + L.length + ")", L.length === 1 ? "Quedó 1 labor sin hacer de días anteriores" : "Quedaron " + L.length + " labores sin hacer de días anteriores", L[0].t, abierto, function(){ HY.abrePend = !abierto; render(); });
+    var bd = el("div", "hy-body"), in2 = el("div");
+    L.forEach(function(x){ var d = diasDesde(x.fe); hyFila(x, in2, "pen" + x.id, "Hace " + d + (d === 1 ? " día" : " días")); });
     bd.appendChild(in2); sec.appendChild(bd); return sec;
   }
   function buildEnCampo(){
@@ -2667,6 +2703,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     hb.appendChild(btn); hero.appendChild(hb); f.appendChild(hero);
     }
     var hl = buildHoyLista(); if (hl) f.appendChild(hl);
+    var hp = buildPendientes(); if (hp) f.appendChild(hp);
     var al = alertasHome();
     if (al.length){
       var sevMax = al.reduce(function(m, z){ return Math.min(m, z.sev); }, 9);
@@ -2698,19 +2735,6 @@ html.pc .cmdk:not([hidden]){display:flex}
       ag.appendChild(el("h2", null, "Agenda de hoy: " + hh2 + " de " + evh.length));
       var bar2 = el("div", "ag-bar"), bi2 = el("i"); bi2.style.width = Math.round(100 * hh2 / evh.length) + "%"; bar2.appendChild(bi2); ag.appendChild(bar2);
       var ab = el("button", null, "Abrir la agenda"); ab.onclick = function(){ S.screen = "agenda"; S.agVista = "dia"; S.agFecha = fecha(); render(); }; ag.appendChild(ab); f.appendChild(ag);
-    }
-    var ph = pendHoy().filter(function(x){ return x.fecha === fecha(); });
-    if (ph.length){
-      var pc = el("section", "card prio");
-      var hh = el("h2", "ch"); hh.appendChild(ico("calendario")); hh.appendChild(document.createTextNode("Hoy toca")); pc.appendChild(hh);
-      ph.slice(0, 3).forEach(function(x){
-        var bx = el("div", "asg"); bx.appendChild(el("b", null, tituloPlan(x) + " · " + x.sector));
-        var late = diasDesde(x.fecha) > 0; bx.appendChild(el("p", late ? "note warn" : "sub", (late ? "Atrasada desde el " + fmtD2(x.fecha) : "Para hoy") + (x.equipo ? " · " + x.equipo : "")));
-        if (x.notas) bx.appendChild(el("p", null, x.notas));
-        var go = el("button", "primary", "Hacerla ahora"); go.onclick = function(){ S.screen = "aplic"; render(); abrirAp(x); }; bx.appendChild(go); pc.appendChild(bx);
-      });
-      if (ph.length > 3){ var mas = el("button", null, "Ver las " + ph.length + " pendientes"); mas.onclick = function(){ S.screen = "aplic"; render(); }; pc.appendChild(mas); }
-      f.appendChild(pc);
     }
 
     var hy = fecha(), ws = weekStart(hy), nTr = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
@@ -4497,10 +4521,10 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (m.tipo === "luz" && m.potKw){ o.bomba = rg.h * Number(m.potKw); o.resto = cons - o.bomba; if (rg.m3 > 0) o.kwhm3 = cons / rg.m3; }
     return o;
   }
-  var mdEd = null, mdFotoD = null, mdFoto2D = null, mdForzar = false, mmEd = null, quitarL = null, mdRes = { 1: null, 2: null }, mdAutoOn = false, mdAutoR = null, camN = 1, camStream = null;
+  var camSeq = false, mdEd = null, mdFotoD = null, mdFoto2D = null, mdForzar = false, mmEd = null, quitarL = null, mdRes = { 1: null, 2: null }, mdAutoOn = false, mdAutoR = null, camN = 1, camStream = null;
   /* Notas bajo «Foto del medidor». El texto largo está en la guía (pasos «Foto del medidor» y «Último dígito girando»). */
   var GUIA_FOTO_AGUA = "De frente, nítida y con la tapa abierta del todo. Que se vean el tambor, los dos relojes y el «m³», sin reflejos. Si sale recortada, toma otra más lejos.";
-  var GUIA_FOTO_LUZ = "De frente y nítida, con el medidor completo (marco, placa y ventana de dígitos); si sale recortada, toma otra desde más lejos. Si el último dígito está girando, anota el número que está subiendo.";
+  var GUIA_FOTO_LUZ = "Son dos fotos. La 1.ª, de cerca: la ventana de los dígitos llena el marco, sin girar el teléfono. La 2.ª, de lejos: el medidor completo (puedes omitirla). Si el último dígito está girando, anota el número que está subiendo.";
   var GUIA_FOTO_OTRO = "De frente, nítida y con el medidor completo. Evita los reflejos.";
   function mdRelCalc(){
     var m = mdEd; if (!m || m.tipo !== "agua"){ return; }
@@ -4555,30 +4579,36 @@ html.pc .cmdk:not([hidden]){display:flex}
     mdRes[n] = null; mdResumen(true);
   }
   $("mdFotoBtn").onclick = function(){ $("mdFoto").click(); };
-  $("mdFoto2Btn").onclick = function(){ camAbrir(2); };
-  $("mdCamBtn").onclick = function(){ camAbrir(1); };
+  $("mdFoto2Btn").onclick = function(){ camAbrir(2, false); };
+  $("mdCamBtn").onclick = function(){ camAbrir(1, mdEd && mdEd.tipo === "luz"); };
   $("mdFotoQuitar").onclick = function(){ mdQuita(1); };
   $("mdFoto2Quitar").onclick = function(){ mdQuita(2); };
   $("mdFoto").onchange = function(){ var f = this.files && this.files[0]; this.value = ""; if (f) mdPon(1, f); };
   $("mdFoto2").onchange = function(){ var f = this.files && this.files[0]; this.value = ""; if (f) mdPon(2, f); };
   /* Cámara propia con un marco para encuadrar siempre igual. Si el teléfono no la deja abrir, se usa el selector de fotos de siempre. */
-  async function camAbrir(n){
-    camN = n; var otro = $(n === 1 ? "mdFoto" : "mdFoto2");
+  async function camAbrir(n, seq){
+    camN = n; camSeq = !!seq; var otro = $(n === 1 ? "mdFoto" : "mdFoto2");
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ otro.click(); return; }
     try { camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false }); }
     catch (err){ toast("No pude abrir la cámara. Elige la foto de la galería."); otro.click(); return; }
-    var v = $("camVid"), mc = $("camMarco"), agua = mdEd && mdEd.tipo === "agua";
+    var v = $("camVid"), mc = $("camMarco"), agua = mdEd && mdEd.tipo === "agua", luz = mdEd && mdEd.tipo === "luz";
     v.srcObject = camStream; try { await v.play(); } catch (e2){}
     if (agua){ mc.style.cssText += ";width:min(80vw,52vh);height:min(80vw,52vh);border-radius:50%"; $("camTxt").textContent = "Que el círculo blanco del medidor calce con el círculo. Relojes a la derecha y abajo."; }
+    else if (luz){
+      var sub = $("camSub"); sub.hidden = false;
+      if (n === 1){ mc.style.cssText += ";width:min(90vw,95vh);height:min(30vw,32vh);border-radius:10px"; $("camTxt").textContent = "Foto 1 de 2 · El número"; sub.textContent = "Acércate hasta que la ventana de los dígitos llene el marco. No gires el teléfono."; }
+      else { mc.style.cssText += ";width:min(90vw,95vh);height:min(60vw,63vh);border-radius:14px"; $("camTxt").textContent = "Foto 2 de 2 · Todo el medidor"; sub.textContent = "Aléjate para que se vea el medidor completo. Es opcional."; }
+    }
     else { mc.style.cssText += ";width:min(90vw,95vh);height:min(60vw,63vh);border-radius:14px"; $("camTxt").textContent = "Que el medidor completo quede dentro del marco, de frente."; }
+    $("camCancel").textContent = luz && n === 2 ? "Omitir" : "Cancelar";
     $("camOv").hidden = false;
   }
-  function camCerrar(){ if (camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; } $("camVid").srcObject = null; $("camOv").hidden = true; }
+  function camCerrar(){ $("camSub").hidden = true; if (camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; } $("camVid").srcObject = null; $("camOv").hidden = true; }
   $("camCancel").onclick = camCerrar;
   $("camTomar").onclick = function(){
     var v = $("camVid"); if (!v.videoWidth){ toast("La cámara aún no está lista."); return; }
     var cv = document.createElement("canvas"); cv.width = v.videoWidth; cv.height = v.videoHeight; cv.getContext("2d").drawImage(v, 0, 0);
-    var n = camN; cv.toBlob(function(bl){ camCerrar(); if (bl) mdPon(n, bl); else toast("No se pudo tomar la foto."); }, "image/jpeg", 0.92);
+    var n = camN, sq = camSeq; cv.toBlob(function(bl){ camCerrar(); if (!bl){ toast("No se pudo tomar la foto."); return; } mdPon(n, bl).then(function(){ if (sq && n === 1) camAbrir(2, true); }); }, "image/jpeg", 0.92);
   };
   /* Lee la foto en tamaño de análisis (hasta 1400 px de lado) y busca las agujas. */
   async function mdLeeFoto(blob){

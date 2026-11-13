@@ -321,6 +321,10 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .pl-k-olivo{--c:#7a8f3a}.pl-k-nogal{--c:var(--accent)}.pl-k-limon{--c:var(--lemon)}.pl-k-vivero{--c:var(--wood)}.pl-k-otro{--c:var(--water)}
 .pl-ficha{border:1px solid var(--line); border-radius:14px; padding:12px; background:var(--surface-2); display:grid; gap:8px}
 .pl-ref{font-style:italic}
+.nv-ico{display:flex; justify-content:center; margin:2px 0 4px; color:var(--fg)}
+.nv-bota{transform-origin:32px 56px; animation:nvSalta 1.6s ease-in-out infinite}
+@keyframes nvSalta{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.06,.92)}40%{transform:translateY(-9px) scale(.97,1.04)}60%{transform:translateY(-9px) scale(.97,1.04)}85%{transform:translateY(0) scale(1.05,.94)}}
+@media (prefers-reduced-motion:reduce){.nv-bota{animation:none}}
 .pl-esp{display:grid; gap:8px}
 .pl-esp .sp{display:flex; gap:10px; align-items:center; text-align:left; width:100%; padding:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--fg); font:inherit}
 .pl-esp .sp.sel{border-color:var(--accent); border-width:2px}
@@ -1691,7 +1695,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
-    { v: 42, f: "2026-11-13", t: "Fichas por especie en el vivero", d: "En «Campo», al tocar un sector de vivero en «Sectores en el plano», ves sus especies. Cada especie tiene su ficha con fotos, estado, cantidad y registros. Diego y Yolanda pueden anotar. Al tocar los viveros y paltos el plano se amplía para elegir más fácil.", g: "Fichas por especie" },
+    { v: 42, f: "2026-11-13", t: "¡Ahora tenemos Huerto! 🍅🥬", d: "Revisa la actualización y agrega los detalles de cada especie del huerto y del vivero: fotos, estado y notas para cuidarlas y así disfrutarlas día a día. Tócalas en «Sectores en el plano» (en «Campo»). Ah, y los viveros y paltos se amplían al tocarlos. 🌱", g: "Fichas por especie", ico: "tomate" },
     { v: 41, f: "2026-11-13", t: "Sectores en el plano", d: "En «Campo» hay un dibujo de todo el campo con sus sectores. Toca uno para ver su ficha. Diego enlaza cada sector con los que ya usa, y enciende o apaga los que no están en uso; Yolanda ve solo los que están en uso. Cada persona puede ocultar o mostrar los nombres.", g: "Sectores en el plano" },
     { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
     { v: 39, f: "2026-11-12", t: "Árboles del huerto", d: "Nueva sección, que se enciende o apaga en Ajustes: mapa de los nogales con la ficha de cada árbol (por ejemplo H15-N3), registros de sano o enfermo con foto, alerta de árboles enfermos y sectores por hilera. La ven Diego y Yolanda.", g: "Árboles del huerto" },
@@ -1716,6 +1720,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     { v: 23, f: "2026-10-27", t: "Ausencias", d: "Registra una ausencia ya ocurrida en Permisos.", g: "Ausencias" },
     { v: 23, f: "2026-10-27", t: "Avisar una ausencia", d: "Si hoy no puedes ir, avisa desde Permisos.", g: "Avisar una ausencia" }
   ];
+  function nvTomate(){
+    var NS = "http://www.w3.org/2000/svg", w = el("div", "nv-ico"); w.setAttribute("aria-hidden", "true");
+    w.innerHTML = '<svg viewBox="0 0 64 64" width="88" height="88"><g class="nv-bota"><ellipse cx="32" cy="58" rx="16" ry="3" fill="currentColor" opacity=".12"/><circle cx="32" cy="36" r="20" fill="#D8412F"/><ellipse cx="25" cy="27" rx="5" ry="3" fill="#fff" opacity=".35" transform="rotate(-30 25 27)"/><path d="M32 17c-4-1-9 0-12 3 5 0 7 2 12 3-5 1-6 3-8 6 4-1 7-3 8-5 1 2 4 4 8 5-2-3-3-5-8-6 5-1 7-3 12-3-3-3-8-4-12-3z" fill="#4C8B3A"/><path d="M32 17c0-4 1-7 3-9" stroke="#3B6E2D" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="25" cy="36" r="2.6" fill="#2b1a14"/><circle cx="39" cy="36" r="2.6" fill="#2b1a14"/><circle cx="25.9" cy="35.1" r=".9" fill="#fff"/><circle cx="39.9" cy="35.1" r=".9" fill="#fff"/><path d="M25 43c2.5 3.6 11.5 3.6 14 0" stroke="#2b1a14" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="21" cy="41" r="2.6" fill="#FF8A7A" opacity=".7"/><circle cx="43" cy="41" r="2.6" fill="#FF8A7A" opacity=".7"/></g></svg>';
+    return w;
+  }
   function nvPaso(n){ return GUIA.filter(function(g){ return g[0] === n.g; })[0]; }
   function nvLista(desde){
     return NOVEDADES.filter(function(n){ var g = nvPaso(n); return g && n.v > desde && (!g[3] || (g[3] === "owner" ? S.owner : S.manager)); });
@@ -1730,7 +1739,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var box = $("nvList"); box.textContent = ""; var ult = null;
     lst.forEach(function(n){
       if (hist && n.v !== ult){ ult = n.v; box.appendChild(el("h3", null, "Versión " + n.v + " · " + fmtD2(n.f))); }
-      var it = el("div", "nv-it"); it.appendChild(el("b", null, n.t)); it.appendChild(el("span", "note", n.d));
+      var it = el("div", "nv-it"); if (n.ico === "tomate") it.appendChild(nvTomate()); it.appendChild(el("b", null, n.t)); it.appendChild(el("span", "note", n.d));
       var bt = el("button", "small", "Ver cómo"); bt.type = "button";
       bt.onclick = function(){ $("nvSheet").hidden = true; guNov = false; guPasos = [nvPaso(n)]; guI = 0; pintarGuia(); $("guSheet").hidden = false; };
       it.appendChild(bt); box.appendChild(it);

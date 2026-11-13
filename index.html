@@ -80,6 +80,8 @@ button{font:inherit; font-weight:700; border-radius:14px; cursor:pointer; min-he
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
 button.primary{width:100%; min-height:60px; font-size:19px; border-radius:16px; background:var(--accent); color:var(--on-accent)}
 button.small{min-height:44px; padding:8px 16px; font-size:16px}
+/* Segundo toque de «Quitar»: mismo tamaño y forma, hundido con sombra interior y en rojo (armado: el próximo toque elimina). */
+button.armado,button.armado:active{background:var(--alert-bg); color:var(--alert); box-shadow:inset 3px 4px 8px rgba(120,30,10,.45),inset -2px -3px 5px rgba(255,255,255,.35); transform:translateY(1px)}
 button:active{transform:scale(.985)}
 button[disabled]{cursor:default; opacity:.55}
 .link{background:transparent; color:var(--accent); min-height:44px; padding:6px 4px; justify-self:start}
@@ -1678,7 +1680,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 48;
+  var GUIA_V = 49;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1702,7 +1704,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Cada cosa se anota en un solo lugar", "Para que nada quede repetido: el riego se registra en «Riego», las aplicaciones y la fertilización en «Aplicar» y la cosecha en «Cosecha». Si en «Registrar trabajo realizado» eliges «Riego», «Aplicación», «Fertilización» o «Cosecha», la app avisa y te ofrece un botón “Ir a Riego” (o al módulo que corresponda); no deja guardarlo ahí. «Trabajo» queda para el resto: desmalezado, poda, mantención, replante y otras. Además, si repites el mismo registro (mismo día, sector y horas, o la misma aplicación o cosecha), el botón dice “Ya hay uno igual: toca otra vez para guardar”, para que solo se repita si es a propósito. Los registros antiguos de «Riego» en «Trabajo» se pueden corregir o cambiar de actividad.", 47, ""],
-    ["Corregir o quitar un registro", "En «Trabajo», en «Últimos registros», toca un registro: debajo aparecen «Corregir» y «Quitar». «Corregir» abre la misma hoja de «Registrar trabajo» con los datos ya puestos (puedes cambiar el día, la actividad, el sector, las horas, quiénes y el detalle) y no crea un registro nuevo. «Quitar» pide un segundo toque para confirmar. En «Aplicar», «Últimas aplicaciones» también se toca para «Quitar»: el producto vuelve a la bodega; para cambiar una mezcla, quita la aplicación y regístrala de nuevo. Las colaboradoras solo corrigen lo que ellas anotaron. Para cambiar la fecha o quitar muchos a la vez, usa «Registros» en el computador.", 46, ""],
+    ["Corregir o quitar un registro", "En «Trabajo», en «Últimos registros», toca un registro: debajo aparecen «Corregir» y «Quitar». «Corregir» abre la misma hoja de «Registrar trabajo» con los datos ya puestos (puedes cambiar el día, la actividad, el sector, las horas, quiénes y el detalle) y no crea un registro nuevo. «Quitar» pide un segundo toque: el botón pasa a «Confirmar», hundido y en rojo, y si no lo tocas vuelve solo a «Quitar» a los 4 segundos. En «Aplicar», «Últimas aplicaciones» también se toca para «Quitar»: el producto vuelve a la bodega; para cambiar una mezcla, quita la aplicación y regístrala de nuevo. Las colaboradoras solo corrigen lo que ellas anotaron. Para cambiar la fecha o quitar muchos a la vez, usa «Registros» en el computador.", 49, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
@@ -1771,6 +1773,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 49, f: "2026-11-13", t: "Quitar con confirmación visible", d: "Al quitar o anular un registro, el segundo toque (por ejemplo «Confirmar») se ve hundido y en rojo, con el mismo tamaño y forma de siempre, y se desarma solo a los 4 segundos.", g: "Corregir o quitar un registro" },
     { v: 48, f: "2026-11-13", t: "Lecturas que bajan", d: "Repetir el mismo número en otro día es normal. Una lectura menor que una anterior queda «A revisar» en el medidor y en «Alertas»; el dueño puede confirmar con «Es correcta».", g: "Lecturas que bajan" },
     { v: 47, f: "2026-11-13", t: "Cada cosa en un solo lugar", d: "«Registrar trabajo» ya no acepta riego, aplicación, fertilización ni cosecha: te lleva al módulo que corresponde. Además avisa cuando vas a repetir un trabajo, una aplicación o una cosecha idénticos.", g: "Cada cosa se anota en un solo lugar" },
     { v: 46, f: "2026-11-13", t: "Corregir y quitar registros", d: "En «Trabajo» ahora puedes tocar un registro para «Corregir» (misma hoja, sin duplicar) o «Quitar». En «Aplicar» también se puede quitar una aplicación, y el producto vuelve a la bodega.", g: "Corregir o quitar un registro" },
@@ -2297,7 +2300,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var q2 = el("button", "small", "Quitar carencia"); q2.type = "button"; q2.onclick = function(){ i2.value = ""; }; f2.appendChild(q2); bx.appendChild(f2);
       var an = el("button", "small", "Anular esta aplicación"); an.type = "button"; var armed = false;
       an.onclick = async function(){
-        if (!armed){ armed = true; an.textContent = "Toca otra vez para anular"; setTimeout(function(){ armed = false; an.textContent = "Anular esta aplicación"; }, 4000); return; }
+        if (!armed){ armed = true; an.textContent = "Toca otra vez para anular"; an.classList.add("armado"); setTimeout(function(){ armed = false; an.classList.remove("armado"); an.textContent = "Anular esta aplicación"; }, 4000); return; }
         try {
           await S.db.doc("aplicaciones/" + x.id).delete();
           var pl = S.plan.filter(function(q){ return q.aplicacionId === x.id; })[0];
@@ -2738,7 +2741,7 @@ html.pc .cmdk:not([hidden]){display:flex}
         r.onclick = z.ir; w.appendChild(r);
         if (z.acciones && z.acciones.length){
           var ac = el("div", "ac-ac");
-          z.acciones.forEach(function(x){ var bt = el("button", "small" + (x.pri ? " ac-pri" : ""), x.txt); bt.type = "button"; if (x.aria) bt.setAttribute("aria-label", x.aria); var armed = false; bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez para confirmar"; setTimeout(function(){ armed = false; bt.textContent = x.txt; }, 4000); return; } x.fn(); }; ac.appendChild(bt); });
+          z.acciones.forEach(function(x){ var bt = el("button", "small" + (x.pri ? " ac-pri" : ""), x.txt); bt.type = "button"; if (x.aria) bt.setAttribute("aria-label", x.aria); var armed = false; bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez para confirmar"; bt.classList.add("armado"); setTimeout(function(){ armed = false; bt.classList.remove("armado"); bt.textContent = x.txt; }, 4000); return; } x.fn(); }; ac.appendChild(bt); });
           w.appendChild(ac);
         }
         ab.appendChild(w);
@@ -3760,7 +3763,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var go = el("button", "primary", "Hacerla ahora"); go.onclick = function(){ abrirAp(x); }; bx.appendChild(go);
       var del = el("button", "small", "Cancelar aplicación"); var armed = false;
       del.onclick = async function(){
-        if (!armed){ armed = true; del.textContent = "Toca otra vez para cancelar"; setTimeout(function(){ armed = false; del.textContent = "Cancelar aplicación"; }, 4000); return; }
+        if (!armed){ armed = true; del.textContent = "Toca otra vez para cancelar"; del.classList.add("armado"); setTimeout(function(){ armed = false; del.classList.remove("armado"); del.textContent = "Cancelar aplicación"; }, 4000); return; }
         try { await S.db.doc("plan/" + x.id).update({ estado: "cancelada", canceladaPor: S.nombre }); toast("Cancelada"); } catch (err){ toast("No se pudo cancelar."); }
       };
       bx.appendChild(del); sc.appendChild(bx);
@@ -3988,13 +3991,13 @@ html.pc .cmdk:not([hidden]){display:flex}
   $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; rgEdit = null; rgEditT = null; };
   $("rgQuitar").onclick = async function(){
     var q = $("rgQuitar"); if (!rgEditT) return;
-    if (!rgQArm){ rgQArm = true; q.textContent = "Toca otra vez para quitarlo"; setTimeout(function(){ rgQArm = false; q.textContent = "Quitar este riego programado"; }, 4000); return; }
+    if (!rgQArm){ rgQArm = true; q.textContent = "Toca otra vez para quitarlo"; q.classList.add("armado"); setTimeout(function(){ rgQArm = false; q.classList.remove("armado"); q.textContent = "Quitar este riego programado"; }, 4000); return; }
     try { await S.db.doc("tareas/" + rgEditT.id).delete(); $("rgSheet").hidden = true; rgEditT = null; rgQArm = false; q.textContent = "Quitar este riego programado"; toast("Riego programado quitado"); }
     catch (err){ toast("No se pudo quitar. Revisa tu señal e intenta de nuevo."); }
   };
   $("rgQuitarG").onclick = async function(){
     var q = $("rgQuitarG"); if (!rgEditT || !rgEditT.grupo) return;
-    if (!rgQGArm){ rgQGArm = true; q.textContent = "Toca otra vez para quitar los 4 sectores"; setTimeout(function(){ rgQGArm = false; q.textContent = "Quitar todo el grupo de ese día"; }, 4000); return; }
+    if (!rgQGArm){ rgQGArm = true; q.textContent = "Toca otra vez para quitar los 4 sectores"; q.classList.add("armado"); setTimeout(function(){ rgQGArm = false; q.classList.remove("armado"); q.textContent = "Quitar todo el grupo de ese día"; }, 4000); return; }
     var gid = rgEditT.grupo, mem = S.tareas.filter(function(x){ return x.grupo === gid && x.estado !== "hecha"; });
     try { for (var i = 0; i < mem.length; i++) await S.db.doc("tareas/" + mem[i].id).delete(); $("rgSheet").hidden = true; rgEditT = null; rgQGArm = false; q.textContent = "Quitar todo el grupo de ese día"; toast("Quité " + mem.length + " riegos programados"); }
     catch (err){ toast("No se pudo quitar. Revisa tu señal e intenta de nuevo."); }
@@ -4306,7 +4309,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       if (S.owner || r.uid === S.uid){
         var del = el("button", "small", "Anular"); var armed = false;
         del.onclick = async function(){
-          if (!armed){ armed = true; del.textContent = "Toca otra vez para anular"; setTimeout(function(){ armed = false; del.textContent = "Anular"; }, 4000); return; }
+          if (!armed){ armed = true; del.textContent = "Toca otra vez para anular"; del.classList.add("armado"); setTimeout(function(){ armed = false; del.classList.remove("armado"); del.textContent = "Anular"; }, 4000); return; }
           try { await S.db.doc("riegos/" + r.id).delete(); toast("Riego anulado"); } catch (err){ toast("No se pudo anular."); }
         };
         bx.appendChild(del);
@@ -4846,7 +4849,7 @@ html.pc .cmdk:not([hidden]){display:flex}
           bx.appendChild(vb); bx.appendChild(im);
         });
         if (S.owner){
-          var q = el("button", "small", quitarL === l.id ? "Confirmar" : "Quitar");
+          var q = el("button", "small" + (quitarL === l.id ? " armado" : ""), quitarL === l.id ? "Confirmar" : "Quitar");
           q.onclick = async function(){ if (quitarL !== l.id){ quitarL = l.id; render(); return; } quitarL = null; try { await S.db.doc("lecturas/" + l.id).delete(); toast("Lectura quitada"); } catch (err){ toast("No se pudo quitar."); } };
           bx.appendChild(q);
         }
@@ -5090,7 +5093,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       }
       if (S.owner){ var eb = el("button", "small", "Editar"); eb.onclick = function(){ abrirCosecha(c); }; bx.appendChild(eb); }
       if (S.owner && !c.fijo){
-        var q = el("button", "small", quitarC === c.id ? "Confirmar" : "Quitar");
+        var q = el("button", "small" + (quitarC === c.id ? " armado" : ""), quitarC === c.id ? "Confirmar" : "Quitar");
         q.onclick = async function(){ if (quitarC !== c.id){ quitarC = c.id; render(); return; } quitarC = null; try { await S.db.doc("cosechas/" + c.id).delete(); toast("Cosecha quitada"); } catch (err){ toast("No se pudo quitar."); } };
         bx.appendChild(q);
       }
@@ -5264,7 +5267,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var bx = el("div", "asg"), wo = el("div", "who"); wo.appendChild(el("b", null, fmtD2(x.fecha) + " · " + x.tipo)); wo.appendChild(el("span", "chip idle", (x.kg > 0 ? "+" : "") + fmtNum(x.kg, 1) + " kg")); bx.appendChild(wo);
       bx.appendChild(el("p", "sub", PRODS[x.producto] + (x.lugar ? " · " + x.lugar : ""))); if (x.nota) bx.appendChild(el("p", "note", x.nota));
       if (!x.fijo) bx.appendChild(el("p", "note", (x.por || "") + " · " + fmtFH.format(new Date(x.ts))));
-      if (S.owner && !x.fijo && !x.ventaId){ var q = el("button", "small", quitarC === x.id ? "Confirmar" : "Quitar"); q.onclick = async function(){ if (quitarC !== x.id){ quitarC = x.id; render(); return; } quitarC = null; try { await S.db.doc("bodega/" + x.id).delete(); toast("Movimiento quitado"); } catch (err){ toast("No se pudo quitar."); } }; bx.appendChild(q); }
+      if (S.owner && !x.fijo && !x.ventaId){ var q = el("button", "small" + (quitarC === x.id ? " armado" : ""), quitarC === x.id ? "Confirmar" : "Quitar"); q.onclick = async function(){ if (quitarC !== x.id){ quitarC = x.id; render(); return; } quitarC = null; try { await S.db.doc("bodega/" + x.id).delete(); toast("Movimiento quitado"); } catch (err){ toast("No se pudo quitar."); } }; bx.appendChild(q); }
       hh.appendChild(bx);
     });
     if (L.length > 8){ var mas = el("button", "link", S.verMasBod ? "Ver solo los 8 últimos" : "Ver más movimientos"); mas.onclick = function(){ S.verMasBod = !S.verMasBod; render(); }; hh.appendChild(mas); }
@@ -5370,7 +5373,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       if (v.fotoG) verFoto(bx, v.fotoG, "Ver guía"); if (v.fotoP) verFoto(bx, v.fotoP, "Ver comprobante");
       var bb = el("div", "btns");
       if (v.pago !== "pagada"){ var pg = el("button", "small", "Marcar pagada"); pg.onclick = async function(){ try { await S.db.doc("ventas/" + v.id).update({ pago: "pagada", fechaPago: fecha() }); toast("Venta marcada como pagada"); } catch (err){ toast("No se pudo guardar."); } }; bb.appendChild(pg); }
-      var q = el("button", "small", quitarC === v.id ? "Confirmar" : "Quitar");
+      var q = el("button", "small" + (quitarC === v.id ? " armado" : ""), quitarC === v.id ? "Confirmar" : "Quitar");
       q.onclick = async function(){ if (quitarC !== v.id){ quitarC = v.id; render(); return; } quitarC = null; try { for (var i = 0; i < S.bodega.length; i++) if (S.bodega[i].ventaId === v.id) await S.db.doc("bodega/" + S.bodega[i].id).delete(); await S.db.doc("ventas/" + v.id).delete(); toast("Venta quitada"); } catch (err){ toast("No se pudo quitar."); } };
       bb.appendChild(q); bx.appendChild(bb); h.appendChild(bx);
     });
@@ -5524,9 +5527,11 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!abre || !puede) return;
     var ac = el("div", "btns tr-ac");
     if (onEdit){ var ce = el("button", "primary", "Corregir"); ce.type = "button"; ce.onclick = onEdit; ac.appendChild(ce); }
-    var qd = el("button", "small", TRAB.del ? "Toca otra vez para quitar" : "Quitar"); qd.type = "button";
+    var qd = el("button", "small" + (TRAB.del ? " armado" : ""), TRAB.del ? "Confirmar" : "Quitar"); qd.type = "button";
+    if (TRAB.del){ clearTimeout(TRAB.t); TRAB.t = setTimeout(function(){ if (TRAB.del){ TRAB.del = false; render(); } }, 4000); }
     qd.onclick = async function(){
       if (!TRAB.del){ TRAB.del = true; render(); return; }
+      clearTimeout(TRAB.t);
       try { await S.db.doc(ruta).delete(); TRAB.ab = null; TRAB.del = false; toast(msgDel); } catch (err){ toast("No se pudo quitar. Intenta de nuevo."); }
     };
     ac.appendChild(qd); box.appendChild(ac);
@@ -6000,7 +6005,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("peTitle").textContent = p ? "Editar persona" : "Agregar persona";
     $("peNombre").value = (p && p.nombre) || ""; $("peNac").value = (p && p.nac) || ""; $("peTel").value = (p && p.tel) || ""; pintaEdad("pe", !!(p && p.mostrarEdad)); infoNac("pe");
     fill($("peFunc"), FUNC, (p && p.funcion) || FUNC[0]); fill($("peJorn"), JORN, (p && p.jornada) || JORN[0]);
-    $("peDel").hidden = !(S.owner && p && p.id); $("peDel").dataset.ok = ""; $("peDel").textContent = "Borrar ficha completa";
+    $("peDel").hidden = !(S.owner && p && p.id); $("peDel").dataset.ok = ""; $("peDel").classList.remove("armado"); $("peDel").textContent = "Borrar ficha completa";
     $("perSheet").hidden = false; $("peNombre").focus();
   }
   $("peDel").onclick = async function(){
@@ -6353,7 +6358,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       r.recs.slice(0, 5).forEach(function(x){
         var row = el("div", "t-rec"), tx = el("span", null, dia(x.fecha) + " · " + (TIPOS_T[x.tipo] || x.tipo) + (x.tipo === "horas" ? " (" + x.hi + "–" + x.hs + ")" : "") + (x.labor ? " · " + x.labor : "") + (x.aut === "pendiente" ? " · Feriado: por autorizar" : x.aut === "no" ? " · Feriado: no autorizado" : x.aut === "ok" ? " · Feriado autorizado" : "") + (x.estado === "acordada" ? " · Acordada" : x.estado === "no_vino" ? " · No vino" : "") + " · lo anotó " + (x.por || "—"));
         row.appendChild(tx);
-        var q = el("button", "small", quitarT === x.id ? "Confirmar" : "Quitar");
+        var q = el("button", "small" + (quitarT === x.id ? " armado" : ""), quitarT === x.id ? "Confirmar" : "Quitar");
         q.onclick = async function(){
           if (quitarT !== x.id){ quitarT = x.id; render(); return; }
           quitarT = null; try { await S.db.doc("jornadasTerc/" + x.id).delete(); toast("Registro quitado"); } catch (err){ toast("No se pudo quitar. Intenta de nuevo."); }
@@ -6540,7 +6545,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (ev.tarea && S.manager){
       var q = el("button", "ag-q small", "Quitar"); q.type = "button"; var armed = false;
       q.onclick = async function(){
-        if (!armed){ armed = true; q.textContent = "¿Seguro?"; setTimeout(function(){ armed = false; q.textContent = "Quitar"; }, 3500); return; }
+        if (!armed){ armed = true; q.textContent = "¿Seguro?"; q.classList.add("armado"); setTimeout(function(){ armed = false; q.classList.remove("armado"); q.textContent = "Quitar"; }, 3500); return; }
         try { await S.db.doc("tareas/" + ev.tarea.id).delete(); toast("Tarea quitada"); } catch (err){ toast("No se pudo quitar."); }
       };
       r.appendChild(q);
@@ -6635,7 +6640,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       sp.appendChild(document.createTextNode((x.por || "") + (x.ts ? " · " + fmtD2(fecha(new Date(x.ts))) : ""))); tx.appendChild(sp); r.appendChild(tx);
       if (S.manager || x.uid === S.uid){
         var q = el("button", "ag-q small", "Quitar"); q.type = "button"; var armed = false;
-        q.onclick = async function(){ if (!armed){ armed = true; q.textContent = "¿Seguro?"; setTimeout(function(){ armed = false; q.textContent = "Quitar"; }, 3500); return; } try { await S.db.doc("ideas/" + x.id).delete(); toast("Nota quitada"); } catch (err){ toast("No se pudo quitar."); } };
+        q.onclick = async function(){ if (!armed){ armed = true; q.textContent = "¿Seguro?"; q.classList.add("armado"); setTimeout(function(){ armed = false; q.classList.remove("armado"); q.textContent = "Quitar"; }, 3500); return; } try { await S.db.doc("ideas/" + x.id).delete(); toast("Nota quitada"); } catch (err){ toast("No se pudo quitar."); } };
         r.appendChild(q);
       }
       return r;
@@ -6812,7 +6817,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       var t = el("div", "t go"); t.setAttribute("role", "button"); t.tabIndex = 0; t.onclick = z.ir; t.onkeydown = function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); z.ir(); } };
       t.appendChild(el("b", null, z.titulo)); z.lineas.forEach(function(ln){ t.appendChild(el("small", null, ln[2])); }); r.appendChild(t);
       (z.acciones || []).slice(0, 2).forEach(function(x){ var bt = el("button", "small" + (x.pri ? " ac-pri" : ""), x.txt); bt.type = "button"; if (x.aria) bt.setAttribute("aria-label", x.aria); var armed = false;
-        bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez"; setTimeout(function(){ armed = false; bt.textContent = x.txt; }, 4000); return; } x.fn(); }; r.appendChild(bt); });
+        bt.onclick = function(){ if (x.doble && !armed){ armed = true; bt.textContent = "Toca otra vez"; bt.classList.add("armado"); setTimeout(function(){ armed = false; bt.classList.remove("armado"); bt.textContent = x.txt; }, 4000); return; } x.fn(); }; r.appendChild(bt); });
       c1.appendChild(r);
     });
     if (al.length > 8){ var mb = el("button", "small", S.ccTodas ? "Ver menos" : "Ver las " + al.length); mb.onclick = function(){ S.ccTodas = !S.ccTodas; render(); }; c1.appendChild(mb); }
@@ -7046,7 +7051,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("lgTipo").value = responder ? "dato" : x ? x.tipo : "dato";
     $("lgTitulo").value = x ? x.titulo : ""; $("lgTexto").value = x && !responder ? x.texto : ""; $("lgFuente").value = x && x.fuente && !responder ? x.fuente : "";
     $("lgFecha").value = x && !responder ? (x.fecha || fecha()) : fecha(); $("lgFecha").max = fecha();
-    $("lgDel").hidden = !x || (x.base && !x.editado); $("lgDel").textContent = x && x.base ? "Restaurar el texto original" : "Eliminar";
+    $("lgDel").hidden = !x || (x.base && !x.editado); $("lgDel").classList.remove("armado"); $("lgDel").textContent = x && x.base ? "Restaurar el texto original" : "Eliminar";
     lgTextoL(); $("lgSheet").hidden = false; (responder ? $("lgTexto") : $("lgTitulo")).focus();
   }
   $("lgCancel").onclick = function(){ $("lgSheet").hidden = true; };
@@ -7063,8 +7068,8 @@ html.pc .cmdk:not([hidden]){display:flex}
   };
   $("lgDel").onclick = async function(){
     if (!lgEd) return;
-    if ($("lgDel").dataset.ok !== lgEd.id){ $("lgDel").dataset.ok = lgEd.id; $("lgDel").textContent = "Toca otra vez para confirmar"; return; }
-    $("lgDel").dataset.ok = "";
+    if ($("lgDel").dataset.ok !== lgEd.id){ $("lgDel").dataset.ok = lgEd.id; $("lgDel").textContent = "Toca otra vez para confirmar"; $("lgDel").classList.add("armado"); return; }
+    $("lgDel").dataset.ok = ""; $("lgDel").classList.remove("armado");
     try { await S.db.doc("legal/" + lgEd.id).delete(); $("lgSheet").hidden = true; toast(lgEd.base ? "Texto original restaurado" : "Eliminado"); } catch (err){ toast("No se pudo. Intenta de nuevo."); }
   };
   function buildLegal(){
@@ -7462,7 +7467,7 @@ html.pc .cmdk:not([hidden]){display:flex}
         var nom = r.tipo === "app" ? "En la app" : r.tipo === "desarrollo" ? "Desarrollo" : "Manual", ln = el("div", "l"); ln.appendChild(el("span", "note", nom + (r.desc && r.tipo === "manual" ? " · " + r.desc : "") + " · " + dur(Math.round(r.min))));
         if (r.tipo !== "app"){
           var q = el("button", "small", "Quitar"); q.type = "button"; var arm = false;
-          q.onclick = async function(){ if (!arm){ arm = true; q.textContent = "Toca otra vez"; setTimeout(function(){ arm = false; q.textContent = "Quitar"; }, 4000); return; } try { await S.db.doc("tiempo/" + r.id).delete(); toast("Quité ese tiempo"); } catch (e){ toast("No se pudo quitar."); } };
+          q.onclick = async function(){ if (!arm){ arm = true; q.textContent = "Toca otra vez"; q.classList.add("armado"); setTimeout(function(){ arm = false; q.classList.remove("armado"); q.textContent = "Quitar"; }, 4000); return; } try { await S.db.doc("tiempo/" + r.id).delete(); toast("Quité ese tiempo"); } catch (e){ toast("No se pudo quitar."); } };
           ln.appendChild(q);
         }
         box.appendChild(ln);

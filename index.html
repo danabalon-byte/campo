@@ -348,6 +348,15 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .pl-wrap svg text.pl-zt{font-size:7px; stroke-width:1.8px}
 .pl-zoom .pl-off{stroke:var(--muted); stroke-width:.9}
 
+#tmCard > .who{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px}
+.tm-h{display:flex; align-items:center; gap:10px; min-width:0}
+.tm-ref{position:relative; flex:none; width:32px; height:32px; min-height:0; padding:0; box-sizing:border-box; border-radius:50%; border:1.5px solid #D3D5C9; background:linear-gradient(160deg,#FFFFFF 0,#F1EFE6 100%); color:var(--accent); display:flex; align-items:center; justify-content:center; box-shadow:0 3px 6px rgba(0,0,0,.28),0 1px 1px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.9); transition:box-shadow .14s,transform .14s}
+.tm-ref:before{content:""; position:absolute; inset:-6px}
+.tm-ref svg{width:16px; height:16px; display:block}
+.tm-ref:active,.tm-ref[aria-busy="true"]{border-color:#D3D5C9; background:linear-gradient(160deg,#B3B7AC 0,#CDD0C5 45%,#E2E3D9 100%); transform:translateY(1px); box-shadow:inset 3px 4px 8px rgba(0,0,0,.5),inset -2px -3px 5px rgba(255,255,255,.75)}
+.tm-ref[aria-busy="true"] svg{animation:tmgira .9s linear infinite}
+@keyframes tmgira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.tm-ref[aria-busy="true"] svg{animation:none}}
 .tm-nuevo{border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); border-radius:12px; padding:12px; margin:0 0 12px}
 .tm-nuevo b{display:block; margin-bottom:2px}
 .tm-nuevo .l{display:flex; justify-content:space-between; gap:8px; font-size:15px; padding:2px 0}
@@ -1680,7 +1689,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 49;
+  var GUIA_V = 50;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1704,6 +1713,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Cada cosa se anota en un solo lugar", "Para que nada quede repetido: el riego se registra en «Riego», las aplicaciones y la fertilización en «Aplicar» y la cosecha en «Cosecha». Si en «Registrar trabajo realizado» eliges «Riego», «Aplicación», «Fertilización» o «Cosecha», la app avisa y te ofrece un botón “Ir a Riego” (o al módulo que corresponda); no deja guardarlo ahí. «Trabajo» queda para el resto: desmalezado, poda, mantención, replante y otras. Además, si repites el mismo registro (mismo día, sector y horas, o la misma aplicación o cosecha), el botón dice “Ya hay uno igual: toca otra vez para guardar”, para que solo se repita si es a propósito. Los registros antiguos de «Riego» en «Trabajo» se pueden corregir o cambiar de actividad.", 47, ""],
+    ["Buscar tiempo nuevo", "En «Mi tiempo» (solo tú), el botón circular junto al título revisa si hay tiempo de desarrollo nuevo publicado. Al pulsarlo se hunde y gira mientras busca; después avisa «Hay tiempo nuevo por importar» (con el aviso e «Importar» debajo) o «Todo al día: no hay tiempo nuevo». Solo trae lo ya publicado: el cálculo del tiempo de desarrollo se actualiza aparte.", 50, "owner"],
     ["Corregir o quitar un registro", "En «Trabajo», en «Últimos registros», toca un registro: debajo aparecen «Corregir» y «Quitar». «Corregir» abre la misma hoja de «Registrar trabajo» con los datos ya puestos (puedes cambiar el día, la actividad, el sector, las horas, quiénes y el detalle) y no crea un registro nuevo. «Quitar» pide un segundo toque: el botón pasa a «Confirmar», hundido y en rojo, y si no lo tocas vuelve solo a «Quitar» a los 4 segundos. En «Aplicar», «Últimas aplicaciones» también se toca para «Quitar»: el producto vuelve a la bodega; para cambiar una mezcla, quita la aplicación y regístrala de nuevo. Las colaboradoras solo corrigen lo que ellas anotaron. Para cambiar la fecha o quitar muchos a la vez, usa «Registros» en el computador.", 49, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1773,6 +1783,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 50, f: "2026-11-13", t: "Buscar tiempo nuevo", d: "En «Mi tiempo» hay un botón circular junto al título para revisar si hay tiempo nuevo por importar, sin esperar el aviso automático.", g: "Buscar tiempo nuevo" },
     { v: 49, f: "2026-11-13", t: "Quitar con confirmación visible", d: "Al quitar o anular un registro, el segundo toque (por ejemplo «Confirmar») se ve hundido y en rojo, con el mismo tamaño y forma de siempre, y se desarma solo a los 4 segundos.", g: "Corregir o quitar un registro" },
     { v: 48, f: "2026-11-13", t: "Lecturas que bajan", d: "Repetir el mismo número en otro día es normal. Una lectura menor que una anterior queda «A revisar» en el medidor y en «Alertas»; el dueño puede confirmar con «Es correcta».", g: "Lecturas que bajan" },
     { v: 47, f: "2026-11-13", t: "Cada cosa en un solo lugar", d: "«Registrar trabajo» ya no acepta riego, aplicación, fertilización ni cosecha: te lleva al módulo que corresponde. Además avisa cuando vas a repetir un trabajo, una aplicación o una cosecha idénticos.", g: "Cada cosa se anota en un solo lugar" },
@@ -7425,7 +7436,18 @@ html.pc .cmdk:not([hidden]){display:flex}
     var sec = soloInterior ? document.createDocumentFragment() : el("section", "card sect");
     if (!soloInterior) sec.id = "tmCard";
     var hoy = fecha(), ws = weekStart(hoy), we = addDays(ws, 6), mes = hoy.slice(0, 7), filas = tmFilas(), ahora = Date.now(), cuenta = tmActivo(ahora);
-    var hd = el("div", "who"); hd.appendChild(el("h2", null, "Mi tiempo")); hd.appendChild(el("span", "chip " + (cuenta ? "ok" : "idle"), cuenta ? "Contando" : "En pausa")); sec.appendChild(hd);
+    var hd = el("div", "who"), tt = el("div", "tm-h"); tt.appendChild(el("h2", null, "Mi tiempo"));
+    var rf = el("button", "tm-ref"); rf.type = "button"; rf.id = "tmRef"; rf.setAttribute("aria-label", "Buscar tiempo nuevo"); rf.title = "Buscar tiempo nuevo";
+    rf.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>';
+    rf.onclick = async function(){
+      if (rf.getAttribute("aria-busy") === "true") return; rf.setAttribute("aria-busy", "true");
+      try { localStorage.removeItem("tm_ocultos"); } catch (e0){ }
+      await tmRevisa(true);
+      if (tm.nuevo === null) toast("No se pudo revisar. Revisa tu señal e intenta de nuevo.");
+      else toast(tm.nuevo.length ? "Hay tiempo nuevo por importar" : "Todo al día: no hay tiempo nuevo");
+      rf.removeAttribute("aria-busy");
+    };
+    tt.appendChild(el("span", "chip " + (cuenta ? "ok" : "idle"), cuenta ? "Contando" : "En pausa")); hd.appendChild(tt); hd.appendChild(rf); sec.appendChild(hd);
     (tm.nuevo || []).forEach(function(p){
       var bx = el("div", "tm-nuevo"); bx.setAttribute("role", "status"); bx.appendChild(el("b", null, "Hay tiempo nuevo por importar"));
       bx.appendChild(el("p", "note", "Sesión «" + p.v.ses + "» · " + p.dias + (p.dias === 1 ? " día" : " días") + " por agregar o ajustar"));

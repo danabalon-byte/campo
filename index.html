@@ -5396,7 +5396,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var f = espFicha(c, nombre), box = el("div", "pl-esp-det"), dr = S.plDraft = S.plDraft || {}, id = "esp_" + c.id + "_" + espSlug(nombre);
     var fids = (f && f.fotoIds) || [];
     var g = el("div", "ph3");
-    fids.forEach(function(x){ var w = el("div"); w.appendChild(espImg(x, "Foto de " + nombre)); if (S.owner){ var q = el("button", "link", "Quitar"); q.type = "button"; q.onclick = async function(){ try { await S.db.doc("arboles/" + id).update({ fotoIds: fids.filter(function(y){ return y !== x; }) }); } catch (e){ toast("No se pudo quitar la foto."); } }; w.appendChild(q); } g.appendChild(w); });
+    fids.forEach(function(x){ var w = el("div"); w.appendChild(espImg(x, "Foto de " + nombre)); { var q = el("button", "link", "Quitar"); q.type = "button"; q.onclick = async function(){ try { await S.db.doc("arboles/" + id).update({ fotoIds: fids.filter(function(y){ return y !== x; }) }); } catch (e){ toast("No se pudo quitar la foto."); } }; w.appendChild(q); } g.appendChild(w); });
     var fi = espFotoInput(async function(file){
       try { var fid = await espSubeFoto(file); var base = f ? {} : espAuto(Object.assign(espBase(c, nombre), { estado: "Sano", cantidad: null, siembra: "", notas: "" })); await S.db.doc("arboles/" + id).set(Object.assign(base, { fotoIds: fids.concat([fid]) }), { merge: true }); toast("Foto guardada"); }
       catch (e){ toast("No se pudo guardar la foto. Revisa tu señal o prueba con otra."); }

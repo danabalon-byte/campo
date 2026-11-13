@@ -146,6 +146,11 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 .asg .who{display:flex; justify-content:space-between; align-items:center; gap:10px; min-width:0}
 .asg .who b{font-family:var(--font-display); font-size:18px; font-weight:700; min-width:0; overflow-wrap:anywhere}
 .asg > button + button{margin-top:-2px}
+.asg > button.tap{display:grid; gap:8px; width:100%; text-align:left; background:none; border:0; box-shadow:none; padding:0; min-height:0; color:inherit; font:inherit; border-radius:0}
+.asg > button.tap[aria-expanded="true"] .who b{text-decoration:underline; text-underline-offset:3px}
+.asg > .tr-ac{display:flex; gap:10px; align-items:center; margin-top:2px}
+.asg > .tr-ac button{margin:0}
+.asg > .tr-ac button.small{background:transparent; color:var(--alert)}
 .asg > button.small{background:transparent; color:var(--alert); justify-self:start; padding-inline:0}
 .btns{display:flex; gap:8px; flex-wrap:wrap}
 .pp{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line)}
@@ -1058,6 +1063,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="trTitle">
     <h2 id="trTitle">Registrar trabajo</h2>
 <div class="sbody">
+    <div class="field" id="trFechaF" hidden><label for="trFecha">Fecha del trabajo</label><input type="date" id="trFecha"></div>
     <div class="field"><label for="trAct">¿Qué se hizo?</label><select id="trAct"></select></div>
     <div class="field"><label for="trSector">¿Dónde?</label><select id="trSector"></select></div>
     <div class="field"><label for="trHoras">Horas de trabajo</label><input type="text" id="trHoras" inputmode="decimal" maxlength="5" placeholder="Ej: 3,5"></div>
@@ -1670,7 +1676,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 45;
+  var GUIA_V = 46;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1693,6 +1699,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["En el campo ahora", "En «Inicio», bajo las alertas, la tarjeta «En el campo ahora» muestra con iniciales a quienes trabajan hoy: punto verde si ya llegó, color claro si falta por llegar (o está agendado) y tenue si ya salió. Mantén el dedo sobre una inicial para ver el nombre. Abajo dice cuántas personas hay en el campo. «Ver detalle» abre «Trabajadores». Sale de «Quién trabaja hoy» y de los trabajadores agendados.", 43, "manager"],
     ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
+    ["Corregir o quitar un registro", "En «Trabajo», en «Últimos registros», toca un registro: debajo aparecen «Corregir» y «Quitar». «Corregir» abre la misma hoja de «Registrar trabajo» con los datos ya puestos (puedes cambiar el día, la actividad, el sector, las horas, quiénes y el detalle) y no crea un registro nuevo. «Quitar» pide un segundo toque para confirmar. En «Aplicar», «Últimas aplicaciones» también se toca para «Quitar»: el producto vuelve a la bodega; para cambiar una mezcla, quita la aplicación y regístrala de nuevo. Las colaboradoras solo corrigen lo que ellas anotaron. Para cambiar la fecha o quitar muchos a la vez, usa «Registros» en el computador.", 46, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
@@ -1760,6 +1767,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 46, f: "2026-11-13", t: "Corregir y quitar registros", d: "En «Trabajo» ahora puedes tocar un registro para «Corregir» (misma hoja, sin duplicar) o «Quitar». En «Aplicar» también se puede quitar una aplicación, y el producto vuelve a la bodega.", g: "Corregir o quitar un registro" },
     { v: 45, f: "2026-11-13", t: "Pendientes y foto del tablero en dos pasos", d: "Bajo las labores de hoy hay una caja «Pendientes» con lo que quedó sin hacer de días anteriores, y puedes «Dejar para otro día». Se retiró la tarjeta «Hoy toca» del Inicio. La foto del tablero eléctrico ahora se toma en dos pasos: el número de cerca y luego el medidor completo.", g: "Pendientes" },
     { v: 44, f: "2026-11-13", t: "Saludo y labores del día", d: "«Inicio» te saluda por tu nombre con una escena animada y ahora trae «¡Esto tenemos para hoy!»: las labores del día en orden de prioridad, con un círculo para marcarlas. La foto del tablero eléctrico es lo primero cada día.", g: "Esto tenemos para hoy" },
     { v: 43, f: "2026-11-13", t: "En el campo ahora", d: "En «Inicio» ves de un vistazo quién está en el campo: iniciales con un punto verde para quien ya llegó. «Ver detalle» abre «Trabajadores».", g: "En el campo ahora", r: "manager" },
@@ -4338,13 +4346,14 @@ html.pc .cmdk:not([hidden]){display:flex}
     var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimas aplicaciones"));
     if (!S.aplicaciones.length) l.appendChild(el("p", "note", "Todavía no hay aplicaciones registradas."));
     S.aplicaciones.slice(0, 30).forEach(function(a){
-      var box = el("div", "asg"); var who = el("div", "who"); who.appendChild(el("b", null, a.producto + " · " + a.sector)); if (!a.items) who.appendChild(el("span", "chip idle", nf(a.cantidad, 2) + " " + a.unidad)); box.appendChild(who);
-      if (a.items) box.appendChild(el("p", "sub", a.items.map(function(i){ return i.nombre + " " + nf(i.cantidad, 2) + " " + i.unidad + (i.modo === "pct" && i.valor ? " (" + nf(i.valor, 2) + " %)" : i.modo === "ha" && i.valor ? " (" + nf(i.valor, 2) + " " + i.unidad + "/ha)" : ""); }).join(" + ") + (a.aguaTotalL ? " en " + nf(a.aguaTotalL, 0) + " L de agua" : "")));
-      var det = [a.equipo, a.ha ? nf(a.ha, 2) + " ha" : null, a.dosis ? nf(a.dosis, 2) + " por ha" : null].filter(Boolean).join(" · "); if (det) box.appendChild(el("p", "sub", det));
-      if (a.reingresoHasta && Date.parse(a.reingresoHasta) > now) box.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(a.reingresoHasta))));
-      if (a.cosechaDesde && a.cosechaDesde > fecha(new Date(now))) box.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(a.cosechaDesde)));
-      if (a.notas) box.appendChild(el("p", null, a.notas));
-      box.appendChild(el("p", "note", fmtFH.format(new Date(a.ts)) + (a.por ? " · " + a.por : ""))); l.appendChild(box);
+      var box = el("div", "asg"), tap = el("button", "tap"); var who = el("div", "who"); who.appendChild(el("b", null, a.producto + " · " + a.sector)); if (!a.items) who.appendChild(el("span", "chip idle", nf(a.cantidad, 2) + " " + a.unidad)); tap.appendChild(who);
+      if (a.items) tap.appendChild(el("p", "sub", a.items.map(function(i){ return i.nombre + " " + nf(i.cantidad, 2) + " " + i.unidad + (i.modo === "pct" && i.valor ? " (" + nf(i.valor, 2) + " %)" : i.modo === "ha" && i.valor ? " (" + nf(i.valor, 2) + " " + i.unidad + "/ha)" : ""); }).join(" + ") + (a.aguaTotalL ? " en " + nf(a.aguaTotalL, 0) + " L de agua" : "")));
+      var det = [a.equipo, a.ha ? nf(a.ha, 2) + " ha" : null, a.dosis ? nf(a.dosis, 2) + " por ha" : null].filter(Boolean).join(" · "); if (det) tap.appendChild(el("p", "sub", det));
+      if (a.reingresoHasta && Date.parse(a.reingresoHasta) > now) tap.appendChild(el("p", "note warn", "No entrar hasta " + fmtFH.format(new Date(a.reingresoHasta))));
+      if (a.cosechaDesde && a.cosechaDesde > fecha(new Date(now))) tap.appendChild(el("p", "note warn", "No cosechar antes del " + fmtD2(a.cosechaDesde)));
+      if (a.notas) tap.appendChild(el("p", null, a.notas));
+      tap.appendChild(el("p", "note", fmtFH.format(new Date(a.ts)) + (a.por ? " · " + a.por : "")));
+      regToca(box, tap, "aplicaciones/" + a.id, !S.noWrite && (S.owner || S.manager || a.uid === S.uid), null, "Aplicación quitada: el producto vuelve a la bodega"); l.appendChild(box);
     });
     f.appendChild(l); return f;
   }
@@ -5467,10 +5476,36 @@ html.pc .cmdk:not([hidden]){display:flex}
       box.appendChild(b);
     });
   }
-  function abrirTrabajo(){
+  var trEd = null, TRAB = { ab: null, del: false };
+  /* Registro tocable (Trabajo, Aplicar): al tocarlo se abre «Corregir» (si se puede) y «Quitar» (pide un segundo toque). Una sola pieza para todas las listas. */
+  function regToca(box, tap, ruta, puede, onEdit, msgDel){
+    var abre = TRAB.ab === ruta; tap.setAttribute("aria-expanded", abre ? "true" : "false");
+    tap.onclick = function(){ TRAB.ab = abre ? null : ruta; TRAB.del = false; render(); };
+    box.appendChild(tap);
+    if (!abre || !puede) return;
+    var ac = el("div", "btns tr-ac");
+    if (onEdit){ var ce = el("button", "primary", "Corregir"); ce.type = "button"; ce.onclick = onEdit; ac.appendChild(ce); }
+    var qd = el("button", "small", TRAB.del ? "Toca otra vez para quitar" : "Quitar"); qd.type = "button";
+    qd.onclick = async function(){
+      if (!TRAB.del){ TRAB.del = true; render(); return; }
+      try { await S.db.doc(ruta).delete(); TRAB.ab = null; TRAB.del = false; toast(msgDel); } catch (err){ toast("No se pudo quitar. Intenta de nuevo."); }
+    };
+    ac.appendChild(qd); box.appendChild(ac);
+  }
+  /* Sin argumento: trabajo nuevo. Con un trabajo: se abre la misma hoja para corregirlo. */
+  function abrirTrabajo(t){
+    trEd = t && t.id ? t : null;
     fill($("trAct"), ACT); fill($("trMaq"), MAQ);
     fill($("trSector"), [{ value: "", label: "Todo el campo" }].concat(sectoresOrden().map(function(c){ return { value: c.id, label: c.nombre }; })));
     $("trHoras").value = ""; $("trQuienes").value = ""; $("trDetalle").value = "";
+    $("trTitle").textContent = trEd ? "Corregir trabajo" : "Registrar trabajo"; $("trOk").textContent = trEd ? "Guardar cambios" : "Guardar trabajo";
+    $("trFechaF").hidden = !trEd; $("trFecha").max = fecha();
+    if (trEd){
+      $("trFecha").value = trEd.fecha || fecha(); $("trAct").value = trEd.actividad || "Otra"; $("trSector").value = trEd.sectorId || ""; $("trMaq").value = trEd.maquina || "Sin máquina";
+      $("trHoras").value = String(trEd.horas || "").replace(".", ","); $("trQuienes").value = trEd.quienes || ""; $("trDetalle").value = trEd.detalle || "";
+      trG = []; trSel = {}; $("trListaF").hidden = true; $("trQuienesL").textContent = "Quiénes trabajaron (opcional)"; pintaTrLista();
+      $("trSheet").hidden = false; $("trHoras").focus(); return;
+    }
     trG = S.manager ? gente() : []; trSel = {}; $("trListaF").hidden = !trG.length; $("trQuienesL").textContent = trG.length ? "Otros que trabajaron (opcional)" : "Quiénes trabajaron (opcional)"; pintaTrLista();
     $("trSheet").hidden = false; $("trHoras").focus();
   }
@@ -5479,6 +5514,16 @@ html.pc .cmdk:not([hidden]){display:flex}
     var h = parseFloat($("trHoras").value.replace(",", "."));
     if (!(h > 0) || h > 24){ toast("Escribe las horas de trabajo, entre 0,5 y 24."); $("trHoras").focus(); return; }
     var cu = S.cuarteles.filter(function(c){ return c.id === $("trSector").value; })[0];
+    if (trEd){
+      var fe = $("trFecha").value || trEd.fecha;
+      if (fe > fecha()){ toast("Elige una fecha que no sea futura."); return; }
+      var b0 = $("trOk"); b0.disabled = true;
+      try {
+        await S.db.doc("trabajos/" + trEd.id).update({ fecha: fe, actividad: $("trAct").value, sectorId: cu ? cu.id : "", sector: cu ? cu.nombre : "Todo el campo", horas: h, quienes: $("trQuienes").value.trim(), maquina: $("trMaq").value, detalle: $("trDetalle").value.trim(), editadoPor: S.nombre, editadoTs: new Date().toISOString() });
+        $("trSheet").hidden = true; trEd = null; TRAB.ab = null; toast("Trabajo corregido");
+      } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+      b0.disabled = false; return;
+    }
     var hy = fecha(), sel = trG.filter(function(g, i){ return trSel[i]; }), otros = $("trQuienes").value.trim(), motivos = [];
     if (S.manager && !S.owner){
       var yo = S.team[S.uid], d0 = yo && (yo.dias || []).filter(function(x){ return x.fecha === hy; })[0];
@@ -5514,7 +5559,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     [["Hoy", nf(hHoy, 1) + " h"], ["Esta semana", nf(hSem, 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
     Object.keys(porMaq).forEach(function(m){ var r = el("div", "row"); r.appendChild(el("span", "l", m)); r.appendChild(el("span", "r", nf(porMaq[m], 1) + " h esta semana")); rows.appendChild(r); });
     c.appendChild(rows);
-    var add = el("button", "primary", "Registrar trabajo realizado"); add.onclick = abrirTrabajo; c.appendChild(add);
+    var add = el("button", "primary", "Registrar trabajo realizado"); add.onclick = function(){ abrirTrabajo(); }; c.appendChild(add);
     f.appendChild(c);
     var pr = S.trabajos.filter(function(t){ return t.rev === "pendiente" && (S.owner || t.uid === S.uid); });
     if (pr.length){
@@ -5536,12 +5581,15 @@ html.pc .cmdk:not([hidden]){display:flex}
     var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimos registros"));
     if (!S.trabajos.length) l.appendChild(el("p", "note", "Todavía no hay trabajos registrados."));
     S.trabajos.slice(0, 30).forEach(function(t){
-      var box = el("div", "asg"); var who = el("div", "who");
-      who.appendChild(el("b", null, t.actividad + " · " + t.sector)); who.appendChild(el("span", "chip " + (t.rev === "pendiente" ? "warn" : "idle"), t.rev === "pendiente" ? "Pendiente" : t.rev === "no" ? "Rechazado" : nf(t.horas, 1) + " h")); box.appendChild(who);
+      var box = el("div", "asg"), abre = TRAB.ab === t.id;
+      var tap = el("button", "tap"); tap.type = "button"; tap.setAttribute("aria-expanded", abre ? "true" : "false");
+      var who = el("div", "who");
+      who.appendChild(el("b", null, t.actividad + " · " + t.sector)); who.appendChild(el("span", "chip " + (t.rev === "pendiente" ? "warn" : "idle"), t.rev === "pendiente" ? "Pendiente" : t.rev === "no" ? "Rechazado" : nf(t.horas, 1) + " h")); tap.appendChild(who);
       var det = [t.maquina && t.maquina !== "Sin máquina" ? t.maquina : null, t.quienes ? "Con: " + t.quienes : null].filter(Boolean).join(" · ");
-      if (det) box.appendChild(el("p", "sub", det));
-      if (t.detalle) box.appendChild(el("p", null, t.detalle));
-      box.appendChild(el("p", "note", fmtFH.format(new Date(t.ts)) + (t.por ? " · " + t.por : "")));
+      if (det) tap.appendChild(el("p", "sub", det));
+      if (t.detalle) tap.appendChild(el("p", null, t.detalle));
+      tap.appendChild(el("p", "note", (t.fecha && t.ts && t.fecha !== fecha(new Date(t.ts)) ? "Del " + fmtD2(t.fecha) + " · " : "") + fmtFH.format(new Date(t.ts)) + (t.por ? " · " + t.por : "") + (t.editadoPor ? " · corregido por " + t.editadoPor : "")));
+      regToca(box, tap, "trabajos/" + t.id, !S.noWrite && (S.owner || S.manager || t.uid === S.uid), function(){ abrirTrabajo(t); }, "Trabajo quitado");
       l.appendChild(box);
     });
     f.appendChild(l); return f;

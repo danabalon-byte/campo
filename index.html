@@ -301,6 +301,10 @@ html.sol[data-theme="dark"]{--muted:#D3DED4; --line:#4A5E4D; --fg:#F4F8F0}
 .tm-grid .n{text-align:right; font-weight:700}
 .tm-grid .t{font-weight:800; border-top:1px solid var(--line); padding-top:6px}
 .tm-acts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tm-nuevo{border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); border-radius:12px; padding:12px; margin:0 0 12px}
+.tm-nuevo b{display:block; margin-bottom:2px}
+.tm-nuevo .l{display:flex; justify-content:space-between; gap:8px; font-size:15px; padding:2px 0}
+.tm-nuevo .acts{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px}
 .tm-d{display:grid; gap:2px; padding:8px 0; border-top:1px solid var(--line); font-size:15px}
 .tm-d .l{display:flex; justify-content:space-between; gap:8px}
 .nv-it{display:grid; gap:8px; padding:12px 14px; border:1px solid var(--line); border-radius:16px; background:var(--surface)}
@@ -1570,7 +1574,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 39;
+  var GUIA_V = 40;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», el botón grande de arriba registra tu llegada. Al terminar, toca el mismo botón (ahora dice «Me voy»). Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1584,7 +1588,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
-    ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, «Importar sesión» carga el tiempo de desarrollo y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 30, "owner"],
+    ["Mi tiempo", "En «Inicio», la tarjeta «Mi tiempo» (solo tú) cuenta sola el tiempo que usas la app; se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Con «Iniciar cronómetro» o «Agregar tiempo» anotas trabajo fuera de la app, Si hay tiempo de desarrollo nuevo, arriba aparece «Hay tiempo nuevo por importar»: ves cuánto se suma y tocas «Importar» o «Ahora no». «Importar sesión» sigue sirviendo para cargar un archivo a mano y «Descargar planilla» baja todo en CSV. Es aparte de tu horario en el campo.", 40, "owner"],
     ["Novedades de la app", "Cuando la app se actualiza, al abrirla aparece «La app se actualizó» con lo nuevo que te corresponde; toca «Ver cómo» para ver el detalle. El historial queda siempre en Ayuda → «Novedades de la app».", 27, ""],
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
@@ -1653,6 +1657,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 40, f: "2026-11-12", t: "Aviso de tiempo nuevo", d: "En «Mi tiempo», si hay tiempo de desarrollo nuevo, aparece un aviso con cuánto se suma. Tocas «Importar» o «Ahora no»; nada se guarda sin tu toque.", g: "Mi tiempo" },
     { v: 39, f: "2026-11-12", t: "Árboles del huerto", d: "Nueva sección, que se enciende o apaga en Ajustes: mapa de los nogales con la ficha de cada árbol (por ejemplo H15-N3), registros de sano o enfermo con foto, alerta de árboles enfermos y sectores por hilera. La ven Diego y Yolanda.", g: "Árboles del huerto" },
     { v: 38, f: "2026-11-12", t: "Ajustes en la barra", d: "«Ajustes» pasa a ser el último botón de la barra de abajo, a la derecha de «Cosecha». La barra tiene los bordes difuminados cuando hay más botones por deslizar, y «Medidores» ahora dice «Medidor».", g: "Ajustes: color y respaldo" },
     { v: 37, f: "2026-11-12", t: "Ajustes", d: "«Uso y apariencia» pasa a llamarse Ajustes. Puedes elegir pantalla Día, Noche o Automática con un toque. Diego tiene «Respaldar ahora» y accesos al acervo; las fotos del respaldo ahora tienen nombres legibles.", g: "Ajustes: color y respaldo" },
@@ -6654,7 +6659,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   function tmToca(){ tm.act = Date.now(); }
   ["pointerdown", "keydown", "touchstart", "scroll", "wheel"].forEach(function(ev){ window.addEventListener(ev, tmToca, { passive: true, capture: true }); });
-  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") tmFlush(); else { tm.lt = Date.now(); } });
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") tmFlush(); else { tm.lt = Date.now(); tmRevisa(); } });
   window.addEventListener("pagehide", function(){ tmFlush(); });
   setInterval(function(){ tmTick(Date.now()); if ($("tmCard")) tmPinta(); }, 5000);
   setInterval(tmFlush, 60000);
@@ -6694,15 +6699,47 @@ html.pc .cmdk:not([hidden]){display:flex}
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false; tmPinta();
   };
+  function tmValida(o){
+    if (!o || !Array.isArray(o.entradas) || !o.entradas.length || !o.sesion) return null;
+    var ent = o.entradas.filter(function(e){ return e && /^\d{4}-\d{2}-\d{2}$/.test(e.fecha) && e.min >= 1 && e.min <= 1440; });
+    if (!ent.length) return null;
+    return { ses: String(o.sesion).replace(/[^\w-]/g, "").slice(0, 60), desc: String(o.desc || "Desarrollo y mejoras de la app").slice(0, 120), ent: ent };
+  }
+  function tmEscribe(v){
+    var tot = 0;
+    return Promise.all(v.ent.map(function(e){ tot += Math.round(e.min); return S.db.doc("tiempo/dev_" + v.ses + "_" + e.fecha).set({ fecha: e.fecha, tipo: "desarrollo", min: Math.round(e.min), desc: v.desc, sesion: v.ses, ts: new Date().toISOString(), uid: S.uid }); }))
+      .then(function(){ toast("Importé " + v.ent.length + (v.ent.length === 1 ? " día" : " días") + " (" + dur(tot) + ")."); return true; }, function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); return false; });
+  }
   function tmImportar(txt){
     var o; try { o = JSON.parse(txt); } catch (e){ toast("El archivo no se pudo leer."); return Promise.resolve(); }
     if (!o || !Array.isArray(o.entradas) || !o.entradas.length || !o.sesion){ toast("Ese archivo no es una sesión de tiempo."); return Promise.resolve(); }
-    var ent = o.entradas.filter(function(e){ return e && /^\d{4}-\d{2}-\d{2}$/.test(e.fecha) && e.min >= 1 && e.min <= 1440; });
-    if (!ent.length){ toast("El archivo no trae días válidos."); return Promise.resolve(); }
-    var ses = String(o.sesion).replace(/[^\w-]/g, "").slice(0, 60), desc = String(o.desc || "Desarrollo y mejoras de la app").slice(0, 120), tot = 0;
-    return Promise.all(ent.map(function(e){ tot += Math.round(e.min); return S.db.doc("tiempo/dev_" + ses + "_" + e.fecha).set({ fecha: e.fecha, tipo: "desarrollo", min: Math.round(e.min), desc: desc, sesion: ses, ts: new Date().toISOString(), uid: S.uid }); }))
-      .then(function(){ toast("Importé " + ent.length + (ent.length === 1 ? " día" : " días") + " (" + dur(tot) + ")."); }, function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); });
+    var v = tmValida(o); if (!v){ toast("El archivo no trae días válidos."); return Promise.resolve(); }
+    return tmEscribe(v);
   }
+  /* Aviso «Hay tiempo nuevo»: lee tiempo/indice.json (publicado junto a la app), compara con lo ya importado y propone; nada se guarda sin tu confirmación. */
+  var TM_BASE = "https://danabalon-byte.github.io/campo/tiempo/";
+  function tmClaveAviso(v, dif){ return v.ses + ":" + v.ent.length + ":" + Math.round(dif); }
+  function tmPendiente(v){
+    var dif = 0, dias = 0, docs = S.tiempo || {};
+    v.ent.forEach(function(e){ var d = docs["dev_" + v.ses + "_" + e.fecha], antes = d ? Number(d.min) || 0 : 0; if (!d || Math.round(antes) !== Math.round(e.min)){ dias++; dif += Math.round(e.min) - Math.round(antes); } });
+    return dias ? { v: v, dias: dias, dif: dif, clave: tmClaveAviso(v, dif) } : null;
+  }
+  async function tmRevisa(forzar){
+    if (!(S.owner && S.db && S.uid && tm.ok)) return;
+    var ahora = Date.now(); if (!forzar && tm.rev && ahora - tm.rev < 5 * 60 * 1000) return; tm.rev = ahora;
+    var lista = [];
+    try {
+      var r = await fetch(TM_BASE + "indice.json", { cache: "no-store" }); if (!r.ok) throw 0;
+      var ix = await r.json(), arch = (ix && Array.isArray(ix.archivos)) ? ix.archivos.slice(0, 10) : [];
+      for (var i = 0; i < arch.length; i++){
+        if (!/^[\w.-]+\.json$/.test(arch[i])) continue;
+        try { var rf = await fetch(TM_BASE + arch[i], { cache: "no-store" }); if (!rf.ok) continue; var v = tmValida(await rf.json()); if (v){ var p = tmPendiente(v); if (p) lista.push(p); } } catch (e1){ }
+      }
+    } catch (e){ tm.nuevo = null; return; }
+    var oc = {}; try { oc = JSON.parse(localStorage.getItem("tm_ocultos") || "{}"); } catch (e2){ }
+    tm.nuevo = lista.filter(function(p){ return !oc[p.clave]; }); tmPinta();
+  }
+  window.__tmRevisa = tmRevisa;
   function tmPinta(){
     var c = $("tmCard"); if (!c) return; var n = buildTiempo(true); c.replaceChildren.apply(c, Array.prototype.slice.call(n.childNodes));
   }
@@ -6711,6 +6748,15 @@ html.pc .cmdk:not([hidden]){display:flex}
     if (!soloInterior) sec.id = "tmCard";
     var hoy = fecha(), ws = weekStart(hoy), we = addDays(ws, 6), mes = hoy.slice(0, 7), filas = tmFilas(), ahora = Date.now(), cuenta = tmActivo(ahora);
     var hd = el("div", "who"); hd.appendChild(el("h2", null, "Mi tiempo")); hd.appendChild(el("span", "chip " + (cuenta ? "ok" : "idle"), cuenta ? "Contando" : "En pausa")); sec.appendChild(hd);
+    (tm.nuevo || []).forEach(function(p){
+      var bx = el("div", "tm-nuevo"); bx.setAttribute("role", "status"); bx.appendChild(el("b", null, "Hay tiempo nuevo por importar"));
+      bx.appendChild(el("p", "note", "Sesión «" + p.v.ses + "» · " + p.dias + (p.dias === 1 ? " día" : " días") + " por agregar o ajustar"));
+      var l = el("div", "l"); l.appendChild(el("span", null, p.dif >= 0 ? "Se suma" : "Se ajusta")); l.appendChild(el("b", null, (p.dif >= 0 ? "+" : "−") + dur(Math.abs(p.dif)))); bx.appendChild(l);
+      var ac = el("div", "acts"), si = el("button", "primary", "Importar"), no = el("button", null, "Ahora no"); si.type = no.type = "button";
+      si.onclick = async function(){ si.disabled = true; var ok = await tmEscribe(p.v); if (ok){ tm.nuevo = (tm.nuevo || []).filter(function(x){ return x !== p; }); } tmPinta(); };
+      no.onclick = function(){ try { var oc = JSON.parse(localStorage.getItem("tm_ocultos") || "{}"); oc[p.clave] = 1; localStorage.setItem("tm_ocultos", JSON.stringify(oc)); } catch (e){ } tm.nuevo = (tm.nuevo || []).filter(function(x){ return x !== p; }); tmPinta(); };
+      ac.appendChild(si); ac.appendChild(no); bx.appendChild(ac); sec.appendChild(bx);
+    });
     var hoyApp = tmSum(filas, "app", hoy, hoy); var big = el("p", "tm-big", dur(hoyApp)); big.id = "tmHoy"; sec.appendChild(big);
     sec.appendChild(el("p", "note", "Hoy en la app. Se pausa a los 3 minutos sin tocar la pantalla o si cambias de aplicación. Es aparte de tu horario en el campo."));
     var g = el("div", "tm-grid"); ["", "Hoy", "Semana", "Mes"].forEach(function(x){ g.appendChild(el("span", "h", x)); });
@@ -6823,7 +6869,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       S.saldos = {}; s.docs.forEach(function(d){ S.saldos[d.id] = d.data(); }); render();
     }, function(){});
     (S.owner ? db.collection("correcciones") : db.collection("correcciones").where("uid", "==", S.uid)).onSnapshot(function(s){ S.corr = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }).sort(function(a, b){ return a.ts < b.ts ? 1 : -1; }); render(); }, function(){});
-    if (S.owner) db.collection("tiempo").onSnapshot(function(s){ S.tiempo = {}; s.docs.forEach(function(d){ S.tiempo[d.id] = d.data(); }); tm.ok = true; tm.lt = Date.now(); tmPinta(); }, function(){});
+    if (S.owner) db.collection("tiempo").onSnapshot(function(s){ S.tiempo = {}; s.docs.forEach(function(d){ S.tiempo[d.id] = d.data(); }); tm.ok = true; tm.lt = Date.now(); tmPinta(); tmRevisa(); }, function(){});
     if (S.owner) db.collection("ausDetalle").onSnapshot(function(s){ S.ausDet = {}; s.docs.forEach(function(d){ S.ausDet[d.id] = d.data(); }); render(); }, function(){});
     if (S.owner) db.collection("legal").onSnapshot(function(s){ S.legal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     (S.owner ? db.collection("consultas").orderBy("ts", "desc").limit(100) : db.collection("consultas").where("uid", "==", S.uid)).onSnapshot(function(s){

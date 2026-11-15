@@ -3287,6 +3287,13 @@ html.hashd .top{position:relative}
       var ls = el("a", "ajs-a", "Abrir el acervo (Google Sheets)"); ls.href = "https://docs.google.com/spreadsheets/d/" + ACERVO_SHEET + "/"; ls.target = "_blank"; ls.rel = "noopener"; ay.appendChild(ls);
       var lf = el("a", "ajs-a", "Abrir la carpeta de fotos (Drive)"); lf.href = "https://drive.google.com/drive/folders/" + ACERVO_CARPETA; lf.target = "_blank"; lf.rel = "noopener"; ay.appendChild(lf);
     }
+    if (!window.__DEMO && typeof window.__salir === "function"){
+      ay.appendChild(el("p", "ajs-t", "Sesión"));
+      var bso = el("button", null, "Cerrar sesión"); bso.type = "button";
+      bso.onclick = function(){ try { window.__salir(); } catch (e5){ toast("No se pudo cerrar la sesión."); } };
+      ay.appendChild(bso);
+      ay.appendChild(el("p", "note", "Sales de tu cuenta en este teléfono. Para volver, entra de nuevo con Google."));
+    }
     return ay;
   }
   function buildAjustes(){

@@ -18,9 +18,9 @@ def cargar_items():
     if "--archivo" in sys.argv:
         return json.load(open(sys.argv[sys.argv.index("--archivo") + 1], encoding="utf-8"))
     html = get(URL)
-    m = re.search(r'data-ts-map-tmp="(tmp_\d+)"', html)
+    m = re.search(r'data-ts-map-tmp=["\']?(tmp_\d+)', html)
     if not m:
-        sys.exit("No se encontró la ruta de datos (data-ts-map-tmp) en la página")
+        sys.exit(f"No se encontró la ruta de datos (data-ts-map-tmp) en la página (largo {len(html)}, título: {(re.search('<title>([^<]*)', html) or [None, '?'])[1]!r})")
     return json.loads(get(f"https://agrometeorologia.cl/json/{m.group(1)}/items-ET.json"))
 
 def promedio(xs):

@@ -1709,7 +1709,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 52;
+  var GUIA_V = 53;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1724,7 +1724,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Ideas y notas", "En «Agenda», vista «Ideas», el botón «Nueva nota» guarda recordatorios con una etiqueta (Riego, Plagas, Bodega, Compras u Otro). Puedes escribir o tocar el micrófono para dictar. Cuando se resuelve, toca el círculo de la nota.", 2, ""],
     ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
     ["Riego de la semana", "Arriba en «Riego» está «Riego de la semana · nogales»: calcula cuántas horas necesita cada sector con la evapotranspiración de los últimos 7 días y el factor del asesor, y la compara con las horas regadas. Elige el reparto (el programa del asesor, todos los días o 5 días) y ves cuántos minutos programar cada día. Solo el dueño toca «Ajustar factor» para cambiar el factor, su vigencia y la nota, y «Guardar factor».", 51, ""],
-    ["Equipos y plano de riego", "En «Riego», más abajo, la tarjeta «Equipos y plano de riego» guarda lo que dice el plano de diseño (bloques, caudales y emisores), las placas de la bomba del pozo y la del acumulador, el reparto de limones por cuartel y los datos que faltan, que quedan a la vista hasta que se anoten. Toca «Ver el plano y los equipos» para abrir el detalle.", 52, ""],
+    ["Equipos y plano de riego", "En «Riego», más abajo, la tarjeta «Equipos y plano de riego» guarda el plano de diseño, las placas de las bombas, lo que pide el riego con los goteros instalados, el reparto de limones por cuartel y los datos que faltan, que quedan a la vista hasta que se resuelvan. Toca «Ver el plano y los equipos» para abrir el detalle. Solo el dueño ve además el costo de la electricidad y guarda la tarifa en «Guardar tarifa».", 53, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
@@ -1805,6 +1805,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 53, f: "2026-11-15", t: "Presión, caudal y costo de la electricidad", d: "La tarjeta «Equipos y plano de riego» ahora muestra lo que piden los goteros instalados (nogal y limones), los datos ya confirmados y los que siguen faltando. El dueño ve el costo de bombear y regar por m³ y guarda la tarifa eléctrica.", g: "Equipos y plano de riego" },
     { v: 52, f: "2026-11-15", t: "Equipos y plano de riego", d: "En «Riego» hay una tarjeta con el plano de diseño, las placas de las bombas, el reparto de limones por cuartel y los datos que faltan (presión de la red, tarifa y otros), que se mantienen a la vista hasta que se anoten.", g: "Equipos y plano de riego" },
     { v: 51, f: "2026-11-14", t: "Riego de la semana", d: "En «Riego» hay una tarjeta nueva: las horas que necesita cada sector de nogal según la evapotranspiración de los últimos 7 días, comparadas con lo regado, y cómo repartirlas en la semana. El dueño ajusta el factor del asesor y su vigencia.", g: "Riego de la semana" },
     { v: 50, f: "2026-11-13", t: "Buscar tiempo nuevo", d: "En «Mi tiempo» hay un botón circular junto al título para revisar si hay tiempo nuevo por importar, sin esperar el aviso automático.", g: "Buscar tiempo nuevo" },
@@ -4394,14 +4395,16 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   /* Equipos y plano de riego: lo que dice el plano de diseño y las placas de las bombas, más los datos que faltan. Solo lectura; los datos que faltan son urgentes hasta que se anoten. */
   var EQ_BLOQ = [["A", "0,72", "23,8", "6,6"], ["B", "0,72", "22,6", "6,3"], ["C", "0,68", "21,4", "6,0"], ["D", "0,79", "25,0", "7,0"], ["E · vivero", "0,27", "37,8", "10,5"], ["F · limones (futuro)", "1,00", "28,3", "7,9"]];
-  var EQ_LIM = [["Cuartel 1", 87, "plantados, confirmado"], ["Cuartel 2", 50, "estimado"], ["Cuartel 3", 50, "estimado"], ["Cuartel 4", 70, "estimado"], ["Cuartel 5", 130, "estimado"], ["Cuartel 6", 110, "estimado"]];
+  var EQ_LIM = [["Cuartel 1", 87, "plantados, confirmado"], ["Cuartel 2", 50, "capacidad estimada"], ["Cuartel 3", 50, "capacidad estimada"], ["Cuartel 4", 70, "capacidad estimada"], ["Cuartel 5", 130, "capacidad estimada"], ["Cuartel 6", 110, "capacidad estimada, sin plantar"]];
   var EQ_FALTA = [
-    ["Presión que necesita la red de goteo", "Sin ella no se sabe si la bomba del acumulador (Reggio) alcanza cuando riegan nogales y limones a la vez. Mide en el filtro o en la cabecera con el riego andando."],
-    ["Tarifa eléctrica", "Para calcular el costo de bombear el pozo y de regar. Anota el cargo por kWh de la boleta.", "owner"],
-    ["Caudal real del pozo", "La placa llega a 9,6 m³/h y el derecho es 2 L/s (7,2 m³/h). Hay que comparar con el caudalímetro."],
-    ["Emisores reales de nogales y limones", "El plano dice 4 líneas de 3,3 L/h a 0,7 m; en terreno son 3 líneas de 2,2 L/h (nogales) y 2 líneas de 2,2 L/h (limones). Mira la etiqueta del gotero.", "owner"],
-    ["Cuántos limones hay plantados", "Se anotaron 327 en total; el reparto por cuartel suma 497. Confirmar si el reparto es lo plantado o la capacidad de cada cuartel."]
+    ["Presión de la red de goteo: medirla", "Estimada en 2,5 a 3,5 bar (25 a 35 m) sin contar el desnivel. La Reggio da unos 37 m con un sector y unos 31 a 32 m con nogales y limones a la vez, así que alcanzaría justo. Pon un manómetro de 0 a 6 bar a la salida del filtro y anota la lectura con un sector y con los dos."],
+    ["Hora de la foto del caudalímetro del 6 nov", "Entre el 3 y el 6 nov salieron 709 m³: eso es al menos 8,8 m³/h (2,45 L/s) y probablemente 9 a 10, sobre los 7,2 m³/h del derecho. Con la hora exacta se afina el caudal real del pozo."],
+    ["Lectura de luz del 13 nov", "Quedó como 2.553.051 kWh y el medidor marca unos 255.3xx: parece tener un dígito de más. Corrígela en «Medidores».", "owner"],
+    ["Marco real de los limones", "4,5 × 2,5 m por confirmar (el plano decía 5 × 2 m)."],
+    ["Inicio del año del derecho de agua", "Fecha desde la que se cuenta la reserva anual y la lectura del caudalímetro ese día."]
   ];
+  var EQ_OK = ["Emisores de nogales y limones: 3 líneas por hilera, gotero autocompensado de 2,2 L/h cada 50 cm (confirmado en terreno).", "Limones plantados: 327 en total; el reparto por cuartel es la capacidad estimada.", "Tarifa eléctrica: sacada de las cuentas de CGE (solo la ve el dueño)."];
+  var EQ_KWH_POZO = 0.42, EQ_KWH_REG = 0.28, EQ_TARIFA0 = 268;
   var eqAbre = false;
   function eqNodo(){
     var sec = el("section", "card sect"); sec.id = "eqPlano";
@@ -4420,12 +4423,33 @@ html.pc .cmdk:not([hidden]){display:flex}
     var a = el("div", "asg"); a.appendChild(el("b", null, "Plano de diseño · bloques"));
     a.appendChild(el("p", "sub", "Sector · hectáreas · caudal de diseño m³/h · L/s"));
     EQ_BLOQ.forEach(function(x){ a.appendChild(el("p", "sub", x[0] + " · " + x[1] + " ha · " + x[2] + " m³/h · " + x[3] + " L/s")); });
-    a.appendChild(el("p", "note", "Nogales 6 × 5 m (2,91 ha, sectores A a D). Limones 5 × 2 m (1,00 ha) como sector futuro F. Vivero 0,28 ha. Emisor del plano: cuatro líneas de 3,3 L/h a 0,7 m en nogales; tres en limones; vivero 1 L/h a 0,2 m. Los nogales se riegan de a un sector."));
+    a.appendChild(el("p", "note", "Nogales 6 × 5 m (2,91 ha, sectores A a D). Limones 5 × 2 m (1,00 ha) como sector futuro F. Vivero 0,28 ha. El plano proyectó cuatro líneas de 3,3 L/h a 0,7 m, pero lo instalado son 3 líneas de 2,2 L/h cada 50 cm (por eso los caudales reales son menores que los del cuadro). Vivero 1 L/h a 0,2 m. Los nogales se riegan de a un sector."));
     sec.appendChild(a);
     var l = el("div", "asg"); l.appendChild(el("b", null, "Limones · reparto por cuartel"));
     var tot = 0; EQ_LIM.forEach(function(x){ tot += x[1]; l.appendChild(el("p", "sub", x[0] + " · " + x[1] + " árboles · " + x[2])); });
-    l.appendChild(el("p", "note", "Suma " + tot + ". Para la disposición y la orientación manda el esquema del plano de limones, no los puntos rojos del mapa satelital. Los cuarteles 1 a 5 están plantados hoy y se riegan como un solo sector (separables a futuro). Marco 4,5 × 2,5 m por confirmar; 2 líneas por hilera, gotero autocompensado 2,2 L/h."));
+    l.appendChild(el("p", "note", "Capacidad estimada: " + tot + " árboles. Para la disposición y la orientación manda el esquema del plano de limones, no los puntos rojos del mapa satelital. Los cuarteles 1 a 5 están plantados hoy y se riegan como un solo sector (separables a futuro). Marco 4,5 × 2,5 m por confirmar; 3 líneas por hilera, gotero autocompensado 2,2 L/h. Plantados: 327 (cuartel 1 = 87); estas cifras son la capacidad estimada de cada cuartel."));
     sec.appendChild(l);
+    var ok = el("div", "asg"); ok.appendChild(el("b", null, "Ya confirmado"));
+    EQ_OK.forEach(function(t){ if (/Tarifa/.test(t) && !S.owner) return; ok.appendChild(el("p", "sub", "• " + t)); });
+    sec.appendChild(ok);
+    var q = el("div", "asg"); q.appendChild(el("b", null, "Lo que pide el riego (con 3 líneas de 2,2 L/h cada 50 cm)"));
+    ["Nogal (5 × 6 m): 66 L/h por árbol, unos 22 m³/h por hectárea. Un sector de 0,65 ha pide unos 14,3 m³/h (238 L/min), que son 2,2 mm/h.",
+     "Limones (4,5 × 2,5 m a confirmar): 33 L/h por árbol. Con 327 árboles piden unos 10,8 m³/h (180 L/min), unos 16 m³ en 1,5 h.",
+     "Nogal y limones a la vez: unos 25 m³/h (418 L/min)."].forEach(function(t){ q.appendChild(el("p", "sub", "• " + t)); });
+    sec.appendChild(q);
+    if (S.owner){
+      var t = S.tarLuz && S.tarLuz.kwh ? Number(S.tarLuz.kwh) : EQ_TARIFA0, m3 = (EQ_KWH_POZO + EQ_KWH_REG) * t;
+      var c = el("div", "asg"); c.appendChild(el("b", null, "Costo de la electricidad (solo tú)"));
+      c.appendChild(el("p", "sub", "Tarifa: " + nf(t, 0) + " $/kWh con IVA" + (S.tarLuz && S.tarLuz.kwh ? "" : " (sugerida por las cuentas de CGE; guárdala abajo para fijarla)")));
+      c.appendChild(el("p", "sub", "• Pozo: unos " + nf(EQ_KWH_POZO, 2) + " kWh por m³ = $" + nf(EQ_KWH_POZO * t, 0) + " por m³."));
+      c.appendChild(el("p", "sub", "• Regar desde el acumulador (Reggio): unos " + nf(EQ_KWH_REG, 2) + " kWh por m³ = $" + nf(EQ_KWH_REG * t, 0) + " por m³ (estimado con las lecturas de luz)."));
+      c.appendChild(el("p", "sub", "• Del pozo al riego: unos $" + nf(m3, 0) + " por m³. Un riego de limones de 1,5 h cuesta unos $" + nf(m3 * 16.2, 0) + "; un turno de 3 h en un sector de nogal, unos $" + nf(m3 * 42.9, 0) + "."));
+      c.appendChild(el("p", "note", "Sin IVA son unos $225 por kWh (energía, transporte y cargos). Las cuentas de CGE tienen tarifa BT1 y 9,87 kW de potencia conectada; el pozo y la Reggio juntas suman unos 8,8 kW."));
+      var fi = el("div", "field"), lb = el("label", null, "Tarifa en $/kWh con IVA"); lb.htmlFor = "eqTar"; var ip = el("input"); ip.id = "eqTar"; ip.type = "text"; ip.inputMode = "decimal"; ip.maxLength = 8; ip.value = String(Math.round(t)); fi.appendChild(lb); fi.appendChild(ip); c.appendChild(fi);
+      var gb = el("button", "small", "Guardar tarifa"); gb.type = "button";
+      gb.onclick = async function(){ var n = leeNum(ip.value); if (n == null || n < 50 || n > 1000){ toast("Escribe un valor entre 50 y 1.000."); return; } gb.disabled = true; try { await S.db.doc("tarifas/luz").set({ kwh: n, por: S.nombre, ts: new Date().toISOString() }); toast("Tarifa guardada"); } catch (e){ toast("No se pudo guardar."); } gb.disabled = false; };
+      c.appendChild(gb); sec.appendChild(c);
+    }
     var b = el("div", "asg"); b.appendChild(el("b", null, "Bombas y equipos"));
     ["Acumulador (Reggio SN 32-200 C, 5,5 HP): 6 a 36 m³/h, 40,7 a 26 m de altura, 5,7 kW, 8,8 A a 400 V.",
      "Pozo: cuerpo Subline F10-19 (1,2 a 9,6 m³/h, 125 a 35 m) con motor PM Technology 4OM-T300 de 3 HP (2,2 kW), 400 V, 6,2 A, 2825 rpm, rendimiento 73 %, IP68, fabricado en 11/2023. Consume cerca de 3,05 kW, unos 0,42 kWh por m³.",
@@ -7709,6 +7733,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       S.okDias = true; S.dias = s.docs.map(function(d){ return d.data(); }); render();
     }, function(){ S.okDias = true; render(); });
     db.doc("config/riegoFactor").onSnapshot(function(s){ S.rgFac = s.exists ? s.data() : null; if (S.screen === "riego") render(); }, function(){});
+    if (S.owner) db.doc("tarifas/luz").onSnapshot(function(s){ S.tarLuz = s.exists ? s.data() : null; if (S.screen === "riego") render(); }, function(){});
     db.doc("config/huerto").onSnapshot(function(s){ S.huerto = s.exists ? s.data() : null; render(); huRefrescar(); }, function(){});
     db.collection("arboles").orderBy("ts", "desc").limit(600).onSnapshot(function(s){
       S.arboles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); huRefrescar();

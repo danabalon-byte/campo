@@ -170,6 +170,26 @@ details summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; 
 .meter{height:12px; border-radius:7px; background:var(--surface-2); overflow:hidden}
 .meter i{display:block; height:100%; border-radius:7px; background:var(--water)}
 .meter.over i{background:var(--alert)}
+.rgs-big{font-family:var(--font-display); font-size:40px; font-weight:800; line-height:1.05}
+.rgs-big small{font-size:16px; font-weight:600; color:var(--muted)}
+.rgs-h{font-family:var(--font-display); font-size:16px; margin:18px 0 6px}
+.rgs-fac{display:grid; gap:6px; margin:12px 0 8px; padding:12px; border-radius:12px; background:var(--surface-2)}
+.rgs-fac .sub{margin:0}
+.rgs-form{display:grid; gap:10px; margin-top:10px}
+.rgs-opts{display:grid; gap:8px; margin:8px 0 10px}
+.rgs-opt{min-height:44px; text-align:left; padding:8px 12px; border-radius:12px; border:2px solid var(--line); background:transparent; color:var(--fg); font:inherit; font-size:16px; display:grid; gap:2px; box-shadow:none}
+.rgs-opt span{font-size:14px; color:var(--muted); font-weight:400}
+.rgs-opt[aria-pressed="true"]{border-color:var(--water); background:var(--water-bg)}
+.rgs-days{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; text-align:center}
+.rgs-day{border:1px solid var(--line); border-radius:10px; padding:6px 0; font-size:14px; color:var(--muted); min-width:0}
+.rgs-day b{display:block; font-size:14px; color:var(--fg)}
+.rgs-day.on{background:var(--water-bg); border-color:var(--water)}
+.rgs-day.on b{color:var(--water)}
+.rgs-tw{overflow-x:auto}
+.rgs-t{width:100%; border-collapse:collapse; font-size:14px}
+.rgs-t th{text-align:right; color:var(--muted); font-weight:600; padding:4px}
+.rgs-t td{text-align:right; padding:10px 4px; border-top:1px solid var(--line)}
+.rgs-t th:first-child,.rgs-t td:first-child{text-align:left}
 .calc{white-space:pre-line; background:var(--surface-2); border-radius:14px; padding:12px 14px; font-variant-numeric:tabular-nums; font-size:16px; line-height:1.55}
 /* encabezado de pantalla */
 .ph{--mc:var(--accent); --mb:var(--ok-bg); display:flex; align-items:center; gap:12px; min-width:0}
@@ -1689,7 +1709,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 50;
+  var GUIA_V = 51;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1703,6 +1723,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego programado", "Cuando se riega lo programado, toca el círculo de la tarea o el botón «Ya lo regué» en «Riego». Se abre «Registrar el riego programado» con el sector y las horas ya puestos: cambia las horas si fueron otras y toca «Guardar riego». Así se llevan las horas totales regadas.", 2, ""],
     ["Ideas y notas", "En «Agenda», vista «Ideas», el botón «Nueva nota» guarda recordatorios con una etiqueta (Riego, Plagas, Bodega, Compras u Otro). Puedes escribir o tocar el micrófono para dictar. Cuando se resuelve, toca el círculo de la nota.", 2, ""],
     ["Riego", "En «Riego», el botón «Registrar riego» anota el sector, el día y las horas regadas. La pantalla muestra las horas de la semana, del mes y el total, y los riegos programados que faltan por registrar.", 2, ""],
+    ["Riego de la semana", "Arriba en «Riego» está «Riego de la semana · nogales»: calcula cuántas horas necesita cada sector con la evapotranspiración de los últimos 7 días y el factor del asesor, y la compara con las horas regadas. Elige el reparto (el programa del asesor, todos los días o 5 días) y ves cuántos minutos programar cada día. Solo el dueño toca «Ajustar factor» para cambiar el factor, su vigencia y la nota, y «Guardar factor».", 51, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
@@ -1783,6 +1804,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 51, f: "2026-11-14", t: "Riego de la semana", d: "En «Riego» hay una tarjeta nueva: las horas que necesita cada sector de nogal según la evapotranspiración de los últimos 7 días, comparadas con lo regado, y cómo repartirlas en la semana. El dueño ajusta el factor del asesor y su vigencia.", g: "Riego de la semana" },
     { v: 50, f: "2026-11-13", t: "Buscar tiempo nuevo", d: "En «Mi tiempo» hay un botón circular junto al título para revisar si hay tiempo nuevo por importar, sin esperar el aviso automático.", g: "Buscar tiempo nuevo" },
     { v: 49, f: "2026-11-13", t: "Quitar con confirmación visible", d: "Al quitar o anular un registro, el segundo toque (por ejemplo «Confirmar») se ve hundido y en rojo, con el mismo tamaño y forma de siempre, y se desarma solo a los 4 segundos.", g: "Corregir o quitar un registro" },
     { v: 48, f: "2026-11-13", t: "Lecturas que bajan", d: "Repetir el mismo número en otro día es normal. Una lectura menor que una anterior queda «A revisar» en el medidor y en «Alertas»; el dueño puede confirmar con «Es correcta».", g: "Lecturas que bajan" },
@@ -4275,12 +4297,106 @@ html.pc .cmdk:not([hidden]){display:flex}
   }
   function rvRepinta(){ var o = $("rgProg"); if (!o) return; var n = rvNodo(); if (n) o.replaceWith(n); else o.remove(); }
   setInterval(function(){ if ($("rgProg") && !document.hidden) rvRepinta(); }, 60000);
+  /* Riego de la semana (nogales): horas necesarias = ET0 de los últimos 7 días × factor ÷ (2,2 mm/h × 90 %). El factor lo fija el asesor y lo edita el dueño aquí, con su vigencia (config/riegoFactor). La ET0 la publica la Action diaria en et0/chincolco.json. */
+  var RG_TASA = 2.2, RG_EF = 0.9, RG_FAC0 = 0.7, RG_KCLO = 0.79, RG_KCHI = 0.96, rgET = null, rgETt = 0, rgETp = false, rgOpt = 4, rgEdit = false;
+  function rgCargaET(){
+    if (rgETp || (rgETt && Date.now() - rgETt < 3600000)) return; rgETp = true;
+    var fin = function(d, ok){ rgETp = false; rgETt = ok ? Date.now() : Date.now() - 3300000; if (ok) rgET = d; else if (!rgET && window.__et0) rgET = window.__et0; if (S.screen === "riego") render(); };
+    try { fetch("et0/chincolco.json", { cache: "no-store" }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){ fin(d && d.dias ? d : null, !!(d && d.dias)); }, function(){ fin(null, false); }); } catch (e){ fin(null, false); }
+  }
+  function rgVentana(){
+    if (!rgET || !rgET.dias) return null;
+    var ks = Object.keys(rgET.dias).sort(), last = "";
+    for (var i = ks.length - 1; i >= 0; i--){ if (rgET.dias[ks[i]] != null){ last = ks[i]; break; } }
+    if (!last) return null;
+    var ini = addDays(last, -6), s = 0, n = 0;
+    for (var d = ini; d <= last; d = addDays(d, 1)){ var v = rgET.dias[d]; if (v != null){ s += Number(v) || 0; n++; } }
+    if (n < 4) return null;
+    return { ini: ini, fin: last, n: n, et0: s * 7 / n };
+  }
+  function rgFactor(){
+    var c = S.rgFac, f = c ? Number(c.factor) : 0, hoy = fecha(); if (!(f > 0 && f <= 1.5)) f = RG_FAC0;
+    return { f: f, cfg: !!c, desde: c && c.desde || "", hasta: c && c.hasta || "", nota: c && c.nota || "", vencido: !!(c && c.hasta && c.hasta < hoy), futuro: !!(c && c.desde && c.desde > hoy) };
+  }
+  function rgHtxt(h){ var m = Math.round(h * 60), a = Math.floor(m / 60), b = m % 60; return a + " h " + (b < 10 ? "0" : "") + b + " min"; }
+  function rgHm(h){ var m = Math.round(h * 60); return Math.floor(m / 60) + ":" + ("0" + (m % 60)).slice(-2); }
+  function rgRepinta(){ var o = $("rgSem"); if (o) o.replaceWith(rgNodo()); }
+  function rgNodo(){
+    var sec = el("section", "card sect"); sec.id = "rgSem"; sec.appendChild(el("h2", null, "Riego de la semana · nogales"));
+    var v = rgVentana();
+    if (!v){ sec.appendChild(el("p", "note", !rgETt || rgETp ? "Buscando la evapotranspiración de la estación…" : "Todavía no hay datos de evapotranspiración. Revisa tu señal; se vuelve a intentar sola.")); return sec; }
+    var fc = rgFactor(), mmh = RG_TASA * RG_EF, need = v.et0 * fc.f / mmh, lo = v.et0 * RG_KCLO / mmh, hi = v.et0 * RG_KCHI / mmh;
+    var cs = sectoresOrden().filter(function(c){ return c.especie === "Nogal"; });
+    var ap = cs.map(function(c){ var h = 0; S.riegos.forEach(function(r){ if (r.sectorId === c.id && r.fecha >= v.ini && r.fecha <= v.fin) h += Number(r.horas) || 0; }); return h; });
+    var app = ap.length ? ap.reduce(function(a, b){ return a + b; }, 0) / ap.length : 0, cov = need > 0 ? app / need : 1;
+    var est = cov >= 1.15 ? ["info", "Exceso"] : cov >= 0.9 ? ["ok", "Al día"] : cov >= 0.7 ? ["idle", "Déficit leve"] : ["warn", "Déficit alto"];
+    var atras = difDias(v.fin, fecha());
+    sec.appendChild(el("p", "sub", "Del " + fmtD2(v.ini) + " al " + fmtD2(v.fin) + " · evapotranspiración " + nf(v.et0, 1) + " mm" + (v.n < 7 ? " (estimada con " + v.n + " de 7 días)" : "") + (atras > 2 ? " · el último dato es de hace " + atras + " días" : "")));
+    var hd = el("div", "who"); var big = el("b", "rgs-big", nf(need, 1)); big.appendChild(el("small", null, " h por sector")); hd.appendChild(big); hd.appendChild(el("span", "chip " + est[0], est[1] + " · " + nf(cov * 100, 0) + " %")); sec.appendChild(hd);
+    sec.appendChild(el("p", "note", "Con el Kc de tabla (0,79 a 0,96) serían " + nf(lo, 1) + " a " + nf(hi, 1) + " h."));
+    var bar = el("div", "meter" + (cov >= 1.15 ? " over" : "")); var fil = el("i"); fil.style.width = Math.min(100, cov * 100) + "%"; bar.appendChild(fil); sec.appendChild(bar);
+    var falta = need - app;
+    sec.appendChild(el("p", "note", "Se aplicaron " + nf(app, 1) + " h por sector (promedio de los sectores de nogal) en esos 7 días. " + (falta > 0.05 ? "Faltaron " + nf(falta, 1) + " h (unos " + nf(falta * mmh, 0) + " mm de agua efectiva)." : falta < -0.05 ? "Sobraron " + nf(-falta, 1) + " h." : "Fue lo que necesitaban.")));
+    /* Factor del asesor y su vigencia */
+    var fb = el("div", "rgs-fac"); fb.appendChild(el("b", null, "Factor del asesor: " + nf(fc.f, 2)));
+    var vig = fc.cfg ? (fc.desde ? "desde el " + fmtD2(fc.desde) : "") + (fc.hasta ? " hasta el " + fmtD2(fc.hasta) : " · sin fecha de término") : "Sin registrar: se usa 0,70 (asesor, 14 nov)";
+    fb.appendChild(el("p", "sub", (vig + (fc.nota ? " · " + fc.nota : "")).replace(/^ · /, "")));
+    if (fc.vencido) fb.appendChild(el("span", "chip warn", "Vigencia vencida: confírmalo con el asesor"));
+    else if (fc.futuro) fb.appendChild(el("span", "chip idle", "Aún no empieza su vigencia"));
+    sec.appendChild(fb);
+    if (S.owner){
+      var eb = el("button", "small", rgEdit ? "Cerrar" : "Ajustar factor"); eb.type = "button"; eb.onclick = function(){ rgEdit = !rgEdit; rgRepinta(); }; sec.appendChild(eb);
+      if (rgEdit){
+        var fm = el("div", "rgs-form");
+        function campo(id, lab, tipo, val, ph){ var d = el("div", "field"), l = el("label", null, lab); l.htmlFor = id; var i = el("input"); i.id = id; i.type = tipo; if (tipo === "text"){ i.inputMode = id === "rgFac" ? "decimal" : "text"; i.maxLength = 80; } i.value = val; if (ph) i.placeholder = ph; d.appendChild(l); d.appendChild(i); fm.appendChild(d); }
+        campo("rgFac", "Factor (por ejemplo 0,70)", "text", String(fc.f).replace(".", ","), "");
+        campo("rgDesde", "Vale desde", "date", fc.desde || fecha(), "");
+        campo("rgHasta", "Vale hasta (déjalo vacío si no hay fecha)", "date", fc.hasta || "", "");
+        campo("rgNota", "Nota", "text", fc.nota || "Estado actual del huerto", "");
+        var gb = el("button", "primary", "Guardar factor"); gb.type = "button";
+        gb.onclick = async function(){
+          var n = leeNum($("rgFac").value), d = $("rgDesde").value, h = $("rgHasta").value;
+          if (n == null || n < 0.3 || n > 1.3){ toast("Escribe un factor entre 0,3 y 1,3."); return; }
+          if (!d){ toast("Indica desde cuándo vale."); return; }
+          if (h && h < d){ toast("La fecha final no puede ser anterior a la inicial."); return; }
+          gb.disabled = true;
+          try { await S.db.doc("config/riegoFactor").set({ factor: n, desde: d, hasta: h || "", nota: $("rgNota").value.trim(), por: S.nombre, ts: new Date().toISOString() }); rgEdit = false; toast("Factor guardado"); }
+          catch (e){ gb.disabled = false; toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+        };
+        fm.appendChild(gb); sec.appendChild(fm);
+      }
+    }
+    /* Reparto en la semana */
+    sec.appendChild(el("h3", "rgs-h", "Para programar (estaciones 1 a 4)"));
+    var r4 = Math.ceil(need / 4 * 2) / 2, r5 = Math.ceil(need / 5 * 2) / 2, h7 = need / 7;
+    var OP = [[4, "Programa del asesor", "4 × " + rgHtxt(r4) + " = " + nf(r4 * 4, 1) + " h · L, X, V, D", r4, [1, 0, 1, 0, 1, 0, 1]], [7, "Todos los días", "7 × " + rgHtxt(h7) + " = " + nf(need, 1) + " h", h7, [1, 1, 1, 1, 1, 1, 1]], [5, "5 días a la semana", "5 × " + rgHtxt(r5) + " = " + nf(r5 * 5, 1) + " h · L, M, J, V, D", r5, [1, 1, 0, 1, 1, 0, 1]]];
+    var opts = el("div", "rgs-opts"), sel = OP[0];
+    OP.forEach(function(o){ if (o[0] === rgOpt) sel = o; var b = el("button", "rgs-opt"); b.type = "button"; b.setAttribute("aria-pressed", o[0] === rgOpt ? "true" : "false"); b.appendChild(el("b", null, o[1])); b.appendChild(el("span", null, o[2])); b.onclick = function(){ rgOpt = o[0]; rgRepinta(); }; opts.appendChild(b); });
+    sec.appendChild(opts);
+    var dv = el("div", "rgs-days"); dv.setAttribute("aria-label", "Días de riego de la semana");
+    ["L", "M", "X", "J", "V", "S", "D"].forEach(function(l, i){ var d = el("div", "rgs-day" + (sel[4][i] ? " on" : ""), l); d.appendChild(el("b", null, sel[4][i] ? rgHm(sel[3]) : "–")); dv.appendChild(d); });
+    sec.appendChild(dv);
+    var dias = sel[4].reduce(function(a, b){ return a + b; }, 0);
+    sec.appendChild(el("p", sel[3] > 4 ? "note warn" : "note", (sel[3] > 4 ? "Cada estación admite como máximo 4 h por partida: este reparto necesita dos partidas por día. " : "") + "Bomba: " + nf(sel[3] * 4, 1) + " h en cada día de riego (4 sectores seguidos) y " + nf(sel[3] * 4 * dias, 1) + " h en la semana."));
+    /* Por sector */
+    if (cs.length){
+      sec.appendChild(el("h3", "rgs-h", "Por sector"));
+      var tb = el("table", "rgs-t"), th = el("thead"), tr = el("tr");
+      ["Sector", "Necesita", "Aplicó", "Falta"].forEach(function(t){ tr.appendChild(el("th", null, t)); }); th.appendChild(tr); tb.appendChild(th);
+      var tbd = el("tbody");
+      cs.forEach(function(c, i){ var r = el("tr"); r.appendChild(el("td", null, c.nombre)); r.appendChild(el("td", null, nf(need, 1) + " h")); r.appendChild(el("td", null, nf(ap[i], 1) + " h")); var fa = need - ap[i]; r.appendChild(el("td", null, fa > 0.05 ? "−" + nf(fa, 1) + " h" : "0")); tbd.appendChild(r); });
+      tb.appendChild(tbd); var tw = el("div", "rgs-tw"); tw.appendChild(tb); sec.appendChild(tw);
+    }
+    sec.appendChild(el("p", "note", "No descuenta lluvia ni la reserva del suelo. Los limones y el vivero no están incluidos. El factor se revisa con el asesor en cada visita."));
+    return sec;
+  }
   function buildRiego(){
     var f = document.createDocumentFragment();
     f.appendChild(ph("riego"));
     var acts = el("div", "rg-act" + (S.manager ? "" : " uno")); var reg = el("button", "primary", "Registrar riego"); reg.onclick = abrirRiego; acts.appendChild(reg);
     if (S.manager){ var prg = el("button", null, "Programar riego"); prg.onclick = abrirProgramar; acts.appendChild(prg); }
     f.appendChild(acts);
+    rgCargaET(); f.appendChild(rgNodo());
     var hoy = fecha(), sem = weekStart(hoy), cs = sectoresOrden();
     var mSem = 0, mHoy = 0, hSem = 0;
     S.riegos.forEach(function(r){ if (r.fecha >= sem){ mSem += Number(r.m3) || 0; hSem += Number(r.horas) || 0; } if (r.fecha === hoy) mHoy += Number(r.m3) || 0; });
@@ -7546,6 +7662,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     db.collection("asistencia/" + S.uid + "/dias").orderBy("fecha", "desc").limit(31).onSnapshot(function(s){
       S.okDias = true; S.dias = s.docs.map(function(d){ return d.data(); }); render();
     }, function(){ S.okDias = true; render(); });
+    db.doc("config/riegoFactor").onSnapshot(function(s){ S.rgFac = s.exists ? s.data() : null; if (S.screen === "riego") render(); }, function(){});
     db.doc("config/huerto").onSnapshot(function(s){ S.huerto = s.exists ? s.data() : null; render(); huRefrescar(); }, function(){});
     db.collection("arboles").orderBy("ts", "desc").limit(600).onSnapshot(function(s){
       S.arboles = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); huRefrescar();

@@ -6296,15 +6296,17 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (r.fert === "no") bx.appendChild(el("p", "sub", "Solo agua"));
       if (r.fertFalta) bx.appendChild(el("p", "note warn", (r.fertResuelta ? "Falta de fertilizante resuelta: " : "Sin fertilizar: ") + (r.fertMotivo || "") + (r.fertNota ? " · " + r.fertNota : "")));
       if (r.notas) bx.appendChild(el("p", null, r.notas));
-      if (S.manager){ var cr = el("button", "small", "Corregir"); cr.onclick = function(){ corregirRiego(r); }; bx.appendChild(cr); }
+      var bb = el("div", "btns");
+      if (S.manager){ var cr = el("button", "small", "Corregir"); cr.type = "button"; cr.onclick = function(){ corregirRiego(r); }; bb.appendChild(cr); }
       if (S.owner || r.uid === S.uid){
-        var del = el("button", "small", "Anular"); var armed = false;
+        var del = el("button", "small rm", "Anular"); del.type = "button"; var armed = false;
         del.onclick = async function(){
-          if (!armed){ armed = true; del.textContent = "Toca otra vez para anular"; del.classList.add("armado"); setTimeout(function(){ armed = false; del.classList.remove("armado"); del.textContent = "Anular"; }, 4000); return; }
+          if (!armed){ armed = true; del.textContent = "¿Anular?"; del.classList.add("armado"); setTimeout(function(){ armed = false; del.classList.remove("armado"); del.textContent = "Anular"; }, 4000); return; }
           try { await S.db.doc("riegos/" + r.id).delete(); toast("Riego anulado"); } catch (err){ toast("No se pudo anular."); }
         };
-        bx.appendChild(del);
+        bb.appendChild(del);
       }
+      if (bb.childNodes.length) bx.appendChild(bb);
       l.appendChild(bx);
     });
     f.appendChild(l); return f;

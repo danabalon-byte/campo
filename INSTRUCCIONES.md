@@ -1,6 +1,6 @@
 # Control del Campo: puesta en marcha (unos 30 minutos, una sola vez)
 
-Todo es gratis. Necesitas: tu cuenta de Google (anabalondiego@gmail.com), una cuenta de GitHub gratuita y el Gmail de Yolanda (correo-de-la-encargada@example.com).
+Todo es gratis. Necesitas: tu cuenta de Google (anabalondiego@gmail.com), una cuenta de GitHub gratuita y el Gmail de la encargada.
 
 ## Parte 1. Crear la base de datos en Firebase
 
@@ -21,7 +21,7 @@ Todo es gratis. Necesitas: tu cuenta de Google (anabalondiego@gmail.com), una cu
 ## Parte 3. Autorizar a Yolanda
 
 1. En Firebase, **Firestore Database > Datos > Iniciar colección**. ID de la colección: `config`. ID del documento: `roles`.
-2. Agrega el campo `admins`, tipo **array**, con un elemento de texto: el Gmail de Yolanda, que es `correo-de-la-encargada@example.com` (en minúsculas, tal cual). Agrega también el campo `members`, tipo array, vacío (si no deja guardar vacío, pon un correo de ejemplo). **Guardar**.
+2. Agrega el campo `admins`, tipo **array**, con un elemento de texto: el Gmail de la encargada (en minúsculas, tal cual). Agrega también el campo `members`, tipo array, vacío (si no deja guardar vacío, pon un correo de ejemplo). **Guardar**.
    - `admins` = personas que gestionan (Yolanda). `members` = personas que solo registran su trabajo.
 
 ## Parte 4. Probar

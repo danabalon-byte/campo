@@ -1755,7 +1755,7 @@ html.hashd .top{position:relative}
     <h2 id="vtTitle">Registrar venta</h2>
 <div class="sbody">
     <div class="field"><label for="vtFecha">Fecha de la venta</label><input type="date" id="vtFecha"></div>
-    <div class="field"><label for="vtComp">Comprador</label><input type="text" id="vtComp" maxlength="60" list="vtComps" placeholder="Ej: Comprador de ejemplo"><datalist id="vtComps"></datalist></div>
+    <div class="field"><label for="vtComp">Comprador</label><input type="text" id="vtComp" maxlength="60" list="vtComps" placeholder="Ej: Comercializadora del sur"><datalist id="vtComps"></datalist></div>
     <div class="field"><label for="vtKgC">Nuez con cáscara: kilos</label><input type="text" id="vtKgC" inputmode="decimal" maxlength="9" placeholder="Ej: 1250,5"></div>
     <div class="field"><label for="vtPrC">Nuez con cáscara: precio neto por kilo ($)</label><input type="text" id="vtPrC" inputmode="numeric" maxlength="7" placeholder="Ej: 2150"></div>
     <div class="field"><label for="vtKgM">Pulpa mariposa: kilos</label><input type="text" id="vtKgM" inputmode="decimal" maxlength="9"></div>
@@ -3200,6 +3200,23 @@ html.hashd .top{position:relative}
   }
 
   /* Cuerpo de Ajustes: ayuda, apariencia, datos y respaldo (solo Diego) y zona delicada. Va en la pantalla «Ajustes» (barra de abajo, a la derecha de «Cosecha»); quien no tiene esa barra lo ve al final de Inicio. */
+  /* Carga única (solo dueño) de datos reales desde un archivo tuyo: cosechas/h_AAAA, bodega/b_..., legal/... No sobrescribe documentos que ya existen. */
+  async function cargarReservados(d){
+    var COL = { cosechas: 1, bodega: 1, legal: 1 }, nuevos = 0, omitidos = 0;
+    if (!S.owner || !d || d.version !== 1) throw new Error("formato");
+    for (var col in COL){
+      var arr = d[col]; if (arr == null) continue;
+      if (!Array.isArray(arr) || arr.length > 100) throw new Error("formato");
+      for (var i = 0; i < arr.length; i++){
+        var it = arr[i]; if (!it || typeof it.id !== "string" || !/^[A-Za-z0-9_]{1,40}$/.test(it.id)) throw new Error("formato");
+        var ref = S.db.doc(col + "/" + it.id), ex = await ref.get();
+        if (ex.exists){ omitidos++; continue; }
+        var data = Object.assign({}, it); delete data.id; data.cargadoPor = S.nombre || ""; data.cargadoTs = new Date().toISOString();
+        await ref.set(data); nuevos++;
+      }
+    }
+    return { nuevos: nuevos, omitidos: omitidos };
+  }
   function ajustesCuerpo(){
     var ay = el("div", "sect");
     ay.appendChild(el("p", "ajs-t", "Ayuda"));
@@ -3213,6 +3230,21 @@ html.hashd .top{position:relative}
     var bcd = el("button", null, "Compartir demo"); bcd.type = "button"; bcd.onclick = function(){ compartir("Demo · Control del Campo", "Prueba la app con datos de ejemplo. En iPhone: Compartir → Añadir a pantalla de inicio. En Android: menú del navegador → Instalar app.", "https://danabalon-byte.github.io/campo/?demo"); }; ay.appendChild(bcd);
     ay.appendChild(el("p", "note", "La demo tiene datos de ejemplo: se puede probar sin cambiar nada real."));
     if (S.owner && !window.__DEMO){ var bca = el("button", null, "Compartir la app"); bca.type = "button"; bca.onclick = function(){ compartir("Control del Campo", "Abre el enlace e instala la app. En iPhone: Compartir → Añadir a pantalla de inicio. En Android: menú del navegador → Instalar app.", "https://danabalon-byte.github.io/campo/"); }; ay.appendChild(bca); ay.appendChild(el("p", "note", "Para el equipo: entran con su cuenta, que tú autorizas.")); }
+    if (S.owner && !window.__DEMO){
+      ay.appendChild(el("p", "ajs-t", "Datos reservados"));
+      var bdr = el("button", null, "Cargar datos reservados"); bdr.type = "button";
+      var fdr = el("input"); fdr.type = "file"; fdr.accept = "application/json,.json"; fdr.hidden = true;
+      bdr.onclick = function(){ fdr.click(); };
+      fdr.onchange = async function(){
+        var fl = fdr.files && fdr.files[0]; fdr.value = ""; if (!fl) return;
+        bdr.disabled = true; bdr.textContent = "Cargando…";
+        try { var r = await cargarReservados(JSON.parse(await fl.text())); toast("Cargados: " + r.nuevos + ". Ya estaban: " + r.omitidos + "."); }
+        catch (e4){ toast(e4 && e4.message === "formato" ? "El archivo no tiene el formato esperado." : "No se pudo cargar. Intenta de nuevo."); }
+        bdr.disabled = false; bdr.textContent = "Cargar datos reservados";
+      };
+      ay.appendChild(bdr); ay.appendChild(fdr);
+      ay.appendChild(el("p", "note", "Sube a tu base, una sola vez, el archivo con la cosecha anual, la bodega base y las notas legales. No pisa lo que ya editaste. Esos datos no están en el código público."));
+    }
     ay.appendChild(el("p", "ajs-t", "Apariencia"));
     var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
     [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"], ["vivo", "Noche viva", "tmVivo"]].forEach(function(x){
@@ -6636,7 +6668,7 @@ html.hashd .top{position:relative}
     try {
       var f = await S.db.doc("config/semillaMedidores").get(); if (f.exists) return;
       await S.db.doc("medidores/m_pozo").set({ nombre: "Caudalímetro del pozo", tipo: "agua", unidad: "m³", frec: "semanal", activo: true, orden: 1, detalle: "Tecnidro DN 50. Los dígitos negros son m³ y las dos esferas rojas, décimas y centésimas." });
-      await S.db.doc("medidores/m_luz").set({ nombre: "Tablero eléctrico", tipo: "luz", unidad: "kWh", frec: "semanal", potKw: 5.7, activo: true, orden: 2, detalle: "Schlumberger E2Y6, trifásico 4 hilos, conexión directa 20(120) A, nº XXXX. La lectura se anota tal cual, sin factor." });
+      await S.db.doc("medidores/m_luz").set({ nombre: "Tablero eléctrico", tipo: "luz", unidad: "kWh", frec: "semanal", potKw: 5.7, activo: true, orden: 2, detalle: "Schlumberger E2Y6, trifásico 4 hilos, conexión directa 20(120) A. La lectura se anota tal cual, sin factor." });
       await S.db.doc("config/semillaMedidores").set({ ts: new Date().toISOString(), por: S.nombre });
     } catch (err){}
   }
@@ -6926,9 +6958,9 @@ html.hashd .top{position:relative}
   };
   /* historial anual de nogal (dato de Diego, sin sector ni fecha exacta): va fijo en la app y aparece siempre; el dueño puede editarlo (al editar se guarda en la base y reemplaza al fijo) */
   var NOTA_HIST = "Dato anual sin sector ni fecha exacta (fecha referencial)";
-  function demoCos(a){ return window.__DEMO ? a.map(function(h){ var c = h.slice(); c[1] = Math.round(h[1] * 8) / 10; if (h[3] === "seco") c[4] = "Nuez seca de ejemplo (datos ficticios de la demostración)."; return c; }) : a; }
-  var HIST_COS = demoCos([[], [], [],
-    []]);
+  /* Los datos reales de Diego (cosecha anual) viven en la base (cosechas/h_AAAA), no en el código. En la demostración se usan cifras inventadas. */
+  var HIST_COS = window.__DEMO ? [[2023, 220, "2023-04-15", "dia", NOTA_HIST], [2024, 610, "2024-04-15", "dia", NOTA_HIST], [2025, 1350, "2025-04-30", "dia", NOTA_HIST],
+    [2026, 2100, "2026-05-15", "seco", "Nuez seca de ejemplo (datos ficticios de la demostración)."]] : [];
   function cosTodas(){
     var ids = {}; S.cosechas.forEach(function(c){ ids[c.id] = 1; });
     var fijas = HIST_COS.filter(function(h){ return !ids["h_" + h[0]]; }).map(function(h){ return { id: "h_" + h[0], fijo: true, fecha: h[2], sectorId: "", sector: "Todo el campo", esp: "Nogal", kg: h[1], medida: h[3], nota: h[4], ts: h[2] + "T12:00:00.000Z", por: "Historial de Diego" }; });
@@ -7192,13 +7224,12 @@ html.hashd .top{position:relative}
      tarifas/partir (solo dueño): hist[{desde, m, r}] = costo por kilo de pulpa mariposa y resto. Los precios nunca van escritos en el código. */
   var PRODS = { cascara: "Nuez con cáscara", mariposa: "Pulpa mariposa", resto: "Pulpa resto" };
   var LUG_PARTIR = "Enviada a partir";
-  function demoBod(a){ return window.__DEMO ? a.map(function(b){ return Object.assign({}, b, { kg: Math.round(b.kg * 8) / 10 }); }) : a; }
-  var BOD_BASE = demoBod([
-
-
-
-
-  ]);
+  /* Saldos y ventas reales: en la base (bodega/b_...). En la demostración, cifras inventadas. */
+  var BOD_BASE = window.__DEMO ? [
+    { id: "b_ini_bins", info: false, fecha: "2026-10-25", tipo: "Saldo inicial", producto: "cascara", lugar: "Bins · bodega", kg: 400, nota: "1 bins guardado" },
+    { id: "b_ini_malla", info: false, fecha: "2026-10-25", tipo: "Saldo inicial", producto: "cascara", lugar: "Malla · bodega", kg: 130, nota: "" },
+    { id: "b_venta_jun", info: true, fecha: "2026-06-02", tipo: "Venta", producto: "cascara", lugar: "", kg: -1600, nota: "Comprador de ejemplo (venta anterior a este módulo)" }
+  ] : [];
   function bodMovs(){ return S.bodega.concat(BOD_BASE.map(function(b){ return Object.assign({ fijo: true, ts: b.fecha + "T12:00:00.000Z" }, b); })); }
   function bodSaldos(){
     var m = {}; bodMovs().forEach(function(x){ if (x.info) return; var k = x.producto + "|" + (x.lugar || "Sin lugar"); m[k] = (m[k] || 0) + (Number(x.kg) || 0); });
@@ -8064,7 +8095,7 @@ html.hashd .top{position:relative}
   async function sembrarPersonal(){
     try {
       var f = await S.db.doc("config/semillaPersonal").get(); if (f.exists) return;
-      var base = [["p_x", "Persona", "Supervisión", "Horario fijo (contrato)"], ["p_x", "Persona", "Otra", "Por pedido (a trato)"], ["p_x", "Persona", "Supervisión", "Completa"]];
+      var base = []; /* el equipo base ya está cargado en la base; ningún nombre va en el código */
       for (var i = 0; i < base.length; i++){
         var b = base[i]; if (S.personal.some(function(p){ return mismaPersona(p.nombre, b[1]); })) continue;
         await S.db.doc("personal/" + b[0]).set({ nombre: b[1], funcion: b[2], jornada: b[3], nac: "", tel: "", mostrarEdad: false });
@@ -9147,22 +9178,8 @@ html.hashd .top{position:relative}
 
   /* ---- Legal (solo dueño): condiciones informadas por la contadora y consultas pendientes. No lleva montos: esos los agrega Diego y viven solo en su base de datos ---- */
   var LG_TEMAS = ["Vacaciones", "Jornada y extras", "Terceros", "Pagos", "Feriados", "Otro"];
-  var LG_BASE = window.__DEMO ? [] : [
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  ];
+  /* Los datos reales (condiciones y consultas) viven en la base (legal/...); el código no lleva ninguno. */
+  var LG_BASE = [];
   function lgItems(){
     var docs = {}; S.legal.forEach(function(d){ docs[d.id] = d; });
     var baseIds = {}, out = LG_BASE.map(function(b){ baseIds[b.id] = 1; var d = docs[b.id]; return Object.assign({}, b, d || {}, { id: b.id, base: true, editado: !!d }); });

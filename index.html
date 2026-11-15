@@ -435,9 +435,14 @@ details.ml-m > summary .r em{font-style:normal; color:var(--accent); font-size:1
 details.ml-m > summary .r em::before{content:""; display:inline-block; width:7px; height:7px; margin-bottom:2px; border-right:2.2px solid currentColor; border-bottom:2.2px solid currentColor; transform:rotate(-45deg); transition:transform .15s} details.ml-m[open] > summary .r em::before{transform:rotate(45deg)}
 button.ml-r{width:100%; display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; min-height:52px; padding:4px 6px; background:transparent; border-radius:14px; text-align:left; font-weight:400; color:var(--fg)}
 button.ml-r .d{font-size:16px; font-weight:700} button.ml-r .v{font-size:15px; color:var(--muted); text-align:right} button.ml-r .c{font-size:17px; font-weight:700; color:var(--water); min-width:84px; text-align:right}
-button.ml-r.open{background:var(--surface-2)}
+button.ml-r.open{background:var(--surface-2); border-radius:14px 14px 0 0}
 button.ml-r.an .c{color:var(--alert)}
-.ml-det{display:grid; gap:6px; background:var(--surface-2); border-radius:0 0 14px 14px; padding:0 10px 10px; margin:-6px 0 6px}
+.ml-det{display:flex; flex-wrap:wrap; gap:8px; background:var(--surface-2); border-radius:0 0 14px 14px; padding:2px 12px 12px; margin:0 0 6px}
+.ml-det > *{flex:1 1 100%; min-width:0; margin:0}
+.ml-det > button.link{flex:1 1 calc(50% - 4px)}
+.ml-det > button{min-height:46px; justify-content:center}
+#app[data-v="medidores"] .ml-det > button.small:last-child{color:var(--alert); border-color:color-mix(in srgb,var(--alert) 45%,transparent)}
+.ml-sw.op{border-radius:14px 14px 0 0}
 /* riegos programados: tablero + línea de tiempo + vista en vivo */
 .rv-sw{display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface-2); border-radius:16px; padding:8px 12px 8px 14px; min-height:60px}
 .rv-sw b{display:block; font-size:17px; line-height:1.2} .rv-sw .s{font-size:14px; color:var(--muted)}
@@ -877,7 +882,7 @@ html.pc .cmdk:not([hidden]){display:flex}
 html.scr-riego{--bg:#EAF5FA; --surface:#FFFFFF; --surface-2:#DCEDF6; --line:#C3DBE8; --fg:#0A2A3B; --muted:#4B6F82; --accent:#0369A1; --on-accent:#FFFFFF; --ok-bg:#D3ECF8; --ok-fg:#075985; --water:#0369A1; --water-bg:#D3ECF8; --pn-gr:#0F766E}
 @media (prefers-color-scheme: dark){html.scr-riego:not([data-theme="light"]){--bg:#06151D; --surface:#0C2431; --surface-2:#123245; --line:#1B4560; --fg:#E8F6FC; --muted:#8FB6C9; --accent:#38BDF8; --on-accent:#04141C; --ok-bg:#0F3A52; --ok-fg:#7DD3FC; --water:#7DD3FC; --water-bg:#0F3A52; --pn-gr:#2DD4BF}}
 html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#123245; --line:#1B4560; --fg:#E8F6FC; --muted:#8FB6C9; --accent:#38BDF8; --on-accent:#04141C; --ok-bg:#0F3A52; --ok-fg:#7DD3FC; --water:#7DD3FC; --water-bg:#0F3A52; --pn-gr:#2DD4BF}
-.ph.hd{position:relative; overflow:hidden; color:#fff; background:linear-gradient(160deg,var(--h1,#2F6B3F),var(--h2,#5E9A45)); border-radius:20px; padding:16px 16px 44px; margin-bottom:6px}
+.ph.hd{position:relative; overflow:hidden; color:#fff; background:linear-gradient(160deg,var(--h1,#2F6B3F),var(--h2,#5E9A45)); border-radius:20px 20px 0 0; padding:16px 16px 44px; margin-bottom:6px}
 .ph.hd .pi{background:rgba(255,255,255,.2); color:#fff} .ph.hd h2{color:#fff} .ph.hd p{color:rgba(255,255,255,.9)}
 .ph.hd::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:30px; background:var(--bg); -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat}
 /* Color de cabezal por sección: aguas en azules y celestes; campo en verdes, amarillos y tonos florales. Misma luminosidad entre secciones (texto blanco legible). */
@@ -1051,7 +1056,7 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
 /* Filas de lecturas deslizables. */
 .ml-sw{position:relative; overflow:hidden; border-radius:14px}
 .ml-sw button.ml-r{position:relative; background:var(--surface); touch-action:pan-y; transition:transform .22s cubic-bezier(.3,.8,.3,1)}
-.ml-sw button.ml-r.open{background:var(--surface-2)}
+.ml-sw button.ml-r.open{background:var(--surface-2); border-radius:14px 14px 0 0}
 .ml-sa{position:absolute; top:0; right:0; bottom:0; display:flex; opacity:0; transition:opacity .12s} .ml-sw.sw .ml-sa{opacity:1}
 .ml-sa button.ml-ac{min-width:84px; min-height:0; height:100%; border-radius:0; padding:0 10px; font-size:14px; background:var(--accent); color:var(--on-accent); border:0; box-shadow:none}
 .ml-sa button.ml-ac.rm{background:var(--alert); color:var(--on-alert)}
@@ -1063,6 +1068,52 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
   #app.slL > :not(.ph):not(.mchips){animation:slL .26s ease-out both}
   #app.slR > :not(.ph):not(.mchips){animation:slR .26s ease-out both}
 }
+/* Pestañas en un solo rectángulo (Cosecha · Bodega · Ventas): separadas por una línea; la activa se hunde. */
+.mchips.mtabs{display:flex; gap:0; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin:4px 0 14px}
+.mchips.mtabs button{flex:1 1 0; min-width:0; min-height:46px; padding:0 6px; border:0; border-radius:0; background:transparent; color:var(--muted); font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; box-shadow:none; transition:background-color .2s,color .2s,box-shadow .2s}
+.mchips.mtabs button + button{border-left:1px solid var(--line)}
+.mchips.mtabs button[aria-pressed="true"]{background:var(--surface-2); color:var(--accent); border-color:var(--line); box-shadow:inset 2px 3px 7px rgba(0,0,0,.22),inset -1px -2px 4px rgba(255,255,255,.35)}
+.mchips.mtabs button:active{box-shadow:inset 2px 3px 7px rgba(0,0,0,.26)}
+/* Saldo de nueces: un solo panel con dos lecturas separadas por una línea. */
+.mbig.bd-sal{gap:0; border:1px solid var(--line); border-radius:14px; background:var(--surface-2); overflow:hidden; margin:10px 0 8px}
+.mbig.bd-sal > div{background:transparent; border-radius:0; padding:14px 14px 12px; text-align:left; container-type:inline-size; min-width:0}
+.mbig.bd-sal > div + div{border-left:1px solid var(--line)}
+.mbig.bd-sal b{font-size:clamp(20px,15cqw,32px); font-weight:700; letter-spacing:-.02em; white-space:nowrap}
+.mbig.bd-sal b .u{font-size:.5em; font-weight:600; color:var(--muted); letter-spacing:0; margin-left:3px}
+.mbig.bd-sal small{display:block; margin-top:4px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+.bd-rows .row{padding:12px 0; font-size:16px} .bd-rows .row .r{color:var(--fg); font-weight:600}
+button.bd-o{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
+button.bd-o.bd-p{color:var(--accent); border-color:var(--accent)}
+button.bd-o.armado{color:var(--alert); border-color:var(--alert)}
+button.bd-o:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+/* Con cabezal, la barra «Agr. Borderío» se va con el desplazamiento y el cabezal toma su lugar. */
+html.hashd .top{position:relative}
+#app[data-v="cosecha"] .mchips:not(.mtabs) button{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none; transition:box-shadow .15s,color .15s}
+#app[data-v="cosecha"] .mchips:not(.mtabs) button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28)}
+/* Fotos de la lectura (Medidores): mismo estilo de contorno, cámara y galería lado a lado. */
+#mdSheet #mdCamBtn,#mdSheet #mdFotoBtn,#mdSheet #mdFoto2Btn,#mdSheet #mdRelUsar,#mdSheet #mdFechaUsar{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
+#mdSheet #mdCamBtn:active,#mdSheet #mdFotoBtn:active,#mdSheet #mdFoto2Btn:active,#mdSheet #mdRelUsar:active,#mdSheet #mdFechaUsar:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+#mdSheet .mdfo{grid-template-columns:1fr 1fr; column-gap:8px} #mdSheet .mdfo > *{grid-column:1/-1}
+#mdSheet .mdfo > #mdCamBtn,#mdSheet .mdfo > #mdFotoBtn{grid-column:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-height:84px; padding:10px 8px; font-size:15px; line-height:1.2; text-align:center; margin:0}
+#mdSheet #mdCamBtn::before,#mdSheet #mdFotoBtn::before{content:""; width:26px; height:26px; background:var(--accent); flex:none}
+#mdSheet #mdCamBtn::before{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7h1a2 2 0 0 0 2-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E") center/contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7h1a2 2 0 0 0 2-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E") center/contain no-repeat}
+#mdSheet #mdFotoBtn::before{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E") center/contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E") center/contain no-repeat}
+#mdSheet #mdFoto2Btn{width:100%}
+#mdSheet #mdFotoVista,#mdSheet #mdFoto2Vista{border:1px solid var(--line)}
+#mdSheet #mdFotoQuitar,#mdSheet #mdFoto2Quitar{color:var(--alert)}
+/* Temporadas (Cosecha): tira horizontal en un solo rectángulo, se desplaza de lado como la barra de abajo. */
+.tmp-strip{display:flex; overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin:0 0 14px; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity}
+.tmp-strip::-webkit-scrollbar{display:none}
+.tmp-strip button.tmp-i{flex:1 0 auto; min-width:150px; min-height:60px; padding:8px 16px; border:0; border-radius:0; background:transparent; color:var(--muted); text-align:left; display:grid; gap:2px; align-content:center; scroll-snap-align:center; box-shadow:none; transition:background-color .2s,color .2s,box-shadow .2s}
+.tmp-strip button.tmp-i + button.tmp-i{border-left:1px solid var(--line)}
+.tmp-strip button.tmp-i b{font-size:15px; font-weight:700; color:inherit; white-space:nowrap}
+.tmp-strip button.tmp-i small{font-size:12px; font-weight:400; letter-spacing:.02em; white-space:nowrap}
+.tmp-strip button.tmp-i em{font-style:normal; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-left:6px}
+.tmp-strip button.tmp-i[aria-pressed="true"]{background:var(--surface-2); color:var(--accent); box-shadow:inset 2px 3px 7px rgba(0,0,0,.22),inset -1px -2px 4px rgba(255,255,255,.35)}
+.tmp-strip button.tmp-i:active{box-shadow:inset 2px 3px 7px rgba(0,0,0,.26)}
+.tmp-strip.ini:not(.fin){-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent); mask-image:linear-gradient(90deg,#000 86%,transparent)}
+.tmp-strip.fin:not(.ini){-webkit-mask-image:linear-gradient(270deg,#000 86%,transparent); mask-image:linear-gradient(270deg,#000 86%,transparent)}
+.tmp-strip:not(.ini):not(.fin){-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 86%,transparent); mask-image:linear-gradient(90deg,transparent,#000 10%,#000 86%,transparent)}
 /* Apariencia: 2 × 2 para que «Automática» y «Noche viva» no se corten. */
 #ajustes .ajs-seg{display:grid; grid-template-columns:1fr 1fr; gap:8px} #ajustes .ajs-seg button{min-width:0; margin:0; padding:10px 8px; overflow-wrap:anywhere}
 /* Pulsadores de contorno (Acumulador y pozo): mismo fondo que la tarjeta, solo filete; al pulsar se hunden con sombra interna. */
@@ -1733,7 +1784,7 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
       <p class="note" id="mdRelRes" aria-live="polite"></p>
       <button type="button" id="mdRelUsar" hidden>Usar este valor</button>
     </div>
-    <div class="field"><label for="mdCamBtn">Foto del medidor (opcional)</label>
+    <div class="field mdfo"><label for="mdCamBtn">Foto del medidor (opcional)</label>
       <p class="note" id="mdGuiaFoto"></p>
       <input type="file" id="mdFoto" accept="image/*" hidden>
       <button type="button" id="mdCamBtn">Tomar foto con marco guía</button>
@@ -2035,7 +2086,7 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
   try { new MutationObserver(function(){ if (!plQ){ plQ = true; requestAnimationFrame(plegables); } }).observe($("app"), { childList: true, subtree: true }); } catch (e2){}
   function setView(key, build){
     if (S.view === key && ["nodb", "noid", "loading", "name"].indexOf(key) >= 0) return;
-    S.view = key; $("app").dataset.v = key; $("app").replaceChildren(build());
+    S.view = key; document.documentElement.classList.remove("hashd"); $("app").dataset.v = key; $("app").replaceChildren(build());
   }
   function msg(titulo, texto){
     return function(){
@@ -2661,10 +2712,12 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
   function ph(key){
     var d = el("div", "ph hd"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); t.appendChild(el("p", "hd-i", hdInfo(key))); d.appendChild(t);
-    if ((window.scrollY || 0) > 50) d.classList.add("min");
+    document.documentElement.classList.add("hashd"); if ((window.scrollY || 0) > hdUmbral() + 4) d.classList.add("min");
     return d;
   }
   /* Texto corto del cabezal cuando se achica al desplazarse: dato vivo de la sección o, si no hay, su subtítulo. */
+  /* Desplazamiento en que el cabezal llega arriba: alto de la barra «Agr. Borderío». */
+  function hdUmbral(){ var t = document.querySelector(".top"); var v = t ? Math.round(t.getBoundingClientRect().height + (window.scrollY || 0) * 0) : 0; return v > 20 ? v : 60; }
   function hdInfo(key){
     try {
       if (key === "acum"){ var D = acDatos(); if (D.u) return nf(D.est != null ? D.est : D.vol, 0) + " m³ · " + nf((D.est != null ? D.est : D.vol) / AC_VLLENO * 100, 0) + " % · pozo " + (D.pozoOn ? "encendido" : "apagado"); }
@@ -2676,7 +2729,7 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
     function ajusta(){
       tk = false; var top = document.querySelector(".top"); if (top) document.documentElement.style.setProperty("--toph", Math.round(top.getBoundingClientRect().height) + "px");
       var h = document.querySelector("#app .ph.hd"); if (!h) return; var y = window.scrollY || document.documentElement.scrollTop || 0, mn = h.classList.contains("min");
-      if (!mn && y > 50) h.classList.add("min"); else if (mn && y < 10) h.classList.remove("min");
+      var um = hdUmbral(); if (!mn && y > um + 4) h.classList.add("min"); else if (mn && y < um - 6) h.classList.remove("min");
       document.documentElement.classList.toggle("hdm", h.classList.contains("min"));
     }
     window.addEventListener("scroll", function(){ if (!tk){ tk = true; requestAnimationFrame(ajusta); } }, { passive: true });
@@ -6164,7 +6217,7 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
       abierta = cur < -W / 2; pon(abierta ? -W : 0, true); if (!abierta) setTimeout(function(){ if (!abierta) w.classList.remove("sw"); }, 240);
     }, { passive: true });
     rb.onclick = function(){ if (Date.now() - (rb._sw || 0) < 350) return; if (abierta){ cierra(); return; } onTap(); };
-    w.appendChild(box); w.appendChild(rb); return w;
+    if (rb.classList.contains("open")) w.classList.add("op"); w.appendChild(box); w.appendChild(rb); return w;
   }
   function buildMedidores(){
     var f = document.createDocumentFragment(); f.appendChild(ph("medidores"));
@@ -6428,6 +6481,13 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
     catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
   };
   function buildCosecha(){
+    var f = buildCosecha0();
+    f.querySelectorAll("button").forEach(function(b){
+      var cl = b.className.trim(); if (/^(primary|small|small armado|)$/.test(cl) && !b.closest(".mtabs")){ b.classList.add("bd-o"); if (b.classList.contains("primary")) b.classList.add("bd-p"); }
+    });
+    return f;
+  }
+  function buildCosecha0(){
     var f = document.createDocumentFragment(); f.appendChild(ph("cosecha"));
     if (S.cosTab === "ventas" && !S.owner) S.cosTab = "cosecha";
     var tb = el("div", "mchips mtabs"); tb.setAttribute("role", "group"); tb.setAttribute("aria-label", "Elige una sección");
@@ -6439,8 +6499,17 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
     var keys = Object.keys(ks).map(Number).sort(function(a, b){ return b - a; });
     if (!S.cosSel || !ks[S.cosSel]) S.cosSel = hoyT;
     var sk = S.cosSel;
-    var ch = el("div", "mchips"); ch.setAttribute("role", "group"); ch.setAttribute("aria-label", "Elige una temporada");
-    keys.forEach(function(k){ var b = el("button", null, "Temporada " + cosEtiq(k)); b.type = "button"; b.setAttribute("aria-pressed", k === sk ? "true" : "false"); b.onclick = function(){ S.cosSel = k; render(); }; ch.appendChild(b); });
+    var ch = el("div", "tmp-strip ini"); ch.setAttribute("role", "group"); ch.setAttribute("aria-label", "Elige una temporada");
+    var mi0 = cosMesIni();
+    keys.forEach(function(k){
+      var b = el("button", "tmp-i"), t1 = el("b", null, "Temporada " + cosEtiq(k)); b.type = "button"; b.setAttribute("aria-pressed", k === sk ? "true" : "false");
+      if (k === hoyT) t1.appendChild(el("em", null, "Actual"));
+      b.appendChild(t1); b.appendChild(el("small", null, MESES_C[mi0 - 1].slice(0, 3) + " " + k + " – " + MESES_C[(mi0 + 10) % 12].slice(0, 3) + " " + (mi0 === 1 ? k : k + 1)));
+      b.onclick = function(){ S.cosSel = k; render(); }; ch.appendChild(b);
+    });
+    var marcaT = function(){ ch.classList.toggle("fin", ch.scrollLeft + ch.clientWidth >= ch.scrollWidth - 4); ch.classList.toggle("ini", ch.scrollLeft <= 12); };
+    ch.onscroll = function(){ S.tmpSL = ch.scrollLeft; marcaT(); };
+    setTimeout(function(){ var ac = ch.querySelector("[aria-pressed=true]"); if (S.tmpSL != null) ch.scrollLeft = S.tmpSL; else if (ac) ch.scrollLeft = Math.max(0, ac.offsetLeft - 8); marcaT(); }, 0);
     f.appendChild(ch);
     var c0 = el("section", "card sect"); c0.appendChild(el("h2", null, "Temporada " + cosEtiq(sk)));
     c0.appendChild(el("p", "sub", "De " + MESES_C[cosMesIni() - 1] + " a " + MESES_C[(cosMesIni() + 10) % 12] + "."));
@@ -6675,15 +6744,15 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
   function buildBodega(f){
     var sal = bodSaldos(), c = el("section", "card sect"); c.appendChild(el("h2", null, "Saldo de nueces"));
     var kC = sal.filter(function(x){ return x.producto === "cascara" && x.lugar !== LUG_PARTIR; }).reduce(function(a, x){ return a + x.kg; }, 0), kP = sal.filter(function(x){ return x.producto !== "cascara"; }).reduce(function(a, x){ return a + x.kg; }, 0), ep = enPartido();
-    var g = el("div", "mbig");
-    function cel(b, s2){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s2)); g.appendChild(d); }
-    cel(fmtNum(kC, 1) + " kg", "nuez con cáscara guardada"); cel(fmtNum(kP, 1) + " kg", "pulpa guardada"); c.appendChild(g);
-    var rows = el("div", "rows"), cu = bodCuadre();
+    var g = el("div", "mbig bd-sal");
+    function cel(b, s2){ var d = el("div"), bb = el("b", null, b); bb.appendChild(el("span", "u", "kg")); d.appendChild(bb); d.appendChild(el("small", null, s2)); g.appendChild(d); }
+    cel(fmtNum(kC, 1), "Con cáscara guardada"); cel(fmtNum(kP, 1), "Pulpa guardada"); c.appendChild(g);
+    var rows = el("div", "rows bd-rows"), cu = bodCuadre();
     [["Vendido con cáscara", fmtNum(cu.vendC, 1) + " kg"], ["En proceso de partido", ep > 0 ? "≈ " + fmtNum(ep, 1) + " kg" : "—"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rows.appendChild(r); });
     c.appendChild(rows);
     if (cu.cos > 0){ var p = el("p"); if (Math.abs(cu.dif) <= 1) p.appendChild(el("span", "chip ok", "Cuadra con Cosecha: " + fmtNum(cu.cos, 1) + " kg")); else { p.appendChild(el("span", "chip idle", "Cosecha " + fmtNum(cu.cos, 1) + " kg · ubicados " + fmtNum(cu.ubic, 1) + " kg")); c.appendChild(p); p = el("p", "note warn", (cu.dif > 0 ? "Faltan " + fmtNum(cu.dif, 1) + " kg por ubicar en la bodega." : "Hay " + fmtNum(-cu.dif, 1) + " kg más en bodega y ventas que en Cosecha.") + " Revisa «Cosecha» o anota el movimiento."); } c.appendChild(p); }
     var b1 = el("button", "primary", "Anotar movimiento"); b1.onclick = abrirMov; c.appendChild(b1);
-    if (ep > 0){ var b2 = el("button", null, "Recibir pulpa partida"); b2.onclick = abrirRecibir; c.appendChild(b2); }
+    if (ep > 0){ var b2 = el("button", "bd-o", "Recibir pulpa partida"); b2.onclick = abrirRecibir; c.appendChild(b2); }
     f.appendChild(c);
     var d = el("section", "card sect"); d.appendChild(el("h2", null, "Dónde está"));
     if (!sal.length) d.appendChild(el("p", "note", "Todavía no hay nueces anotadas en la bodega."));
@@ -6789,10 +6858,10 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
     var vs = S.ventas.slice().sort(function(a, b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.ts < b.ts ? 1 : -1); });
     var kg = 0, cob = 0, por = 0; vs.forEach(function(v){ (v.items || []).forEach(function(i){ kg += Number(i.kg) || 0; }); if (v.pago === "pagada") cob += Number(v.total) || 0; else por += Number(v.total) || 0; });
     var c = el("section", "card sect"); c.appendChild(el("h2", null, "Ventas de nueces")); c.appendChild(el("p", "sub", "Solo tú ves los precios y pagos."));
-    var g = el("div", "mbig");
-    function cel(b, s2){ var d = el("div"); d.appendChild(el("b", null, b)); d.appendChild(el("small", null, s2)); g.appendChild(d); }
-    cel(fmtNum(kg, 1) + " kg", "vendidos (todos los productos)"); cel(pesos(cob), "cobrado, con IVA"); c.appendChild(g);
-    var rows = el("div", "rows"), r = el("div", "row"); r.appendChild(el("span", "l", "Por cobrar")); r.appendChild(el("span", "r", pesos(por))); rows.appendChild(r);
+    var g = el("div", "mbig bd-sal");
+    function cel(b, u, s2){ var d = el("div"), bb = el("b", null, b); if (u) bb.appendChild(el("span", "u", u)); d.appendChild(bb); d.appendChild(el("small", null, s2)); g.appendChild(d); }
+    cel(fmtNum(kg, 1), "kg", "Vendidos"); cel(pesos(cob), "", "Cobrado con IVA"); c.appendChild(g);
+    var rows = el("div", "rows bd-rows"), r = el("div", "row"); r.appendChild(el("span", "l", "Por cobrar")); r.appendChild(el("span", "r", pesos(por))); rows.appendChild(r);
     var t = partirTar(fecha()), r2 = el("div", "row"); r2.appendChild(el("span", "l", "Costo de partir por kilo de pulpa")); r2.appendChild(el("span", "r", t ? "Mariposa " + pesos(t.m) + " · resto " + pesos(t.r) : "sin fijar")); rows.appendChild(r2); c.appendChild(rows);
     var b1 = el("button", "primary", "Registrar venta"); b1.onclick = abrirVenta; c.appendChild(b1);
     var b2 = el("button", null, "Tarifas de partir"); b2.onclick = abrirTar; c.appendChild(b2); f.appendChild(c);

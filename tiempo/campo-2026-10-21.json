@@ -1,6 +1,6 @@
 {
  "sesion": "campo-2026-10-21",
- "desc": "Campo (Agrícola Borderío): desarrollo y mejoras de la app",
+ "desc": "Campo (Agrícola Borderío): desarrollo y mejoras de la app (14 y 15 nov según horario declarado por Diego)",
  "entradas": [
   {
    "fecha": "2026-10-21",
@@ -65,6 +65,14 @@
   {
    "fecha": "2026-11-13",
    "min": 597
+  },
+  {
+   "fecha": "2026-11-14",
+   "min": 660
+  },
+  {
+   "fecha": "2026-11-15",
+   "min": 690
   }
  ]
 }

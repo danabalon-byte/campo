@@ -1169,6 +1169,52 @@ html.hashd .top{position:relative}
 .cp-chip.ok{border-color:var(--ok-fg); color:var(--ok-fg); background:var(--ok-bg)}
 .cp-fila{display:flex; gap:8px; align-items:center; padding:6px 0; border-bottom:1px solid var(--line)} .cp-fila span{flex:1; min-width:0; font-size:14px} .cp-fila small{display:block; color:var(--muted); font-size:12px}
 .cp-fila button{width:auto !important; min-height:36px; padding:0 12px; background:transparent; border:2px solid var(--line); box-shadow:none; font-size:13px} .cp-fila button.armado{color:var(--alert); border-color:var(--alert)}
+/* Visibilidad por usuario */
+.vs-hoja .box{max-width:560px}
+.vs-w{grid-template-columns:minmax(0,1fr); min-width:0; --on1:#3B6A45; --on2:#2C5234; --g1:#B3B6AB; --g2:#989C90; --kn1:#fff; --kn2:#F1EFE6; --kb:#D3D5C9; --dot:#E4B91C; --lmfg:#6B5400; display:grid; gap:10px; padding-bottom:4px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .vs-w{--on1:#4C8A57; --on2:#3A7346; --g1:#5B6659; --g2:#49544A; --kb:#3A4A3D; --dot:#EBC43A; --lmfg:#EFD677}}
+:root[data-theme="dark"] .vs-w{--on1:#4C8A57; --on2:#3A7346; --g1:#5B6659; --g2:#49544A; --kb:#3A4A3D; --dot:#EBC43A; --lmfg:#EFD677}
+html.viv[data-theme="dark"] .vs-w{--on1:#2FA85F; --on2:#1F8C4B; --dot:#FBBF24; --lmfg:#FCD34D}
+.vs-w *{box-sizing:border-box}
+.vs-spw{position:relative; min-width:0}
+.vs-strip{display:flex; overflow-x:auto; border:2px solid var(--line); border-radius:14px; background:transparent; scrollbar-width:none; scroll-snap-type:x proximity}
+.vs-strip::-webkit-scrollbar{display:none}
+.vs-tp{flex:1 0 auto; min-width:116px; min-height:52px; padding:8px 14px; display:grid; align-content:center; color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; outline:none; scroll-snap-align:start}
+.vs-tp+.vs-tp{border-left:2px solid var(--line)}
+.vs-tp b{font-size:15px; font-weight:700; white-space:nowrap; color:inherit}
+.vs-tp b i{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--dot); margin-left:7px; vertical-align:middle; position:relative; top:-1px}
+.vs-tp.on{background:color-mix(in srgb, var(--accent) 12%, transparent); color:var(--accent); box-shadow:inset 2px 3px 7px rgba(0,0,0,.22),inset -1px -2px 4px rgba(255,255,255,.2)}
+.vs-tp:focus-visible{outline:2px solid var(--dot); outline-offset:-3px}
+.vs-sum{border:1px solid var(--line); border-radius:16px; padding:10px 12px; font-size:14px; line-height:1.5; background:var(--surface)}
+.vs-sum .a{color:var(--lmfg); font-weight:700}
+.vs-bw{position:relative; height:58px}
+.vs-bg{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+.vs-bar{position:absolute; inset:0; display:flex; overflow-x:auto; scrollbar-width:none}
+.vs-bar::-webkit-scrollbar{display:none}
+.vs-bar div{flex:1 0 auto; min-width:66px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; gap:1px; padding:8px 2px; color:var(--muted); font-weight:700; white-space:nowrap}
+.vs-bar svg{width:20px; height:20px}
+.vs-cap{font-size:12px; color:var(--muted); text-align:center; margin:0}
+.vs-card{border:1px solid var(--line); border-radius:20px; padding:2px 14px; background:var(--surface)}
+.vs-rw{display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--line); font-size:16px; font-weight:700; min-height:52px}
+.vs-rw:first-child{border-top:0}
+.vs-rw.off{color:var(--muted)} .vs-rw.off svg{opacity:.55}
+.vs-i{display:flex} .vs-i svg{width:20px; height:20px}
+.vs-nm{flex:1; min-width:0}
+.vs-nm small{display:block; font-size:11px; font-weight:700; margin-top:1px; color:var(--lmfg)} .vs-nm small.f{color:var(--muted)}
+.vs-rw.fx{opacity:.7}
+.vs-lk,.vs-sw{-webkit-tap-highlight-color:transparent; outline:none; user-select:none; -webkit-user-select:none; cursor:pointer}
+.vs-lk:focus-visible,.vs-sw:focus-visible{outline:2px solid var(--dot); outline-offset:3px; border-radius:16px}
+.vs-lk{width:32px; height:32px; display:grid; place-items:center; flex:none; color:var(--muted)} .vs-lk svg{width:20px; height:20px} .vs-lk.on{color:var(--accent)} .vs-lk.fijo{cursor:default}
+.vs-sw{--d:24px; position:relative; display:block; width:calc(var(--d)*2); height:var(--d); flex:none}
+.vs-sw::before{content:""; position:absolute; inset:-10px -6px}
+.vs-sw .fl{position:absolute; left:0; top:0; width:var(--d); height:var(--d); border-radius:calc(var(--d)/2); background:linear-gradient(180deg,var(--on1),var(--on2)); opacity:0; transition:width .22s cubic-bezier(.3,.8,.3,1),opacity .15s; box-shadow:inset 2px 3px 6px rgba(0,0,0,.4),inset -1px -2px 3px rgba(255,255,255,.18)}
+.vs-sw .kn{position:absolute; top:0; left:0; width:var(--d); height:var(--d); border-radius:50%; border:1.5px solid var(--kb); background:linear-gradient(160deg,var(--kn1),var(--kn2)); box-shadow:0 3px 6px rgba(0,0,0,.28),0 1px 1px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.9); transition:transform .22s cubic-bezier(.3,.8,.3,1); z-index:2}
+.vs-sw.gr .fl{background:linear-gradient(180deg,var(--g1),var(--g2))}
+.vs-sw.on .fl{width:calc(var(--d)*2); opacity:1} .vs-sw.on .kn{transform:translateX(var(--d))}
+.vs-mi{--on1:#3B6A45; --on2:#2C5234; --kn1:#fff; --kn2:#F1EFE6; --kb:#D3D5C9; --dot:#E4B91C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .vs-mi{--on1:#4C8A57; --on2:#3A7346; --kb:#3A4A3D}}
+:root[data-theme="dark"] .vs-mi{--on1:#4C8A57; --on2:#3A7346; --kb:#3A4A3D}
+html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
 /* Apariencia: 2 × 2 para que «Automática» y «Noche viva» no se corten. */
 #ajustes .ajs-seg{display:grid; grid-template-columns:1fr 1fr; gap:8px} #ajustes .ajs-seg button{min-width:0; margin:0; padding:10px 8px; overflow-wrap:anywhere}
 /* Pulsadores de contorno (Acumulador y pozo): mismo fondo que la tarjeta, solo filete; al pulsar se hunden con sombra interna. */
@@ -2742,6 +2788,8 @@ html.hashd .top{position:relative}
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
     consulta: "M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-4 4v-4H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 9.500h8M8 12.500h5",
     ajustes: "M4 7h9M17 7h3M4 17h3M11 17h9M15 4.500v5M9 14.500v5",
+    cand: "M7 11h10a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 8 0v3",
+    candab: "M7 11h10a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zM8 11V8a4 4 0 0 1 7.500-2",
     param: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0",
     cerrar: "M6 6l12 12M18 6L6 18",
     permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5",
@@ -2824,11 +2872,145 @@ html.hashd .top{position:relative}
   function facSeco(){ var f = Number(asd().facSeco); return f > 0 && f <= 1 ? f : 0.40; }
   function cpEst(id){ var v = asd().val && asd().val[id]; return v && v.e === "ok" ? v : { e: "rev" }; }
   function irA(pant){ return function(){ S.screen = pant; render(); }; }
+  /* ---- Visibilidad por usuario (solo dueño la configura; Ajustes nunca se oculta) ----
+     visib/<correo>: { v: { sec: 0|1 }, l: { sec: 0|1 }, visto: ISO }  lo escribe solo el dueño (v = visible, l = la persona puede cambiarlo).
+     visibUsr/<correo>: { o: { sec: 0|1 }, ots: ISO, nombre, uid }  lo escribe la persona (su elección; solo cuenta donde l = 1). El dueño puede borrarla.
+     Visible = (l y hay elección de la persona) ? elección : v (por omisión visible). */
+  var VS = [["home", "Inicio"], ["panel", "Panel"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["acum", "Acumulador"], ["campo", "Campo"], ["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"]];
+  var VS_ENC = { personal: 1, medidores: 1, cosecha: 1 }, VS_DUENO = "anabalondiego@gmail.com";
+  function vsMail(m){ return String(m || "").trim().toLowerCase(); }
+  function vsSecs(rol){ return VS.filter(function(x){ return rol !== "colab" || !VS_ENC[x[0]]; }); }
+  function vsV(cfg, k){ return cfg && cfg.v && cfg.v[k] === 0 ? 0 : 1; }
+  function vsL(cfg, k){ return cfg && cfg.l && cfg.l[k] ? 1 : 0; }
+  function vsO(usr, k){ var o = usr && usr.o ? usr.o[k] : null; return o === 0 || o === 1 ? o : null; }
+  function vsEf(cfg, usr, k){ var o = vsO(usr, k); return vsL(cfg, k) && o !== null ? o : vsV(cfg, k); }
+  function vsDif(cfg, usr, k){ var o = vsO(usr, k); return !!(vsL(cfg, k) && o !== null && o !== vsV(cfg, k)); }
+  function vsOculta(k){ if (!VS.some(function(x){ return x[0] === k; })) return false; return !vsEf(S.visCfg, S.visUsr, k); }
+  function vsPrimera(){ var l = vsSecs(S.manager ? "enc" : "colab").filter(function(x){ return !vsOculta(x[0]); }); return l.length ? l[0][0] : ""; }
+  function vsGente(){
+    var r = S.roles || {}, out = [], visto = {};
+    function add(m, rol){
+      m = vsMail(m); if (!m || visto[m]) return; visto[m] = 1;
+      var eq = (S.eqTodos || []).filter(function(q){ return vsMail(q.email) === m; })[0], us = (S.visUsrTodos || {})[m];
+      out.push({ m: m, nom: (eq && eq.nombre) || (us && us.nombre) || (m === S.email && S.nombre) || m.split("@")[0], rol: rol, yo: m === S.email });
+    }
+    add(S.email || VS_DUENO, "dueno");
+    (r.admins || []).forEach(function(m){ add(m, "enc"); }); (r.members || []).forEach(function(m){ add(m, "colab"); });
+    return out;
+  }
+  function vsPend(){
+    var n = 0, c = S.visTodos || {}; Object.keys(S.visUsrTodos || {}).forEach(function(m){ var u = S.visUsrTodos[m]; if (u && u.ots && (!c[m] || !c[m].visto || String(u.ots) > String(c[m].visto)) && Object.keys(u.o || {}).length) n++; });
+    return n;
+  }
+  function vsErr(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+  function vsGuardaCfg(m, cambios){ var n = Object.assign({}, (S.visTodos || {})[m] || {}, cambios); S.visTodos = Object.assign({}, S.visTodos); S.visTodos[m] = n; if (m === S.email) S.visCfg = n; return S.db.doc("visib/" + m).set(n).catch(vsErr); }
+  function vsGuardaUsr(m, o, extra){ var n = Object.assign({}, (S.visUsrTodos || {})[m] || {}, extra || {}, { o: o }); S.visUsrTodos = Object.assign({}, S.visUsrTodos); S.visUsrTodos[m] = n; if (m === S.email) S.visUsr = n; return S.db.doc("visibUsr/" + m).set(n).catch(vsErr); }
+  function vsSinO(usr, k){ var o = Object.assign({}, usr && usr.o); delete o[k]; return o; }
+  function vsMarcaVisto(m){ var u = (S.visUsrTodos || {})[m], c = (S.visTodos || {})[m] || {}; if (u && u.ots && (!c.visto || String(u.ots) > String(c.visto)) && S.db) vsGuardaCfg(m, { visto: new Date().toISOString() }); }
+  function ico2(n){ return ico(n); }
+  /* Barra de vista previa con muesca que crece donde queda contenido escondido */
+  function vsMuesca(w, h, nd, nw, l, r){
+    var x0 = .5, x1 = w - .5, y0 = .5, y1 = h - .5, R = 16, cy = h / 2, a = nw * .5, f = function(v){ return +v.toFixed(2); }, ndr = nd * r, ndl = nd * l;
+    var rn = "L" + x1 + " " + f(cy - nw) + " C" + x1 + " " + f(cy - a) + " " + f(x1 - ndr) + " " + f(cy - a) + " " + f(x1 - ndr) + " " + cy + " C" + f(x1 - ndr) + " " + f(cy + a) + " " + x1 + " " + f(cy + a) + " " + x1 + " " + f(cy + nw);
+    var ln = "L" + x0 + " " + f(cy + nw) + " C" + x0 + " " + f(cy + a) + " " + f(x0 + ndl) + " " + f(cy + a) + " " + f(x0 + ndl) + " " + cy + " C" + f(x0 + ndl) + " " + f(cy - a) + " " + x0 + " " + f(cy - a) + " " + x0 + " " + f(cy - nw);
+    return "M" + (x0 + R) + " " + y0 + " L" + (x1 - R) + " " + y0 + " A" + R + " " + R + " 0 0 1 " + x1 + " " + (y0 + R) + " " + (r > 0 ? rn : "L" + x1 + " " + (y1 - R)) + " L" + x1 + " " + (y1 - R) + " A" + R + " " + R + " 0 0 1 " + (x1 - R) + " " + y1 + " L" + (x0 + R) + " " + y1 + " A" + R + " " + R + " 0 0 1 " + x0 + " " + (y1 - R) + " " + (l > 0 ? ln : "L" + x0 + " " + (y0 + R)) + " L" + x0 + " " + (y0 + R) + " A" + R + " " + R + " 0 0 1 " + (x0 + R) + " " + y0 + "Z";
+  }
+  function vsBarra(items){
+    var bw = el("div", "vs-bw"), NS = "http://www.w3.org/2000/svg", sv = document.createElementNS(NS, "svg"); sv.setAttribute("class", "vs-bg"); sv.setAttribute("aria-hidden", "true");
+    var fo = document.createElementNS(NS, "path"), tr = document.createElementNS(NS, "path"); fo.setAttribute("fill", "var(--surface)"); tr.setAttribute("fill", "none"); tr.setAttribute("stroke", "var(--line)"); tr.setAttribute("stroke-width", "1"); sv.appendChild(fo); sv.appendChild(tr); bw.appendChild(sv);
+    var bar = el("div", "vs-bar"); items.forEach(function(x){ var d = el("div"); d.appendChild(ico(x[0])); d.appendChild(el("span", null, x[1])); bar.appendChild(d); }); bw.appendChild(bar);
+    var st = { l: 0, r: 0 };
+    function dib(){
+      var w = bw.clientWidth; if (!w) return; var hl = bar.scrollLeft, hr = bar.scrollWidth - bar.clientWidth - bar.scrollLeft, tl = Math.max(0, Math.min(1, hl / 40)), trg = Math.max(0, Math.min(1, hr / 40));
+      st.l += (tl - st.l) * .22; st.r += (trg - st.r) * .22; if (Math.abs(tl - st.l) < .004) st.l = tl; if (Math.abs(trg - st.r) < .004) st.r = trg;
+      var d = vsMuesca(w, 58, 4, 12, st.l, st.r); fo.setAttribute("d", d); tr.setAttribute("d", d); bar.style.clipPath = 'path("' + d + '")';
+      if (st.l !== tl || st.r !== trg) requestAnimationFrame(dib);
+    }
+    bar.addEventListener("scroll", dib); if (window.ResizeObserver) new ResizeObserver(dib).observe(bw); setTimeout(dib, 30); requestAnimationFrame(dib);
+    return bw;
+  }
+  function vsSw(on, gris, k, ariaLbl){
+    var s = el("span", "vs-sw" + (on ? " on" : "") + (gris ? " gr" : "")); s.setAttribute("role", "switch"); s.tabIndex = 0; s.setAttribute("aria-checked", on ? "true" : "false"); s.setAttribute("aria-label", ariaLbl); s.dataset.t = k;
+    s.appendChild(el("span", "fl")); s.appendChild(el("span", "kn")); return s;
+  }
+  function vsPintar(){
+    var cont = document.getElementById("vsBody"); if (!cont) return; var scEl = cont.parentNode, sl = scEl ? scEl.scrollTop : 0, gente = vsGente(); if (!gente.length) return;
+    if (!S.vsSel || !gente.some(function(g){ return g.m === S.vsSel; })) S.vsSel = gente[0].m;
+    var g = gente.filter(function(x){ return x.m === S.vsSel; })[0], cfg = (S.visTodos || {})[g.m] || {}, usr = (S.visUsrTodos || {})[g.m] || {}, secs = vsSecs(g.rol), keepS = cont.querySelector(".vs-strip") ? cont.querySelector(".vs-strip").scrollLeft : 0;
+    cont.textContent = "";
+    var sp = el("div", "vs-spw"), strip = el("div", "vs-strip"); strip.setAttribute("role", "tablist");
+    gente.forEach(function(p){
+      var c2 = (S.visTodos || {})[p.m] || {}, u2 = (S.visUsrTodos || {})[p.m] || {}, hay = vsSecs(p.rol).some(function(x){ return vsDif(c2, u2, x[0]); });
+      var t = el("span", "vs-tp" + (p.m === S.vsSel ? " on" : "")); t.setAttribute("role", "tab"); t.tabIndex = 0; t.setAttribute("aria-selected", p.m === S.vsSel ? "true" : "false"); t.dataset.u = p.m;
+      var b = el("b", null, p.nom + (p.yo ? " (tú)" : "")); if (hay){ var pt = el("i"); pt.title = "Cambió algo por su cuenta"; b.appendChild(pt); } t.appendChild(b); strip.appendChild(t);
+    });
+    sp.appendChild(strip); cont.appendChild(sp);
+    var vis = secs.filter(function(x){ return vsEf(cfg, usr, x[0]); }), off = secs.filter(function(x){ return vsDif(cfg, usr, x[0]) && !vsEf(cfg, usr, x[0]); }).map(function(x){ return x[1]; }), on = secs.filter(function(x){ return vsDif(cfg, usr, x[0]) && vsEf(cfg, usr, x[0]); }).map(function(x){ return x[1]; });
+    var sm = el("div", "vs-sum"); sm.appendChild(el("b", null, g.nom + (g.yo ? " ves " : " ve ") + vis.length + " de " + secs.length + " secciones."));
+    if (off.length){ sm.appendChild(el("br")); sm.appendChild(el("span", "a", g.nom + " apagó: ")); sm.appendChild(document.createTextNode(off.join(", ") + ".")); }
+    if (on.length){ sm.appendChild(el("br")); sm.appendChild(el("span", "a", g.nom + " activó: ")); sm.appendChild(document.createTextNode(on.join(", ") + ".")); }
+    if (!off.length && !on.length){ sm.appendChild(el("br")); sm.appendChild(document.createTextNode(g.yo ? "Aquí decides lo que ves tú." : "Sin cambios propios.")); }
+    cont.appendChild(sm);
+    var items = vis.map(function(x){ return [x[0], x[1]]; }).concat([["ajustes", "Ajustes"]]); cont.appendChild(vsBarra(items));
+    cont.appendChild(el("p", "vs-cap", "Así ve la barra " + (g.yo ? "tú" : g.nom) + " (" + items.length + " botones" + (items.length > 5 ? ", se desliza de lado" : "") + ")"));
+    var card = el("div", "vs-card");
+    secs.forEach(function(x){
+      var k = x[0], e = vsEf(cfg, usr, k), lk = vsL(cfg, k), gris = e && !lk && !g.yo, dif = vsDif(cfg, usr, k);
+      var rw = el("div", "vs-rw" + (e ? "" : " off")); var ic = el("span", "vs-i"); ic.appendChild(ico(k)); rw.appendChild(ic);
+      var nm = el("span", "vs-nm", x[1]);
+      if (dif) nm.appendChild(el("small", null, e ? "Activada por la persona" : "Apagada por la persona")); else if (gris) nm.appendChild(el("small", "f", "Fija: siempre visible"));
+      rw.appendChild(nm);
+      if (!g.yo){ var l = el("span", "vs-lk" + (lk ? " on" : "")); l.setAttribute("role", "button"); l.tabIndex = 0; l.dataset.l = k; l.setAttribute("aria-label", "La persona puede cambiar " + x[1] + ": " + (lk ? "sí" : "no")); l.appendChild(ico(lk ? "candab" : "cand")); rw.appendChild(l); }
+      rw.appendChild(vsSw(!!e, gris, k, x[1])); card.appendChild(rw);
+    });
+    var fx = el("div", "vs-rw fx"), fi = el("span", "vs-i"); fi.appendChild(ico("ajustes")); fx.appendChild(fi); fx.appendChild(el("span", "vs-nm", "Ajustes")); var fl = el("span", "vs-lk fijo"); fl.appendChild(ico("cand")); fx.appendChild(fl); card.appendChild(fx);
+    cont.appendChild(card);
+    cont.appendChild(el("p", "vs-cap", "Candado abierto: la persona decide. Candado cerrado y visible: gris, siempre se ve."));
+    var ns = cont.querySelector(".vs-strip"); if (ns) ns.scrollLeft = keepS; if (scEl) scEl.scrollTop = sl;
+    vsMarcaVisto(g.m);
+  }
+  function vsRepinta(){ if (document.getElementById("vsBody")) vsPintar(); }
+  function vsClic(ev){
+    var t = ev.target.closest ? ev.target.closest("[data-t],[data-l],[data-u]") : null; if (!t || !S.owner) return;
+    var gente = vsGente(), g = gente.filter(function(x){ return x.m === S.vsSel; })[0]; if (!g) return;
+    var cfg = (S.visTodos || {})[g.m] || {}, usr = (S.visUsrTodos || {})[g.m] || {};
+    if (t.dataset.u){ S.vsSel = t.dataset.u; vsPintar(); return; }
+    var k = t.dataset.t || t.dataset.l;
+    if (t.dataset.t){
+      var nuevo = vsEf(cfg, usr, k) ? 0 : 1, v = Object.assign({}, cfg.v); v[k] = nuevo; vsGuardaCfg(g.m, { v: v });
+      if (vsO(usr, k) !== null) vsGuardaUsr(g.m, vsSinO(usr, k));
+    } else {
+      var l = Object.assign({}, cfg.l), ab = !vsL(cfg, k); if (ab) l[k] = 1; else delete l[k]; vsGuardaCfg(g.m, { l: l });
+      if (!ab && vsO(usr, k) !== null) vsGuardaUsr(g.m, vsSinO(usr, k));
+    }
+    vsPintar(); render();
+  }
+  function vsAbrir(){
+    var body = el("div", "vs-w"); body.id = "vsBody"; body.addEventListener("click", vsClic);
+    body.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ var t = e.target.closest ? e.target.closest("[data-t],[data-l],[data-u]") : null; if (t){ e.preventDefault(); t.click(); } } });
+    cpCerrar(); var h = cpHoja("Visibilidad por usuario", body, null, null); h.classList.add("vs-hoja"); vsPintar();
+  }
+  function vsAjustes(ay){
+    if (S.owner || !S.email) return;
+    var secs = vsSecs(S.manager ? "enc" : "colab").filter(function(x){ return vsL(S.visCfg, x[0]); }); if (!secs.length) return;
+    ay.appendChild(el("p", "ajs-t", "Mi barra de abajo"));
+    var card = el("div", "vs-card vs-mi");
+    secs.forEach(function(x){
+      var k = x[0], e = vsEf(S.visCfg, S.visUsr, k), rw = el("div", "vs-rw" + (e ? "" : " off")), ic = el("span", "vs-i"); ic.appendChild(ico(k)); rw.appendChild(ic); rw.appendChild(el("span", "vs-nm", x[1]));
+      var sw = vsSw(!!e, false, k, x[1]); rw.appendChild(sw);
+      var tog = function(){ var o = Object.assign({}, S.visUsr && S.visUsr.o), cur = vsEf(S.visCfg, S.visUsr, k); o[k] = cur ? 0 : 1; vsGuardaUsr(S.email, o, { ots: new Date().toISOString(), nombre: S.nombre, uid: S.uid }).then(function(){ render(); }); render(); };
+      sw.onclick = tog; sw.onkeydown = function(ev){ if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); tog(); } }; card.appendChild(rw);
+    });
+    ay.appendChild(card); ay.appendChild(el("p", "note", "Puedes ocultar o volver a mostrar estas secciones de la barra de abajo. Diego recibe el aviso. Ajustes siempre se queda."));
+  }
   function cpGrupos(){
     var a = asd(), E = asEstim(), ks = Object.keys(E).map(Number).sort(function(x, y){ return x - y; }), uk = ks[ks.length - 1];
     var pend = (a.preg || []).filter(function(q){ return !q.hecha; }).length;
     var fr = S.rgFac && Number(S.rgFac.factor) > 0 ? Number(S.rgFac.factor) : RG_FAC0, mc = acCfg();
+    var vp = vsPend(), vg = vsGente();
     return [
+      { g: "Equipo", ic: "personal", items: [
+        { id: "vis-usr", t: "Visibilidad por usuario", v: vp ? vp + (vp === 1 ? " persona cambió su barra" : " personas cambiaron su barra") : "Qué secciones ve cada persona", s: vg.length ? vg.length + (vg.length === 1 ? " persona" : " personas") : "", go: function(){ vsAbrir(); } } ] },
       { g: "Asesor", ic: "consulta", items: [
         { id: "ase-est", t: "Estimación de cosecha", v: ks.length ? "Temporada " + cosEtiq(uk) + ": " + nf(E[uk].kg, 0) + " kg secos" : "Sin estimación todavía", s: ks.length ? "Anotada el " + fmtD2(E[uk].fecha) : "", go: function(){ cpEstim(); } },
         { id: "ase-preg", t: "Preguntas para el asesor", v: pend ? pend + (pend === 1 ? " pendiente" : " pendientes") : "Ninguna pendiente", go: function(){ cpPreg(); } } ] },
@@ -2845,7 +3027,7 @@ html.hashd .top{position:relative}
         { id: "pl-marco", t: "Marco de plantación", v: "6 × 5 m · 333 árboles por hectárea", s: "No vale para La Rinconada" } ] }
     ];
   }
-  function cpAvisos(){ var n = 0; cpGrupos().forEach(function(g){ g.items.forEach(function(it){ if (it.val && cpEst(it.id).e !== "ok") n++; if (it.id === "ase-preg") n += (asd().preg || []).filter(function(q){ return !q.hecha; }).length; }); }); return n; }
+  function cpAvisos(){ var n = 0; cpGrupos().forEach(function(g){ g.items.forEach(function(it){ if (it.val && cpEst(it.id).e !== "ok") n++; if (it.id === "ase-preg") n += (asd().preg || []).filter(function(q){ return !q.hecha; }).length; if (it.id === "vis-usr") n += vsPend(); }); }); return n; }
   var cpAb = 0;
   function cpPintar(){
     var b = document.getElementById("cpBox"); if (!b) return; b.textContent = "";
@@ -2865,7 +3047,7 @@ html.hashd .top{position:relative}
   }
   function cpMarca(id){ var v = Object.assign({}, asd().val), cur = v[id]; v[id] = { e: cur && cur.e === "ok" ? "rev" : "ok", f: fecha() }; asGuardar({ val: v }).catch(function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }); }
   function cpEstaAbierto(){ var pn = document.getElementById("cpPn"); return !!(pn && pn.classList.contains("abierto")); }
-  function cpRepinta(){ if (cpEstaAbierto()) cpPintar(); try { cpSync(); } catch (e){} }
+  function cpRepinta(){ if (cpEstaAbierto()) cpPintar(); try { cpSync(); } catch (e){} try { vsRepinta(); } catch (e1){} }
   function cpAbrir(){
     if (!cpOn()) return; var top = document.querySelector(".top"); if (!top) return;
     var pn = document.getElementById("cpPn");
@@ -3151,7 +3333,9 @@ html.hashd .top{position:relative}
     var nav = $("nav"), cur = S.screen === "legal" ? "" : S.manager && (S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "personal" : !S.manager && (S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "" : (S.screen === "arboles" || S.screen === "sectores") ? "campo" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
     var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", true);
-    NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"], ["ajustes", "Ajustes"]] : []).forEach(function(x){
+    var navL = NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"], ["ajustes", "Ajustes"]] : []).filter(function(x){ return !vsOculta(x[0]); });
+    if (!S.manager && vsOculta("home")) navL.push(["ajustes", "Ajustes"]);
+    navL.forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
       if (x[0] === "aplic" && np){ w.appendChild(el("i", null, String(np))); }
@@ -3285,6 +3469,7 @@ html.hashd .top{position:relative}
       var ls = el("a", "ajs-a", "Abrir el acervo (Google Sheets)"); ls.href = "https://docs.google.com/spreadsheets/d/" + ACERVO_SHEET + "/"; ls.target = "_blank"; ls.rel = "noopener"; ay.appendChild(ls);
       var lf = el("a", "ajs-a", "Abrir la carpeta de fotos (Drive)"); lf.href = "https://drive.google.com/drive/folders/" + ACERVO_CARPETA; lf.target = "_blank"; lf.rel = "noopener"; ay.appendChild(lf);
     }
+    vsAjustes(ay);
     if (!window.__DEMO && typeof window.__salir === "function"){
       ay.appendChild(el("p", "ajs-t", "Sesión"));
       var bso = el("button", null, "Cerrar sesión"); bso.type = "button";
@@ -8913,6 +9098,7 @@ html.hashd .top{position:relative}
     var badge = { aplic: np, riego: nr, campo: na, permisos: npm, medidores: nml }, grupo = "";
     PC_ITEMS.forEach(function(x){
       if (x[1] === "arboles" && !huOn()) return;
+      if (vsOculta(x[1])) return;
       if (x[0] !== grupo){ grupo = x[0]; nav.appendChild(el("div", "pcg", grupo)); }
       var b = el("button", "pcn"); b.type = "button"; b.dataset.s = x[1]; if (S.screen === x[1] || (x[1] === "home" && !PC_ITEMS.some(function(y){ return y[1] === S.screen; }))) b.setAttribute("aria-current", "page");
       b.appendChild(ico(x[1])); b.appendChild(el("span", null, x[2]));
@@ -9683,10 +9869,21 @@ html.hashd .top{position:relative}
     var db = res[0], user = res[1];
     if (!db || !user) return render();
     S.uid = await user.id(); S.owner = await user.isOwner(); S.manager = await user.canEdit(); S.db = db;
+    try { var me0 = await user.me(); S.email = vsMail(me0 && me0.email); } catch (e0){ S.email = ""; }
     if (!S.uid) return render();
     db.doc("equipo/" + S.uid).onSnapshot(function(s){
-      S.okEq = true; var d = s.exists ? s.data() : null; S.nombre = d && d.nombre ? d.nombre : ""; render();
+      S.okEq = true; var d = s.exists ? s.data() : null; S.nombre = d && d.nombre ? d.nombre : ""; if (d && S.email && d.email !== S.email){ try { db.doc("equipo/" + S.uid).set(Object.assign({}, d, { email: S.email })).catch(function(){}); } catch (e0){} } render();
     }, function(){ S.okEq = true; render(); });
+    if (S.email){
+      db.doc("visib/" + S.email).onSnapshot(function(s){ S.visCfg = s.exists ? s.data() : null; if (!S.visIni){ S.visIni = 1; if (S.screen === "home" && vsOculta("home")) S.screen = vsPrimera() || "ajustes"; } render(); cpRepinta(); }, function(){});
+      db.doc("visibUsr/" + S.email).onSnapshot(function(s){ S.visUsr = s.exists ? s.data() : null; render(); }, function(){});
+    }
+    if (S.owner){
+      db.collection("visib").onSnapshot(function(s){ var m = {}; s.docs.forEach(function(d){ m[d.id] = d.data(); }); S.visTodos = m; render(); cpRepinta(); }, function(){});
+      db.collection("visibUsr").onSnapshot(function(s){ var m = {}, previo = S.visUsrTodos; s.docs.forEach(function(d){ m[d.id] = d.data(); if (previo && d.id !== S.email){ var a = previo[d.id], b = d.data(); if (b && b.ots && (!a || String(b.ots) > String(a.ots || ""))) toast((b.nombre || d.id.split("@")[0]) + " cambió su barra de abajo"); } }); S.visUsrTodos = m; render(); cpRepinta(); }, function(){});
+      db.doc("config/roles").onSnapshot(function(s){ S.roles = s.exists ? s.data() : {}; cpRepinta(); }, function(){});
+      db.collection("equipo").onSnapshot(function(s){ S.eqTodos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); cpRepinta(); }, function(){});
+    }
     db.collection("asistencia/" + S.uid + "/dias").orderBy("fecha", "desc").limit(31).onSnapshot(function(s){
       S.okDias = true; S.dias = s.docs.map(function(d){ return d.data(); }); render();
     }, function(){ S.okDias = true; render(); });

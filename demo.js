@@ -4,9 +4,9 @@
   var q = new URLSearchParams(location.search);
   if (!q.has("demo")) return;
   var PERFILES = {
-    owner:   { uid: "u_demo_dueno",  nombre: "Dueño demo",        titulo: "Dueño",        desc: "Ve y edita todo: alertas, permisos, horarios del equipo, valores y ajustes.", lvl: 3 },
-    manager: { uid: "u_demo_enc",    nombre: "Encargada demo",    titulo: "Encargada",    desc: "Agenda y registra el trabajo, los riegos y las aplicaciones. No ve lo reservado al dueño.", lvl: 2 },
-    member:  { uid: "u_demo_colab",  nombre: "Colaboradora demo", titulo: "Colaboradora", desc: "Registra su llegada y salida, ve la agenda y marca tareas hechas.", lvl: 1 }
+    owner:   { uid: "u_demo_dueno",  nombre: "Dueño demo",        titulo: "Dueño", email: "dueno@demo.invalid",        desc: "Ve y edita todo: alertas, permisos, horarios del equipo, valores y ajustes.", lvl: 3 },
+    manager: { uid: "u_demo_enc",    nombre: "Encargada demo",    titulo: "Encargada", email: "encargada@demo.invalid",    desc: "Agenda y registra el trabajo, los riegos y las aplicaciones. No ve lo reservado al dueño.", lvl: 2 },
+    member:  { uid: "u_demo_colab",  nombre: "Colaboradora demo", titulo: "Colaboradora", email: "colaboradora@demo.invalid", desc: "Registra su llegada y salida, ve la agenda y marca tareas hechas.", lvl: 1 }
   };
   var elegido = PERFILES[q.get("demo")] ? q.get("demo") : null;
   var SK = "demo_store_v2";
@@ -49,7 +49,7 @@
     s["jornadasTerc/j_demo3"] = { tid: "t_demo2", nombre: "Practicante (demo)", fecha: dia(1), tipo: "horas", min: 270, dia: 504, hi: "09:00", hs: "13:30", labor: "Registro de árboles", aCargo: "Agrícola", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(26) };
     s["jornadasTerc/j_demo4"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", fecha: dia(0), tipo: "jornada", min: 504, dia: 504, labor: "Poda en el sector 2", aCargo: "Yolanda", estado: "acordada", por: "Encargada demo", uid: PERFILES.manager.uid, ts: ago(30) };
     s["abonos/b_demo1"] = { tid: "t_demo1", nombre: "Colaboradora externa (demo)", monto: 20000, fecha: dia(1), nota: "efectivo", por: "Dueño demo", uid: PERFILES.owner.uid, ts: ago(24) };
-    Object.keys(PERFILES).forEach(function (k) { s["equipo/" + PERFILES[k].uid] = { nombre: PERFILES[k].nombre, creado: ago(500) }; });
+    Object.keys(PERFILES).forEach(function (k) { s["equipo/" + PERFILES[k].uid] = { nombre: PERFILES[k].nombre, email: PERFILES[k].email, creado: ago(500) }; });
     [[-1, 8, 17], [-2, 8, 16], [-3, 9, 14]].forEach(function (x) {
       s["asistencia/" + PERFILES.manager.uid + "/dias/" + dia(x[0])] = { fecha: dia(x[0]), tramos: [{ entrada: iso(x[0], x[1] + 3), salida: iso(x[0], x[2] + 3), por: "Encargada demo" }] };
     });
@@ -70,8 +70,9 @@
     ];
     N.forEach(function (x) { s["personal/" + x[0]] = { nombre: x[1], funcion: x[2], jornada: x[3], nac: x[4], tel: "", mostrarEdad: false }; });
     s["config/semillaPersonal"] = { ts: ago(900), por: "demo" };
-    s["equipo/u_demo_luis"] = { nombre: "Luis Parra", creado: ago(400) };
-    s["equipo/u_demo_rosa"] = { nombre: "Rosa Muñoz", creado: ago(400) };
+    s["equipo/u_demo_luis"] = { nombre: "Luis Parra", email: "luis@demo.invalid", creado: ago(400) };
+    s["config/roles"] = { admins: ["encargada@demo.invalid"], members: ["colaboradora@demo.invalid", "luis@demo.invalid", "rosa@demo.invalid"] };
+    s["equipo/u_demo_rosa"] = { nombre: "Rosa Muñoz", email: "rosa@demo.invalid", creado: ago(400) };
     s["asistencia/u_demo_luis/dias/" + dia(0)] = { fecha: dia(0), tramos: [{ entrada: ago(2), por: "Luis Parra" }] };
     [[-1, 8, 16], [-2, 8, 17]].forEach(function (x) {
       s["asistencia/u_demo_luis/dias/" + dia(x[0])] = { fecha: dia(x[0]), tramos: [{ entrada: iso(x[0], x[1] + 3), salida: iso(x[0], x[2] + 3), por: "Luis Parra" }] };
@@ -132,7 +133,7 @@
   var db = { collection: mkCol, doc: mkDoc };
   var user = {
     id: async function () { return PERFILES[elegido].uid; },
-    me: async function () { return { id: PERFILES[elegido].uid, name: nombreProbador || PERFILES[elegido].nombre, email: "demo@ejemplo.invalid" }; },
+    me: async function () { return { id: PERFILES[elegido].uid, name: nombreProbador || PERFILES[elegido].nombre, email: PERFILES[elegido].email }; },
     isOwner: async function () { return PERFILES[elegido].lvl >= 3; },
     canEdit: async function () { return PERFILES[elegido].lvl >= 2; },
     can: function () { return null; }

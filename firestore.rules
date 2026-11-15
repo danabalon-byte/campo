@@ -11,6 +11,21 @@ service cloud.firestore {
     function isAdmin() { return isOwner() || (signed() && hasRoles() && mail() in rolesDoc().get('admins', [])); }
     function isMember() { return isAdmin() || (signed() && hasRoles() && mail() in rolesDoc().get('members', [])); }
 
+    // Visibilidad por usuario (secciones de la barra de abajo). Documento = correo en minúsculas.
+    // visib: lo configura solo el dueño (v = visible, l = secciones que la persona puede cambiar). visibUsr: la elección de la persona, solo en las secciones con l abierto.
+    function visL(id) { return exists(/databases/$(database)/documents/visib/$(id)) ? get(/databases/$(database)/documents/visib/$(id)).data.get('l', {}).keys() : []; }
+    match /visib/{id} {
+      allow read: if isOwner() || (signed() && mail() == id);
+      allow write: if isOwner();
+    }
+    match /visibUsr/{id} {
+      allow read: if isOwner() || (signed() && mail() == id);
+      allow create, update: if isOwner() || (isMember() && mail() == id
+        && request.resource.data.keys().hasOnly(['o', 'ots', 'nombre', 'uid'])
+        && request.resource.data.get('o', {}).keys().hasOnly(visL(id)));
+      allow delete: if isOwner();
+    }
+
     match /config/{doc} {
       allow read: if isMember();
       allow write: if isOwner();

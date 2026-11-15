@@ -64,7 +64,9 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .wrap{max-width:540px; margin:0 auto; display:grid; gap:16px}
 h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0; letter-spacing:-.01em}
 p{margin:0}
-.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:10px 8px}
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:9; background:var(--bg); display:block; overflow:hidden}
+.top-fr{position:relative; display:flex; align-items:center; gap:10px; padding-block:10px 8px; background:var(--bg); will-change:transform}
+.top.cp-on .top-fr{touch-action:pan-y}
 .mark{flex:none; width:28px; height:28px; color:var(--accent)}
 .top h1{font-size:16px; line-height:1.15; font-weight:700; letter-spacing:.01em}
 .top .where{font-size:12px; font-weight:400; letter-spacing:.02em; margin-top:2px; color:var(--muted)}
@@ -88,13 +90,15 @@ p{margin:0}
 .chip.info{background:var(--water-bg); color:var(--water)}
 .who .chip{white-space:nowrap; flex-shrink:0}
 /* botones */
-button{font:inherit; font-weight:700; border-radius:14px; cursor:pointer; min-height:52px; padding:10px 18px; border:0; background:var(--surface-2); color:var(--fg); -webkit-tap-highlight-color:transparent}
+/* Estilo único: contorno de 2 px; al pulsar se hunde. Solo el botón principal (.primary) lleva relleno. */
+button{font:inherit; font-weight:700; border-radius:14px; cursor:pointer; min-height:52px; padding:10px 18px; border:2px solid var(--line); background:transparent; color:var(--fg); -webkit-tap-highlight-color:transparent}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
-button.primary{width:100%; min-height:60px; font-size:19px; border-radius:16px; background:var(--accent); color:var(--on-accent)}
+button.primary{width:100%; min-height:60px; font-size:19px; border:0; border-radius:16px; background:var(--accent); color:var(--on-accent)}
 button.small{min-height:44px; padding:8px 16px; font-size:16px}
 /* Segundo toque de «Quitar»: mismo tamaño y forma, hundido con sombra interior y en rojo (armado: el próximo toque elimina). */
-button.armado,button.armado:active{background:var(--alert-bg); color:var(--alert); box-shadow:inset 3px 4px 8px rgba(120,30,10,.45),inset -2px -3px 5px rgba(255,255,255,.35); transform:translateY(1px)}
-button:active{transform:scale(.985)}
+button.armado,button.armado:active{background:var(--alert-bg); color:var(--alert); border-color:var(--alert); box-shadow:inset 3px 4px 8px rgba(120,30,10,.45),inset -2px -3px 5px rgba(255,255,255,.35); transform:translateY(1px)}
+button:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+button.primary:active{box-shadow:inset 0 -3px 0 rgba(0,0,0,.16); transform:scale(.985)}
 button[disabled]{cursor:default; opacity:.55}
 .link{background:transparent; color:var(--accent); min-height:44px; padding:6px 4px; justify-self:start}
 /* portada */
@@ -223,7 +227,8 @@ textarea{font-size:18px; min-height:92px; resize:vertical}
 /* barra de pestañas */
 .nav{position:fixed; left:0; right:0; bottom:0; z-index:15; display:grid; grid-template-columns:repeat(5,1fr); gap:2px; background:var(--surface); border-top:1px solid var(--line);
   padding:8px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.nav button{display:grid; justify-items:center; gap:3px; min-height:58px; padding:6px 2px; background:transparent; color:var(--muted); font-size:14px; font-weight:700; border-radius:16px}
+.nav button{display:grid; justify-items:center; gap:3px; min-height:58px; padding:6px 2px; background:transparent; color:var(--muted); font-size:14px; font-weight:700; border:0; border-radius:16px}
+.nav button:active{box-shadow:none; transform:scale(.97)}
 .nav .ni{width:54px; height:30px; border-radius:15px; display:grid; place-items:center}
 .nav .ni svg{width:23px; height:23px}
 .nav button[aria-current=page]{color:var(--fg)}
@@ -266,8 +271,8 @@ html[data-theme="dark"] .nav button[data-s=aplic][aria-current=page] .ni{backgro
 .nav button[data-s=cosecha][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
 .mchips::-webkit-scrollbar{display:none}
-.mchips button{flex:none; min-height:48px; padding:0 18px; border-radius:99px; background:var(--surface-2); color:var(--fg); font-weight:700; border:1px solid var(--line)}
-.mchips button[aria-pressed=true]{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.mchips button{flex:none; min-height:48px; padding:0 18px; border-radius:99px; background:transparent; color:var(--fg); font-weight:700; border:2px solid var(--line)}
+.mchips button[aria-pressed=true]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
 .mbig{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0}
 .mbig div{background:var(--surface-2); border-radius:14px; padding:10px; text-align:center}
 .mbig b{display:block; font-family:var(--font-display); font-size:22px; line-height:1.15}
@@ -304,7 +309,7 @@ html.sol .toast{font-size:18px}
   .toast:not([hidden]) .tk-c{stroke-dasharray:63; stroke-dashoffset:63; animation:trazo .45s ease-out forwards}
   .toast:not([hidden]) .tk-p{stroke-dasharray:20; stroke-dashoffset:20; animation:trazo .3s .25s ease-out forwards}
   @keyframes trazo{to{stroke-dashoffset:0}}
-  button{transition:transform .08s, background-color .15s}
+  button{transition:transform .08s, background-color .15s, box-shadow .12s}
   .sheet:not([hidden]) .box{animation:subir .24s ease-out}
   .toast:not([hidden]){animation:aparece .2s ease-out}
   @keyframes subir{from{transform:translateY(32px); opacity:.4}}
@@ -1028,8 +1033,6 @@ html.hdm .top{visibility:hidden}
 #mdSheet .az-seg button{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
 #mdSheet .az-seg button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.5); transform:translateY(1px)}
 /* Medidores: botones de texto con solo filete; al pulsar se hunden. Los redondos (.pl-b) no se tocan. */
-#app[data-v="medidores"] button:not(.pl-b):not(.hy-c):not(.ml-r):not(.ml-bar):not(.ml-ac){background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none; transition:box-shadow .12s,transform .12s}
-#app[data-v="medidores"] .mchips button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
 #app[data-v="medidores"] button.link{color:var(--accent); border-color:var(--accent)}
 #app[data-v="medidores"] button.small.armado{color:var(--alert); border-color:var(--alert)}
 #app[data-v="medidores"] #mdPzBtn{color:var(--accent); border-color:var(--accent)}
@@ -1069,11 +1072,11 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
   #app.slR > :not(.ph):not(.mchips){animation:slR .26s ease-out both}
 }
 /* Pestañas en un solo rectángulo (Cosecha · Bodega · Ventas): separadas por una línea; la activa se hunde. */
-.mchips.mtabs{display:flex; gap:0; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:12px; background:var(--surface); margin:4px 0 14px}
+.mchips.mtabs{display:flex; gap:0; padding:0; overflow:hidden; border:2px solid var(--line); border-radius:14px; background:transparent; margin:4px 0 14px}
 .mchips.mtabs button{flex:1 1 0; min-width:0; min-height:46px; padding:0 6px; border:0; border-radius:0; background:transparent; color:var(--muted); font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; box-shadow:none; transition:background-color .2s,color .2s,box-shadow .2s}
-.mchips.mtabs button + button{border-left:1px solid var(--line)}
-.mchips.mtabs button[aria-pressed="true"]{background:var(--surface-2); color:var(--accent); border-color:var(--line); box-shadow:inset 2px 3px 7px rgba(0,0,0,.22),inset -1px -2px 4px rgba(255,255,255,.35)}
-.mchips.mtabs button:active{box-shadow:inset 2px 3px 7px rgba(0,0,0,.26)}
+.mchips.mtabs button + button{border-left:2px solid var(--line)}
+.mchips.mtabs button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); font-weight:800; border-color:var(--line); transform:none; box-shadow:inset 3px 4px 8px rgba(0,0,0,.22),inset -2px -3px 5px rgba(255,255,255,.3)}
+.mchips.mtabs button:active{transform:none; box-shadow:inset 3px 4px 8px rgba(0,0,0,.26)}
 /* Saldo de nueces: un solo panel con dos lecturas separadas por una línea. */
 .mbig.bd-sal{gap:0; border:1px solid var(--line); border-radius:14px; background:var(--surface-2); overflow:hidden; margin:10px 0 8px}
 .mbig.bd-sal > div{background:transparent; border-radius:0; padding:14px 14px 12px; text-align:left; container-type:inline-size; min-width:0}
@@ -1082,14 +1085,8 @@ button.btn-ok::after{content:"✓"; position:absolute; right:12px; top:50%; tran
 .mbig.bd-sal b .u{font-size:.5em; font-weight:600; color:var(--muted); letter-spacing:0; margin-left:3px}
 .mbig.bd-sal small{display:block; margin-top:4px; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
 .bd-rows .row{padding:12px 0; font-size:16px} .bd-rows .row .r{color:var(--fg); font-weight:600}
-button.bd-o{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
-button.bd-o.bd-p{color:var(--accent); border-color:var(--accent)}
-button.bd-o.armado{color:var(--alert); border-color:var(--alert)}
-button.bd-o:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
 /* Con cabezal, la barra «Agr. Borderío» se va con el desplazamiento y el cabezal toma su lugar. */
 html.hashd .top{position:relative}
-#app[data-v="cosecha"] .mchips:not(.mtabs) button{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none; transition:box-shadow .15s,color .15s}
-#app[data-v="cosecha"] .mchips:not(.mtabs) button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28)}
 /* Fotos de la lectura (Medidores): mismo estilo de contorno, cámara y galería lado a lado. */
 #mdSheet #mdCamBtn,#mdSheet #mdFotoBtn,#mdSheet #mdFoto2Btn,#mdSheet #mdRelUsar,#mdSheet #mdFechaUsar{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
 #mdSheet #mdCamBtn:active,#mdSheet #mdFotoBtn:active,#mdSheet #mdFoto2Btn:active,#mdSheet #mdRelUsar:active,#mdSheet #mdFechaUsar:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
@@ -1109,11 +1106,51 @@ html.hashd .top{position:relative}
 .tmp-strip button.tmp-i b{font-size:15px; font-weight:700; color:inherit; white-space:nowrap}
 .tmp-strip button.tmp-i small{font-size:12px; font-weight:400; letter-spacing:.02em; white-space:nowrap}
 .tmp-strip button.tmp-i em{font-style:normal; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-left:6px}
+.tmp-strip button.tmp-i.proy{border-left:1px dashed var(--line); color:var(--muted)}
+.tmp-strip button.tmp-i.proy small{font-style:italic}
+.tmp-strip button.tmp-i.proy b{font-style:italic}
+.proy-big{font-size:34px; font-weight:700; margin:2px 0 0; color:var(--fg)} .proy-big small{font-size:14px; font-weight:600; color:var(--muted)}
 .tmp-strip button.tmp-i[aria-pressed="true"]{background:var(--surface-2); color:var(--accent); box-shadow:inset 2px 3px 7px rgba(0,0,0,.22),inset -1px -2px 4px rgba(255,255,255,.35)}
 .tmp-strip button.tmp-i:active{box-shadow:inset 2px 3px 7px rgba(0,0,0,.26)}
 .tmp-strip.ini:not(.fin){-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent); mask-image:linear-gradient(90deg,#000 86%,transparent)}
 .tmp-strip.fin:not(.ini){-webkit-mask-image:linear-gradient(270deg,#000 86%,transparent); mask-image:linear-gradient(270deg,#000 86%,transparent)}
 .tmp-strip:not(.ini):not(.fin){-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 86%,transparent); mask-image:linear-gradient(90deg,transparent,#000 10%,#000 86%,transparent)}
+/* Selector de temporadas: interruptor tira/dial y dial giratorio. */
+.tmp-tg{min-height:36px; height:36px; display:flex; align-items:center; justify-content:flex-end; gap:10px; margin:0 0 8px; padding:0; width:auto; background:transparent; border:0; box-shadow:none; color:var(--muted); font-size:13px; font-weight:600; letter-spacing:.04em; margin-left:auto; margin-bottom:0}
+.tmp-tgw{display:flex; justify-content:flex-end; margin:-6px 0 2px}
+.tmp-tg i{display:block; width:38px; height:22px; border:2px solid var(--line); border-radius:11px; position:relative; transition:background-color .2s,border-color .2s}
+.tmp-tg i::after{content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:var(--muted); transition:transform .22s,background-color .2s}
+.tmp-tg[aria-checked="true"]{color:var(--accent)}
+.tmp-tg[aria-checked="true"] i{border-color:var(--accent); box-shadow:inset 2px 2px 5px rgba(0,0,0,.2)}
+.tmp-tg[aria-checked="true"] i::after{transform:translateX(16px); background:var(--accent)}
+.tmp-dial{border:1px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden; margin:0 0 14px; user-select:none; -webkit-user-select:none}
+.tmp-dial svg{display:block; width:100%; touch-action:pan-y; cursor:grab}
+.tmp-dial svg.arr{cursor:grabbing}
+/* Centro de parámetros (sección secreta del dueño): se abre tirando de la barra «Agr. Borderío» hacia la derecha. */
+.cp-rev{position:absolute; left:0; top:0; bottom:0; width:0; overflow:hidden; background:#3F5F66; color:#fff; display:flex; align-items:center; padding-left:14px; font-size:12px; font-weight:600; letter-spacing:.03em; white-space:nowrap}
+.cp-rev span{opacity:0; transition:opacity .15s}
+.mk-w{position:relative; flex:none; width:34px; height:34px; display:grid; place-items:center; border-radius:10px; transition:background-color .18s,transform .18s}
+.mk-w .mark{width:28px; height:28px; transition:opacity .15s}
+.cp-ic{position:absolute; inset:0; display:grid; place-items:center; color:#fff; opacity:0; transition:opacity .15s} .cp-ic svg{width:20px; height:20px}
+.top.cp-lis .mk-w{background:#3F5F66; transform:scale(1.08)} .top.cp-lis .mark{opacity:0} .top.cp-lis .cp-ic{opacity:1}
+.cp-pn{overflow:hidden; max-height:0; transition:max-height .32s ease}
+.cp-box{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 14px 12px; margin:2px 0 14px}
+.cp-h{display:flex; align-items:center; gap:10px; margin-bottom:6px} .cp-h b{font-size:17px; font-weight:800} .cp-h small{font-size:12px; color:var(--muted)}
+.cp-x,.cp-b{flex:none; width:32px !important; height:32px !important; min-width:0 !important; min-height:0 !important; padding:0 !important; box-sizing:border-box; border-radius:50% !important; display:grid; place-items:center; background:transparent; border:2px solid var(--line); color:var(--fg); box-shadow:none}
+.cp-x{margin-left:auto} .cp-x svg,.cp-b svg{width:16px; height:16px}
+.cp-x:active,.cp-b:active{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+.cp-b{margin-left:auto; position:relative; color:#fff; border-color:rgba(255,255,255,.6); background:rgba(255,255,255,.16)} .cp-b svg{width:18px; height:18px}
+.cp-b .n{position:absolute; top:-6px; right:-6px; min-width:16px; height:16px; padding:0 3px; border-radius:8px; background:#fff; color:#3F5F66; font:700 10px/16px var(--font-body,inherit); text-align:center}
+.ph.hd:not(.min) .cp-b{display:none !important}
+.cp-g{display:flex !important; align-items:center; justify-content:flex-start; gap:10px; width:100%; min-height:44px; padding:8px 2px; border:0; border-top:1px solid var(--line); border-radius:0; background:transparent; box-shadow:none; color:var(--fg); font-size:15px; font-weight:700; text-align:left}
+.cp-g svg{width:20px; height:20px; color:#3F5F66; flex:none} .cp-g .cp-c{margin-left:auto; width:16px; height:16px; color:var(--muted); transition:transform .2s} .cp-g[aria-expanded="true"] .cp-c{transform:rotate(180deg)}
+.cp-it{display:flex; align-items:center; gap:10px; padding:8px 4px 8px 30px; cursor:pointer; min-width:0}
+.cp-it:not([role]){cursor:default}
+.cp-tx{display:grid; gap:1px; min-width:0; flex:1} .cp-tx b{font-size:14px; font-weight:600} .cp-tx small{font-size:12px; color:var(--muted)}
+.cp-chip{flex:none; width:auto !important; min-height:0 !important; height:26px; padding:0 10px !important; border-radius:13px; border:1px solid var(--alert); background:transparent; color:var(--alert); font-size:11px; font-weight:700; letter-spacing:.02em; box-shadow:none}
+.cp-chip.ok{border-color:var(--ok-fg); color:var(--ok-fg); background:var(--ok-bg)}
+.cp-fila{display:flex; gap:8px; align-items:center; padding:6px 0; border-bottom:1px solid var(--line)} .cp-fila span{flex:1; min-width:0; font-size:14px} .cp-fila small{display:block; color:var(--muted); font-size:12px}
+.cp-fila button{width:auto !important; min-height:36px; padding:0 12px; background:transparent; border:2px solid var(--line); box-shadow:none; font-size:13px} .cp-fila button.armado{color:var(--alert); border-color:var(--alert)}
 /* Apariencia: 2 × 2 para que «Automática» y «Noche viva» no se corten. */
 #ajustes .ajs-seg{display:grid; grid-template-columns:1fr 1fr; gap:8px} #ajustes .ajs-seg button{min-width:0; margin:0; padding:10px 8px; overflow-wrap:anywhere}
 /* Pulsadores de contorno (Acumulador y pozo): mismo fondo que la tarjeta, solo filete; al pulsar se hunden con sombra interna. */
@@ -1127,6 +1164,19 @@ html.hashd .top{position:relative}
 /* Regla: los pulsadores redondos siempre son círculos (el botón base pide 52 px de alto y los deformaba en óvalo). */
 .pl-b,.hy-c,.tm-ref,.ag-ck{min-height:0; min-width:0; max-height:none; aspect-ratio:1/1; flex:none; align-self:flex-start}
 .pl-b{width:32px !important; height:32px !important; padding:0 !important}
+/* Selección unificada: la opción activa va con contorno de color y hundida, sin relleno. */
+.ag-chips button[aria-pressed=true],.ajs-seg button[aria-pressed=true],.tg[aria-pressed=true],.az-seg button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+.pn-seg{padding:0; gap:0; overflow:clip; border:2px solid var(--line); border-radius:14px; background:transparent}
+.pn-seg button{border-radius:0}
+.pn-seg button + button{border-left:2px solid var(--line)}
+.pn-seg button[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.22),inset -2px -3px 5px rgba(255,255,255,.3)}
+.pn-seg button:active{transform:none}
+.ag-seg,.rg-seg,.pn-seg,.mchips.mtabs{flex-shrink:0}
+.ag-seg,.rg-seg{gap:0; padding:0; overflow:clip; border:2px solid var(--line); border-radius:14px; background:transparent}
+.ag-seg button,.rg-seg button{border:0; border-radius:0; color:var(--muted)}
+.ag-seg button + button,.rg-seg button + button{border-left:2px solid var(--line)}
+.ag-seg button.on,.rg-seg button.on{background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); font-weight:800; box-shadow:inset 3px 4px 8px rgba(0,0,0,.22),inset -2px -3px 5px rgba(255,255,255,.3)}
+.ag-seg button:active,.rg-seg button:active{transform:none}
 </style>
 
 
@@ -1134,14 +1184,17 @@ html.hashd .top{position:relative}
 
 <div class="wrap">
   <header class="top">
-    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <div class="cp-rev" id="cpRev" aria-hidden="true"><span id="cpRevT"></span></div>
+    <div class="top-fr" id="topFr">
+    <span class="mk-w"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 35V17"/><path d="M20 17c-7 0-11-4-11-10 7 0 11 4 11 10z"/><path d="M20 24c6 0 10-3.500 10-9-6 0-10 3.500-10 9z"/>
-    </svg>
+    </svg><span class="cp-ic" id="cpIc"></span></span>
     <div style="min-width:0">
       <h1>Agr. Borderío</h1>
       <p class="where">Chincolco, Petorca</p>
     </div>
     <p class="date" id="fechaHoy"></p>
+    </div>
   </header>
   <div class="pcbar" id="pcbar"><h2 id="pcTitulo"></h2><span class="sp"></span>
     <button type="button" class="pcsearch" id="pcBuscar" aria-label="Buscar o ir a… (Comando K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><span>Buscar o ir a…</span><kbd>⌘K</kbd></button>
@@ -2110,7 +2163,7 @@ html.hashd .top{position:relative}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 58;
+  var GUIA_V = 60;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2156,6 +2209,7 @@ html.hashd .top{position:relative}
     ["Personal", "En «Inicio», el módulo «Personal» sirve para indicar quién trabaja cada día, con qué jornada y qué función cumple.", 2, "manager"],
     ["Horarios del equipo", "En «Inicio», el módulo «Horarios del equipo» muestra quién está en el campo y a qué hora entra y sale cada persona. Solo lo ves tú.", 2, "owner"],
     ["Letra grande para el sol", "En «Ajustes» (el último botón de la barra de abajo; si tu barra no se desliza, al final de «Inicio») está el botón «Letra grande y más contraste (para el sol)» agranda las letras y oscurece los colores para leer mejor al aire libre. Se guarda en tu teléfono.", 2, ""],
+    ["Centro de parámetros", "Es una sección reservada para ti. Enciéndela en «Ajustes» → «Centro de parámetros». Luego tira de la barra «Agr. Borderío», arriba, hacia la derecha: la ramita se convierte en un engranaje y, al soltar, se abre un panel con lo que conviene revisar y actualizar, ordenado por tema (asesor, riego, cosecha, acumulador y plantación). Cada dato muestra su valor y de cuándo es; los que dependen del asesor llevan «A revisar» o «Validado» y los marcas tocando la etiqueta. Ahí anotas la estimación de cosecha del asesor y sus preguntas pendientes. Para cerrarlo, tira otra vez de la barra o toca la X. Si ya bajaste en la pantalla, aparece un engranaje en el cabezal. En «Ajustes» también está «Abrir parámetros».", 59, "owner"],
     ["Claro o nocturno", "En el computador, el botón «Apariencia» está arriba a la derecha. En el teléfono, abre «Ajustes» (último botón de la barra de abajo) y elige «Automática» (como tenga el teléfono), «Día» o «Noche». Queda guardada en ese teléfono.", 4, ""],
     ["Dónde quedó la guía", "En «Ajustes» (último botón de la barra de abajo) está la guía de uso, la letra grande para el sol y la apariencia clara o nocturna. «Tengo un problema o una idea» ahora es un módulo más, junto a Permisos y Horarios.", 5, ""],
     ["Alertas en Inicio", "Si algo necesita atención, «Inicio» muestra la tarjeta «Alertas» justo bajo tu saludo, con lo más importante primero: «No entrar» (hasta cuándo no se debe entrar a un sector tras una aplicación), «Carencia» (hasta cuándo no se puede cosechar) y «Riego atrasado» (un riego programado que ya pasó y no se registró). Se ven las 3 primeras; toca el botón «Ver las» (con el número) para ver todas. Se apagan solas cuando vence el plazo o se hace la tarea. Los íconos de «Campo» y «Riego» muestran un número cuando tienen alertas.", 8, ""],
@@ -2209,6 +2263,8 @@ html.hashd .top{position:relative}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 60, f: "2026-11-15", t: "Botones más livianos", d: "Todos los botones secundarios ahora llevan solo contorno y se hunden al tocarlos. Solo el botón principal de cada pantalla mantiene relleno. Las pestañas y selectores (por ejemplo Cosecha · Bodega · Ventas) comparten el mismo contorno, y la opción elegida se ve hundida y en color." },
+    { v: 59, f: "2026-11-15", t: "Centro de parámetros", d: "Nueva sección reservada para el dueño: tira de la barra «Agr. Borderío» hacia la derecha para abrir un panel con lo que hay que revisar y actualizar (asesor, riego, cosecha, acumulador, plantación). Se enciende en Ajustes. En Cosecha, el dial muestra además la proyección y, si la anotas, la estimación del asesor; la tira horizontal muestra solo lo medido.", g: "Centro de parámetros" },
     { v: 58, f: "2026-11-15", t: "Más movimiento", d: "La barra de abajo se esconde al bajar y vuelve al subir, con una marca que se desliza bajo el módulo activo. En Medidores puedes deslizar una lectura hacia la izquierda para ver sus acciones (partida, parada, quitar) y deslizar la tarjeta para pasar de un medidor a otro. Las hojas se cierran arrastrándolas hacia abajo. El nivel del acumulador sube o baja con animación, las secciones cambian con una transición suave y al guardar aparece un ✓ sobre el botón. Trabajo y Aplicaciones tienen colores nuevos, y el cabezal recogido es una barra rectangular.", g: "Acumulador y pozo" },
     { v: 57, f: "2026-11-15", t: "Pozo, colores y cabezales", d: "Al anotar la lectura del caudalímetro puedes marcar «Se da partida al pozo» (o «Se para el pozo») con su hora; en Medidores ves si el pozo está encendido y el botón para parar o dar partida, y en cada lectura antigua puedes marcarla como partida o parada. El Acumulador cruza esos datos: estima el nivel de ahora con las horas de pozo, el riego y la evaporación. Cada sección tiene su color de cabezal y de tarjetas, el cabezal se queda arriba y se achica al desplazarte, y los triángulos pasan a ser chevrones.", g: "Acumulador y pozo" },
     { v: 56, f: "2026-11-15", t: "Acumulador y pozo", d: "Nueva pantalla «Acumulador»: nivel por la vara con foto desde un punto fijo, volumen, días de autonomía con el pozo apagado y encendido, encendido y apagado del pozo con el caudal de cada ciclo, balance de la semana e historial. La tarjeta del Panel y las alertas ya usan estos datos.", g: "Acumulador y pozo" },
@@ -2644,6 +2700,8 @@ html.hashd .top{position:relative}
     alerta: "M12 4l9 16H3zM12 10v4M12 17h.01",
     consulta: "M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-4 4v-4H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 9.500h8M8 12.500h5",
     ajustes: "M4 7h9M17 7h3M4 17h3M11 17h9M15 4.500v5M9 14.500v5",
+    param: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0",
+    cerrar: "M6 6l12 12M18 6L6 18",
     permisos: "M5 4h14v17H5zM9 2v4M15 2v4M8 11h8M8 15h5",
     legal: "M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 006 0zM19 7l-3 7a3 3 0 006 0z",
     chev: "M6 9l6 6 6-6",
@@ -2709,9 +2767,165 @@ html.hashd .top{position:relative}
     var hi = el("div", "hi"); hi.appendChild(el("h2", null, titulo)); if (sub) hi.appendChild(el("p", null, sub)); t.appendChild(hi); return t;
   }
   var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], ajustes: ["Ajustes", "Ayuda, apariencia y respaldo"], arboles: ["Árboles del huerto", "Mapa, ficha y seguimiento de cada nogal"], sectores: ["Configurar sectores", "Toca el primer árbol de cada sector"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Trabajadores", "Quién trabaja hoy, permisos y agendados"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
+  /* ---- Centro de parámetros (sección secreta del dueño) ----
+     Se enciende en Ajustes y se abre tirando de la barra «Agr. Borderío» hacia la derecha. Reúne lo que conviene revisar y actualizar, por tema.
+     config/asesor: { estim: [{ k, kg, fecha, nota }], preg: [{ t, fecha, hecha }], val: { id: { e: "ok"|"rev", f } }, facSeco } */
+  function cpOn(){ if (!S.owner) return false; try { return localStorage.getItem("campo_parametros") === "1"; } catch (e){ return false; } }
+  function cpSetOn(v){ try { localStorage.setItem("campo_parametros", v ? "1" : "0"); } catch (e){} if (!v) cpCerrar(); render(); }
+  function asd(){ return S.asesor || {}; }
+  function asGuardar(parte){
+    var n = Object.assign({}, asd(), parte);
+    return S.db.doc("config/asesor").set(Object.assign({}, n, { por: S.nombre, ts: new Date().toISOString() })).then(function(){ S.asesor = n; cpRepinta(); });
+  }
+  function cpNum(x){ var t = String(x || "").trim().replace(/\s/g, ""); if (/,/.test(t)) t = t.replace(/\./g, "").replace(",", "."); else if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, ""); var n = Number(t); return t && isFinite(n) ? n : NaN; }
+  function asEstim(){ var m = {}; (asd().estim || []).forEach(function(x){ if (!m[x.k] || String(x.fecha) >= String(m[x.k].fecha)) m[x.k] = x; }); return m; }
+  function facSeco(){ var f = Number(asd().facSeco); return f > 0 && f <= 1 ? f : 0.40; }
+  function cpEst(id){ var v = asd().val && asd().val[id]; return v && v.e === "ok" ? v : { e: "rev" }; }
+  function irA(pant){ return function(){ S.screen = pant; render(); }; }
+  function cpGrupos(){
+    var a = asd(), E = asEstim(), ks = Object.keys(E).map(Number).sort(function(x, y){ return x - y; }), uk = ks[ks.length - 1];
+    var pend = (a.preg || []).filter(function(q){ return !q.hecha; }).length;
+    var fr = S.rgFac && Number(S.rgFac.factor) > 0 ? Number(S.rgFac.factor) : RG_FAC0, mc = acCfg();
+    return [
+      { g: "Asesor", ic: "consulta", items: [
+        { id: "ase-est", t: "Estimación de cosecha", v: ks.length ? "Temporada " + cosEtiq(uk) + ": " + nf(E[uk].kg, 0) + " kg secos" : "Sin estimación todavía", s: ks.length ? "Anotada el " + fmtD2(E[uk].fecha) : "", go: function(){ cpEstim(); } },
+        { id: "ase-preg", t: "Preguntas para el asesor", v: pend ? pend + (pend === 1 ? " pendiente" : " pendientes") : "Ninguna pendiente", go: function(){ cpPreg(); } } ] },
+      { g: "Riego", ic: "riego", items: [
+        { id: "rg-fac", t: "Factor del asesor", v: nf(fr, 2), s: S.rgFac && S.rgFac.desde ? "Desde el " + fmtD2(S.rgFac.desde) : "Valor de partida", val: true, go: irA("riego") },
+        { id: "rg-kc", t: "Kc de referencia (noviembre)", v: nf(RG_KCLO, 2) + " a " + nf(RG_KCHI, 2), s: "Tabla de referencia, no del asesor", val: true, go: irA("riego") } ] },
+      { g: "Cosecha", ic: "cosecha", items: [
+        { id: "co-ini", t: "Inicio de temporada", v: MESES_C[cosMesIni() - 1], go: function(){ abrirTemp(); } },
+        { id: "co-fac", t: "Equivalente seco de lo medido al día", v: "× " + nf(facSeco(), 2), s: a.facSeco ? "Ajustado por ti" : "Valor típico, sin dato propio", val: true, go: function(){ cpFac(); } } ] },
+      { g: "Acumulador", ic: "medidores", items: [
+        { id: "ac-cfg", t: "Nivel mínimo, consumo y aviso", v: "Mínimo " + nf(mc.hMin, 1) + " m", go: function(){ acCfgAbrir(); } } ] },
+      { g: "Plantación", ic: "campo", items: [
+        { id: "pl-ani", t: "Año de plantación", v: HU_ANIO + " (julio–agosto)" },
+        { id: "pl-marco", t: "Marco de plantación", v: "6 × 5 m · 333 árboles por hectárea", s: "No vale para La Rinconada" } ] }
+    ];
+  }
+  function cpAvisos(){ var n = 0; cpGrupos().forEach(function(g){ g.items.forEach(function(it){ if (it.val && cpEst(it.id).e !== "ok") n++; if (it.id === "ase-preg") n += (asd().preg || []).filter(function(q){ return !q.hecha; }).length; }); }); return n; }
+  var cpAb = 0;
+  function cpPintar(){
+    var b = document.getElementById("cpBox"); if (!b) return; b.textContent = "";
+    var h = el("div", "cp-h"), x = el("button", "cp-x"); x.type = "button"; x.setAttribute("aria-label", "Cerrar los parámetros"); x.appendChild(ico("cerrar")); x.onclick = cpCerrar;
+    h.appendChild(el("b", null, "Parámetros")); h.appendChild(el("small", null, "Para revisar y actualizar")); h.appendChild(x); b.appendChild(h);
+    cpGrupos().forEach(function(g, gi){
+      var gb = el("button", "cp-g"); gb.type = "button"; gb.setAttribute("aria-expanded", cpAb === gi ? "true" : "false"); gb.appendChild(ico(g.ic)); gb.appendChild(el("span", null, g.g));
+      var cv = ico("chev"); cv.setAttribute("class", "cp-c"); gb.appendChild(cv); gb.onclick = function(){ cpAb = cpAb === gi ? -1 : gi; cpPintar(); }; b.appendChild(gb);
+      if (cpAb !== gi) return;
+      g.items.forEach(function(it){
+        var r = el("div", "cp-it"), tx = el("span", "cp-tx"); tx.appendChild(el("b", null, it.t)); tx.appendChild(el("small", null, it.v)); if (it.s) tx.appendChild(el("small", null, it.s)); r.appendChild(tx);
+        if (it.go){ r.setAttribute("role", "button"); r.tabIndex = 0; r.onclick = function(){ cpCerrar(); it.go(); }; r.onkeydown = function(e){ if (e.key === "Enter" || e.key === " "){ e.preventDefault(); r.click(); } }; }
+        if (it.val){ var st = cpEst(it.id), c = el("button", "cp-chip" + (st.e === "ok" ? " ok" : ""), st.e === "ok" ? "Validado" + (st.f ? " " + fmtD2(st.f) : "") : "A revisar"); c.type = "button"; c.onclick = function(ev){ ev.stopPropagation(); cpMarca(it.id); }; r.appendChild(c); }
+        b.appendChild(r);
+      });
+    });
+  }
+  function cpMarca(id){ var v = Object.assign({}, asd().val), cur = v[id]; v[id] = { e: cur && cur.e === "ok" ? "rev" : "ok", f: fecha() }; asGuardar({ val: v }).catch(function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }); }
+  function cpEstaAbierto(){ var pn = document.getElementById("cpPn"); return !!(pn && pn.classList.contains("abierto")); }
+  function cpRepinta(){ if (cpEstaAbierto()) cpPintar(); try { cpSync(); } catch (e){} }
+  function cpAbrir(){
+    if (!cpOn()) return; var top = document.querySelector(".top"); if (!top) return;
+    var pn = document.getElementById("cpPn");
+    if (!pn){ pn = el("div", "cp-pn"); pn.id = "cpPn"; var bx = el("div", "cp-box"); bx.id = "cpBox"; pn.appendChild(bx); top.parentNode.insertBefore(pn, top.nextSibling); }
+    cpPintar(); pn.classList.add("abierto"); pn.style.maxHeight = "0"; void pn.offsetHeight;
+    pn.style.maxHeight = pn.scrollHeight + "px"; setTimeout(function(){ if (pn.classList.contains("abierto")) pn.style.maxHeight = "none"; }, 340);
+  }
+  function cpCerrar(){
+    var pn = document.getElementById("cpPn"); if (!pn) return;
+    pn.style.maxHeight = pn.scrollHeight + "px"; void pn.offsetHeight; pn.style.maxHeight = "0"; pn.classList.remove("abierto");
+    setTimeout(function(){ if (!pn.classList.contains("abierto") && pn.parentNode) pn.remove(); }, 340);
+  }
+  function cpAlterna(){ if (cpEstaAbierto()) cpCerrar(); else cpAbrir(); }
+  function cpSync(){
+    var on = cpOn(), t = document.querySelector(".top"); if (!t) return; t.classList.toggle("cp-on", on);
+    if (!on && cpEstaAbierto()) cpCerrar();
+  }
+  /* Hoja sencilla armada al vuelo: cuerpo, botón de guardar (opcional) y cierre. Al cerrar vuelve a abrirse el panel. */
+  function cpHoja(tit, cuerpo, okTxt, onOk){
+    var o = el("div", "sheet"), b = el("div", "box"); b.setAttribute("role", "dialog"); b.setAttribute("aria-modal", "true"); b.appendChild(el("h2", null, tit));
+    var sb = el("div", "sbody"); sb.appendChild(cuerpo); b.appendChild(sb);
+    var ft = el("div", "sfoot"), cierra = function(){ o.remove(); cpAbrir(); };
+    if (okTxt){ var ok = el("button", "primary", okTxt); ok.type = "button"; ok.onclick = async function(){ ok.disabled = true; try { var r = await onOk(); if (r !== false) cierra(); } catch (e){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); } ok.disabled = false; }; ft.appendChild(ok); }
+    var cn = el("button", null, okTxt ? "Cancelar" : "Cerrar"); cn.type = "button"; cn.onclick = cierra; ft.appendChild(cn); b.appendChild(ft); o.appendChild(b);
+    o.addEventListener("click", function(e){ if (e.target === o) cierra(); }); document.body.appendChild(o); return o;
+  }
+  function cpCampo(lbl, id, ctl){ var f = el("div", "field"), l = el("label", null, lbl); l.setAttribute("for", id); ctl.id = id; f.appendChild(l); f.appendChild(ctl); return f; }
+  function cpEstim(){
+    var body = el("div", "sect"), E = asEstim(), hoyT = cosTemp();
+    body.appendChild(el("p", "note", "Anota lo que el asesor estima cosechar. Queda con su fecha: si cambia de opinión, anota otra y se usa la más reciente."));
+    var lista = el("div"); function pintaLista(){
+      lista.textContent = ""; var E2 = asEstim();
+      Object.keys(E2).map(Number).sort(function(a, b){ return a - b; }).forEach(function(k){
+        var q = E2[k], r = el("div", "cp-fila"), t = el("span", null, "Temporada " + cosEtiq(k) + ": " + nf(q.kg, 0) + " kg secos"); t.appendChild(el("small", null, "Anotada el " + fmtD2(q.fecha) + (q.nota ? " · " + q.nota : ""))); r.appendChild(t);
+        var qb = el("button", null, "Quitar"); qb.type = "button"; qb.onclick = function(){
+          if (!qb.classList.contains("armado")){ qb.classList.add("armado"); qb.textContent = "¿Quitar?"; return; }
+          var nuevo = (asd().estim || []).filter(function(x){ return x.k !== k; }); asGuardar({ estim: nuevo }).then(pintaLista).catch(function(){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); });
+        }; r.appendChild(qb); lista.appendChild(r);
+      });
+    }
+    pintaLista(); body.appendChild(lista);
+    var sel = el("select"); for (var i = 0; i <= 3; i++){ var op = el("option", null, "Temporada " + cosEtiq(hoyT + i) + (i === 0 ? " (en curso)" : "")); op.value = String(hoyT + i); sel.appendChild(op); }
+    sel.value = String(hoyT + 1);
+    body.appendChild(cpCampo("Temporada", "cpEK", sel));
+    var kg = el("input"); kg.type = "text"; kg.inputMode = "decimal"; kg.maxLength = 8; kg.placeholder = "Ej: 4.000"; body.appendChild(cpCampo("Kilos secos estimados por el asesor", "cpEKg", kg));
+    var nt = el("input"); nt.type = "text"; nt.maxLength = 120; nt.placeholder = "Ej: visita del 14 de noviembre"; body.appendChild(cpCampo("Nota (opcional)", "cpEN", nt));
+    cpCerrar();
+    cpHoja("Estimación del asesor", body, "Guardar estimación", async function(){
+      var v = cpNum(kg.value); if (!(v > 0) || v > 200000){ toast("Escribe los kilos estimados."); kg.focus(); return false; }
+      var lst = (asd().estim || []).concat([{ k: Number(sel.value), kg: v, fecha: fecha(), nota: nt.value.trim() }]);
+      await asGuardar({ estim: lst }); toast("Estimación guardada"); if (S.screen === "cosecha") render();
+    });
+  }
+  function cpPreg(){
+    var body = el("div", "sect"), lista = el("div");
+    function pinta(){
+      lista.textContent = ""; var arr = asd().preg || [];
+      if (!arr.length) lista.appendChild(el("p", "note", "Aún no hay preguntas. Anota aquí lo que quieres consultar en la próxima visita."));
+      arr.forEach(function(q, i){
+        var r = el("div", "cp-fila"), t = el("span", null, q.t); t.appendChild(el("small", null, (q.hecha ? "Resuelta" : "Pendiente") + " · " + fmtD2(q.fecha))); if (q.hecha) t.style.opacity = ".6"; r.appendChild(t);
+        var hb = el("button", null, q.hecha ? "Reabrir" : "Resuelta"); hb.type = "button"; hb.onclick = function(){ var n = (asd().preg || []).slice(); n[i] = Object.assign({}, n[i], { hecha: !n[i].hecha }); asGuardar({ preg: n }).then(pinta); }; r.appendChild(hb);
+        var qb = el("button", null, "Quitar"); qb.type = "button"; qb.onclick = function(){ if (!qb.classList.contains("armado")){ qb.classList.add("armado"); qb.textContent = "¿Quitar?"; return; } var n = (asd().preg || []).filter(function(_, j){ return j !== i; }); asGuardar({ preg: n }).then(pinta); }; r.appendChild(qb);
+        lista.appendChild(r);
+      });
+    }
+    pinta(); body.appendChild(lista);
+    var inp = el("input"); inp.type = "text"; inp.maxLength = 160; inp.placeholder = "Ej: ¿Cuándo cambia el factor de 0,7?"; body.appendChild(cpCampo("Nueva pregunta", "cpPq", inp));
+    var add = el("button", null, "Agregar pregunta"); add.type = "button"; add.onclick = function(){ var t = inp.value.trim(); if (!t){ toast("Escribe la pregunta."); inp.focus(); return; } asGuardar({ preg: (asd().preg || []).concat([{ t: t, fecha: fecha(), hecha: false }]) }).then(function(){ inp.value = ""; pinta(); }); }; body.appendChild(add);
+    cpCerrar(); cpHoja("Preguntas para el asesor", body);
+  }
+  function cpFac(){
+    var body = el("div", "sect"); body.appendChild(el("p", "note", "Las temporadas medidas al día (con cáscara verde) se llevan a kilos secos multiplicando por este factor. Sirve para comparar y proyectar. Si tu asesor o tu bodega tienen la proporción real, escríbela aquí."));
+    var inp = el("input"); inp.type = "text"; inp.inputMode = "decimal"; inp.maxLength = 5; inp.value = String(facSeco()).replace(".", ","); body.appendChild(cpCampo("Factor (entre 0,1 y 1)", "cpFc", inp));
+    cpCerrar();
+    cpHoja("Equivalente seco", body, "Guardar", async function(){ var v = cpNum(inp.value); if (!(v >= 0.1 && v <= 1)){ toast("Escribe un número entre 0,1 y 1."); inp.focus(); return false; } await asGuardar({ facSeco: v }); toast("Factor guardado"); if (S.screen === "cosecha") render(); });
+  }
+  /* Gesto: tirar de la barra «Agr. Borderío» hacia la derecha abre o cierra el panel. */
+  (function(){
+    var top = document.querySelector(".top"), fr = document.getElementById("topFr"), rv = document.getElementById("cpRev"), rt = document.getElementById("cpRevT"), ic = document.getElementById("cpIc");
+    if (!top || !fr || !rv) return; ic.appendChild(ico("param"));
+    var THR = 78, drag = false, x0 = 0, y0 = 0, dx = 0, dir = null;
+    function mover(x){
+      dx = Math.max(0, Math.min(x, 150)); fr.style.transform = "translateX(" + dx + "px)"; rv.style.width = dx + "px"; var p = dx >= THR;
+      rt.style.opacity = dx > 46 ? "1" : "0"; if (dx > 46){ var n = cpAvisos(); rt.textContent = p ? "Suelta para abrir" : (n ? n + " por revisar" : "Parámetros"); } top.classList.toggle("cp-lis", p);
+    }
+    function vuelve(){
+      fr.style.transition = "transform .3s cubic-bezier(.2,.8,.2,1)"; rv.style.transition = "width .3s"; fr.style.transform = ""; rv.style.width = "0"; top.classList.remove("cp-lis"); rt.style.opacity = "0";
+      setTimeout(function(){ fr.style.transition = ""; rv.style.transition = ""; }, 320);
+    }
+    fr.addEventListener("pointerdown", function(e){ if (!cpOn() || (e.pointerType === "mouse" && e.button !== 0)) return; drag = true; dir = null; x0 = e.clientX; y0 = e.clientY; fr.style.transition = ""; rv.style.transition = ""; });
+    fr.addEventListener("pointermove", function(e){
+      if (!drag) return; var ax = e.clientX - x0, ay = e.clientY - y0;
+      if (!dir){ if (Math.abs(ax) < 6 && Math.abs(ay) < 6) return; dir = Math.abs(ax) > Math.abs(ay) ? "h" : "v"; if (dir === "h"){ try { fr.setPointerCapture(e.pointerId); } catch (e2){} } }
+      if (dir === "h") mover(ax < 0 ? ax * 0.2 : ax);
+    });
+    function fin(){ if (!drag) return; drag = false; var ok = dir === "h" && dx >= THR; vuelve(); dx = 0; if (ok) cpAlterna(); }
+    fr.addEventListener("pointerup", fin); fr.addEventListener("pointercancel", fin);
+  })();
   function ph(key){
     var d = el("div", "ph hd"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); t.appendChild(el("p", "hd-i", hdInfo(key))); d.appendChild(t);
+    if (cpOn()){ var cb = el("button", "cp-b"); cb.type = "button"; cb.setAttribute("aria-label", "Abrir los parámetros"); cb.appendChild(ico("param")); var nv = cpAvisos(); if (nv) cb.appendChild(el("span", "n", String(nv))); cb.onclick = function(){ try { window.scrollTo(0, 0); } catch (e0){} setTimeout(cpAbrir, 260); }; d.appendChild(cb); }
     document.documentElement.classList.add("hashd"); if ((window.scrollY || 0) > hdUmbral() + 4) d.classList.add("min");
     return d;
   }
@@ -2960,6 +3174,13 @@ html.hashd .top{position:relative}
         bc.onclick = function(){ huGuardar({ cfgOn: !hu().cfgOn }); }; ay.appendChild(bc);
         ay.appendChild(el("p", "note", "Enciéndelo solo cuando haya que cambiar los sectores. Apagado, los sectores quedan guardados."));
       }
+    }
+    if (S.owner){
+      ay.appendChild(el("p", "ajs-t", "Centro de parámetros"));
+      var onP = cpOn(), bp = el("button", null, onP ? "Centro de parámetros: activado" : "Centro de parámetros: apagado"); bp.id = "btnCpOn"; bp.type = "button"; bp.setAttribute("aria-pressed", onP ? "true" : "false");
+      bp.onclick = function(){ cpSetOn(!cpOn()); }; ay.appendChild(bp);
+      ay.appendChild(el("p", "note", onP ? "Se abre tirando de la barra «Agr. Borderío», arriba, hacia la derecha. Reúne por tema lo que conviene revisar y actualizar: asesor, riego, cosecha y más. Solo lo ves tú, en este teléfono." : "Sección reservada para ti. Enciéndela y tira de la barra «Agr. Borderío», arriba, hacia la derecha."));
+      if (onP){ var bo = el("button", null, "Abrir parámetros"); bo.id = "btnCpAbrir"; bo.type = "button"; bo.onclick = function(){ try { window.scrollTo(0, 0); } catch (e3){} setTimeout(cpAbrir, 120); }; ay.appendChild(bo); }
     }
     if (S.owner){
       ay.appendChild(el("p", "ajs-t", "Datos y respaldo"));
@@ -6482,10 +6703,111 @@ html.hashd .top{position:relative}
   };
   function buildCosecha(){
     var f = buildCosecha0();
-    f.querySelectorAll("button").forEach(function(b){
-      var cl = b.className.trim(); if (/^(primary|small|small armado|)$/.test(cl) && !b.closest(".mtabs")){ b.classList.add("bd-o"); if (b.classList.contains("primary")) b.classList.add("bd-p"); }
-    });
     return f;
+  }
+  /* Proyección de nogal: tendencia lineal (mínimos cuadrados) de los kilos por temporada, en «equivalente seco».
+     Lo medido al día (con cáscara verde) se convierte con facSeco(): 0,40 por defecto, un supuesto típico que se afina en el centro de parámetros. */
+  function cosProy(keys, hoyT, mi0){
+    var pts = [], conv = false, mesesDesde = (new Date().getMonth() + 1 - mi0 + 12) % 12;
+    keys.slice().sort(function(a, b){ return a - b; }).forEach(function(k){
+      if (k === hoyT && mesesDesde < 3) return;
+      var sc = 0, dd = 0; cosAct(k).forEach(function(c){ if (c.esp === "Limón") return; var v = Number(c.kg) || 0; if (c.medida === "seco") sc += v; else dd += v; });
+      var eq = sc + dd * facSeco(); if (eq > 0) pts.push({ k: k, kg: eq, seco: sc, dia: dd });
+    });
+    pts.forEach(function(q){ if (q.dia > 0) conv = true; });
+    if (pts.length < 2) return { ok: false, pts: pts, proy: {}, ase: asEstim(), conv: conv, motivo: "Con al menos dos temporadas con cosecha de nogal se calcula la tendencia." };
+    var n = pts.length, mx = 0, my = 0; pts.forEach(function(q){ mx += q.k; my += q.kg; }); mx /= n; my /= n;
+    var sxy = 0, sxx = 0; pts.forEach(function(q){ sxy += (q.k - mx) * (q.kg - my); sxx += (q.k - mx) * (q.k - mx); });
+    var b = sxx > 0 ? sxy / sxx : 0, a = my - b * mx, proy = {};
+    for (var i = 1; i <= 3; i++){ var k = hoyT + i; proy[k] = Math.max(0, Math.round(a + b * k)); }
+    return { ok: true, pts: pts, proy: proy, ase: asEstim(), b: b, conv: conv };
+  }
+  function buildProy(f, sk, P, hoyT, mi0){
+    var c = el("section", "card sect"); c.appendChild(el("h2", null, "Proyección · temporada " + cosEtiq(sk)));
+    var big = el("p", "proy-big"); big.appendChild(document.createTextNode("≈ " + nf(P.proy[sk], 0))); big.appendChild(el("small", null, " kg secos")); c.appendChild(big);
+    c.appendChild(el("p", "sub", "Tendencia de " + P.pts.length + " temporadas (" + cosEtiq(P.pts[0].k) + " a " + cosEtiq(P.pts[P.pts.length - 1].k) + "): " + (P.b >= 0 ? "+" : "−") + nf(Math.abs(P.b), 0) + " kg por temporada."));
+    f.appendChild(c);
+    if (S.owner){
+      var A = P.ase && P.ase[sk], ca = el("section", "card sect"); ca.appendChild(el("h2", null, "Según el asesor"));
+      if (A){
+        var bg2 = el("p", "proy-big"); bg2.appendChild(document.createTextNode("≈ " + nf(A.kg, 0))); bg2.appendChild(el("small", null, " kg secos")); ca.appendChild(bg2);
+        var df = A.kg - P.proy[sk]; ca.appendChild(el("p", "sub", "Anotada el " + fmtD2(A.fecha) + (A.nota ? " · " + A.nota : "") + ". " + nf(Math.abs(df), 0) + " kg " + (df >= 0 ? "más" : "menos") + " que la tendencia (" + (df >= 0 ? "+" : "−") + nf(Math.abs(df / Math.max(1, P.proy[sk])) * 100, 0) + " %)."));
+      } else ca.appendChild(el("p", "note", "Todavía no hay una estimación del asesor para esta temporada."));
+      if (cpOn()){ var eb = el("button", "small", A ? "Cambiar la estimación" : "Anotar la estimación del asesor"); eb.type = "button"; eb.onclick = function(){ cpEstim(); }; ca.appendChild(eb); }
+      f.appendChild(ca);
+    }
+    var d = el("section", "card sect"); d.appendChild(el("h2", null, "Datos usados")); var rows = el("div", "rows");
+    P.pts.forEach(function(q){ var r = el("div", "row"); r.appendChild(el("span", "l", "Temporada " + cosEtiq(q.k) + (q.dia > 0 && q.seco === 0 ? " (al día × " + String(facSeco()).replace(".", ",") + ")" : ""))); r.appendChild(el("span", "r", nf(q.kg, 0) + " kg")); rows.appendChild(r); });
+    d.appendChild(rows);
+    d.appendChild(el("p", "note", "Es una estimación lineal con pocos datos: sirve de orientación, no de promesa. Cambia con el clima, las heladas, el riego y la madurez de los árboles."));
+    if (P.conv) d.appendChild(el("p", "note", "Las temporadas medidas al día (con cáscara verde) se llevaron a equivalente seco multiplicando por " + String(facSeco()).replace(".", ",") + ", un valor típico: si tienes la proporción real, avísame y la ajusto."));
+    f.appendChild(d);
+    return f;
+  }
+  function cosDial(ks, sk, hoyT, mi0, P){
+    var NS = "http://www.w3.org/2000/svg", CX = 170, CY = 300, R = 214, ST = 24, N = ks.length, sel = Math.max(0, ks.indexOf(sk)), rot = -sel * ST, anim = null, drag = false, moved = false;
+    var box = el("div", "tmp-dial"), svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 340 194"); svg.setAttribute("role", "group"); svg.setAttribute("aria-label", "Dial de temporadas: arrastra de lado o toca una temporada");
+    function mk(n, a, p){ var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); (p || g0).appendChild(e); return e; }
+    var g0 = mk("g", {}, svg); g0.setAttribute("id", "dialG");
+    var df = document.createElementNS(NS, "defs");
+    df.innerHTML = '<filter id="dlSh" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="1.5" stdDeviation="4" flood-color="#000" flood-opacity=".32"/></filter>'
+      + '<filter id="dlPin" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity=".4"/></filter>'
+      + '<linearGradient id="dlRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></linearGradient>'
+      + '<linearGradient id="dlSink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".4" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>'
+      + '<radialGradient id="dlHub" gradientUnits="userSpaceOnUse" cx="170" cy="86" r="60"><stop offset="0" stop-color="#000" stop-opacity=".09"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
+      + '<clipPath id="dlClip"><circle cx="170" cy="300" r="214"/></clipPath>';
+    svg.insertBefore(df, svg.firstChild);
+    var base = document.createElementNS(NS, "g"), bc = document.createElementNS(NS, "circle");
+    bc.setAttribute("cx", CX); bc.setAttribute("cy", CY); bc.setAttribute("r", R + 56); bc.setAttribute("fill", "var(--surface-2)"); bc.setAttribute("filter", "url(#dlSh)");
+    var bh = document.createElementNS(NS, "circle"); ["cx", CX, "cy", CY, "r", R + 55].forEach(function(v, i, a){ if (i % 2 === 0) bh.setAttribute(v, a[i + 1]); }); bh.setAttribute("fill", "none"); bh.setAttribute("stroke", "url(#dlRim)"); bh.setAttribute("stroke-width", "2");
+    base.appendChild(bc); base.appendChild(bh); svg.insertBefore(base, g0);
+    for (var i = -90; i <= 90 + N * ST; i += 6){ var gt = mk("g", { transform: "rotate(" + i + " " + CX + " " + CY + ")" }); mk("line", { x1: CX, y1: CY - R - 54, x2: CX, y2: CY - R - 54 + (Math.round(i / 6) % 4 === 0 ? 10 : 5), stroke: "var(--line)", "stroke-width": "1" }, gt); }
+    var items = [], meses = function(k){ return MESES_C[mi0 - 1].slice(0, 3) + " " + k + " – " + MESES_C[(mi0 + 10) % 12].slice(0, 3) + " " + (mi0 === 1 ? k : k + 1); };
+    ks.forEach(function(k, i){
+      var gi = mk("g", { transform: "rotate(" + (i * ST) + " " + CX + " " + CY + ")" }); gi.style.cursor = "pointer";
+      mk("rect", { x: CX - 45, y: CY - R - 54, width: 90, height: 46, fill: "transparent" }, gi);
+      var a = mk("text", { x: CX, y: CY - R - 33, "text-anchor": "middle", "font-size": "14", "font-weight": "700" }, gi); a.textContent = cosEtiq(k);
+      var b = mk("text", { x: CX, y: CY - R - 19, "text-anchor": "middle", "font-size": "10" }, gi); if (k > hoyT) b.setAttribute("letter-spacing", ".8"); b.textContent = k > hoyT ? "PROYECCIÓN" : MESES_C[mi0 - 1].slice(0, 3) + " " + String(k).slice(2) + " – " + MESES_C[(mi0 + 10) % 12].slice(0, 3) + " " + String(mi0 === 1 ? k : k + 1).slice(2);
+      gi.addEventListener("click", function(){ if (!moved) go(i); }); items.push([a, b]);
+    });
+    mk("polygon", { points: "170,23 160,8 180,8", fill: "var(--accent)", filter: "url(#dlPin)" }, svg);
+    mk("circle", { cx: CX, cy: CY, r: 214, fill: "var(--surface)" }, svg);
+    mk("circle", { cx: CX, cy: CY, r: 214, fill: "url(#dlHub)" }, svg);
+    var sk2 = mk("circle", { cx: CX, cy: CY, r: 214, fill: "none", stroke: "url(#dlSink)", "stroke-width": "8" }, svg); sk2.setAttribute("clip-path", "url(#dlClip)");
+    mk("circle", { cx: CX, cy: CY, r: 214.5, fill: "none", stroke: "var(--line)", "stroke-width": "1" }, svg);
+    var hk = mk("text", { x: CX, y: 126, "text-anchor": "middle", "font-size": "36", "font-weight": "700", fill: "var(--fg)" }, svg);
+    var hu = mk("text", { x: CX, y: 146, "text-anchor": "middle", "font-size": "11", "letter-spacing": "1", fill: "var(--accent)", "font-weight": "700" }, svg);
+    var hf = mk("text", { x: CX, y: 172, "text-anchor": "middle", "font-size": "12", fill: "var(--muted)" }, svg);
+    function tot(k){ var t = { seco: 0, dia: 0, lim: 0 }; cosAct(k).forEach(function(c){ var v = Number(c.kg) || 0; if (c.esp === "Limón") t.lim += v; else if (c.medida === "seco") t.seco += v; else t.dia += v; }); return t; }
+    function txt(j){
+      var k = ks[j], t = tot(k), pr = [], fm = function(v){ return v.toLocaleString("es-CL", { maximumFractionDigits: 0 }); };
+      hf.textContent = (k > hoyT ? "Temporada " + cosEtiq(k) + " · " : "") + meses(k) + (k === hoyT ? "  ·  ACTUAL" : "");
+      if (k > hoyT && P && P.proy[k] != null){ hk.textContent = "≈ " + fm(P.proy[k]); hu.textContent = "KG SECOS  ·  PROYECCIÓN" + (S.owner && P.ase && P.ase[k] ? "  ·  ASESOR " + fm(P.ase[k].kg) : ""); return; }
+      if (t.seco > 0) pr.push([t.seco, "KG SECOS"]); if (t.dia > 0) pr.push([t.dia, "KG HÚMEDOS"]); if (t.lim > 0) pr.push([t.lim, "KG DE LIMÓN"]);
+      if (!pr.length) pr.push([0, "KG COSECHADOS"]);
+      hk.textContent = fm(pr[0][0]); hu.textContent = pr[0][1] + pr.slice(1).map(function(x){ return "  ·  " + fm(x[0]) + " " + x[1]; }).join("");
+    }
+    function draw(){
+      g0.setAttribute("transform", "rotate(" + rot + " " + CX + " " + CY + ")");
+      var near = Math.max(0, Math.min(N - 1, Math.round(-rot / ST)));
+      items.forEach(function(it, i){ var on = i === near; it[0].setAttribute("fill", on ? "var(--accent)" : "var(--muted)"); it[0].setAttribute("font-size", on ? "16" : "14"); it[1].setAttribute("fill", on ? "var(--accent)" : "var(--muted)"); });
+      if (near !== sel){ sel = near; txt(sel); }
+    }
+    function fin(k){ if (ks[k] !== S.cosSel){ S.cosSel = ks[k]; render(); } }
+    function go(k){
+      var from = rot, to = -k * ST, t0 = null; cancelAnimationFrame(anim);
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ rot = to; draw(); fin(k); return; }
+      function fr(t){ if (!t0) t0 = t; var p = Math.min(1, (t - t0) / 380); rot = from + (to - from) * (1 - Math.pow(1 - p, 3)); draw(); if (p < 1) anim = requestAnimationFrame(fr); else fin(k); }
+      anim = requestAnimationFrame(fr);
+    }
+    var x0 = 0, r0 = 0, lx = 0, lt = 0, vel = 0;
+    svg.addEventListener("pointerdown", function(e){ cancelAnimationFrame(anim); drag = true; moved = false; x0 = lx = e.clientX; r0 = rot; lt = e.timeStamp; vel = 0; try { svg.setPointerCapture(e.pointerId); } catch (e2){} svg.classList.add("arr"); });
+    svg.addEventListener("pointermove", function(e){ if (!drag) return; var dx = e.clientX - x0; if (Math.abs(dx) > 4) moved = true; var w = svg.getBoundingClientRect().width / 340; rot = Math.max(-(N - 1) * ST - 12, Math.min(12, r0 + dx / w * 0.22)); vel = (e.clientX - lx) / Math.max(1, e.timeStamp - lt); lx = e.clientX; lt = e.timeStamp; draw(); });
+    function fn(){ if (!drag) return; drag = false; svg.classList.remove("arr"); go(Math.max(0, Math.min(N - 1, Math.round((-rot - vel * 8) / ST)))); setTimeout(function(){ moved = false; }, 0); }
+    svg.addEventListener("pointerup", fn); svg.addEventListener("pointercancel", fn);
+    svg.tabIndex = 0; svg.addEventListener("keydown", function(e){ if (e.key === "ArrowLeft" && sel > 0){ go(sel - 1); e.preventDefault(); } else if (e.key === "ArrowRight" && sel < N - 1){ go(sel + 1); e.preventDefault(); } });
+    box.appendChild(svg); draw(); txt(sel);
+    return box;
   }
   function buildCosecha0(){
     var f = document.createDocumentFragment(); f.appendChild(ph("cosecha"));
@@ -6497,10 +6819,16 @@ html.hashd .top{position:relative}
     if (S.cosTab === "ventas") return buildVentas(f);
     var hoyT = cosTemp(), ks = {}; ks[hoyT] = 1; cosAct().forEach(function(c){ ks[cosTempDe(c.fecha)] = 1; });
     var keys = Object.keys(ks).map(Number).sort(function(a, b){ return b - a; });
-    if (!S.cosSel || !ks[S.cosSel]) S.cosSel = hoyT;
+    var mi0 = cosMesIni(), P = cosProy(keys, hoyT, mi0);
+    if (!S.cosSel || (!ks[S.cosSel] && !(P.ok && P.proy[S.cosSel]))) S.cosSel = hoyT;
     var sk = S.cosSel;
+    var vDial = false, fut = P.ok ? Object.keys(P.proy).map(Number).sort(function(a, b){ return b - a; }) : [];
+    try { vDial = localStorage.getItem("cosVista") === "dial"; } catch (e0){}
+    if (!vDial && sk > hoyT){ sk = S.cosSel = hoyT; }
+    var tgw = el("div", "tmp-tgw"), tg = el("button", "tmp-tg", "Vista de dial"); tg.type = "button"; tg.setAttribute("role", "switch"); tg.setAttribute("aria-checked", vDial ? "true" : "false"); tg.appendChild(document.createElement("i"));
+    tg.onclick = function(){ try { localStorage.setItem("cosVista", vDial ? "tira" : "dial"); } catch (e1){} render(); };
+    tgw.appendChild(tg); f.appendChild(tgw);
     var ch = el("div", "tmp-strip ini"); ch.setAttribute("role", "group"); ch.setAttribute("aria-label", "Elige una temporada");
-    var mi0 = cosMesIni();
     keys.forEach(function(k){
       var b = el("button", "tmp-i"), t1 = el("b", null, "Temporada " + cosEtiq(k)); b.type = "button"; b.setAttribute("aria-pressed", k === sk ? "true" : "false");
       if (k === hoyT) t1.appendChild(el("em", null, "Actual"));
@@ -6510,7 +6838,8 @@ html.hashd .top{position:relative}
     var marcaT = function(){ ch.classList.toggle("fin", ch.scrollLeft + ch.clientWidth >= ch.scrollWidth - 4); ch.classList.toggle("ini", ch.scrollLeft <= 12); };
     ch.onscroll = function(){ S.tmpSL = ch.scrollLeft; marcaT(); };
     setTimeout(function(){ var ac = ch.querySelector("[aria-pressed=true]"); if (S.tmpSL != null) ch.scrollLeft = S.tmpSL; else if (ac) ch.scrollLeft = Math.max(0, ac.offsetLeft - 8); marcaT(); }, 0);
-    f.appendChild(ch);
+    f.appendChild(vDial ? cosDial(keys.slice().reverse().concat(fut.slice().reverse()), sk, hoyT, mi0, P) : ch);
+    if (sk > hoyT) return buildProy(f, sk, P, hoyT, mi0);
     var c0 = el("section", "card sect"); c0.appendChild(el("h2", null, "Temporada " + cosEtiq(sk)));
     c0.appendChild(el("p", "sub", "De " + MESES_C[cosMesIni() - 1] + " a " + MESES_C[(cosMesIni() + 10) % 12] + "."));
     var add = el("button", "primary", "Registrar cosecha"); add.onclick = function(){ abrirCosecha(); }; c0.appendChild(add);
@@ -6752,7 +7081,7 @@ html.hashd .top{position:relative}
     c.appendChild(rows);
     if (cu.cos > 0){ var p = el("p"); if (Math.abs(cu.dif) <= 1) p.appendChild(el("span", "chip ok", "Cuadra con Cosecha: " + fmtNum(cu.cos, 1) + " kg")); else { p.appendChild(el("span", "chip idle", "Cosecha " + fmtNum(cu.cos, 1) + " kg · ubicados " + fmtNum(cu.ubic, 1) + " kg")); c.appendChild(p); p = el("p", "note warn", (cu.dif > 0 ? "Faltan " + fmtNum(cu.dif, 1) + " kg por ubicar en la bodega." : "Hay " + fmtNum(-cu.dif, 1) + " kg más en bodega y ventas que en Cosecha.") + " Revisa «Cosecha» o anota el movimiento."); } c.appendChild(p); }
     var b1 = el("button", "primary", "Anotar movimiento"); b1.onclick = abrirMov; c.appendChild(b1);
-    if (ep > 0){ var b2 = el("button", "bd-o", "Recibir pulpa partida"); b2.onclick = abrirRecibir; c.appendChild(b2); }
+    if (ep > 0){ var b2 = el("button", null, "Recibir pulpa partida"); b2.onclick = abrirRecibir; c.appendChild(b2); }
     f.appendChild(c);
     var d = el("section", "card sect"); d.appendChild(el("h2", null, "Dónde está"));
     if (!sal.length) d.appendChild(el("p", "note", "Todavía no hay nueces anotadas en la bodega."));
@@ -8998,7 +9327,7 @@ html.hashd .top{position:relative}
     pcSync();
     var scrOk = !!(S.db && S.uid && S.nombre), SCR = { riego: "riego", acum: "riego", medidores: "riego", campo: "campo", arboles: "campo", sectores: "campo", aplic: "aplic", trabajo: "trabajo", agenda: "agenda", cosecha: "cosecha", personal: "equipo", permisos: "equipo", horarios: "equipo", terceros: "equipo", legal: "gris", ajustes: "gris" };
     ["riego", "campo", "aplic", "trabajo", "agenda", "cosecha", "equipo", "gris"].forEach(function(k){ document.documentElement.classList.toggle("scr-" + k, scrOk && SCR[S.screen] === k); });
-    $("fechaHoy").textContent = fechaCorta(new Date());
+    $("fechaHoy").textContent = fechaCorta(new Date()); cpSync();
     var listo = !!(S.db && S.uid && S.okEq && S.okDias && S.nombre);
     $("nav").hidden = !listo; if (listo){ var nv0 = $("nav"); nv0.classList.remove("hu7"); nv0.setAttribute("aria-label", "Módulos"); if (PC) buildNavPC(); else if (S.screen === "arboles" && huOn()) huNavCapas(); else buildNav(); }
     if (S.screen !== lastScreen){ var prevSc = lastScreen; lastScreen = S.screen; try { window.scrollTo(0, 0); } catch (e0) {} S.acH = null; S.acPrev = null; if (prevSc){ var apE = $("app"); apE.classList.remove("ent"); void apE.offsetWidth; apE.classList.add("ent"); clearTimeout(apE._et); apE._et = setTimeout(function(){ apE.classList.remove("ent"); }, 600); } }
@@ -9044,6 +9373,7 @@ html.hashd .top{position:relative}
     db.collection("asistencia/" + S.uid + "/dias").orderBy("fecha", "desc").limit(31).onSnapshot(function(s){
       S.okDias = true; S.dias = s.docs.map(function(d){ return d.data(); }); render();
     }, function(){ S.okDias = true; render(); });
+    db.doc("config/asesor").onSnapshot(function(s){ S.asesor = s.exists ? s.data() : {}; cpRepinta(); if (S.screen === "cosecha") render(); }, function(){});
     db.doc("config/riegoFactor").onSnapshot(function(s){ S.rgFac = s.exists ? s.data() : null; if (S.screen === "riego") render(); }, function(){});
     db.doc("config/huerto").onSnapshot(function(s){ S.huerto = s.exists ? s.data() : null; render(); huRefrescar(); }, function(){});
     db.collection("arboles").orderBy("ts", "desc").limit(600).onSnapshot(function(s){

@@ -40,6 +40,17 @@
   --alert:#EE9068; --alert-bg:#3B2419; --on-alert:#2A1208;
   color-scheme:dark;
 }
+/* Noche viva: la paleta oscura de colores vivos del Panel, para toda la app */
+html.viv[data-theme="dark"]{
+  --bg:#0E1A14; --surface:#16261D; --surface-2:#1E3326; --fg:#EEF6F0; --muted:#A3BBA9; --line:#2B4535;
+  --accent:#4ADE80; --on-accent:#07140C; --hero:#14402B; --on-hero:#EEF6F0; --focus:#FBBF24;
+  --lemon:#FBBF24; --lemon-bg:#3A3015; --lemon-fg:#FCD34D;
+  --water:#60A5FA; --water-bg:#16304F;
+  --wood:#FDBA74; --wood-bg:#3A2A18;
+  --slate:#A5B4FC; --slate-bg:#25284A;
+  --ok-bg:#12432A; --ok-fg:#86EFAC; --idle-bg:#2E3328; --idle-fg:#D9E3C3;
+  --alert:#FB7185; --alert-bg:#43202A; --on-alert:#2A0A12;
+}
 [hidden]{display:none !important}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -1609,16 +1620,17 @@ html.pc .cmdk:not([hidden]){display:flex}
   var $ = function(id){ return document.getElementById(id); };
   try { if (localStorage.getItem("campo_sol") === "1") document.documentElement.classList.add("sol"); } catch (e0) {}
   var ACERVO_SHEET = "1KcjwMJd_H9Z7YKZmVmK0OkdSNM9MT16Bf0RiE_eoWRQ", ACERVO_CARPETA = "1rqYqv8zA77rr7oOmibhOI3AILDj2f-_l";
-  var TEMAS = ["auto", "light", "dark"], TEMA_TXT = { auto: "automática", light: "clara", dark: "nocturna" };
+  var TEMAS = ["auto", "light", "dark", "vivo"], TEMA_TXT = { auto: "automática", light: "clara", dark: "nocturna", vivo: "noche viva" };
   function temaGuardado(){ try { var t = localStorage.getItem("campo_tema"); return TEMAS.indexOf(t) >= 0 ? t : "auto"; } catch (e) { return "auto"; } }
-  function aplicarTema(t){
-    var h = document.documentElement;
+  function aplicarTema(t0){
+    var h = document.documentElement, t = t0 === "vivo" ? "dark" : t0;
+    h.classList.toggle("viv", t0 === "vivo");
     if (t === "auto") h.removeAttribute("data-theme"); else h.setAttribute("data-theme", t);
     Array.prototype.forEach.call(document.querySelectorAll('meta[name="theme-color"]'), function(m){
       if (!m.hasAttribute("data-m")) m.setAttribute("data-m", m.getAttribute("media") || "");
       if (!m.hasAttribute("data-c")) m.setAttribute("data-c", m.getAttribute("content"));
       if (t === "auto"){ m.setAttribute("content", m.getAttribute("data-c")); if (m.getAttribute("data-m")) m.setAttribute("media", m.getAttribute("data-m")); }
-      else { m.removeAttribute("media"); m.setAttribute("content", t === "dark" ? "#0F1711" : "#F2EFE6"); }
+      else { m.removeAttribute("media"); m.setAttribute("content", t0 === "vivo" ? "#0E1A14" : t === "dark" ? "#0F1711" : "#F2EFE6"); }
     });
   }
   aplicarTema(temaGuardado());
@@ -1774,7 +1786,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego de la semana", "Arriba en «Riego» está «Riego de la semana · nogales»: calcula cuántas horas necesita cada sector con la evapotranspiración de los últimos 7 días y el factor del asesor, y la compara con las horas regadas. Elige el reparto (el programa del asesor, todos los días o 5 días) y ves cuántos minutos programar cada día. Solo el dueño toca «Ajustar factor» para cambiar el factor, su vigencia y la nota, y «Guardar factor».", 51, ""],
     ["Equipos y plano de riego", "En «Riego», más abajo, la tarjeta «Equipos y plano de riego» guarda el plano de diseño, las placas de las bombas, lo que pide el riego con los goteros instalados, el reparto de limones por cuartel y los datos que faltan, que quedan a la vista hasta que se resuelvan. Toca «Ver el plano y los equipos» para abrir el detalle. Solo el dueño ve además el costo de la electricidad y guarda la tarifa en «Guardar tarifa».", 53, ""],
     ["Hora de la lectura y derecho del año", "Al anotar una lectura con la foto de la cámara de la app, queda guardada también la hora del teléfono. En el caudalímetro, con dos lecturas con hora, «Medidores» calcula el caudal medio del período y avisa si pasa los 2 L/s. En «Riego», la tarjeta «Equipos y plano de riego» muestra el derecho del año (1 de enero al 31 de diciembre): cuánto se extrajo y cuánto queda por día. En «Agenda», las notas tienen la etiqueta «Pendiente».", 54, ""],
-    ["Panel", "En la barra de abajo, junto a «Inicio», está «Panel»: tarjetas con lo más importante (alertas y recordatorios, riego de la semana, agua del pozo, acumulador, electricidad, equipo de hoy, aplicaciones y bodega). Cada tarjeta se pliega con el botón redondo ▼. En las alertas, el botón «Ir» te lleva a la pantalla donde se arregla. En «Ajustes del panel» enciendes o apagas cada tarjeta; la elección es tuya y se guarda en este teléfono. Agua y electricidad (con costos) solo las ve el dueño. En «Riego de la semana» (en Panel y en «Riego») puedes ver el avance en porcentaje, con color (verde 90 % o más, ámbar 70 a 90 %, rojo bajo 70 %), o en barras.", 55, ""],
+    ["Panel", "En la barra de abajo, junto a «Inicio», está «Panel»: tarjetas con lo más importante (alertas y recordatorios, riego de la semana, agua del pozo, acumulador, electricidad, equipo de hoy, aplicaciones y bodega). Cada tarjeta se pliega con el botón redondo ▼. En «Ajustes» → «Apariencia» está «Noche viva»: la paleta oscura de colores vivos del Panel para toda la app. En las alertas, el botón «Ir» te lleva a la pantalla donde se arregla. En «Ajustes del panel» enciendes o apagas cada tarjeta; la elección es tuya y se guarda en este teléfono. Agua y electricidad (con costos) solo las ve el dueño. En «Riego de la semana» (en Panel y en «Riego») puedes ver el avance en porcentaje, con color (verde 90 % o más, ámbar 70 a 90 %, rojo bajo 70 %), o en barras.", 55, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
@@ -2542,7 +2554,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
     ay.appendChild(el("p", "ajs-t", "Apariencia"));
     var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
-    [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"]].forEach(function(x){
+    [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"], ["vivo", "Noche viva", "tmVivo"]].forEach(function(x){
       var bt = el("button", null, x[1]); bt.id = x[2]; bt.type = "button"; bt.setAttribute("aria-pressed", tm === x[0] ? "true" : "false");
       bt.onclick = function(){ try { localStorage.setItem("campo_tema", x[0]); } catch (e2) {} aplicarTema(x[0]); render(); }; grpT.appendChild(bt);
     });

@@ -265,12 +265,14 @@ html[data-theme="dark"] .nav button[data-s=aplic][aria-current=page] .ni{backgro
 .cal .d.fer{background:var(--alert-bg)}
 .cal .d .n{font-weight:400}
 .cal .d.fer .n{color:var(--alert); font-weight:700; text-decoration:underline}
-.nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity}
+.nav.sc{display:flex; overflow-x:auto; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain}
 .nav.sc::-webkit-scrollbar{display:none}
 /* Bordes que se desvanecen: avisan que hay más botones fuera de la pantalla (a la izquierda y/o a la derecha) */
 .nav.sc{--ml:26px; --mr:26px; -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--ml),#000 calc(100% - var(--mr)),transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 var(--ml),#000 calc(100% - var(--mr)),transparent 100%)}
+@property --ml{syntax:"<length>"; inherits:false; initial-value:26px} @property --mr{syntax:"<length>"; inherits:false; initial-value:26px}
+.nav.sc{transition:--ml .22s ease, --mr .22s ease}
 .nav.sc.ini{--ml:0px} .nav.sc.fin{--mr:0px}
-.nav.sc button{flex:0 0 22%; min-width:74px; scroll-snap-align:start}
+.nav.sc button{flex:0 0 22%; min-width:74px}
 .nav button[data-s=medidores][aria-current=page] .ni{background:var(--water-bg); color:var(--water)}
 .nav button[data-s=cosecha][aria-current=page] .ni{background:var(--wood-bg); color:var(--wood)}
 .mchips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
@@ -3355,6 +3357,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         requestAnimationFrame(function(){ ind.style.width = nw + "px"; ind.style.transform = "translateX(" + nx + "px)"; }); S.navX = nx; S.navW = nw;
       } else ind.style.opacity = "0";
       nav.scrollLeft = sl0; var cb = nav.querySelector("[aria-current=page]"); if (cb && !S.navVisto){ S.navVisto = true; nav.scrollLeft = Math.max(0, cb.offsetLeft - 8); }
+      if (cb && S.navScr !== S.screen){ S.navScr = S.screen; var cI = cb.offsetLeft, cD = cI + cb.offsetWidth, vI = nav.scrollLeft, vD = vI + nav.clientWidth; if (cI < vI + 8 || cD > vD - 8){ try { nav.scrollTo({ left: Math.max(0, Math.round(cI - (nav.clientWidth - cb.offsetWidth) / 2)), behavior: "smooth" }); } catch (e6){ nav.scrollLeft = Math.max(0, cI - 8); } } }
       var marca = function(){ nav.classList.toggle("fin", nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4); nav.classList.toggle("ini", nav.scrollLeft <= 12); }; nav.onscroll = marca; marca();
     }
   }

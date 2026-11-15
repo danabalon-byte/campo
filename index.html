@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://control-campo-56980.firebaseapp.com; frame-src https://control-campo-56980.firebaseapp.com https://accounts.google.com https://apis.google.com; worker-src 'self'; manifest-src 'self'; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#F2EFE6" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0F1711" media="(prefers-color-scheme: dark)"><meta name="mobile-web-app-capable" content="yes"><title>Agrícola Borderío</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>html,body{margin:0;padding:0}img{max-width:100%}</style></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://control-campo-56980.firebaseapp.com; frame-src https://control-campo-56980.firebaseapp.com https://accounts.google.com https://apis.google.com; worker-src 'self'; manifest-src 'self'; media-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#F2EFE6" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0F1711" media="(prefers-color-scheme: dark)"><meta name="mobile-web-app-capable" content="yes"><title>Agrícola Borderío</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/svg+xml" href="logo-borderio.svg"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>html,body{margin:0;padding:0}img{max-width:100%}</style></head><body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700;800&display=swap">
 <style>
 /* Concepto: app de bolsillo para el campo. Una portada con hilera de nogales en perspectiva (lo único atrevido),
@@ -742,8 +742,8 @@ button.small.link2{background:transparent; border:0; color:var(--accent); font-w
 .pcsync.off{color:var(--alert)}.pcsync.off i{background:var(--alert)}
 html.pc .nav{position:fixed; inset:0 auto 0 0; width:252px; z-index:15; display:flex; flex-direction:column; gap:2px; padding:16px 12px 12px; background:var(--surface-2); border-top:0; border-right:1px solid var(--line); overflow-y:auto}
 html.pc .nav .pcmarca{display:flex; align-items:center; gap:10px; padding:0 8px 14px}
-html.pc .nav .pcmarca .lg{width:34px; height:34px; border-radius:10px; background:var(--hero); color:var(--lemon); display:grid; place-items:center; flex:none}
-html.pc .nav .pcmarca .lg svg{width:22px; height:22px}
+html.pc .nav .pcmarca .lg{width:38px; height:38px; display:grid; place-items:center; flex:none}
+html.pc .nav .pcmarca .lg img{width:38px; height:38px; object-fit:contain}
 html.pc .nav .pcmarca b{display:block; font:700 17px/1.1 var(--font-display)}
 html.pc .nav .pcmarca small{color:var(--muted); font-size:12px}
 html.pc .nav .pcg{font-size:12px; font-weight:700; color:var(--muted); padding:14px 10px 4px}
@@ -1148,7 +1148,7 @@ html.hashd .top{position:relative}
 .cp-rev{position:absolute; left:0; top:0; bottom:0; width:0; overflow:hidden; background:#3F5F66; color:#fff; display:flex; align-items:center; padding-left:14px; font-size:12px; font-weight:600; letter-spacing:.03em; white-space:nowrap}
 .cp-rev span{opacity:0; transition:opacity .15s}
 .mk-w{position:relative; flex:none; width:34px; height:34px; display:grid; place-items:center; border-radius:10px; transition:background-color .18s,transform .18s}
-.mk-w .mark{width:28px; height:28px; transition:opacity .15s}
+.mk-w .mark{width:34px; height:34px; object-fit:contain; transition:opacity .15s}
 .cp-ic{position:absolute; inset:0; display:grid; place-items:center; color:#fff; opacity:0; transition:opacity .15s} .cp-ic svg{width:20px; height:20px}
 .top.cp-lis .mk-w{background:#3F5F66; transform:scale(1.08)} .top.cp-lis .mark{opacity:0} .top.cp-lis .cp-ic{opacity:1}
 .cp-pn{overflow:hidden; max-height:0; transition:max-height .32s ease}
@@ -1204,9 +1204,7 @@ html.hashd .top{position:relative}
   <header class="top">
     <div class="cp-rev" id="cpRev" aria-hidden="true"><span id="cpRevT"></span></div>
     <div class="top-fr" id="topFr">
-    <span class="mk-w"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 35V17"/><path d="M20 17c-7 0-11-4-11-10 7 0 11 4 11 10z"/><path d="M20 24c6 0 10-3.500 10-9-6 0-10 3.500-10 9z"/>
-    </svg><span class="cp-ic" id="cpIc"></span></span>
+    <span class="mk-w"><img class="mark" src="logo-borderio.svg" alt="" width="32" height="32" decoding="async"><span class="cp-ic" id="cpIc"></span></span>
     <div style="min-width:0">
       <h1>Agr. Borderío</h1>
       <p class="where">Chincolco, Petorca</p>
@@ -8910,7 +8908,7 @@ html.hashd .top{position:relative}
   function pcIr(k){ S.screen = k; if (k === "agenda"){ S.agVista = "dia"; S.agFecha = fecha(); } render(); }
   function buildNavPC(){
     var nav = $("nav"), hy = fecha(), sl0 = nav.scrollTop; nav.replaceChildren(); nav.classList.remove("sc");
-    var m = el("div", "pcmarca"), lg = el("span", "lg"); lg.appendChild(ico("campo")); m.appendChild(lg); var tt = el("div"); tt.appendChild(el("b", null, "Agr. Borderío")); tt.appendChild(el("small", null, "Chincolco, Petorca")); m.appendChild(tt); nav.appendChild(m);
+    var m = el("div", "pcmarca"), lg = el("span", "lg"); var lgi = el("img"); lgi.src = "logo-borderio.svg"; lgi.alt = ""; lg.appendChild(lgi); m.appendChild(lg); var tt = el("div"); tt.appendChild(el("b", null, "Agr. Borderío")); tt.appendChild(el("small", null, "Chincolco, Petorca")); m.appendChild(tt); nav.appendChild(m);
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length, nr = riegosAtrasados().length, na = avisosCampo().length, npm = nPend(), nml = medPendientes().length;
     var badge = { aplic: np, riego: nr, campo: na, permisos: npm, medidores: nml }, grupo = "";
     PC_ITEMS.forEach(function(x){

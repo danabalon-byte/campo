@@ -1,5 +1,5 @@
-const CACHE = "campo-469ee405";
-const SHELL = ["./", "./index.html", "./app-bundle.js", "./animaciones.js", "./seed.js", "./demo.js", "./firebase-config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
+const CACHE = "campo-6ef60e60";
+const SHELL = ["./", "./index.html", "./app-bundle.js", "./animaciones.js", "./seed.js", "./demo.js", "./firebase-config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./logo-borderio.svg"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {

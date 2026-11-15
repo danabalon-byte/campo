@@ -867,7 +867,7 @@ html.pc .cmdk:not([hidden]){display:flex}
 .pn-fl{display:flex; flex-direction:column; flex:none} .pn-fl button{width:36px; min-height:22px; border:0; background:transparent; color:var(--fg); font-size:13px; padding:0} .pn-fl button:disabled{opacity:.25}
 /* Secciones plegables en todas las pantallas */
 .pl{position:relative} .pl>h2{padding-right:46px}
-.pl-b{position:absolute; top:14px; right:14px; width:32px; height:32px; box-sizing:border-box; border-radius:50%; border:1.5px solid #9DB39F; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--fg); font-weight:700; padding:0; transition:box-shadow .14s; z-index:1}
+.pl-b{position:absolute; top:14px; right:14px; width:32px; height:32px; min-width:0; min-height:0; aspect-ratio:1/1; flex:none; box-sizing:border-box; border-radius:50%; border:1.5px solid #9DB39F; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--fg); font-weight:700; padding:0; transition:box-shadow .14s; z-index:1}
 .pl-b:before{content:""; position:absolute; inset:-8px}
 .pl.op .pl-b{border-color:#D3D5C9; transform:translateY(2px); background:linear-gradient(160deg,#B3B7AC 0,#CDD0C5 45%,#E2E3D9 100%); color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.5),inset -2px -3px 5px rgba(255,255,255,.75),0 0 0 3px #EEEFE7,0 1px 0 3px #fff}
 .pl.cer>*:not(h2):not(.pl-b){display:none !important}
@@ -875,9 +875,19 @@ html.pc .cmdk:not([hidden]){display:flex}
 html.scr-riego{--bg:#EAF5FA; --surface:#FFFFFF; --surface-2:#DCEDF6; --line:#C3DBE8; --fg:#0A2A3B; --muted:#4B6F82; --accent:#0369A1; --on-accent:#FFFFFF; --ok-bg:#D3ECF8; --ok-fg:#075985; --water:#0369A1; --water-bg:#D3ECF8; --pn-gr:#0F766E}
 @media (prefers-color-scheme: dark){html.scr-riego:not([data-theme="light"]){--bg:#06151D; --surface:#0C2431; --surface-2:#123245; --line:#1B4560; --fg:#E8F6FC; --muted:#8FB6C9; --accent:#38BDF8; --on-accent:#04141C; --ok-bg:#0F3A52; --ok-fg:#7DD3FC; --water:#7DD3FC; --water-bg:#0F3A52; --pn-gr:#2DD4BF}}
 html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#123245; --line:#1B4560; --fg:#E8F6FC; --muted:#8FB6C9; --accent:#38BDF8; --on-accent:#04141C; --ok-bg:#0F3A52; --ok-fg:#7DD3FC; --water:#7DD3FC; --water-bg:#0F3A52; --pn-gr:#2DD4BF}
-.ph.rg-hd{position:relative; overflow:hidden; color:#fff; background:linear-gradient(160deg,#0B5D8A,#0891B2); border-radius:20px; padding:16px 16px 44px; margin-bottom:6px}
-.ph.rg-hd .pi{background:rgba(255,255,255,.2); color:#fff} .ph.rg-hd h2{color:#fff} .ph.rg-hd p{color:rgba(255,255,255,.88)}
-.ph.rg-hd::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:30px; background:var(--bg); -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat}
+.ph.hd{position:relative; overflow:hidden; color:#fff; background:linear-gradient(160deg,var(--h1,#2F6B3F),var(--h2,#5E9A45)); border-radius:20px; padding:16px 16px 44px; margin-bottom:6px}
+.ph.hd .pi{background:rgba(255,255,255,.2); color:#fff} .ph.hd h2{color:#fff} .ph.hd p{color:rgba(255,255,255,.9)}
+.ph.hd::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:30px; background:var(--bg); -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22C60 4 110 40 180 22S320 4 400 22V40H0z'/%3E%3C/svg%3E") bottom/100% 100% no-repeat}
+/* Color de cabezal por sección: aguas en azules y celestes; campo en verdes, amarillos y tonos florales. Misma luminosidad entre secciones (texto blanco legible). */
+.ph[data-m=riego],.ph[data-m=medidores]{--h1:#0B5D8A; --h2:#0891B2}
+.ph[data-m=acum]{--h1:#0A4F86; --h2:#0A8DA8}
+.ph[data-m=campo],.ph[data-m=arboles],.ph[data-m=sectores]{--h1:#2B6B3A; --h2:#6A9E34}
+.ph[data-m=aplic]{--h1:#8A6200; --h2:#C08A0C}
+.ph[data-m=cosecha]{--h1:#9A4B22; --h2:#C9742B}
+.ph[data-m=trabajo]{--h1:#A33E5E; --h2:#C9667F}
+.ph[data-m=agenda]{--h1:#2A6B52; --h2:#3E9A78}
+.ph[data-m=personal],.ph[data-m=permisos],.ph[data-m=horarios],.ph[data-m=terceros]{--h1:#42566E; --h2:#6481A0}
+.ph[data-m=legal],.ph[data-m=ajustes]{--h1:#4D5663; --h2:#707C8B}
 /* Bienvenida con animación y lista de labores del día (Inicio) */
 .hy-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:12px}
 .hy-an{width:100%; aspect-ratio:250/170; position:relative; overflow:hidden; background:linear-gradient(#CFE6F2,#EAF3DA)}
@@ -946,6 +956,17 @@ html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#
 .az-seg{display:flex; flex-wrap:wrap; gap:6px} .az-seg button{flex:1 1 130px; min-width:0; min-height:44px} .az-seg button[aria-pressed="true"]{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
 .az-tabla{width:100%; table-layout:fixed; border-collapse:collapse; font-size:15px; margin:8px 0} .az-tabla th,.az-tabla td{padding:7px 6px; text-align:left; border-bottom:1px solid var(--line); overflow-wrap:anywhere} .az-tabla th{color:var(--muted); font-size:13px}
 .pn-k.cy{--tc:var(--pn-cy); border-color:var(--tc); background:color-mix(in srgb,var(--tc) 12%,var(--surface))} .pn-k.rd{--tc:var(--pn-rd); border-color:var(--tc); background:color-mix(in srgb,var(--tc) 12%,var(--surface))}
+/* Pulsadores de contorno (Acumulador y pozo): mismo fondo que la tarjeta, solo filete; al pulsar se hunden con sombra interna. */
+.az-pant button,#acSheet button,#pzSheet button,#cfSheet button{background:transparent; color:var(--fg); border:2px solid var(--line); box-shadow:none}
+.az-pant button.primary,#acSheet button.primary,#pzSheet button.primary,#cfSheet button.primary{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:none}
+.az-pant button:active,#acSheet button:active,#pzSheet button:active,#cfSheet button:active,.az-pant button.az-on,.az-seg button[aria-pressed="true"]{box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+.az-seg button[aria-pressed="true"],#acSheet .az-seg button[aria-pressed="true"],#pzSheet .az-seg button[aria-pressed="true"]{background:transparent; color:var(--accent); border-color:var(--accent); box-shadow:inset 3px 4px 8px rgba(0,0,0,.28),inset -2px -3px 5px rgba(255,255,255,.28); transform:translateY(1px)}
+.az-pant .az-chip,.az-pant .pn-k{background:transparent}
+.az-pant .pn-k.cy,.az-pant .pn-k.rd,.az-pant .pn-t{background:transparent}
+.az-chip.on,.az-chip.ok,.az-chip.bajo{background:transparent}
+/* Regla: los pulsadores redondos siempre son círculos (el botón base pide 52 px de alto y los deformaba en óvalo). */
+.pl-b,.hy-c,.tm-ref,.ag-ck{min-height:0; min-width:0; max-height:none; aspect-ratio:1/1; flex:none; align-self:flex-start}
+.pl-b{width:32px !important; height:32px !important; padding:0 !important}
 </style>
 
 
@@ -2484,7 +2505,7 @@ html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#
   }
   var PH = { legal: ["Legal", "Condiciones y consultas legales"], cosecha: ["Cosecha", "Kilos por sector y temporada"], medidores: ["Medidores", "Lecturas de agua, luz y más"], ajustes: ["Ajustes", "Ayuda, apariencia y respaldo"], arboles: ["Árboles del huerto", "Mapa, ficha y seguimiento de cada nogal"], sectores: ["Configurar sectores", "Toca el primer árbol de cada sector"], agenda: ["Agenda", "Qué toca hoy, esta semana y este mes"], campo: ["Mi campo", "Sectores y árboles"], trabajo: ["Trabajos", "Qué se hizo y dónde"], aplic: ["Aplicaciones", "Productos, mezclas y bodega"], riego: ["Riego", "Horas y agua por sector"], personal: ["Trabajadores", "Quién trabaja hoy, permisos y agendados"], permisos: ["Permisos", "Días libres, saldo y calendario"], horarios: ["Horarios del equipo", "Quién está y cuándo entra y sale"], terceros: ["Terceros y jornadas", "Quién trabajó y cuánto tiempo"] };
   function ph(key){
-    var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
+    var d = el("div", "ph hd"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
   }
   var NAV = [["home", "Inicio"], ["panel", "Panel"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["acum", "Acumulador"], ["campo", "Campo"]];
@@ -3322,9 +3343,9 @@ html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#
     return c;
   }
   function buildAcum(){
-    var f = document.createDocumentFragment(), D = acDatos(); f.appendChild(ph("acum"));
-    f.appendChild(acSecNivel(D)); f.appendChild(acSecAuto(D)); f.appendChild(acSecPozo(D)); f.appendChild(acSecBalance(D)); f.appendChild(acSecHist(D)); f.appendChild(acSecVara(D));
-    return f;
+    var f = document.createDocumentFragment(), D = acDatos(), w = el("div", "az-pant"); w.appendChild(ph("acum"));
+    w.appendChild(acSecNivel(D)); w.appendChild(acSecAuto(D)); w.appendChild(acSecPozo(D)); w.appendChild(acSecBalance(D)); w.appendChild(acSecHist(D)); w.appendChild(acSecVara(D));
+    f.appendChild(w); return f;
   }
   /* Tarjeta del Panel */
   function pnCuerpoAcum(b){
@@ -5283,7 +5304,7 @@ html.scr-riego[data-theme="dark"]{--bg:#06151D; --surface:#0C2431; --surface-2:#
   }
   function buildRiego(){
     var f = document.createDocumentFragment();
-    var phr = ph("riego"); phr.classList.add("rg-hd"); f.appendChild(phr);
+    f.appendChild(ph("riego"));
     var acts = el("div", "rg-act" + (S.manager ? "" : " uno")); var reg = el("button", "primary", "Registrar riego"); reg.onclick = abrirRiego; acts.appendChild(reg);
     if (S.manager){ var prg = el("button", null, "Programar riego"); prg.onclick = abrirProgramar; acts.appendChild(prg); }
     f.appendChild(acts);

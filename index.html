@@ -809,6 +809,41 @@ html.pc .cmdk:not([hidden]){display:flex}
 .nav.hu7 button[aria-pressed=true] .ni{background:color-mix(in srgb,var(--surface-2) 82%,var(--line)); box-shadow:inset 0 2px 4px rgba(0,0,0,.30),inset 0 -1px 0 rgba(255,255,255,.55)}
 .hu-sv{background:transparent; border:1px solid var(--line); box-shadow:none}
 .hu-sheet button.primary,.hu-cam button.ajs-main{box-shadow:none}
+/* Panel */
+:root{--pn-gr:#15803D; --pn-bl:#1D4ED8; --pn-cy:#0E7490; --pn-am:#B45309; --pn-rd:#BE123C; --pn-vi:#6D28D9; --pn-pk:#BE185D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pn-gr:#4ADE80; --pn-bl:#60A5FA; --pn-cy:#22D3EE; --pn-am:#FBBF24; --pn-rd:#FB7185; --pn-vi:#A78BFA; --pn-pk:#F472B6}}
+:root[data-theme="dark"]{--pn-gr:#4ADE80; --pn-bl:#60A5FA; --pn-cy:#22D3EE; --pn-am:#FBBF24; --pn-rd:#FB7185; --pn-vi:#A78BFA; --pn-pk:#F472B6}
+.pn-h1{margin:4px 0 0; font-size:28px; font-family:var(--font-display)}
+.pn{border-left:6px solid var(--pc)} .pn-gr{--pc:var(--pn-gr)} .pn-bl{--pc:var(--pn-bl)} .pn-cy{--pc:var(--pn-cy)} .pn-am{--pc:var(--pn-am)} .pn-rd{--pc:var(--pn-rd)} .pn-vi{--pc:var(--pn-vi)} .pn-pk{--pc:var(--pn-pk)}
+.pn-ic{display:inline-flex; width:32px; height:32px; border-radius:11px; margin-right:9px; align-items:center; justify-content:center; vertical-align:middle; color:var(--pc); background:color-mix(in srgb,var(--pc) 16%,transparent)}
+.pn-ic svg{width:20px; height:20px}
+.pn-in{display:flex; flex-direction:column; gap:12px; padding:6px 1px 14px}
+.pn-tiles{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px} .pn-tiles.one{grid-template-columns:1fr}
+.pn-t,.pn-k{--tc:var(--pn-am); border-radius:16px; padding:12px; border:2px solid var(--tc); background:color-mix(in srgb,var(--tc) 12%,var(--surface)); display:flex; flex-direction:column; gap:6px}
+.pn-t.gr{--tc:var(--pn-gr)} .pn-t.am,.pn-k.am{--tc:var(--pn-am)} .pn-t.rd{--tc:var(--pn-rd)} .pn-k{border-color:var(--line); background:var(--surface-2)}
+.pn-tn{margin:0; font-size:14px; font-weight:700; color:var(--muted)} .pn-te{margin:0; font-size:14px; font-weight:800; color:var(--tc)}
+.pn-big{margin:0; font-size:40px; font-weight:800; line-height:1; letter-spacing:-.03em; color:var(--tc,var(--fg))} .pn-big small{font-size:18px; font-weight:700} .pn-big.n{color:var(--fg)}
+.pn-bar{--bc:var(--pc); height:10px; border-radius:5px; background:var(--surface-2); overflow:hidden; border:1px solid var(--line)} .pn-bar i{display:block; height:100%; border-radius:5px; background:var(--bc)}
+.pn-t .pn-bar{--bc:var(--tc)} .pn-bar.gr{--bc:var(--pn-gr)} .pn-bar.am{--bc:var(--pn-am)} .pn-bar.rd{--bc:var(--pn-rd)} .pn-bar.cy{--bc:var(--pn-cy)} .pn-bar.vi{--bc:var(--pn-vi)} .pn-bar.mu{--bc:var(--muted); opacity:.5}
+.pn-bw{display:flex; flex-direction:column; gap:6px} .pn-bh{display:flex; justify-content:space-between; font-size:15px} .pn-c.gr{color:var(--pn-gr)} .pn-c.am{color:var(--pn-am)} .pn-c.rd{color:var(--pn-rd)} .pn-c{font-weight:800}
+.pn-br{display:grid; grid-template-columns:76px 1fr 56px; gap:8px; align-items:center; font-size:13px} .pn-br b{text-align:right}
+.pn-al{display:flex; align-items:center; gap:10px; padding:10px; border-radius:14px; background:var(--surface-2)} .pn-dot{width:10px; height:10px; border-radius:50%; flex:none; background:var(--pn-am)} .pn-al.rd .pn-dot{background:var(--pn-rd)}
+.pn-pc{flex:1; min-width:0; display:flex; flex-direction:column} .pn-pc b{font-size:15px; line-height:1.25} .pn-pc .note{margin:2px 0 0}
+.pn-ir{display:inline-flex; align-items:center; gap:2px; min-height:44px; padding:0 14px; border-radius:22px; border:0; background:var(--pn-gr); color:var(--bg); font-weight:800; font-size:14px; align-self:flex-start; flex:none}
+.pn-ir svg{width:18px; height:18px; transform:rotate(-90deg)}
+.pn-al .pn-ir{align-self:center}
+.pn-seg{display:flex; gap:4px; padding:3px; border-radius:14px; background:var(--surface-2); margin:6px 0}
+.pn-seg button{flex:1; min-height:44px; border-radius:11px; border:0; background:transparent; color:var(--muted); font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px}
+.pn-seg button svg{width:18px; height:18px}
+.pn-seg button[aria-pressed=true]{background:var(--surface); color:var(--fg); box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.pn-ga{display:flex; align-items:center; gap:14px} .pn-gt{flex:1; min-width:0} .pn-warn{margin:0; color:var(--pn-rd); font-weight:800} .pn-okp{margin:0; color:var(--pn-gr); font-weight:800}
+.pn-pr{display:flex; flex-direction:column; gap:4px} .pn-ph{display:flex; justify-content:space-between; gap:8px; font-size:13px} .pn-line{margin:0; font-size:16px}
+.pn-pe{display:flex; align-items:center; gap:12px; padding:10px; border-radius:14px; background:var(--surface-2)}
+.pn-av{width:40px; height:40px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-weight:800; background:var(--pn-gr); color:var(--bg)} .pn-av.wait{background:var(--pn-am)} .pn-av.out{background:var(--muted)}
+.pn-ph2{display:flex; flex-direction:column; align-items:flex-end}
+.pn-aj{display:flex; align-items:center; gap:12px; padding:10px 4px; border-top:1px solid var(--line)}
+.pn-sw{width:58px; height:34px; border-radius:17px; border:0; padding:3px; background:var(--line); display:flex; align-items:center; flex:none; position:relative} .pn-sw i{width:28px; height:28px; border-radius:50%; background:var(--muted); display:block; transition:transform .2s} .pn-sw.on{background:var(--pn-gr)} .pn-sw.on i{transform:translateX(24px); background:var(--bg)}
+@media (prefers-reduced-motion: reduce){.pn-sw i{transition:none}}
 /* Bienvenida con animación y lista de labores del día (Inicio) */
 .hy-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:12px}
 .hy-an{width:100%; aspect-ratio:250/170; position:relative; overflow:hidden; background:linear-gradient(#CFE6F2,#EAF3DA)}
@@ -895,7 +930,8 @@ html.pc .cmdk:not([hidden]){display:flex}
 <div class="sbody">
     <p class="sub" id="sheetText"></p>
 </div>
-<div class="sfoot">    <button class="primary" id="sheetOk">Sí, registrar</button>
+<div class="sfoot">    <button class="primary" id="sheetOk0" hidden>Sí, desde las 00:00</button>
+    <button class="primary" id="sheetOk">Sí, registrar</button>
     <button id="sheetCancel">Cancelar</button></div>
   </div>
 </div>
@@ -1652,8 +1688,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 3500);
   }
 
-  async function marcar(tipo){
+  async function marcar(tipo, desde0){
     var now = new Date(), iso = now.toISOString(), hoy = fecha(now);
+    if (desde0 && tipo === "in") iso = isoLocal(hoy, "00:00");
     var e = estado(S.dias, now.getTime());
     var tr = e.tr.map(function(t){ return Object.assign({}, t, { entrada: t.entrada, salida: t.salida || null }); });
     if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null, por: S.nombre, uid: S.uid, regTs: iso }); }
@@ -1673,10 +1710,21 @@ html.pc .cmdk:not([hidden]){display:flex}
     $("sheetTitle").textContent = tipo === "in" ? "¿Registrar tu llegada?" : "¿Registrar tu salida?";
     $("sheetText").textContent = "Hora actual: " + fmtH.format(new Date()) + ". Se guarda al confirmar.";
     $("sheetOk").textContent = tipo === "in" ? "Sí, llegué" : "Sí, me voy";
+    var b0 = $("sheetOk0"); b0.hidden = true;
+    if (tipo === "in"){
+      var ay = addDays(fecha(), -1), dd = (S.dias || []).filter(function(x){ return x.fecha === ay; })[0], tt = dd && dd.tramos && dd.tramos.length ? dd.tramos[dd.tramos.length - 1] : null;
+      if (tt && tt.salida && fecha(new Date(tt.salida)) === ay && Number(hora(tt.salida).slice(0, 2)) * 60 + Number(hora(tt.salida).slice(3, 5)) >= 23 * 60 + 50){
+        b0.hidden = false; $("sheetText").textContent += " Ayer cerraste a las " + hora(tt.salida) + ". Si seguiste trabajando de corrido, elige «Sí, desde las 00:00».";
+      }
+    }
     $("sheet").hidden = false; $("sheetOk").focus();
   }
   function cerrar(){ $("sheet").hidden = true; pending = null; }
   $("sheetCancel").onclick = cerrar;
+  $("sheetOk0").onclick = async function(){
+    var b = $("sheetOk0"); b.disabled = true;
+    await marcar("in", true); b.disabled = false; cerrar();
+  };
   $("sheetOk").onclick = async function(){
     var tipo = pending; var b = $("sheetOk"); b.disabled = true;
     await marcar(tipo); b.disabled = false; cerrar();
@@ -1709,7 +1757,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 54;
+  var GUIA_V = 55;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -1726,6 +1774,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     ["Riego de la semana", "Arriba en «Riego» está «Riego de la semana · nogales»: calcula cuántas horas necesita cada sector con la evapotranspiración de los últimos 7 días y el factor del asesor, y la compara con las horas regadas. Elige el reparto (el programa del asesor, todos los días o 5 días) y ves cuántos minutos programar cada día. Solo el dueño toca «Ajustar factor» para cambiar el factor, su vigencia y la nota, y «Guardar factor».", 51, ""],
     ["Equipos y plano de riego", "En «Riego», más abajo, la tarjeta «Equipos y plano de riego» guarda el plano de diseño, las placas de las bombas, lo que pide el riego con los goteros instalados, el reparto de limones por cuartel y los datos que faltan, que quedan a la vista hasta que se resuelvan. Toca «Ver el plano y los equipos» para abrir el detalle. Solo el dueño ve además el costo de la electricidad y guarda la tarifa en «Guardar tarifa».", 53, ""],
     ["Hora de la lectura y derecho del año", "Al anotar una lectura con la foto de la cámara de la app, queda guardada también la hora del teléfono. En el caudalímetro, con dos lecturas con hora, «Medidores» calcula el caudal medio del período y avisa si pasa los 2 L/s. En «Riego», la tarjeta «Equipos y plano de riego» muestra el derecho del año (1 de enero al 31 de diciembre): cuánto se extrajo y cuánto queda por día. En «Agenda», las notas tienen la etiqueta «Pendiente».", 54, ""],
+    ["Panel", "En la barra de abajo, junto a «Inicio», está «Panel»: tarjetas con lo más importante (alertas y recordatorios, riego de la semana, agua del pozo, acumulador, electricidad, equipo de hoy, aplicaciones y bodega). Cada tarjeta se pliega con el botón redondo ▼. En las alertas, el botón «Ir» te lleva a la pantalla donde se arregla. En «Ajustes del panel» enciendes o apagas cada tarjeta; la elección es tuya y se guarda en este teléfono. Agua y electricidad (con costos) solo las ve el dueño. En «Riego de la semana» (en Panel y en «Riego») puedes ver el avance en porcentaje, con color (verde 90 % o más, ámbar 70 a 90 %, rojo bajo 70 %), o en barras.", 55, ""],
     ["Riego en otro día", "En «Registrar riego» el día se elige en un calendario: toca uno o varios días en que regaste (hoy o antes). Los días en verde ya tienen riego en ese sector y los azules están programados. Si regaste en un día que estaba programado, ese pendiente se cierra solo.", 26, ""],
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
@@ -1806,6 +1855,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 55, f: "2026-11-15", t: "Panel", d: "Nueva pantalla «Panel» con tarjetas de lo más importante, botón «Ir» en las alertas y «Ajustes del panel» para elegir qué ver. El riego de la semana se puede ver en porcentaje (con color) o en barras. Si cierras a las 23:5x y vuelves después de medianoche, «Llegué» ofrece empezar desde las 00:00.", g: "Panel" },
     { v: 54, f: "2026-11-15", t: "Hora de la lectura y derecho del año", d: "Las lecturas con foto de la cámara guardan la hora del teléfono; el caudalímetro calcula el caudal medio del pozo y avisa si pasa los 2 L/s. El derecho de agua se cuenta del 1 de enero al 31 de diciembre. El riego de limones queda de 1,5 h de lunes a sábado, y hay un recordatorio urgente para cortar el pozo.", g: "Hora de la lectura y derecho del año" },
     { v: 53, f: "2026-11-15", t: "Presión, caudal y costo de la electricidad", d: "La tarjeta «Equipos y plano de riego» ahora muestra lo que piden los goteros instalados (nogal y limones), los datos ya confirmados y los que siguen faltando. El dueño ve el costo de bombear y regar por m³ y guarda la tarifa eléctrica.", g: "Equipos y plano de riego" },
     { v: 52, f: "2026-11-15", t: "Equipos y plano de riego", d: "En «Riego» hay una tarjeta con el plano de diseño, las placas de las bombas, el reparto de limones por cuartel y los datos que faltan (presión de la red, tarifa y otros), que se mantienen a la vista hasta que se anoten.", g: "Equipos y plano de riego" },
@@ -2306,7 +2356,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     var d = el("div", "ph"); d.dataset.m = key; var i = el("span", "pi"); i.appendChild(ico(key)); d.appendChild(i);
     var t = el("div"); t.style.minWidth = "0"; t.appendChild(el("h2", null, PH[key][0])); t.appendChild(el("p", null, PH[key][1])); d.appendChild(t); return d;
   }
-  var NAV = [["home", "Inicio"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
+  var NAV = [["home", "Inicio"], ["panel", "Panel"], ["agenda", "Agenda"], ["trabajo", "Trabajo"], ["aplic", "Aplicar"], ["riego", "Riego"], ["campo", "Campo"]];
   function iconKey(k){ return k === "home" ? "home" : k; }
   function avisosCampo(){
     var now = Date.now(), out = [];
@@ -2444,7 +2494,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   function buildNav(){
     var nav = $("nav"), cur = S.screen === "legal" ? "" : S.manager && (S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "personal" : !S.manager && (S.screen === "personal" || S.screen === "permisos" || S.screen === "horarios" || S.screen === "terceros") ? "" : (S.screen === "arboles" || S.screen === "sectores") ? "campo" : S.screen, hy = fecha();
     var np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
-    var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", !!S.manager);
+    var sl0 = nav.scrollLeft; nav.replaceChildren(); nav.classList.toggle("sc", true);
     NAV.concat(S.manager ? [["personal", "Personal"], ["medidores", "Medidor"], ["cosecha", "Cosecha"], ["ajustes", "Ajustes"]] : []).forEach(function(x){
       var b = el("button"); b.dataset.s = x[0]; b.type = "button"; if (cur === x[0]) b.setAttribute("aria-current", "page");
       var w = el("span", "ni nb"); w.appendChild(ico(iconKey(x[0])));
@@ -2456,7 +2506,7 @@ html.pc .cmdk:not([hidden]){display:flex}
       b.onclick = function(){ S.screen = x[0]; render(); };
       nav.appendChild(b);
     });
-    if (S.manager){
+    if (true){
       nav.scrollLeft = sl0; var cb = nav.querySelector("[aria-current=page]"); if (cb && !S.navVisto){ S.navVisto = true; nav.scrollLeft = Math.max(0, cb.offsetLeft - 8); }
       var marca = function(){ nav.classList.toggle("fin", nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4); nav.classList.toggle("ini", nav.scrollLeft <= 12); }; nav.onscroll = marca; marca();
     }
@@ -2742,6 +2792,209 @@ html.pc .cmdk:not([hidden]){display:flex}
     }
     var b = el("button", null, "Ver detalle"); b.type = "button"; b.id = "ecVer"; b.onclick = function(){ S.screen = "personal"; render(); }; c.appendChild(b);
     return c;
+  }
+  /* ---- Panel: tarjetas con los valores más importantes. Cada persona elige las suyas (guardado en este teléfono por usuario). ---- */
+  ICON.panel = "M4 4h6.500v6.500H4zM13.500 4H20v6.500h-6.500zM13.500 13.500H20V20h-6.500zM4 13.500h6.500V20H4z";
+  ICON.bolt = "M13 2L4 14h7l-1 8 9-12h-7z";
+  ICON.tanque = "M5 5c0-1.100 3-2 7-2s7 .9 7 2v14c0 1.100-3 2-7 2s-7-.9-7-2zM5 5c0 1.100 3 2 7 2s7-.9 7-2M5 12c0 1.100 3 2 7 2s7-.9 7-2";
+  var PN_CARDS = [
+    ["alertas", "Alertas y recordatorios", "Lo urgente, con botón Ir", "alerta", 0, "rd"],
+    ["riego", "Riego de la semana", "Horas necesarias y aplicadas", "riego", 0, "bl"],
+    ["agua", "Agua del pozo", "Derecho semanal y anual (solo dueño)", "riego", 1, "cy"],
+    ["acum", "Acumulador", "Nivel y días de autonomía", "tanque", 0, "vi"],
+    ["elec", "Electricidad", "kWh de la semana y su costo (solo dueño)", "bolt", 1, "am"],
+    ["equipo", "Equipo hoy", "Quién trabaja y sus horas", "personal", 2, "gr"],
+    ["bodega", "Aplicaciones y bodega", "Pendientes y poco stock", "caja", 0, "pk"]
+  ];
+  var PN = { cfg: null, uid: "", tab: "panel" };
+  function pnCfg(){
+    if (PN.cfg && PN.uid === S.uid) return PN.cfg;
+    var c = { show: {}, open: {}, et: "pct" };
+    try { var r = JSON.parse(localStorage.getItem("campo_panel_" + S.uid) || "null"); if (r){ c.show = r.show || {}; c.open = r.open || {}; c.et = r.et === "bar" ? "bar" : "pct"; } } catch (e){}
+    PN.cfg = c; PN.uid = S.uid; return c;
+  }
+  function pnGuarda(){ try { localStorage.setItem("campo_panel_" + S.uid, JSON.stringify(PN.cfg)); } catch (e){} }
+  function pnPermitida(x){ return x[4] === 1 ? !!S.owner : x[4] === 2 ? !!S.manager : true; }
+  function pnSvg(tag, a, parent){ var e = document.createElementNS("http://www.w3.org/2000/svg", tag); Object.keys(a).forEach(function(k){ e.setAttribute(k, a[k]); }); if (parent) parent.appendChild(e); return e; }
+  function pnCol(p){ return p >= 90 ? "gr" : p >= 70 ? "am" : "rd"; }
+  function pnEst(p){ return p >= 90 ? "Al día" : p >= 70 ? "Levemente bajo" : "Bajo: falta riego"; }
+  function pnBarra(pct, col){ var b = el("div", "pn-bar" + (col ? " " + col : "")); var i = el("i"); i.style.width = Math.max(0, Math.min(100, pct)) + "%"; b.appendChild(i); return b; }
+  function pnTile(nombre, pct, sub){
+    var c = pnCol(pct), t = el("div", "pn-t " + c); t.appendChild(el("p", "pn-tn", nombre));
+    var big = el("p", "pn-big", nf(pct, 0)); big.appendChild(el("small", null, " %")); t.appendChild(big);
+    t.appendChild(pnBarra(pct, c)); t.appendChild(el("p", "pn-te", pnEst(pct))); t.appendChild(el("p", "note", sub)); return t;
+  }
+  function pnSeg(cb){
+    var g = el("div", "pn-seg"); g.setAttribute("role", "group"); g.setAttribute("aria-label", "Cómo ver el riego");
+    [["pct", "Porcentaje"], ["bar", "Barras"]].forEach(function(x){
+      var b = el("button", null, x[1]); b.type = "button"; b.setAttribute("aria-pressed", pnCfg().et === x[0] ? "true" : "false");
+      b.onclick = function(){ pnCfg().et = x[0]; pnGuarda(); cb(); }; g.appendChild(b);
+    });
+    return g;
+  }
+  function pnCaja(x, pg, cuerpo){
+    var k = x[0], ab = pnCfg().open[k] !== false;
+    var sec = hyCaja("pn_" + k, " pn pn-" + x[5], x[1], pg, "", ab, function(){ pnCfg().open[k] = !(pnCfg().open[k] !== false); pnGuarda(); render(); });
+    var h2 = sec.querySelector("h2"), ic = el("span", "pn-ic"); ic.appendChild(ico(x[3])); h2.insertBefore(ic, h2.firstChild);
+    var bd = el("div", "hy-body"), in2 = el("div", "pn-in"); cuerpo(in2); bd.appendChild(in2); sec.appendChild(bd); return sec;
+  }
+  function pnIr(txt, fn){
+    var b = el("button", "pn-ir", txt + " "); b.type = "button"; b.setAttribute("aria-label", "Ir: " + txt); b.appendChild(ico("chev")); b.onclick = fn; return b;
+  }
+  function pnAlertasLista(){
+    var L = [];
+    alertasHome().forEach(function(a){
+      var l0 = a.lineas && a.lineas[0] ? a.lineas[0][1] + ": " + a.lineas[0][2] : "";
+      L.push({ t: a.titulo, s: l0, c: a.sev != null && a.sev <= 2 ? "rd" : "am", ir: a.ir || function(){ S.screen = "home"; render(); } });
+    });
+    hyLabores().filter(function(x){ return !x.done && x.p === "u"; }).forEach(function(x){ L.push({ t: x.t, s: x.s, c: "rd", ir: x.go }); });
+    if (S.owner) EQ_FALTA.forEach(function(f){ L.push({ t: f[0], s: "Dato por actualizar", c: "am", ir: function(){ S.screen = "riego"; render(); } }); });
+    return L;
+  }
+  function pnLimones(){ return S.cuarteles.filter(function(c){ return c.especie === "Limón"; }).map(function(c){ return c.id; }); }
+  function pnRiegoDatos(){
+    var out = [], v = rgVentana(), hy = fecha(), ws = weekStart(hy);
+    if (v){
+      var fc = rgFactor(), need = v.et0 * fc.f / (RG_TASA * RG_EF), cs = sectoresOrden().filter(function(c){ return c.especie === "Nogal"; });
+      var ap = cs.map(function(c){ var h = 0; S.riegos.forEach(function(r){ if (r.sectorId === c.id && r.fecha >= v.ini && r.fecha <= v.fin) h += Number(r.horas) || 0; }); return h; });
+      var app = ap.length ? ap.reduce(function(a, b){ return a + b; }, 0) / ap.length : 0;
+      out.push({ n: "Nogales", need: need, done: app, pct: need > 0 ? app / need * 100 : 100, sub: "Del " + fmtD2(v.ini) + " al " + fmtD2(v.fin) + " · evapotranspiración " + nf(v.et0, 1) + " mm" });
+    }
+    var li = pnLimones();
+    if (li.length){
+      var prog = S.tareas.filter(function(t){ return t.tipo === "riego" && li.indexOf(t.sectorId) >= 0 && t.fecha >= ws && t.fecha <= hy; }).length * 1.5;
+      var hr = 0; S.riegos.forEach(function(r){ if (li.indexOf(r.sectorId) >= 0 && r.fecha >= ws && r.fecha <= hy) hr += Number(r.horas) || 0; });
+      if (prog > 0) out.push({ n: "Limones", need: prog, done: hr, pct: hr / prog * 100, sub: "Programa del asesor: 1,5 h por día, de lunes a sábado" });
+    }
+    return out;
+  }
+  function pnCuerpoRiego(b){
+    var D = pnRiegoDatos();
+    if (!D.length){ b.appendChild(el("p", "note", !rgETt || rgETp ? "Buscando la evapotranspiración de la estación…" : "Todavía no hay datos para calcular el riego de la semana.")); return; }
+    b.appendChild(pnSeg(render));
+    if (pnCfg().et === "pct"){
+      var g = el("div", "pn-tiles"); D.forEach(function(d){ g.appendChild(pnTile(d.n, d.pct, nf(d.done, 1) + " de " + nf(d.need, 1) + " h")); }); b.appendChild(g);
+    } else {
+      D.forEach(function(d){
+        var w = el("div", "pn-bw"); var hd = el("div", "pn-bh"); hd.appendChild(el("b", null, d.n)); hd.appendChild(el("span", "pn-c " + pnCol(d.pct), nf(d.pct, 0) + " %")); w.appendChild(hd);
+        var r1 = el("div", "pn-br"); r1.appendChild(el("span", null, "Necesario")); r1.appendChild(pnBarra(100, "mu")); r1.appendChild(el("b", null, nf(d.need, 1) + " h")); w.appendChild(r1);
+        var r2 = el("div", "pn-br"); r2.appendChild(el("span", null, "Aplicado")); r2.appendChild(pnBarra(d.pct, pnCol(d.pct))); r2.appendChild(el("b", null, nf(d.done, 1) + " h")); w.appendChild(r2);
+        b.appendChild(w);
+      });
+    }
+    var lg = el("p", "note", "Verde: 90 % o más · ámbar: 70 a 90 % · rojo: bajo 70 %"); b.appendChild(lg);
+    b.appendChild(pnIr("Ver el riego", function(){ S.screen = "riego"; render(); }));
+  }
+  function pnLecturasPeriodo(mid, desde){
+    var L = medLect(mid); if (!L.length) return null;
+    var base = null; L.forEach(function(l){ if (l.fecha < desde) base = l; });
+    var ult = L[L.length - 1], ref = base || L[0];
+    return { cons: ult.valor - ref.valor, ref: ref, ult: ult, desdePrimera: !base, L: L };
+  }
+  function pnCuerpoAgua(b){
+    var ms = S.medidores.filter(function(m){ return m.id === "m_pozo" || m.tipo === "agua"; }), m = ms.filter(function(x){ return x.id === "m_pozo"; })[0] || ms[0];
+    if (!m){ b.appendChild(el("p", "note", "Todavía no hay medidor de agua.")); return; }
+    var hy = fecha(), sem = pnLecturasPeriodo(m.id, weekStart(hy)), an = pnLecturasPeriodo(m.id, hy.slice(0, 4) + "-01-01");
+    if (!sem){ b.appendChild(el("p", "note", "Aún no hay lecturas del caudalímetro.")); b.appendChild(pnIr("Anotar lectura", function(){ S.screen = "medidores"; render(); })); return; }
+    var L = sem.L, qh = null;
+    if (L.length >= 2){ var o = periodoMed(m, L[L.length - 2], L[L.length - 1]); if (o.horas > 0 && o.cons >= 0) qh = o.cons / o.horas; }
+    var wrap = el("div", "pn-ga"), sv = pnSvg("svg", { viewBox: "0 0 132 86", width: "132", height: "86", role: "img" }); wrap.appendChild(sv);
+    var ls = qh != null ? qh / 3.6 : 0, pasa = qh != null && qh > POZO_M3H * 1.02;
+    sv.setAttribute("aria-label", qh != null ? "Caudal medio " + nf(ls, 2) + " litros por segundo; el derecho es 2" : "Sin caudal calculado");
+    pnSvg("path", { d: "M12 72a54 54 0 0 1 108 0", fill: "none", stroke: "var(--line)", "stroke-width": "12", "stroke-linecap": "round" }, sv);
+    pnSvg("path", { d: "M12 72a54 54 0 0 1 108 0", fill: "none", stroke: pasa ? "var(--pn-rd)" : "var(--pn-gr)", "stroke-width": "12", "stroke-linecap": "round", "stroke-dasharray": "169.6", "stroke-dashoffset": String(169.6 * (1 - Math.min(ls / 4, 1))) }, sv);
+    pnSvg("line", { x1: "66", y1: "8", x2: "66", y2: "26", stroke: "var(--fg)", "stroke-width": "2" }, sv);
+    var t1 = pnSvg("text", { x: "66", y: "64", "text-anchor": "middle", "font-size": "22", "font-weight": "800", fill: "var(--fg)" }, sv); t1.textContent = qh != null ? nf(ls, 2) : "—";
+    var t2 = pnSvg("text", { x: "66", y: "81", "text-anchor": "middle", "font-size": "10", fill: "var(--muted)" }, sv); t2.textContent = "L/s medio (límite 2)";
+    var tx = el("div", "pn-gt");
+    if (pasa) tx.appendChild(el("p", "pn-warn", "+" + nf((ls / 2 - 1) * 100, 0) + " % sobre el derecho"));
+    else if (qh != null) tx.appendChild(el("p", "pn-okp", "Dentro del derecho de 2 L/s"));
+    tx.appendChild(el("p", "note", "Caudal medio entre las dos últimas lecturas.")); wrap.appendChild(tx); b.appendChild(wrap);
+    var fila = function(et, val, max, col){ var d = el("div", "pn-pr"); var h = el("div", "pn-ph"); h.appendChild(el("span", null, et)); h.appendChild(el("b", null, nf(val, 0) + " de " + nf(max, 0) + " m³ · " + nf(val / max * 100, 1) + " %")); d.appendChild(h); d.appendChild(pnBarra(val / max * 100, col)); b.appendChild(d); };
+    fila("Esta semana (derecho: 1.210 m³)", Math.max(0, sem.cons), 1210, "cy");
+    fila("Año (1 ene a 31 dic · 63.072 m³)" + (an && an.desdePrimera ? ", desde la 1.ª lectura" : ""), Math.max(0, an ? an.cons : 0), 63072, "vi");
+    b.appendChild(pnIr("Ver los medidores", function(){ S.screen = "medidores"; render(); }));
+  }
+  function pnCuerpoAcum(b){
+    b.appendChild(el("p", "note", "Todavía no se registra el nivel del acumulador. Cuando se anote (foto con un punto fijo), aquí verás el nivel y los días de autonomía."));
+    b.appendChild(pnIr("Ir a medidores", function(){ S.screen = "medidores"; render(); }));
+  }
+  function pnCuerpoElec(b){
+    var m = S.medidores.filter(function(x){ return x.tipo === "luz"; })[0];
+    if (!m){ b.appendChild(el("p", "note", "Todavía no hay medidor de luz.")); return; }
+    var hy = fecha(), ws = weekStart(hy), p = pnLecturasPeriodo(m.id, ws);
+    if (!p){ b.appendChild(el("p", "note", "Aún no hay lecturas de la luz.")); b.appendChild(pnIr("Anotar lectura", function(){ S.screen = "medidores"; render(); })); return; }
+    var tf = S.tarifas && S.tarifas["med_" + m.id] && Number(S.tarifas["med_" + m.id].kwh) || EQ_TARIFA0, kwh = Math.max(0, p.cons);
+    var g = el("div", "pn-tiles");
+    var a1 = el("div", "pn-k am"); a1.appendChild(el("p", "pn-tn", "Semana")); var b1 = el("p", "pn-big", nf(kwh, 0)); b1.appendChild(el("small", null, " kWh")); a1.appendChild(b1); g.appendChild(a1);
+    var a2 = el("div", "pn-k"); a2.appendChild(el("p", "pn-tn", "Costo")); a2.appendChild(el("p", "pn-big n", "$" + nf(Math.round(kwh * tf / 100) * 100, 0))); g.appendChild(a2); b.appendChild(g);
+    var dias = [], i, L = p.L;
+    for (i = 6; i >= 0; i--){ var f = addDays(hy, -i), ant = null, act = null; L.forEach(function(l){ if (l.fecha <= f) act = l; if (l.fecha < f) ant = l; }); var v = act && ant && act.fecha === f ? Math.max(0, act.valor - ant.valor) : 0; dias.push({ f: f, v: v }); }
+    var mx = Math.max.apply(null, dias.map(function(d){ return d.v; }).concat([1])), sv = pnSvg("svg", { viewBox: "0 0 300 96", width: "100%", height: "96", role: "img", "aria-label": "kWh por día de la última semana" });
+    dias.forEach(function(d, k){ var h = Math.round(d.v / mx * 60); pnSvg("rect", { x: String(12 + k * 41), y: String(72 - h), width: "28", height: String(Math.max(h, 2)), rx: "6", fill: "var(--pn-am)", opacity: d.v ? "1" : ".3" }, sv); var t = pnSvg("text", { x: String(26 + k * 41), y: "90", "text-anchor": "middle", "font-size": "11", fill: "var(--muted)" }, sv); t.textContent = "DLMXJVS".charAt(new Date(d.f + "T12:00:00Z").getUTCDay()); });
+    b.appendChild(sv);
+    b.appendChild(el("p", "note", "Tarifa $" + nf(tf, 0) + " por kWh con IVA. Lectura de " + fmtD2(p.ref.fecha) + " a " + fmtD2(p.ult.fecha) + "."));
+    b.appendChild(pnIr("Ver la lectura de luz", function(){ S.screen = "medidores"; render(); }));
+  }
+  function pnCuerpoEquipo(b){
+    var gente = ecGente(), now = Date.now(), hs = {};
+    Object.keys(S.team).forEach(function(id){ var mm = S.team[id]; hs[String(mm.nombre || "").toLowerCase()] = semana(mm.dias, now).total; });
+    hs[String(S.nombre || "").toLowerCase()] = semana(S.dias, now).total;
+    if (!gente.length){ b.appendChild(el("p", "note", "Nadie en el campo todavía.")); }
+    gente.forEach(function(g){
+      var r = el("div", "pn-pe"); r.appendChild(el("span", "pn-av " + g.est, String(g.nombre || "?").trim().charAt(0).toUpperCase()));
+      var c = el("div", "pn-pc"); c.appendChild(el("b", null, g.nombre)); c.appendChild(el("span", "note", g.sub)); r.appendChild(c);
+      var h = hs[String(g.nombre || "").toLowerCase()]; if (h != null){ var d = el("div", "pn-ph2"); d.appendChild(el("b", null, nf(h / 60, 1) + " h")); d.appendChild(el("span", "note", "esta semana")); r.appendChild(d); }
+      b.appendChild(r);
+    });
+    b.appendChild(pnIr("Ver el equipo", function(){ S.screen = "personal"; render(); }));
+  }
+  function pnCuerpoBodega(b){
+    var hy = fecha(), np = S.plan.filter(function(x){ return x.estado === "pendiente" && x.fecha <= hy; }).length;
+    var ps = S.productos.map(function(p){ var tot = totalIngresado(p), st = stockDe(p); return { p: p, st: st, tot: tot, r: tot > 0 ? st / tot : 1 }; }).filter(function(x){ return x.tot > 0; }).sort(function(a, c){ return a.r - c.r; }).slice(0, 4);
+    var t = el("p", "pn-line"); t.appendChild(el("b", null, String(np))); t.appendChild(document.createTextNode(np === 1 ? " aplicación pendiente" : " aplicaciones pendientes")); b.appendChild(t);
+    ps.forEach(function(x){ var d = el("div", "pn-pr"), h = el("div", "pn-ph"); h.appendChild(el("span", null, x.p.nombre || "Producto")); h.appendChild(el("b", null, nf(x.st, 1) + " " + (x.p.unidad || "") + (x.r < 0.2 ? " · bajo" : ""))); d.appendChild(h); d.appendChild(pnBarra(x.r * 100, x.r < 0.2 ? "rd" : x.r < 0.4 ? "am" : "gr")); b.appendChild(d); });
+    b.appendChild(pnIr("Ir a aplicaciones", function(){ S.screen = "aplic"; render(); }));
+  }
+  function pnPgDe(k){
+    var D;
+    if (k === "alertas"){ var n = pnAlertasLista().length; return n ? n + (n === 1 ? " cosa por atender" : " cosas por atender") : "Todo al día"; }
+    if (k === "riego"){ D = pnRiegoDatos(); return D.length ? D.map(function(d){ return d.n + " " + nf(d.pct, 0) + " %"; }).join(" · ") : "Calculando…"; }
+    if (k === "equipo"){ var on = ecGente().filter(function(g){ return g.est === "on"; }).length; return on + (on === 1 ? " persona en el campo" : " personas en el campo"); }
+    return PN_CARDS.filter(function(x){ return x[0] === k; })[0][2];
+  }
+  function pnAjustes(){
+    var c = el("section", "hy-tl pn pn-gr"); c.appendChild(el("h2", null, "Ajustes del panel"));
+    c.appendChild(el("p", "note", "Elige qué tarjetas ves. Es solo tuyo: cada persona arma su propio panel."));
+    PN_CARDS.filter(pnPermitida).forEach(function(x){
+      var on = pnCfg().show[x[0]] !== false, r = el("div", "pn-aj"); var ic = el("span", "pn-ic pn-" + x[5]); ic.appendChild(ico(x[3])); r.appendChild(ic);
+      var t = el("div", "pn-pc"); t.appendChild(el("b", null, x[1])); t.appendChild(el("span", "note", x[2])); r.appendChild(t);
+      var sw = el("button", "pn-sw" + (on ? " on" : "")); sw.type = "button"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-checked", on ? "true" : "false"); sw.setAttribute("aria-label", "Mostrar " + x[1]); sw.appendChild(el("i"));
+      sw.onclick = function(){ pnCfg().show[x[0]] = !on; pnGuarda(); render(); }; r.appendChild(sw); c.appendChild(r);
+    });
+    return c;
+  }
+  function buildPanel(){
+    rgCargaET();
+    var f = el("div", "pnl"); f.appendChild(el("h1", "pn-h1", "Panel")); f.appendChild(el("p", "sub", "Lo más importante del campo, hoy"));
+    var tabs = el("div", "pn-seg pn-tabs"); tabs.setAttribute("role", "group");
+    [["panel", "Panel", "panel"], ["ajustes", "Ajustes del panel", "ajustes"]].forEach(function(x){
+      var b = el("button", null, ""); b.type = "button"; b.appendChild(ico(x[2])); b.appendChild(document.createTextNode(" " + x[1])); b.setAttribute("aria-pressed", PN.tab === x[0] ? "true" : "false"); b.onclick = function(){ PN.tab = x[0]; render(); }; tabs.appendChild(b);
+    });
+    f.appendChild(tabs);
+    if (PN.tab === "ajustes"){ f.appendChild(pnAjustes()); return f; }
+    var alguna = false;
+    PN_CARDS.forEach(function(x){
+      if (!pnPermitida(x) || pnCfg().show[x[0]] === false) return; alguna = true;
+      var cuerpo = { alertas: function(b){
+        var L = pnAlertasLista(); if (!L.length){ b.appendChild(el("p", "note", "No hay alertas ni recordatorios urgentes.")); return; }
+        L.slice(0, 6).forEach(function(a){ var r = el("div", "pn-al " + a.c); r.appendChild(el("i", "pn-dot")); var c = el("div", "pn-pc"); c.appendChild(el("b", null, a.t)); if (a.s) c.appendChild(el("span", "note", a.s)); r.appendChild(c); r.appendChild(pnIr("Ir", a.ir)); b.appendChild(r); });
+        if (L.length > 6) b.appendChild(el("p", "note", "y " + (L.length - 6) + " más en Inicio"));
+      }, riego: pnCuerpoRiego, agua: pnCuerpoAgua, acum: pnCuerpoAcum, elec: pnCuerpoElec, equipo: pnCuerpoEquipo, bodega: pnCuerpoBodega }[x[0]];
+      f.appendChild(pnCaja(x, pnPgDe(x[0]), cuerpo));
+    });
+    if (!alguna) f.appendChild(el("p", "note", "No tienes tarjetas activas. Enciéndelas en «Ajustes del panel»."));
+    return f;
   }
   function buildHome(){
     var now = Date.now(), e = estado(S.dias, now), wk = semana(S.dias, now);
@@ -4306,7 +4559,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   var RG_TASA = 2.2, RG_EF = 0.9, RG_FAC0 = 0.7, RG_KCLO = 0.79, RG_KCHI = 0.96, rgET = null, rgETt = 0, rgETp = false, rgOpt = 4, rgEdit = false;
   function rgCargaET(){
     if (rgETp || (rgETt && Date.now() - rgETt < 3600000)) return; rgETp = true;
-    var fin = function(d, ok){ rgETp = false; rgETt = ok ? Date.now() : Date.now() - 3300000; if (ok) rgET = d; else if (!rgET && window.__et0) rgET = window.__et0; if (S.screen === "riego") render(); };
+    var fin = function(d, ok){ rgETp = false; rgETt = ok ? Date.now() : Date.now() - 3300000; if (ok) rgET = d; else if (!rgET && window.__et0) rgET = window.__et0; if (S.screen === "riego" || S.screen === "panel") render(); };
     try { fetch("et0/chincolco.json", { cache: "no-store" }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){ fin(d && d.dias ? d : null, !!(d && d.dias)); }, function(){ fin(null, false); }); } catch (e){ fin(null, false); }
   }
   function rgVentana(){
@@ -4339,7 +4592,9 @@ html.pc .cmdk:not([hidden]){display:flex}
     sec.appendChild(el("p", "sub", "Del " + fmtD2(v.ini) + " al " + fmtD2(v.fin) + " · evapotranspiración " + nf(v.et0, 1) + " mm" + (v.n < 7 ? " (estimada con " + v.n + " de 7 días)" : "") + (atras > 2 ? " · el último dato es de hace " + atras + " días" : "")));
     var hd = el("div", "who"); var big = el("b", "rgs-big", nf(need, 1)); big.appendChild(el("small", null, " h por sector")); hd.appendChild(big); hd.appendChild(el("span", "chip " + est[0], est[1] + " · " + nf(cov * 100, 0) + " %")); sec.appendChild(hd);
     sec.appendChild(el("p", "note", "Con el Kc de tabla (0,79 a 0,96) serían " + nf(lo, 1) + " a " + nf(hi, 1) + " h."));
-    var bar = el("div", "meter" + (cov >= 1.15 ? " over" : "")); var fil = el("i"); fil.style.width = Math.min(100, cov * 100) + "%"; bar.appendChild(fil); sec.appendChild(bar);
+    sec.appendChild(pnSeg(rgRepinta));
+    if (pnCfg().et === "pct"){ var gt = el("div", "pn-tiles one"); gt.appendChild(pnTile("Nogales", cov * 100, nf(app, 1) + " de " + nf(need, 1) + " h por sector")); sec.appendChild(gt); }
+    else { var bar = el("div", "meter" + (cov >= 1.15 ? " over" : "")); var fil = el("i"); fil.style.width = Math.min(100, cov * 100) + "%"; bar.appendChild(fil); sec.appendChild(bar); }
     var falta = need - app;
     sec.appendChild(el("p", "note", "Se aplicaron " + nf(app, 1) + " h por sector (promedio de los sectores de nogal) en esos 7 días. " + (falta > 0.05 ? "Faltaron " + nf(falta, 1) + " h (unos " + nf(falta * mmh, 0) + " mm de agua efectiva)." : falta < -0.05 ? "Sobraron " + nf(-falta, 1) + " h." : "Fue lo que necesitaban.")));
     /* Factor del asesor y su vigencia */
@@ -6980,7 +7235,7 @@ html.pc .cmdk:not([hidden]){display:flex}
   /* ---- Modo escritorio (solo dueño, ≥ 1100 px): barra lateral, búsqueda ⌘K y Centro de control ---- */
   var PC = false;
   var PC_ITEMS = [
-    ["Resumen", "home", "Centro de control", "1"], ["Resumen", "agenda", "Planificación", "2"], ["Resumen", "trabajo", "Registros", "3"],
+    ["Resumen", "home", "Centro de control", "1"], ["Resumen", "panel", "Panel", ""], ["Resumen", "agenda", "Planificación", "2"], ["Resumen", "trabajo", "Registros", "3"],
     ["Campo", "riego", "Riego", "4"], ["Campo", "aplic", "Aplicaciones y stock", "5"], ["Campo", "cosecha", "Cosecha y bodega", "6"], ["Campo", "medidores", "Medidores", "7"], ["Campo", "campo", "Mi campo", "8"], ["Campo", "arboles", "Árboles del huerto", ""],
     ["Personas", "personal", "Personal", "9"], ["Personas", "terceros", "Terceros y jornadas", "0"], ["Personas", "permisos", "Permisos", ""], ["Personas", "horarios", "Horarios del equipo", ""], ["Personas", "legal", "Legal", ""], ["Sistema", "ajustes", "Ajustes", ""]
   ];
@@ -7755,6 +8010,7 @@ html.pc .cmdk:not([hidden]){display:flex}
     setTimeout(psRevisa, 700);
     if (S.screen === "permisos") return setView("permisos", buildPermisos);
     if (S.screen === "agenda") return PC ? setView("agendapc", buildPlanPC) : setView("agenda", buildAgenda);
+    if (S.screen === "panel") return setView("panel", buildPanel);
     if (S.screen === "campo") return setView("campo", buildCampo);
     if (S.screen === "trabajo") return PC ? setView("registrospc", buildRegistros) : setView("trabajo", buildTrabajo);
     if (S.screen === "aplic") return setView("aplic", buildAplic);

@@ -3205,6 +3205,14 @@ html.hashd .top{position:relative}
     ay.appendChild(el("p", "ajs-t", "Ayuda"));
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
     var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
+    ay.appendChild(el("p", "ajs-t", "Compartir"));
+    function compartir(titulo, texto, url){
+      if (navigator.share){ navigator.share({ title: titulo, text: texto, url: url }).catch(function(){}); return; }
+      try { navigator.clipboard.writeText(url).then(function(){ toast("Enlace copiado"); }, function(){ toast(url); }); } catch (e3){ toast(url); }
+    }
+    var bcd = el("button", null, "Compartir demo"); bcd.type = "button"; bcd.onclick = function(){ compartir("Demo · Control del Campo", "Prueba la app con datos de ejemplo. En iPhone: Compartir → Añadir a pantalla de inicio. En Android: menú del navegador → Instalar app.", "https://danabalon-byte.github.io/campo/?demo"); }; ay.appendChild(bcd);
+    ay.appendChild(el("p", "note", "La demo tiene datos de ejemplo: se puede probar sin cambiar nada real."));
+    if (S.owner && !window.__DEMO){ var bca = el("button", null, "Compartir la app"); bca.type = "button"; bca.onclick = function(){ compartir("Control del Campo", "Abre el enlace e instala la app. En iPhone: Compartir → Añadir a pantalla de inicio. En Android: menú del navegador → Instalar app.", "https://danabalon-byte.github.io/campo/"); }; ay.appendChild(bca); ay.appendChild(el("p", "note", "Para el equipo: entran con su cuenta, que tú autorizas.")); }
     ay.appendChild(el("p", "ajs-t", "Apariencia"));
     var tm = temaGuardado(), grpT = el("div", "ajs-seg"); grpT.setAttribute("role", "group"); grpT.setAttribute("aria-label", "Color de la pantalla");
     [["auto", "Automática", "tmAuto"], ["light", "Día", "tmDia"], ["dark", "Noche", "tmNoche"], ["vivo", "Noche viva", "tmVivo"]].forEach(function(x){

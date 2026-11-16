@@ -2291,7 +2291,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 69;
+  var GUIA_V = 70;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2325,6 +2325,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Corregir un riego", "En «Últimos riegos», el botón «Corregir» permite cambiar el día, el sector, las horas o las notas de un riego ya anotado. «Anular» lo borra.", 26, "manager"],
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
+    ["Pasar de pantalla con el dedo", "En el teléfono puedes cambiar de sección deslizando el dedo hacia la izquierda (siguiente) o hacia la derecha (anterior) sobre la pantalla, además de tocar el menú de abajo. No funciona sobre campos de texto, listas o gráficos que se mueven de lado, ni con una hoja abierta; en Medidor el gesto cambia de medidor.", 70, ""],
     ["Riego anulado", "Si anulas un riego registrado, queda en el historial con la etiqueta «ANULADO», sus horas dejan de contar en «Riego de la semana» y en la necesidad de agua, y su tarea vuelve a «Pendientes» con la tarjeta «ANULADA». Desde ahí el dueño puede reprogramarlo o tocar «Anular definitivamente», que exige elegir un motivo y escribir un reporte. La encargada toca «Pedir anulación definitiva» con su motivo y reporte: la solicitud llega al dueño, que toca «Aprobar anulación» o «Rechazar»; mientras tanto el riego sigue pendiente.", 68, ""],
     ["Propuesta de riego de la semana", "Solo para el dueño. En «Riego», arriba, «Propuesta de riego» toma el programa del asesor (nogales lunes, miércoles, viernes y domingo; limones de lunes a sábado) y ajusta las horas con la evapotranspiración de los últimos 7 días. Nada queda programado hasta que tú decides: «Aprobar y programar» (se toca dos veces) crea los riegos de los días que quedan de la semana, con los limones primero y los nogales en fila después; «No la apruebo: la programo yo» abre el programador ya armado con esos días para que lo cambies. En cada bloque puedes dejar fuera nogales o limones. Los limones, que aún son árboles jóvenes y no tienen factor de cultivo, siguen el programa del asesor sin ajustarlo por evapotranspiración hasta que guardes el factor definitivo en «Riego de la semana · limones».", 67, "owner"],
     ["Programar por días de la semana", "En «Programar riego», con «Voy a regar», los botones «L M X J V S D» marcan en el calendario todos esos días de las próximas 4 semanas (o hasta «Repetir hasta»). Después puedes tocar el calendario para quitar o agregar días. Si el sector tiene cálculo de evapotranspiración, una línea dice cuántas horas por riego salen con esos días y «Usar esas horas» las pone. En la tarjeta de nogales, «Programar este reparto» abre el programador con el reparto elegido.", 67, "manager"],
@@ -2395,6 +2396,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 70, f: "2026-11-16", t: "Pasar de pantalla con el dedo", d: "En el teléfono, desliza el dedo a la izquierda o a la derecha sobre la pantalla para ir a la sección siguiente o anterior de la barra de abajo, sin tocar el menú.", g: "Pasar de pantalla con el dedo" },
     { v: 69, f: "2026-11-16", t: "Limones: sin cálculo hasta tener su factor", d: "Los limones son árboles jóvenes y no tienen factor de cultivo. «Riego de la semana · limones» ya no calcula necesidad, déficit ni exceso: muestra las horas aplicadas y sigue el programa del asesor. Cuando el asesor dé un factor para árboles jóvenes, se guarda en «Ajustar datos de limones» y el cálculo se activa.", g: "Propuesta de riego de la semana", r: "owner" },
     { v: 68, f: "2026-11-16", t: "Pedir la anulación definitiva de un riego", d: "Si un riego anulado ya no se va a hacer, la encargada puede tocar «Pedir anulación definitiva» con el motivo y su reporte. A Diego le llega una alerta con «Aprobar anulación» y «Rechazar». Mientras no se decida, el riego sigue pendiente.", g: "Riego anulado" },
     { v: 67, f: "2026-11-16", t: "Riego anulado, propuesta semanal y días de la semana", d: "Un riego anulado queda con la etiqueta «ANULADO», se recalcula en el riego de la semana y su tarea vuelve a pendientes; el dueño puede anularlo definitivamente con un reporte. «Riego» trae una propuesta semanal (programa del asesor ajustado con la evapotranspiración) que el dueño aprueba o rechaza; si la rechaza, programa con los botones L M X J V S D y el calendario. Los limones también calculan su necesidad de agua con datos provisorios.", g: "Propuesta de riego de la semana", r: "owner" },
@@ -7357,6 +7359,35 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       app.classList.remove("slL", "slR"); app.classList.add(dx < 0 ? "slL" : "slR"); clearTimeout(app._sl); app._sl = setTimeout(function(){ app.classList.remove("slL", "slR"); }, 450);
       render();
       var cb = app.querySelector(".mchips button[aria-pressed=true]"); if (cb) try { cb.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e2) {}
+    }, { passive: true });
+  })();
+  /* Pasar de pantalla con el dedo: deslizar a la izquierda o a la derecha cambia a la sección siguiente o anterior de la barra de abajo (solo en el teléfono). No actúa sobre campos, listas o gráficos que se desplazan de lado, hojas abiertas, el mapa ni medidores (que ya usa el gesto para cambiar de medidor). */
+  (function(){
+    var x0 = 0, y0 = 0, t0 = 0, ok = false, app = document.getElementById("app"); if (!app) return;
+    function lateral(n){
+      for (var e = n; e && e !== app && e.nodeType === 1; e = e.parentNode){
+        if (e.hasAttribute && e.hasAttribute("data-noswipe")) return true;
+        var tg = e.tagName; if (tg === "INPUT" || tg === "TEXTAREA" || tg === "SELECT" || (e.classList && (e.classList.contains("ml-sw") || e.classList.contains("tmp-dial") || e.classList.contains("pn-asa") || e.classList.contains("pn-aj")))) return true;
+        if (e.scrollWidth > e.clientWidth + 2){ var ox = getComputedStyle(e).overflowX; if (ox === "auto" || ox === "scroll") return true; }
+      }
+      return false;
+    }
+    app.addEventListener("touchstart", function(e){
+      ok = false;
+      if (e.touches.length !== 1 || (typeof PC !== "undefined" && PC) || document.documentElement.classList.contains("pc")) return;
+      if (S.view === "medidores" || (S.screen === "arboles" && typeof huOn === "function" && huOn())) return;
+      if (document.querySelector(".sheet:not([hidden])") || lateral(e.target)) return;
+      var sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); ok = true;
+    }, { passive: true });
+    app.addEventListener("touchend", function(e){
+      if (!ok) return; ok = false; var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+      if (Date.now() - t0 > 800 || Math.abs(dx) < 90 || Math.abs(dy) > Math.abs(dx) * 0.4) return;
+      var nav = $("nav"); if (!nav || nav.hidden || nav.classList.contains("hu7")) return;
+      var bs = Array.prototype.slice.call(nav.querySelectorAll("button[data-s]")), i = -1; bs.forEach(function(b, k){ if (b.getAttribute("aria-current") === "page") i = k; });
+      var j = dx < 0 ? i + 1 : i - 1; if (i < 0 || j < 0 || j >= bs.length) return;
+      app.classList.remove("slL", "slR"); app.classList.add(dx < 0 ? "slL" : "slR"); clearTimeout(app._sl); app._sl = setTimeout(function(){ app.classList.remove("slL", "slR"); }, 450);
+      bs[j].click();
     }, { passive: true });
   })();
   /* Fila que se desliza a la izquierda y muestra acciones detrás. */

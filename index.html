@@ -3280,6 +3280,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var enf = huEnfermos();
       if (enf.length) out.push({ sev: 2, titulo: enf.length === 1 ? "1 árbol enfermo en seguimiento" : enf.length + " árboles enfermos en seguimiento", lineas: enf.slice(0, 3).map(function(c){ var o = huUlt(c); return ["cos", c, (o.tipo ? o.tipo.toLowerCase() : "enfermo") + " · " + (o.flujo || "Sospecha")]; }), acciones: [], ir: function(){ S.hv.filtro = "enfermos"; S.hv.vista = "lista"; S.screen = "arboles"; render(); } });
     }
+    if (S.owner){ var ld = limDefPend(); if (ld.faltan.length || ld.otros.length || ld.arb) out.push({ sev: 3, titulo: "Programa definitivo de limones", lineas: [["rg", "Por aplicar", "Desde el lun 16 nov · día por medio hasta el 30 dic · 1,5 h con fertilización (327 árboles)" + (ld.otros.length ? " · se borran " + ld.otros.length + " riegos de limones que no calzan" : "")]], acciones: [{ txt: "Aplicar programa", pri: true, doble: true, aria: "Aplicar el programa definitivo de riego de limones", fn: limAplicaDef }], ir: function(){ S.screen = "agenda"; render(); } }); }
     if (S.manager){ var au = rgAuditoria(); if (au.length) out.push({ sev: 3, titulo: "Riegos que se cruzan", lineas: au.slice(0, 3).map(function(a){ return ["rg", "Revisar", a.txt]; }), acciones: [{ txt: "Ordenar: limones primero", pri: true, aria: "Reordenar los riegos programados, limones primero", fn: rgOrdenar }], ir: function(){ S.screen = "agenda"; render(); } }); }
     riegosAtrasados().forEach(function(t){
       var d = diasDesde(t.fecha), h = t.horas ? nf(t.horas, 1) + " h programadas" : "";
@@ -5698,7 +5699,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function rgEsLim(sid){ return pnLimones().indexOf(sid) >= 0; }
   function rgFinT(t){ var a = hmMin(t.hora), b = hmMin(t.horaFin); if (a == null || b == null) return null; return { a: a, b: t.finSig || b < a ? b + 1440 : b }; }
   function rgSugerida(f){
-    var m = RG_INI; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.fecha === f && rgEsLim(t.sectorId)){ var r = rgFinT(t); if (r && r.b > m && r.b < 1440) m = r.b; } });
+    var m = RG_INI; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.fecha === f && rgEsLim(t.sectorId)){ /* con fertirriego va primero */ var r = rgFinT(t); if (r && r.b > m && r.b < 1440) m = r.b; } });
     return minHm(m);
   }
   function rgLoteArma(){
@@ -5738,6 +5739,38 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (mal.length) out.push({ f: f, L: L, lim: lim, nog: nog, txt: fmtD2(f) + ": " + mal[0].sector + " parte a las " + mal[0].hora + " y los limones terminan a las " + minHm(L) });
     });
     return out;
+  }
+  /* Programa definitivo de limones (15 nov): desde el lunes 16, 1,5 h con fertirriego, día por medio hasta el 30 dic; cualquier otro riego de limones pendiente se borra y los nogales entran después. */
+  var LIM_DEF = { ini: "2026-11-16", fin: "2026-12-31", h: 1.5, hora: "09:00" };
+  function limFechas(){ var o = [], d = LIM_DEF.ini; while (d <= LIM_DEF.fin){ o.push(d); d = addDays(d, 2); } return o; }
+  function limDefPend(){
+    var fs = limFechas(), pend = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && rgEsLim(t.sectorId); }), ok = {}, otros = [];
+    pend.forEach(function(t){ if (fs.indexOf(t.fecha) >= 0 && t.hora === LIM_DEF.hora && Number(t.horas) === LIM_DEF.h && !ok[t.fecha]) ok[t.fecha] = t; else otros.push(t); });
+    var lim = S.cuarteles.filter(function(c){ return c.especie === "Limón"; })[0];
+    return { faltan: fs.filter(function(f){ return !ok[f]; }), otros: otros, ok: ok, lim: lim, arb: lim && Number(lim.arboles) !== 327 };
+  }
+  async function limAplicaDef(){
+    var ah = new Date().toISOString(), d = limDefPend(), lim = d.lim; if (!lim) return;
+    try {
+      var quien = (d.otros[0] && d.otros[0].quien) || "", reuso = d.otros.slice(), nBorr = 0, nNue = 0, n = 0;
+      for (var f of d.faltan){
+        var fin = hmMin(LIM_DEF.hora) + LIM_DEF.h * 60, doc = { fecha: f, titulo: "Riego " + lim.nombre, tipo: "riego", horas: LIM_DEF.h, sectorId: lim.id, sector: lim.nombre, momento: "dia", quien: quien, estado: "pendiente", hora: LIM_DEF.hora, horaFin: minHm(fin), finSig: false, ts: ah, uid: S.uid, por: S.nombre };
+        var t = reuso.shift();
+        if (t){ await S.db.doc("tareas/" + t.id).update(doc); } else { await S.db.collection("tareas").add(doc); }
+        nNue++;
+      }
+      for (var t2 of reuso){ await S.db.doc("tareas/" + t2.id).delete(); nBorr++; }
+      if (d.arb) await S.db.doc("cuarteles/" + lim.id).update({ arboles: 327 });
+      /* Nogales después de los limones, en fila, sin pisarse. */
+      var L = hmMin(LIM_DEF.hora) + LIM_DEF.h * 60;
+      var grupos = {};
+      S.tareas.forEach(function(x){ if (x.tipo === "riego" && x.estado !== "hecha" && !rgEsLim(x.sectorId) && limFechas().indexOf(x.fecha) >= 0 && x.hora) (grupos[x.fecha] = grupos[x.fecha] || []).push(x); });
+      for (var f2 of Object.keys(grupos)){
+        var cur = L, lst = grupos[f2].sort(function(a, b){ return (a.grupo || "").localeCompare(b.grupo || "") || (a.orden || 0) - (b.orden || 0) || (hmMin(a.hora) || 0) - (hmMin(b.hora) || 0); });
+        for (var x of lst){ var e = cur + Math.round((Number(x.horas) || 0) * 60); await S.db.doc("tareas/" + x.id).update({ hora: minHm(cur), horaFin: minHm(e), finSig: e > 1440, ordenadoPor: S.nombre, ordenadoTs: ah }); cur = e; n++; }
+      }
+      toast("Listo: limones día por medio, 1,5 h con fertilización" + (nBorr ? "; borré " + nBorr + " riegos de limones" : "") + (n ? "; ordené " + n + " riegos de nogales" : ""));
+    } catch (e){ toast("No se pudo aplicar. Revisa tu señal e intenta de nuevo."); }
   }
   async function rgOrdenar(){
     var ah = new Date().toISOString(), n = 0;
@@ -8939,11 +8972,11 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
   }
   /* Fertirriego de limones: todos los riegos programados de limones entre FR.desde y FR.hasta llevan la receta del día (tambor de 200 L). Se registra enlazado al riego y descuenta la bodega. */
-  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 327 /* respaldo: manda frPlantas() */, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
+  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 327, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
     prods: [{ re: /urea/i, dosis: 2, base: "g", nombre: "Urea" }, { re: /nitrato.*potasio|potasio.*nitrato|kno3/i, dosis: 2, base: "g", nombre: "Nitrato de potasio" }, { re: /fosf/i, dosis: 2, base: "cc", nombre: "Ácido fosfórico" }] };
   var frInfo = null, frModo = "si";
   /* Árboles que reciben el fertirriego: los de la ficha del cuartel de limones (editable); el 327 solo sirve si la ficha está vacía. */
-  function frPlantas(){ var a = arbSector(S.cuarteles.filter(function(c){ return c.especie === "Limón"; })[0]); return a.n > 0 && !a.est ? a.n : FR.plantas; }
+  function frPlantas(){ return FR.plantas; } /* 327 plantados: dato definitivo (15 nov); la ficha del cuartel se deja igual en 327 */
   function frEs(t){ return !!t && t.tipo === "riego" && t.estado !== "hecha" && t.fert !== false && !!t.fecha && t.fecha >= FR.desde && t.fecha <= FR.hasta && pnLimones().indexOf(t.sectorId) >= 0; }
   function frConv(c, base, u){ u = String(u || "").toLowerCase(); if (base === "g") return u === "kg" ? c / 1000 : c; return /^(l|lt|lts|litro|litros)$/.test(u) ? c / 1000 : c; }
   function frReceta(){

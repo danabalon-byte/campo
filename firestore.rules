@@ -74,11 +74,11 @@ service cloud.firestore {
       allow create: if isMember() && request.resource.data.data.size() < 400000;
       allow update, delete: if isOwner();
     }
-    // Agenda: las tareas las agenda y quita la administración; cualquiera del equipo las marca como hechas.
+    // Agenda: las tareas las agenda y quita la administración; cualquiera del equipo las marca como hechas. Anular definitivamente una tarea (estado «anulada») solo lo hace el dueño.
     match /tareas/{d} {
       allow read: if isMember();
       allow create, delete: if isAdmin();
-      allow update: if isMember();
+      allow update: if isOwner() || (isMember() && request.resource.data.get('estado', null) != 'anulada');
     }
     // Libreta de ideas y recordatorios del equipo.
     match /ideas/{d} { allow read, write: if isMember(); }
@@ -89,8 +89,9 @@ service cloud.firestore {
       allow update: if isOwner() || (isMember() && request.resource.data.get('rev', null) == resource.data.get('rev', null));
       allow delete: if isMember();
     }
-    match /aplicaciones/{d} { allow read, write: if isMember(); }
-    match /riegos/{d} { allow read, write: if isMember(); }
+    // Aplicaciones y riegos: el equipo los registra y corrige; borrarlos (y con ello devolver producto a la bodega) lo hace la administración.
+    match /aplicaciones/{d} { allow read, create, update: if isMember(); allow delete: if isAdmin(); }
+    match /riegos/{d} { allow read, create, update: if isMember(); allow delete: if isAdmin(); }
     match /plan/{d} { allow read, write: if isMember(); }
     match /consultas/{d} {
       allow read: if isOwner() || (isMember() && resource.data.uid == request.auth.uid);

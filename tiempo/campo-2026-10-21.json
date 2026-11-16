@@ -1,6 +1,6 @@
 {
  "sesion": "campo-2026-10-21",
- "desc": "Campo (Agrícola Borderío): desarrollo y mejoras de la app (14 y 15 nov según horario declarado por Diego) · 15 nov cerrado a las 22:18 (811 min)",
+ "desc": "Campo (Agrícola Borderío): desarrollo y mejoras de la app (14, 15 y 16 nov según horario declarado por Diego) · 16 nov declarado 13:30 a 19:53 (383 min)",
  "entradas": [
   {
    "fecha": "2026-10-21",
@@ -73,6 +73,10 @@
   {
    "fecha": "2026-11-15",
    "min": 811
+  },
+  {
+   "fecha": "2026-11-16",
+   "min": 383
   }
  ]
 }

@@ -1434,6 +1434,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     <div class="field"><label for="rgHoras" id="rgHorasL">Horas de riego</label><select id="rgHoras"></select></div>
     <div class="field" id="rgHoraF"><label for="rgHora" id="rgHoraL">Hora de inicio (opcional)</label><input type="time" id="rgHora"></div>
     <div id="rgTurnos" class="rg-turnos" style="display:none"></div>
+    <div class="field" id="rgCruceF" style="display:none"><label for="rgCruceM">Estos riegos se cruzan con otros: ¿por qué se programan así?</label><select id="rgCruceM"><option value="">Elige el motivo</option><option>Corte o falla de energía</option><option>Recuperar un riego atrasado</option><option>Poca agua disponible esa semana</option><option>Indicación del asesor</option><option>Otro</option></select><input type="text" id="rgCruceT" maxlength="120" placeholder="Explica en una frase" aria-label="Explicación del cruce"><p class="note warn">Solo lo autorizan Diego o Yolanda y queda anotado en la tarea. Los riegos que arma la app solos nunca se cruzan: van uno tras otro.</p></div>
     <p class="calc" id="rgCalc"></p>
     <div class="field" id="rgQuienF"><label for="rgQuien">¿Quién riega? (opcional)</label><select id="rgQuien"></select></div>
     <div class="field" id="rgRepF"><label for="rgRep">Repetir</label><select id="rgRep"><option value="0">No repetir</option><option value="1">Cada día</option><option value="2">Cada 2 días</option><option value="3">Cada 3 días</option><option value="4">Cada 4 días</option><option value="7">Cada semana</option></select></div>
@@ -2251,7 +2252,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 62;
+  var GUIA_V = 63;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2351,6 +2352,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 63, f: "2026-11-15", t: "Dosis por árbol, riegos en orden y pozo con guía", d: "«Por árbol» es una forma más de medir la dosis (Aplicar y Planificar): elige el sector y la app calcula con los árboles de su ficha. El fertirriego de limones usa esos árboles y no se duplica. Al programar riegos, el día parte a las 09:00, los limones van primero y los nogales después; un riego idéntico se bloquea y un cruce entre sectores pide motivo. «Alertas» avisa si algo ya programado se cruza y lo ordena con un toque. Parar o dar partida al pozo abre la foto con la guía circular, y esa foto queda de testigo. El marco del tablero completo ahora es vertical.", g: "Riego y fertirriego" },
     { v: 62, f: "2026-11-15", t: "Fertirriego enlazado al riego", d: "Todos los riegos programados de limones hasta el 31 de diciembre traen la receta del día (urea, nitrato de potasio y ácido fosfórico, tambor de 200 L). Al registrar el riego eliges «Regué y fertilicé» (crea la aplicación enlazada y descuenta la bodega) o «Solo agua». Si falta fertilizante en la bodega, la app pide el motivo y deja una alerta hasta que se resuelva.", g: "Fertirriego enlazado al riego" },
     { v: 61, f: "2026-11-15", t: "Esquema de la vara y cuenta de luz", d: "En «Acumulador y pozo» → «Cómo medir el nivel» hay una vista en perspectiva, el corte lateral y la vara de pie con la profundidad y los cm de cada marca. En «Medidores» (tablero eléctrico, solo dueño) aparece «Consumo por mes» con un interruptor para superponer el mismo mes del año anterior, y «Cargar la cuenta de luz». Desde el día 5 de cada mes, «Hoy» recuerda cargar la cuenta del mes anterior.", g: "Esquema de la vara y cuenta de luz" },
     { v: 60, f: "2026-11-15", t: "Botones más livianos", d: "Todos los botones secundarios ahora llevan solo contorno y se hunden al tocarlos. Solo el botón principal de cada pantalla mantiene relleno. Las pestañas y selectores (por ejemplo Cosecha · Bodega · Ventas) comparten el mismo contorno, y la opción elegida se ve hundida y en color." },
@@ -3278,6 +3280,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var enf = huEnfermos();
       if (enf.length) out.push({ sev: 2, titulo: enf.length === 1 ? "1 árbol enfermo en seguimiento" : enf.length + " árboles enfermos en seguimiento", lineas: enf.slice(0, 3).map(function(c){ var o = huUlt(c); return ["cos", c, (o.tipo ? o.tipo.toLowerCase() : "enfermo") + " · " + (o.flujo || "Sospecha")]; }), acciones: [], ir: function(){ S.hv.filtro = "enfermos"; S.hv.vista = "lista"; S.screen = "arboles"; render(); } });
     }
+    if (S.manager){ var au = rgAuditoria(); if (au.length) out.push({ sev: 3, titulo: "Riegos que se cruzan", lineas: au.slice(0, 3).map(function(a){ return ["rg", "Revisar", a.txt]; }), acciones: [{ txt: "Ordenar: limones primero", pri: true, aria: "Reordenar los riegos programados, limones primero", fn: rgOrdenar }], ir: function(){ S.screen = "agenda"; render(); } }); }
     riegosAtrasados().forEach(function(t){
       var d = diasDesde(t.fecha), h = t.horas ? nf(t.horas, 1) + " h programadas" : "";
       var acc = [{ txt: "Ya lo regué", pri: true, aria: "Registrar el riego atrasado de " + (t.sector || "sector"), fn: function(){ riegoDeTarea(t); } }];
@@ -4355,7 +4358,17 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* ---- Hoja: encender o apagar el pozo ---- */
   var pzTipo = "on", pzFotoD = null, pzForzar = false, pzPre = null;
   function pzQuitaFoto(){ pzFotoD = null; $("pzFotoVista").hidden = true; $("pzFotoQuitar").hidden = true; $("pzFotoBtn").textContent = "Tomar foto del caudalímetro"; }
+  /* Un solo camino para parar o dar partida al pozo: se abre la lectura del caudalímetro con la guía circular y esa misma foto queda de testigo del evento. Solo "Marcar como…" sobre una lectura ya guardada usa la ventana corta. */
   function pzAbrir(tipo, pre){
+    var mp = !pre && S.manager ? S.medidores.filter(function(x){ return x.id === "m_pozo"; })[0] : null;
+    if (mp){
+      abrirLectura(mp); mdPzTipo = tipo; mdPzPon(true);
+      $("mdPzAcc").textContent = tipo === "on" ? "Se da partida al pozo" : "Se para el pozo";
+      $("mdTitle").textContent = (tipo === "on" ? "Dar partida al pozo" : "Parar el pozo") + " · caudalímetro";
+      toast("Toma la foto del caudalímetro: queda de testigo " + (tipo === "on" ? "de la partida" : "de la parada") + " del pozo.");
+      setTimeout(function(){ camAbrir(1, false); }, 250);
+      return;
+    }
     pzPre = pre || null; pzTipo = tipo; $("pzTitle").textContent = tipo === "on" ? "Encender el pozo" : "Apagar el pozo"; $("pzOk").textContent = tipo === "on" ? "Guardar: pozo encendido" : "Guardar: pozo apagado"; pzForzar = false;
     $("pzFecha").value = fecha(); $("pzHora").value = horaAhora(); $("pzValor").value = ""; $("pzNota").value = ""; pzQuitaFoto(); $("pzAviso").hidden = true;
     var L = medLect("m_pozo"), u = L[L.length - 1];
@@ -5306,7 +5319,22 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     return { rein: rein, cos: cos };
   }
   function prodOrden(){ return S.productos.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }); }
-  var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "bomba", label: "Por bomba (mL o g)" }, { value: "directa", label: "Cantidad directa" }];
+  var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "arbol", label: "Por árbol (mL o g)" }, { value: "bomba", label: "Por bomba (mL o g)" }, { value: "directa", label: "Cantidad directa" }];
+  /* Árboles de un sector: manda el número de la ficha del cuartel; si falta, se estima por el marco (nogal 6 × 5 m, limón 4,5 × 2,5 m) y se avisa que es estimado. */
+  var MARCO_M2 = { "Nogal": 30, "Limón": 11.25 };
+  function arbDe(cu){
+    if (!cu || cu.especie === "Vivero") return { n: 0, est: false, falta: true };
+    var d = Number(cu.arboles) || 0; if (d > 0) return { n: d, est: false };
+    var m = MARCO_M2[cu.especie], h = Number(cu.ha) || 0;
+    return m && h > 0 ? { n: Math.round(h * 10000 / m), est: true } : { n: 0, est: false, falta: true };
+  }
+  function arbSector(cu){
+    if (cu) return Object.assign({ cu: cu, des: [] }, arbDe(cu));
+    var des = [], tot = 0, est = false, falta = false;
+    S.cuarteles.forEach(function(c){ if (c.especie === "Vivero") return; var a = arbDe(c); if (a.falta) falta = true; else { tot += a.n; if (a.est) est = true; des.push({ nombre: c.nombre, n: a.n, est: a.est }); } });
+    return { n: tot, est: est, falta: falta && !tot, des: des, cu: null };
+  }
+  function arbTxt(a){ return a.falta ? "" : nf(a.n, 0) + (a.n === 1 ? " árbol" : " árboles") + (a.est ? " (estimado por el marco)" : ""); }
   function prodById(id){ return S.productos.filter(function(p){ return p.id === id; })[0]; }
   function pSel(){ return prodById($("apProd").value); }
   function p2Sel(){ return $("apProd2").value ? prodById($("apProd2").value) : null; }
@@ -5314,8 +5342,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function menor(u){ return u === "L" ? "mL" : u === "kg" ? "g" : u; }
   function mil(u){ return u === "L" || u === "kg" ? 1000 : 1; }
   var man = { c1: false, c2: false, aw: false, tk: false, mo: false }, apForzar = false, apDup = false;
-  function monto(modo, v, ha, aguaTot, bombas, un){
+  function monto(modo, v, ha, aguaTot, bombas, un, arb){
     if (!(v > 0)) return null;
+    if (modo === "arbol") return arb > 0 ? v * arb / mil(un) : null;
     if (modo === "bomba") return bombas > 0 ? v * bombas / mil(un) : null;
     if (modo === "ha") return ha > 0 ? v * ha : null;
     if (modo === "pct") return aguaTot > 0 ? v / 100 * aguaTot : null;
@@ -5328,11 +5357,11 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var usaB = m1 === "bomba" || (!!p2 && m2 === "bomba"), bom = numI($("apBombas")); $("apBombasF").hidden = !usaB;
     $("ap2Box").hidden = !p2; $("ap2Hint").hidden = !!p2; $("apCant2F").hidden = !p2;
     $("apDosisF").hidden = m1 === "directa"; $("apDosis2F").hidden = m2 === "directa";
-    $("apDosisL").textContent = m1 === "bomba" ? "Cantidad por bomba (" + menor(p ? p.unidad : "") + ")" : m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
-    $("apDosis2L").textContent = m2 === "bomba" ? "Cantidad por bomba (" + menor(p2 ? p2.unidad : "") + ")" : m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("apDosisL").textContent = m1 === "arbol" ? "Dosis por árbol (" + menor(p ? p.unidad : "") + ")" : m1 === "bomba" ? "Cantidad por bomba (" + menor(p ? p.unidad : "") + ")" : m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("apDosis2L").textContent = m2 === "arbol" ? "Dosis por árbol (" + menor(p2 ? p2.unidad : "") + ")" : m2 === "bomba" ? "Cantidad por bomba (" + menor(p2 ? p2.unidad : "") + ")" : m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
     $("apCantLbl").textContent = "Producto principal usado (" + (p ? p.unidad : "") + ")";
     $("apCant2Lbl").textContent = "Producto secundario usado (" + (p2 ? p2.unidad : "") + ")";
-    var ha = numI($("apHa")), aHa = numI($("apAgua"));
+    var ha = numI($("apHa")), aHa = numI($("apAgua")), arbA = arbSector(cu), arbN = arbA.n;
     var t = numI($("apTanque"));
     if (!man.aw && usaB && bom > 0 && t > 0) $("apAguaTot").value = String(Math.round(bom * t * 100) / 100).replace(".", ",");
     else if (!man.aw && ha > 0 && aHa > 0) $("apAguaTot").value = String(Math.round(ha * aHa * 100) / 100).replace(".", ",");
@@ -5340,7 +5369,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var items = [[p, m1, numI($("apDosis")), "apCant", "c1", "Principal"], [p2, m2, numI($("apDosis2")), "apCant2", "c2", "Secundario"]];
     items.forEach(function(it){
       var pr = it[0]; if (!pr) return;
-      var q = monto(it[1], it[2], ha, aguaTot, bom, pr.unidad);
+      var q = monto(it[1], it[2], ha, aguaTot, bom, pr.unidad, arbN);
       if (q != null){
         out.push(it[5] + " · " + pr.nombre + ": " + nf(q, 2) + " " + pr.unidad + " en total" + (it[1] === "bomba" ? " (" + nf(it[2], 0) + " " + menor(pr.unidad) + " por bomba × " + nf(bom, 0) + (bom === 1 ? " bomba)" : " bombas)") : ""));
         if (aguaTot > 0) out.push("   equivale a " + nf(q / aguaTot * 100, 2) + " % de la mezcla");
@@ -5348,6 +5377,10 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         if (!man[it[4]]) $(it[3]).value = String(Math.round(q * 1000) / 1000).replace(".", ",");
       }
     });
+    if (m1 === "arbol" || (!!p2 && m2 === "arbol")){
+      if (arbA.falta) out.unshift("Falta el número de árboles de este sector: complétalo en la ficha del cuartel.");
+      else { var dl = []; if (arbA.des && arbA.des.length > 1) arbA.des.forEach(function(d){ dl.push("   " + d.nombre + ": " + nf(d.n, 0) + (d.est ? " (estimado)" : "")); }); out.unshift.apply(out, ["Árboles: " + arbTxt(arbA) + (cu ? " en " + cu.nombre : " en todo el campo")].concat(dl)); }
+    }
     if (aguaTot > 0){ out.unshift("Agua total: " + nf(aguaTot, 1) + " L" + (t > 0 ? " (" + nf(aguaTot / t, 1) + " estanques de " + nf(t, 0) + " L)" : "")); }
     [p, p2].forEach(function(pr){
       if (!pr) return;
@@ -5480,9 +5513,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var cu = plSector(), ha = cu && cu.ha ? cu.ha : null, aguaTot = numI($("plAguaTot"));
     var x = plProdSel("plProd"), x2 = plProdSel("plProd2"), m1 = $("plModo").value, m2 = $("plModo2").value;
     var bomP = numI($("plBombas"));
-    var q1 = x ? (m1 === "directa" ? numI($("plCant")) : monto(m1, numI($("plDosis")), ha, aguaTot, bomP, x.unidad)) : null;
-    var q2 = x2 ? (m2 === "directa" ? numI($("plCant2")) : monto(m2, numI($("plDosis2")), ha, aguaTot, bomP, x2.unidad)) : null;
-    return { x: x, x2: x2, q1: q1, q2: q2, m1: m1, m2: m2, ha: ha, aguaTot: aguaTot };
+    var arb = arbSector(cu), q1 = x ? (m1 === "directa" ? numI($("plCant")) : monto(m1, numI($("plDosis")), ha, aguaTot, bomP, x.unidad, arb.n)) : null;
+    var q2 = x2 ? (m2 === "directa" ? numI($("plCant2")) : monto(m2, numI($("plDosis2")), ha, aguaTot, bomP, x2.unidad, arb.n)) : null;
+    return { x: x, x2: x2, q1: q1, q2: q2, m1: m1, m2: m2, ha: ha, aguaTot: aguaTot, arb: arb };
   }
   var plMan = { aw: false, mo: false };
   function plRefrescar(){
@@ -5493,8 +5526,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     $("pl2Box").hidden = !c.x2; $("pl2Hint").hidden = !!c.x2;
     $("plDosisF").hidden = c.m1 === "directa"; $("plCantF").hidden = c.m1 !== "directa";
     $("plDosis2F").hidden = c.m2 === "directa"; $("plCant2F").hidden = c.m2 !== "directa";
-    $("plDosisL").textContent = c.m1 === "bomba" ? "Cantidad por bomba (" + menor(c.x ? c.x.unidad : "") + ")" : c.m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
-    $("plDosis2L").textContent = c.m2 === "bomba" ? "Cantidad por bomba (" + menor(c.x2 ? c.x2.unidad : "") + ")" : c.m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
+    $("plDosisL").textContent = c.m1 === "arbol" ? "Dosis por árbol (" + menor(c.x ? c.x.unidad : "") + ")" : c.m1 === "bomba" ? "Cantidad por bomba (" + menor(c.x ? c.x.unidad : "") + ")" : c.m1 === "pct" ? "Porcentaje de la mezcla (%)" : "Dosis por hectárea (según la etiqueta)";
+    $("plDosis2L").textContent = c.m2 === "arbol" ? "Dosis por árbol (" + menor(c.x2 ? c.x2.unidad : "") + ")" : c.m2 === "bomba" ? "Cantidad por bomba (" + menor(c.x2 ? c.x2.unidad : "") + ")" : c.m2 === "ha" ? "Dosis por hectárea (según la etiqueta)" : "Porcentaje de la mezcla (%)";
     $("plCantLbl").textContent = "Cantidad del principal (" + (c.x ? c.x.unidad : "") + ")";
     $("plCant2Lbl").textContent = "Cantidad del secundario (" + (c.x2 ? c.x2.unidad : "") + ")";
     var out = [];
@@ -5502,6 +5535,14 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (c.x && c.q1 != null) out.push("Principal · " + c.x.nombre + ": " + nf(c.q1, 2) + " " + c.x.unidad);
     if (c.x2 && c.q2 != null) out.push("Secundario · " + c.x2.nombre + ": " + nf(c.q2, 2) + " " + c.x2.unidad);
     if ((c.m1 === "ha" || c.m2 === "ha") && !c.ha) out.push("La dosis por hectárea necesita un sector con superficie.");
+    if (c.m1 === "arbol" || (c.x2 && c.m2 === "arbol")){
+      if (c.arb.falta) out.push("Falta el número de árboles de este sector: complétalo en la ficha del cuartel.");
+      else {
+        out.push("Árboles: " + arbTxt(c.arb) + (c.arb.cu ? " en " + c.arb.cu.nombre : " en todo el campo"));
+        if (c.arb.des && c.arb.des.length > 1) c.arb.des.forEach(function(d){ out.push("   " + d.nombre + ": " + nf(d.n, 0) + (d.est ? " (estimado)" : "")); });
+        if (c.arb.est) out.push("Número estimado: fíjalo en la ficha del cuartel para que no cambie.");
+      }
+    }
     $("plCalc").textContent = out.join("\n"); $("plCalc").hidden = !out.length;
   }
   ["plProd", "plProd2", "plSector"].forEach(function(id){ $(id).onchange = plRefrescar; });
@@ -5544,6 +5585,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (modo === "ha" && val) return nf(val, 2) + " " + un + "/ha";
     if (modo === "pct" && val) return nf(val, 2) + " %";
     if (modo === "bomba" && val) return nf(val, 0) + " " + menor(un) + " por bomba";
+    if (modo === "arbol" && val) return nf(val, 1) + " " + menor(un) + " por árbol";
     return cant != null ? nf(cant, 2) + " " + un : "";
   }
   function mezclaPlan(x){
@@ -5611,7 +5653,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     else { t.textContent = esViv(c) ? "Riego manual con manguera: no se calcula el agua. En las notas anota qué se regó." : "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
     return d ? d * hr : null;
   }
-  $("rgSector").onchange = function(){ rgHrsSec = {}; if (rgEsGrp() && !$("rgHora").value) $("rgHora").value = "08:00"; rgHorasPara(); rgEstim(); rgAjusta(); rgDibuja(); }; $("rgHoras").onchange = function(){ rgHrsSec = {}; rgEstim(); rgBoton(); };
+  $("rgSector").onchange = function(){ rgHrsSec = {}; if (rgEsGrp() && !$("rgHora").value) $("rgHora").value = "09:00"; rgHorasPara(); rgEstim(); rgAjusta(); rgDibuja(); }; $("rgHoras").onchange = function(){ rgHrsSec = {}; rgEstim(); rgBoton(); };
   function rgHorasPara(){
     var v = esViv(rgSel()), hs = [], i, sel = $("rgHoras").value;
     if (v){ hs.push({ value: "0.25", label: "15 minutos" }); hs.push({ value: "0.5", label: "30 minutos" }); hs.push({ value: "0.75", label: "45 minutos" }); for (i = 2; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") }); }
@@ -5651,6 +5693,72 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     return out;
   }
   function horaTxt(ini, fin){ return minHm(ini) + " – " + minHm(fin) + (fin > 1440 ? " (día sig.)" : ""); }
+  /* Reglas de programación: el día parte a las 09:00, los limones (con su fertirriego) van primero y los nogales siguen en fila. */
+  var RG_INI = 540, rgHoraMan = false;
+  function rgEsLim(sid){ return pnLimones().indexOf(sid) >= 0; }
+  function rgFinT(t){ var a = hmMin(t.hora), b = hmMin(t.horaFin); if (a == null || b == null) return null; return { a: a, b: t.finSig || b < a ? b + 1440 : b }; }
+  function rgSugerida(f){
+    var m = RG_INI; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.fecha === f && rgEsLim(t.sectorId)){ var r = rgFinT(t); if (r && r.b > m && r.b < 1440) m = r.b; } });
+    return minHm(m);
+  }
+  function rgLoteArma(){
+    var c = rgSel(), grp = rgEsGrp(), hr = parseFloat($("rgHoras").value), lote = [], ini1 = hmMin($("rgHora").value);
+    if (!c || !rgDias.length) return lote;
+    var tr = grp ? rgTurnos() : null;
+    rgFechasProg().filter(function(f){ return f >= fecha(); }).forEach(function(f){
+      var gid = "g" + Date.now().toString(36) + f.replace(/-/g, "");
+      if (grp) tr.forEach(function(x, k){ lote.push({ f: f, c: x.c, h: x.h, ini: x.ini, grupo: gid, orden: k + 1 }); });
+      else lote.push({ f: f, c: c, h: hr, ini: ini1, grupo: "", orden: 0 });
+    });
+    return lote;
+  }
+  function rgCrucesLote(lote){
+    var antes = [], cruces = [], dup = [];
+    lote.forEach(function(x, i){
+      if (S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === x.c.id && t.fecha === x.f && (!rgEditT || t.id !== rgEditT.id); })) dup.push(x);
+      if (x.ini == null) return;
+      var fin = x.ini + Math.round(x.h * 60);
+      if (x.ini < RG_INI && antes.indexOf(x.f) < 0) antes.push(x.f);
+      S.tareas.forEach(function(t){
+        if (t.tipo !== "riego" || t.estado === "hecha" || t.fecha !== x.f || t.sectorId === x.c.id || (rgEditT && t.id === rgEditT.id)) return;
+        var r = rgFinT(t); if (r && x.ini < r.b && r.a < fin) cruces.push(fmtD2(x.f) + ": " + x.c.nombre + " con " + t.sector);
+      });
+      lote.forEach(function(y, j){ if (j > i && y.f === x.f && y.c.id !== x.c.id && y.ini != null && y.grupo !== x.grupo){ var f2 = y.ini + Math.round(y.h * 60); if (x.ini < f2 && y.ini < fin) cruces.push(fmtD2(x.f) + ": " + x.c.nombre + " con " + y.c.nombre); } });
+    });
+    return { antes: antes, cruces: cruces, dup: dup };
+  }
+  /* Revisión de lo ya programado: limones antes que nogales y nada antes de las 09:00. */
+  function rgAuditoria(){
+    var out = [], dias = {};
+    S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha" && t.fecha >= fecha() && t.hora) (dias[t.fecha] = dias[t.fecha] || []).push(t); });
+    Object.keys(dias).sort().forEach(function(f){
+      var ts = dias[f], lim = ts.filter(function(t){ return rgEsLim(t.sectorId); }), nog = ts.filter(function(t){ return !rgEsLim(t.sectorId); });
+      var L = RG_INI; lim.forEach(function(t){ var r = rgFinT(t); if (r && r.b > L) L = r.b; });
+      var mal = nog.filter(function(t){ var r = rgFinT(t); return r && lim.length && r.a < L; });
+      if (mal.length) out.push({ f: f, L: L, lim: lim, nog: nog, txt: fmtD2(f) + ": " + mal[0].sector + " parte a las " + mal[0].hora + " y los limones terminan a las " + minHm(L) });
+    });
+    return out;
+  }
+  async function rgOrdenar(){
+    var ah = new Date().toISOString(), n = 0;
+    try {
+      for (var a of rgAuditoria()){
+        var gs = {}, solos = [];
+        a.nog.forEach(function(t){ if (t.grupo) (gs[t.grupo] = gs[t.grupo] || []).push(t); else solos.push(t); });
+        var cur = a.L;
+        var orden = Object.keys(gs).map(function(g){ return gs[g].sort(function(x, y){ return (x.orden || 0) - (y.orden || 0); }); }).concat(solos.map(function(t){ return [t]; }));
+        for (var g2 of orden){
+          var primero = rgFinT(g2[0]); if (!primero || primero.a >= a.L) { var u = rgFinT(g2[g2.length - 1]); if (u && u.b > cur) cur = u.b; continue; }
+          for (var t of g2){
+            var fin = cur + Math.round((Number(t.horas) || 0) * 60);
+            await S.db.doc("tareas/" + t.id).update({ hora: minHm(cur), horaFin: minHm(fin), finSig: fin > 1440, ordenadoPor: S.nombre, ordenadoTs: ah });
+            cur = fin; n++;
+          }
+        }
+      }
+      toast(n ? "Listo: ordené " + n + " riegos, limones primero" : "No había nada que ordenar");
+    } catch (e){ toast("No se pudo ordenar. Revisa tu señal e intenta de nuevo."); }
+  }
   function rgAvisos(tr){
     var av = [], fechas = rgFechasProg().filter(function(f){ return f >= fecha(); });
     if (!tr.length || tr[0].ini == null || !fechas.length) return av;
@@ -5661,7 +5769,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       S.tareas.forEach(function(t){
         if (hecho || t.tipo !== "riego" || t.estado === "hecha" || t.fecha !== f || !t.hora || !t.horaFin) return;
         var a = hmMin(t.hora), b2 = hmMin(t.horaFin); if (a == null || b2 == null) return; if (t.finSig) b2 += 1440;
-        tr.forEach(function(x){ if (!hecho && x.ini < b2 && a < x.fin){ hecho = true; av.push("Se cruza con otro riego: " + t.sector + " ya está programado el " + fmtD2(f) + " de " + t.hora + " a " + t.horaFin + "."); } });
+        tr.forEach(function(x){ if (!hecho && x.ini < b2 && a < x.fin){ hecho = true; av.push("Se cruza con otro riego (necesita autorización y motivo): " + t.sector + " ya está programado el " + fmtD2(f) + " de " + t.hora + " a " + t.horaFin + "."); } });
       });
     });
     var semanas = {}; fechas.forEach(function(f){ var w = weekStart(f); semanas[w] = (semanas[w] || 0) + 1; });
@@ -5707,9 +5815,12 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     $("rgHastaNota").textContent = rp > 0 ? (fp.length ? "Se programarán " + fp.length + " días: del " + fmtD2(fp[0]) + " al " + fmtD2(fp[fp.length - 1]) + ". Se repite desde cada día que elegiste." : "Elige primero los días en el calendario.") : "";
     $("rgM3L").textContent = n > 1 ? "m³ medidos por día (opcional, si tienes medidor)" : "m³ medidos (opcional, si tienes medidor)";
     rgTurnosDibuja();
+    var cr = rgMod === "prog" && !rgSolo() && !rgEditT ? rgCrucesLote(rgLoteArma()) : null;
+    vis("rgCruceF", !!cr && cr.cruces.length > 0);
   }
   function rgAjusta(){
     var prog = rgMod === "prog", edit = rgSolo(), grp = rgEsGrp();
+    if (prog && !edit && !rgEditT && !rgHoraMan && rgDias.length) $("rgHora").value = rgSugerida(rgDias.slice().sort()[0]);
     $("rgTitle").textContent = rgEdit ? "Corregir riego" : rgEditT ? "Cambiar riego programado" : rgTarea ? "Registrar el riego programado" : prog ? "Programar riego" : "Registrar riego";
     vis("rgModo", !!S.manager && !edit && !rgTarea);
     Array.prototype.forEach.call($("rgModo").children, function(bt){ var on = bt.getAttribute("data-m") === rgMod; bt.classList.toggle("on", on); bt.setAttribute("aria-pressed", on ? "true" : "false"); });
@@ -5749,7 +5860,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       bt.onclick = (function(f, ok){ return function(){
         if (!ok) return;
         if (rgSolo()) rgDias = [f]; else { var k = rgDias.indexOf(f); if (k >= 0) rgDias.splice(k, 1); else rgDias.push(f); }
-        rgBoton(); rgDibuja(f);
+        rgAjusta(); rgDibuja(f);
       }; })(f, ok);
       g.appendChild(bt);
     }
@@ -5772,7 +5883,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     fill($("rgHoras"), hs, "3"); rgHorasPara();
     var nombres = {}; nombres[S.nombre] = 1; Object.keys(S.team).forEach(function(k){ if (S.team[k].nombre) nombres[S.team[k].nombre] = 1; });
     fill($("rgQuien"), [{ value: "", label: "Sin asignar" }, { value: "Todo el equipo", label: "Todo el equipo" }].concat(Object.keys(nombres).sort().map(function(n){ return { value: n, label: n }; })));
-    $("rgRep").value = "0"; $("rgHasta").value = ""; $("rgHasta").min = addDays(hoy, 1); $("rgHora").value = "";
+    $("rgRep").value = "0"; $("rgHasta").value = ""; $("rgHasta").min = addDays(hoy, 1); $("rgHora").value = ""; rgHoraMan = false;
     $("rgM3").value = ""; $("rgNotas").value = ""; rgEstim(); rgAjusta(); rgDibuja(); $("rgSheet").hidden = false;
     return true;
   }
@@ -5798,7 +5909,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     rgMes = (rgDias[0] || hoy).slice(0, 7); rgAjusta(); rgDibuja();
   };
   $("rgLimpia").onclick = function(){ rgDias = []; rgBoton(); rgDibuja(); };
-  $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton; $("rgHora").onchange = rgBoton; $("rgHora").oninput = rgBoton;
+  $("rgRep").onchange = rgAjusta; $("rgHasta").onchange = rgBoton; $("rgHora").onchange = function(){ rgHoraMan = true; rgBoton(); }; $("rgHora").oninput = function(){ rgHoraMan = true; rgBoton(); };
   $("rgCancel").onclick = function(){ $("rgSheet").hidden = true; rgTarea = null; rgEdit = null; rgEditT = null; frOcultar(); };
   $("rgQuitar").onclick = async function(){
     var q = $("rgQuitar"); if (!rgEditT) return;
@@ -5844,21 +5955,24 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (grp && ini1 == null){ toast("Pon la hora en que parte el sector 1."); $("rgHora").focus(); return; }
       var porDia = grp ? tr.length : 1;
       if (fechas.length * porDia > 60){ toast("Son más de 60 riegos. Acorta la fecha de término."); return; }
-      var ya = {}; S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado !== "hecha") ya[t.sectorId + "|" + t.fecha] = 1; });
-      var lote = []; // {f, c, h, ini, grupo, orden}
-      fechas.forEach(function(f, fi){
-        var gid = "g" + Date.now().toString(36) + f.replace(/-/g, "");
-        if (grp) tr.forEach(function(x, k){ lote.push({ f: f, c: x.c, h: x.h, ini: x.ini, grupo: gid, orden: k + 1 }); });
-        else lote.push({ f: f, c: c, h: hr, ini: ini1, grupo: "", orden: 0 });
-      });
-      var nuevas = lote.filter(function(x){ return !ya[x.c.id + "|" + x.f]; }), omit = lote.length - nuevas.length;
-      if (!nuevas.length){ toast("Esos días ya tienen un riego programado en este sector."); return; }
+      var lote = rgLoteArma(), cru = rgCrucesLote(lote);
+      if (cru.dup.length){ toast("No se puede duplicar: " + cru.dup[0].c.nombre + " ya tiene un riego programado el " + fmtD2(cru.dup[0].f) + (cru.dup.length > 1 ? " y en " + (cru.dup.length - 1) + " casos más" : "") + ". Cámbialo desde la Agenda."); return; }
+      if (cru.antes.length){ toast("El día de riego parte a las 09:00. Revisa la hora de inicio."); $("rgHora").focus(); return; }
+      var cruce = null;
+      if (cru.cruces.length){
+        vis("rgCruceF", true);
+        var mo = $("rgCruceM").value, tx = $("rgCruceT").value.trim();
+        if (!mo || (mo === "Otro" && !tx)){ toast("Hay riegos que se cruzan: elige el motivo y explícalo para autorizarlo."); $("rgCruceM").focus(); return; }
+        cruce = { motivo: mo + (tx ? ": " + tx : ""), autoriza: S.nombre, ts: ahora, con: cru.cruces.slice(0, 3).join(" · ") };
+      }
+      var nuevas = lote, omit = 0;
       b.disabled = true;
       try {
         for (var j2 = 0; j2 < nuevas.length; j2++){
           var x = nuevas[j2], doc = { fecha: x.f, titulo: "Riego " + x.c.nombre, tipo: "riego", horas: x.h, sectorId: x.c.id, sector: x.c.nombre, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre };
           if (x.ini != null){ var fin = x.ini + Math.round(x.h * 60); doc.hora = minHm(x.ini); doc.horaFin = minHm(fin); doc.finSig = fin > 1440; }
           if (x.grupo){ doc.grupo = x.grupo; doc.orden = x.orden; }
+          if (cruce) doc.cruce = cruce;
           await S.db.collection("tareas").add(doc);
         }
         $("rgSheet").hidden = true; toast(nuevas.length === 1 ? "Riego programado" : nuevas.length + " riegos programados" + (omit ? " (" + omit + " ya estaban)" : ""));
@@ -6713,7 +6827,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     else if (luz){
       var sub = $("camSub"); sub.hidden = false;
       if (n === 1){ mc.style.cssText += ";width:min(90vw,95vh);height:min(30vw,32vh);border-radius:10px"; $("camTxt").textContent = "Foto 1 de 2 · El número"; sub.textContent = "Acércate hasta que la ventana de los dígitos llene el marco. No gires el teléfono."; }
-      else { mc.style.cssText += ";width:min(90vw,95vh);height:min(60vw,63vh);border-radius:14px"; $("camTxt").textContent = "Foto 2 de 2 · Todo el medidor"; sub.textContent = "Aléjate para que se vea el medidor completo. Es opcional."; }
+      else { mc.style.cssText += ";width:min(66vw,46vh);height:min(88vw,61vh);border-radius:14px"; $("camTxt").textContent = "Foto 2 de 2 · Todo el tablero"; sub.textContent = "Aléjate para que se vea el tablero completo, de pie (en vertical). Es opcional."; }
     }
     else { mc.style.cssText += ";width:min(90vw,95vh);height:min(60vw,63vh);border-radius:14px"; $("camTxt").textContent = "Que el medidor completo quede dentro del marco, de frente."; }
     $("camCancel").textContent = luz && n === 2 ? "Omitir" : "Cancelar";
@@ -8825,14 +8939,16 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
   }
   /* Fertirriego de limones: todos los riegos programados de limones entre FR.desde y FR.hasta llevan la receta del día (tambor de 200 L). Se registra enlazado al riego y descuenta la bodega. */
-  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 327, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
+  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 327 /* respaldo: manda frPlantas() */, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
     prods: [{ re: /urea/i, dosis: 2, base: "g", nombre: "Urea" }, { re: /nitrato.*potasio|potasio.*nitrato|kno3/i, dosis: 2, base: "g", nombre: "Nitrato de potasio" }, { re: /fosf/i, dosis: 2, base: "cc", nombre: "Ácido fosfórico" }] };
   var frInfo = null, frModo = "si";
+  /* Árboles que reciben el fertirriego: los de la ficha del cuartel de limones (editable); el 327 solo sirve si la ficha está vacía. */
+  function frPlantas(){ var a = arbSector(S.cuarteles.filter(function(c){ return c.especie === "Limón"; })[0]); return a.n > 0 && !a.est ? a.n : FR.plantas; }
   function frEs(t){ return !!t && t.tipo === "riego" && t.estado !== "hecha" && t.fert !== false && !!t.fecha && t.fecha >= FR.desde && t.fecha <= FR.hasta && pnLimones().indexOf(t.sectorId) >= 0; }
   function frConv(c, base, u){ u = String(u || "").toLowerCase(); if (base === "g") return u === "kg" ? c / 1000 : c; return /^(l|lt|lts|litro|litros)$/.test(u) ? c / 1000 : c; }
   function frReceta(){
     return FR.prods.map(function(d){
-      var p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0], base = d.dosis * FR.plantas, cant = p ? frConv(base, d.base, p.unidad) : null, st = p ? stockDe(p) : 0;
+      var p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0], base = d.dosis * frPlantas(), cant = p ? frConv(base, d.base, p.unidad) : null, st = p ? stockDe(p) : 0;
       return { d: d, p: p, base: base, cant: cant, st: st, ok: !!p && st + 1e-9 >= cant };
     });
   }
@@ -8863,8 +8979,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     try {
       if (frModo === "si"){
         var items = rc.filter(function(x){ return x.p; }).map(function(x){ return { productoId: x.p.id, nombre: x.p.nombre, unidad: x.p.unidad, cantidad: Math.round(x.cant * 1000) / 1000, rol: "Fertirriego", modo: "directa", valor: x.d.dosis }; });
-        var ar = items.length ? await S.db.collection("aplicaciones").add({ fecha: it.f, ts: ahora, items: items, productoId: items[0].productoId, producto: items.map(function(i){ return i.nombre; }).join(" + "), unidad: items[0].unidad, cantidad: items[0].cantidad, aguaTotalL: FR.tamborL, sectorId: it.c.id, sector: it.c.nombre, equipo: FR.equipo, via: "riego", riegoId: rref.id, notas: "Fertirriego con el riego de " + nf(it.h, 1) + " h (" + FR.plantas + " plantas)", uid: S.uid, por: S.nombre }) : null;
-        up = { fert: "si", aplicacionId: ar ? ar.id : "" };
+        var ar = items.length ? await S.db.collection("aplicaciones").doc("fert_" + rref.id).set({ fecha: it.f, ts: ahora, items: items, productoId: items[0].productoId, producto: items.map(function(i){ return i.nombre; }).join(" + "), unidad: items[0].unidad, cantidad: items[0].cantidad, aguaTotalL: FR.tamborL, sectorId: it.c.id, sector: it.c.nombre, equipo: FR.equipo, via: "riego", riegoId: rref.id, notas: "Fertirriego con el riego de " + nf(it.h, 1) + " h (" + frPlantas() + " plantas)", uid: S.uid, por: S.nombre }) : null;
+        up = { fert: "si", aplicacionId: items.length ? "fert_" + rref.id : "" };
       } else up = { fert: "no" };
       if (falta){ up.fertFalta = true; up.fertResuelta = false; up.fertMotivo = $("frMotivo").value; up.fertNota = $("frNota").value.trim(); up.fertFaltan = frFaltas(rc); }
       await S.db.doc("riegos/" + rref.id).update(up);

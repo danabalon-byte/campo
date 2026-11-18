@@ -3059,7 +3059,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var n = $("dtNombre").value.trim(), tel = $("dtTel").value.trim(); if (!n){ toast("Escribe tu nombre completo."); $("dtNombre").focus(); return; } if (!tel){ toast("Escribe tu teléfono."); $("dtTel").focus(); return; }
     var b = $("dtGuarda"); b.disabled = true;
     try {
-      await S.db.doc("equipo/" + S.uid).set({ nombre: n, tel: tel, nac: $("dtNac").value || "", emergencia: { nom: $("dtEmN").value.trim(), tel: $("dtEmT").value.trim() }, datosTs: new Date().toISOString(), pedirDatos: false }, { merge: true });
+      await pfUp("equipo/" + S.uid, { nombre: n, tel: tel, nac: $("dtNac").value || "", emergencia: { nom: $("dtEmN").value.trim(), tel: $("dtEmT").value.trim() }, datosTs: new Date().toISOString(), pedirDatos: false });
       $("dtForm").hidden = true; S.datosOculto = true; toast("Datos guardados. ¡Gracias!");
     } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
     b.disabled = false;
@@ -3071,6 +3071,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (quiere && !S.datosOculto && $("dtForm").hidden && $("dtAviso").hidden){ if (/[?&]datos=1/.test(location.search) && !S.datosLink){ S.datosLink = true; dtAbreForm(); } else $("dtAviso").hidden = false; }
     } catch (e0){}
   }
+  /* Escritura parcial: update() cambia solo esos campos; si el documento no existe aún, lo crea. (set con merge no conserva el resto en esta base.) */
+  async function pfUp(path, data){ try { await S.db.doc(path).update(data); } catch (e){ await S.db.doc(path).set(data); } }
   /* Perfiles: una fila por persona (cuenta + ficha enlazadas por email), con apodo. Solo dueño. */
   var pfArma = {};
   function pfRegistro(c){
@@ -3079,11 +3081,11 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   async function pfApodo(gr, ap){
     ap = String(ap || "").trim();
-    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { if (p.tipo === "cuenta") await S.db.doc("equipo/" + p.id).set({ apodo: ap }, { merge: true }); else await S.db.doc("personal/" + p.id).set({ apodo: ap }, { merge: true }); } catch (e){ toast("No se pudo guardar el apodo."); return; } }
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { if (p.tipo === "cuenta") await pfUp("equipo/" + p.id, { apodo: ap }); else await pfUp("personal/" + p.id, { apodo: ap }); } catch (e){ toast("No se pudo guardar el apodo."); return; } }
     toast(ap ? "Apodo guardado: " + ap : "Apodo quitado");
   }
   async function pfEnlaza(cu, fichas){
-    for (var k = 0; k < fichas.length; k++){ try { await S.db.doc("personal/" + fichas[k].id).set({ email: vsMail(cu.email) }, { merge: true }); } catch (e){ toast("No se pudo enlazar la ficha."); return; } }
+    for (var k = 0; k < fichas.length; k++){ try { await pfUp("personal/" + fichas[k].id, { email: vsMail(cu.email) }); } catch (e){ toast("No se pudo enlazar la ficha."); return; } }
     toast("Ficha enlazada al email de la cuenta");
   }
   function pfDoble(btn, segundo, fn){
@@ -3094,7 +3096,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     };
   }
   async function pfQuitaFicha(fichas){
-    try { for (var k = 0; k < fichas.length; k++) await S.db.doc("personal/" + fichas[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true }); toast("Ficha quitada (se puede restaurar en «Quitadas»)."); }
+    try { for (var k = 0; k < fichas.length; k++) await pfUp("personal/" + fichas[k].id, { quitada: true, quitadaTs: new Date().toISOString() }); toast("Ficha quitada (se puede restaurar en «Quitadas»)."); }
     catch (e){ toast("No se pudo quitar la ficha."); }
   }
   async function pfQuitaRepetida(fichas){
@@ -3102,8 +3104,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var orden = fichas.slice().sort(function(a, b){ return pun(b) - pun(a); }), queda = orden[0];
     try {
       var comp = {}; orden.slice(1).forEach(function(o){ ["plan", "tel", "nac", "funcion", "jornada", "email", "apodo"].forEach(function(k){ if (!(queda.rec && queda.rec[k]) && o.rec && o.rec[k] && comp[k] == null) comp[k] = o.rec[k]; }); });
-      if (Object.keys(comp).length) await S.db.doc("personal/" + queda.id).set(comp, { merge: true });
-      for (var k = 1; k < orden.length; k++) await S.db.doc("personal/" + orden[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true });
+      if (Object.keys(comp).length) await pfUp("personal/" + queda.id, comp);
+      for (var k = 1; k < orden.length; k++) await pfUp("personal/" + orden[k].id, { quitada: true, quitadaTs: new Date().toISOString() });
       toast("Ficha repetida quitada (restaurable); quedó la de " + queda.nombre);
     } catch (e){ toast("No se pudo quitar la ficha repetida."); }
   }
@@ -3125,12 +3127,12 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       qs.forEach(function(c){
         var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, c.nombre || "Sin nombre")); bx.appendChild(w);
         bx.appendChild(el("p", "sub", "Cuenta: " + (c.email || "sin email")));
-        var rb = el("button", "primary", "Restaurar perfil"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ quitada: false }, { merge: true }); toast("Perfil restaurado"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
+        var rb = el("button", "primary", "Restaurar perfil"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await pfUp("equipo/" + c.id, { quitada: false }); toast("Perfil restaurado"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
         bx.appendChild(rb); b.appendChild(bx);
       });
       pq.forEach(function(p){
         var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, p.nombre || "Sin nombre")); bx.appendChild(w); bx.appendChild(el("p", "sub", "Ficha de Personal quitada"));
-        var rb = el("button", "primary", "Restaurar ficha"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await S.db.doc("personal/" + p.id).set({ quitada: false }, { merge: true }); toast("Ficha restaurada"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
+        var rb = el("button", "primary", "Restaurar ficha"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await pfUp("personal/" + p.id, { quitada: false }); toast("Ficha restaurada"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
         bx.appendChild(rb); b.appendChild(bx);
       });
     }
@@ -3155,7 +3157,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var cu = cm[0] || cuentas.filter(function(c){ return c.email; })[0], sinEnl = cu ? fichas.filter(function(x){ return vsMail(x.email) !== vsMail(cu.email); }) : [];
       if (cu && sinEnl.length){ var e1 = el("button", null, "Enlazar ficha a la cuenta"); e1.type = "button"; e1.style.minHeight = "44px"; e1.onclick = async function(){ e1.disabled = true; await pfEnlaza(cu, sinEnl); }; acc.appendChild(e1); }
       if (fichas.length > 1){ var d1 = el("button", null, "Quitar ficha repetida"); d1.type = "button"; d1.style.minHeight = "44px"; pfDoble(d1, "Toca otra vez: quedará una sola ficha", function(){ return pfQuitaRepetida(fichas); }); acc.appendChild(d1); }
-      cuentas.forEach(function(c){ var t = S.team[c.id] || {}; var pd = el("button", null, t.pedirDatos ? "Ya se le pidió completar sus datos" : t.datosTs ? "Pedir de nuevo que complete sus datos" : "Pedir que complete sus datos"); pd.type = "button"; pd.style.minHeight = "44px"; pd.disabled = !!t.pedirDatos; pd.onclick = async function(){ pd.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ pedirDatos: true }, { merge: true }); toast("Le aparecerá la ventana al abrir la app"); } catch (e){ toast("No se pudo guardar."); pd.disabled = false; } }; acc.appendChild(pd); });
+      cuentas.forEach(function(c){ var t = S.team[c.id] || {}; var pd = el("button", null, t.pedirDatos ? "Ya se le pidió completar sus datos" : t.datosTs ? "Pedir de nuevo que complete sus datos" : "Pedir que complete sus datos"); pd.type = "button"; pd.style.minHeight = "44px"; pd.disabled = !!t.pedirDatos; pd.onclick = async function(){ pd.disabled = true; try { await pfUp("equipo/" + c.id, { pedirDatos: true }); toast("Le aparecerá la ventana al abrir la app"); } catch (e){ toast("No se pudo guardar."); pd.disabled = false; } }; acc.appendChild(pd); });
       var mk = el("button", null, esReg ? "Pasar a no registradas" : "Marcar como registrada"); mk.type = "button"; mk.style.minHeight = "44px"; mk.onclick = async function(){ mk.disabled = true; await pfMarca(gr, !esReg); mk.disabled = false; }; acc.appendChild(mk);
       var act = cuentas.some(function(c){ var r = pfRegistro(c); return r.ult && r.ult >= addDays(fecha(), -30); });
       w.appendChild(el("span", "chip " + (esReg ? "ok" : "idle"), esReg ? (cuentas.length ? (act ? "Registrada · activa" : "Registrada") : "Registrada · la administras tú") : (act ? "Con actividad reciente" : "Sin actividad")));
@@ -3165,16 +3167,16 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     }
   }
   async function pfOficial(gr, c){
-    for (var k = 0; k < gr.length; k++){ var p = gr[k]; if (p.tipo !== "cuenta") continue; try { await S.db.doc("equipo/" + p.id).set(p.id === c.id ? { oficial: true, registrada: true } : { oficial: false }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
-    for (var j = 0; j < gr.length; j++){ if (gr[j].tipo === "ficha"){ try { await S.db.doc("personal/" + gr[j].id).set(c.email ? { registrada: true, email: vsMail(c.email) } : { registrada: true }, { merge: true }); } catch (e){} } }
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; if (p.tipo !== "cuenta") continue; try { await pfUp("equipo/" + p.id, p.id === c.id ? { oficial: true, registrada: true } : { oficial: false }); } catch (e){ toast("No se pudo guardar."); return; } }
+    for (var j = 0; j < gr.length; j++){ if (gr[j].tipo === "ficha"){ try { await pfUp("personal/" + gr[j].id, c.email ? { registrada: true, email: vsMail(c.email) } : { registrada: true }); } catch (e){} } }
     toast("Cuenta oficial marcada: " + c.email);
   }
   async function pfMarca(gr, v){
-    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { await S.db.doc((p.tipo === "cuenta" ? "equipo/" : "personal/") + p.id).set(v ? { registrada: true } : { registrada: false, oficial: false }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { await pfUp((p.tipo === "cuenta" ? "equipo/" : "personal/") + p.id, v ? { registrada: true } : { registrada: false, oficial: false }); } catch (e){ toast("No se pudo guardar."); return; } }
     toast(v ? "Marcada como registrada" : "Pasó a no registradas");
   }
   async function pfQuitaCuenta(cuentas){
-    for (var k = 0; k < cuentas.length; k++){ try { await S.db.doc("equipo/" + cuentas[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true }); S.eqQuit = S.eqQuit || {}; S.eqQuit[cuentas[k].id] = Object.assign({}, S.team[cuentas[k].id], { id: cuentas[k].id }); delete S.team[cuentas[k].id]; } catch (e){ toast("No se pudo quitar el perfil."); return; } }
+    for (var k = 0; k < cuentas.length; k++){ try { await pfUp("equipo/" + cuentas[k].id, { quitada: true, quitadaTs: new Date().toISOString() }); S.eqQuit = S.eqQuit || {}; S.eqQuit[cuentas[k].id] = Object.assign({}, S.team[cuentas[k].id], { id: cuentas[k].id }); delete S.team[cuentas[k].id]; } catch (e){ toast("No se pudo quitar el perfil."); return; } }
     pfReset(); render(); toast("Perfil quitado (se puede restaurar abajo, en «Quitadas»).");
   }
   function pfAbre(){ if (!S.owner) return; $("pfQ").value = ""; pfRender(); $("pfSheet").hidden = false; }
@@ -3956,7 +3958,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     b.onclick = async function(){
       var n = i.value.trim(); if (!n){ toast("Escribe tu nombre primero."); i.focus(); return; }
       b.disabled = true;
-      try { await S.db.doc("equipo/" + S.uid).set({ nombre: n, creado: new Date().toISOString() }, { merge: true }); }
+      try { await pfUp("equipo/" + S.uid, { nombre: n, creado: new Date().toISOString() }); }
       catch (err){ b.disabled = false; toast(err && err.code === "invalid_argument" ? "No tienes permiso para guardar. Avísale a Diego." : "No se pudo guardar. Intenta de nuevo."); }
     };
     fl.appendChild(l); fl.appendChild(i); b2.appendChild(fl); b2.appendChild(b); c.appendChild(b2); return c;

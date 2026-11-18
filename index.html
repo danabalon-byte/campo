@@ -2492,8 +2492,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function gfAjustes(ay){
     ay.appendChild(el("p", "ajs-t", "Llegada y salida por ubicación"));
     var c = GF.cfg;
-    ay.appendChild(el("p", "note", c && GF.polys.length ? "Perímetro cargado: " + GF.polys.length + " polígono(s)" + (GF.ent || GF.entP ? " y entrada marcada." : ". Sin entrada: opcional, mejora la detección al llegar.") : "Aún no hay perímetro. Carga los KMZ de las parcelas (y, si quieres, un KMZ con un punto en la entrada)."));
-    var inp = document.createElement("input"); inp.type = "file"; inp.accept = ".kmz,.kml"; inp.multiple = true; inp.hidden = true; inp.onchange = function(){ if (inp.files.length) gfCarga(inp.files); inp.value = ""; };
+    ay.appendChild(el("p", "note", c && GF.polys.length ? "Perímetro cargado: " + GF.polys.length + " polígono(s)" + (GF.ent || GF.entP ? " y entrada marcada." : ". Sin entrada: opcional, mejora la detección al llegar.") : "Aún no hay perímetro. Carga el KMZ del perímetro (y el de «Ingreso al campo»)."));
+    var inp = document.createElement("input"); inp.type = "file"; inp.multiple = true; /* sin filtro «accept»: el selector de Drive/Android deja los .kmz en gris si el tipo MIME no coincide */ inp.hidden = true; inp.onchange = function(){ if (inp.files.length) gfCarga(inp.files); inp.value = ""; };
     var bl = el("button", null, c ? "Cargar o cambiar KMZ (perímetro / entrada)" : "Cargar KMZ del perímetro"); bl.type = "button"; bl.onclick = function(){ inp.click(); }; ay.appendChild(bl); ay.appendChild(inp);
     if (c){
       var bm = el("button", null, "Modo: " + (c.modo === "auto" ? "automático (marca solo)" : "preguntar antes de marcar") + " · cambiar"); bm.type = "button";

@@ -3034,15 +3034,24 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var fx = el("div", "vs-rw fx"), fi = el("span", "vs-i"); fi.appendChild(ico("ajustes")); fx.appendChild(fi); fx.appendChild(el("span", "vs-nm", "Ajustes")); var fl = el("span", "vs-lk fijo"); fl.appendChild(ico("cand")); fx.appendChild(fl); card.appendChild(fx);
     cont.appendChild(card);
     cont.appendChild(el("p", "vs-cap", "Candado abierto: la persona decide. Candado cerrado y visible: gris, siempre se ve."));
+    cont.appendChild(el("p", "vs-cap", "Funciones en prueba (laboratorio)"));
+    var cardL = el("div", "vs-card");
+    LB.forEach(function(x){
+      var onF = g.yo || !!(cfg.f && cfg.f[x[0]] === 1), rwF = el("div", "vs-rw" + (onF ? "" : " off")), icF = el("span", "vs-i"); icF.appendChild(ico("aplic")); rwF.appendChild(icF);
+      var nmF = el("span", "vs-nm", x[1]); nmF.appendChild(el("small", g.yo ? "f" : null, g.yo ? "Siempre activa para ti (dueño)" : x[2])); rwF.appendChild(nmF);
+      var swF = vsSw(onF, g.yo, x[0], x[1]); delete swF.dataset.t; if (!g.yo) swF.dataset.f = x[0]; rwF.appendChild(swF); cardL.appendChild(rwF);
+    });
+    cont.appendChild(cardL);
     var ns = cont.querySelector(".vs-strip"); if (ns) ns.scrollLeft = keepS; if (scEl) scEl.scrollTop = sl;
     vsMarcaVisto(g.m);
   }
   function vsRepinta(){ if (document.getElementById("vsBody")) vsPintar(); }
   function vsClic(ev){
-    var t = ev.target.closest ? ev.target.closest("[data-t],[data-l],[data-u]") : null; if (!t || !S.owner) return;
+    var t = ev.target.closest ? ev.target.closest("[data-t],[data-l],[data-u],[data-f]") : null; if (!t || !S.owner) return;
     var gente = vsGente(), g = gente.filter(function(x){ return x.m === S.vsSel; })[0]; if (!g) return;
     var cfg = (S.visTodos || {})[g.m] || {}, usr = (S.visUsrTodos || {})[g.m] || {};
     if (t.dataset.u){ S.vsSel = t.dataset.u; vsPintar(); return; }
+    if (t.dataset.f){ var ff = Object.assign({}, cfg.f); ff[t.dataset.f] = ff[t.dataset.f] === 1 ? 0 : 1; vsGuardaCfg(g.m, { f: ff }); vsPintar(); return; }
     var k = t.dataset.t || t.dataset.l;
     if (t.dataset.t){
       var nuevo = vsEf(cfg, usr, k) ? 0 : 1, v = Object.assign({}, cfg.v); v[k] = nuevo; vsGuardaCfg(g.m, { v: v });
@@ -3055,7 +3064,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   function vsAbrir(){
     var body = el("div", "vs-w"); body.id = "vsBody"; body.addEventListener("click", vsClic);
-    body.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ var t = e.target.closest ? e.target.closest("[data-t],[data-l],[data-u]") : null; if (t){ e.preventDefault(); t.click(); } } });
+    body.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " "){ var t = e.target.closest ? e.target.closest("[data-t],[data-l],[data-u],[data-f]") : null; if (t){ e.preventDefault(); t.click(); } } });
     cpCerrar(); var h = cpHoja("Visibilidad por usuario", body, null, null); h.classList.add("vs-hoja"); vsPintar();
   }
   function vsAjustes(ay){
@@ -5760,11 +5769,14 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function abrirPct(){ $("pcPct").value = ""; $("pcLitros").value = ""; $("pcUn").value = "L"; $("pcTipo").value = "liq"; $("pcDil").selectedIndex = 0; calcPct(); $("pcSheet").hidden = false; $("pcPct").focus(); }
 
   /* LABORATORIO (solo dueño): asistente de mezclas. Se elige la unidad a preparar (bombada de 15 L o tambor de 200 L) y la receta se calcula para UNA unidad. Solo calcula y muestra: no registra nada ni descuenta bodega. Recetas por concentración, con margen de ±10 % (redondeado al entero más cercano). */
+  /* Funciones en prueba: el dueño las ve siempre; las demás personas solo si él las activa en «Visibilidad por usuario» (visib/<correo>.f.asistente = 1). */
+  function lbOn(){ return !!S.owner || !!(S.visCfg && S.visCfg.f && S.visCfg.f.asistente === 1); }
+  var LB = [["asistente", "Asistente de mezclas (laboratorio)", "Calcula bombadas y tambores con margen ±10 %. En prueba: solo calcula, no registra nada."]];
   var AS_MARGEN = 0.10, AS_LITROS = { bombada: 15, tambor: 200 }, AS_UN = { bombada: "Bombada de espalda (15 L)", tambor: "Tambor de 200 L" };
   var AS_RECETAS = [
-    { id: "potenza", nombre: "Potenza Amino (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", prods: [{ nombre: "Potenza Amino", re: /potenza/i, base: "cc", porL: 2.5 }], aviso: "" },
-    { id: "algae", nombre: "Algae Plus (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", prods: [{ nombre: "Algae Plus", re: /algae/i, base: "cc", porL: 2.5 }], aviso: "" },
-    { id: "gli", nombre: "Glifosato + urea (herbicida)", sub: "Solo sobre la hilera de los limones", prods: [{ nombre: "Glifosato 480 SL", re: /glifosato/i, base: "cc", porL: 20 }, { nombre: "Urea", re: /urea/i, base: "g", porL: 20 }], aviso: "Carencia en limón: 1 día. Reingreso: 24 horas. Protege troncos y hojas de los árboles jóvenes. (Datos de la ficha del producto: confírmalos contra el envase.)" },
+    { id: "potenza", nombre: "Potenza Amino (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", solo: "bombada", prods: [{ nombre: "Potenza Amino", re: /potenza/i, base: "cc", porL: 2.5 }], aviso: "" },
+    { id: "algae", nombre: "Algae Plus (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", solo: "bombada", prods: [{ nombre: "Algae Plus", re: /algae/i, base: "cc", porL: 2.5 }], aviso: "" },
+    { id: "gli", nombre: "Glifosato + urea (herbicida)", sub: "Solo sobre la hilera de los limones", solo: "bombada", prods: [{ nombre: "Glifosato 480 SL", re: /glifosato/i, base: "cc", porL: 20 }, { nombre: "Urea", re: /urea/i, base: "g", porL: 20 }], aviso: "Carencia en limón: 1 día. Reingreso: 24 horas. Protege troncos y hojas de los árboles jóvenes. (Datos de la ficha del producto: confírmalos contra el envase.)" },
     { id: "fert", nombre: "Fertirriego de limones", sub: "Solo tambor de 200 L · una receta por riego · EN PAUSA (bomba en reparación)", solo: "tambor", prods: [{ nombre: "Urea", re: /urea/i, base: "g", porPl: 2 }, { nombre: "Nitrato de Potasio", re: /nitrato.*potasio|potasio.*nitrato|kno3/i, base: "g", porPl: 2 }, { nombre: "Ácido Fosfórico", re: /fosf/i, base: "cc", porPl: 2 }], aviso: "El ácido fosfórico se agrega al agua, nunca al revés; con guantes y lentes." }
   ];
   var asSt = { paso: 1, rec: null, un: "bombada", pl: 325 };
@@ -5785,35 +5797,30 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var b = $("asBody"); b.textContent = ""; $("asAtras").hidden = asSt.paso === 1; $("asCerrar").textContent = asSt.paso === 3 ? "Listo" : "Cerrar";
     b.appendChild(el("p", "note warn", "MODO PRUEBA (laboratorio): aquí solo se calcula. No se registra nada ni se descuenta la bodega."));
     if (asSt.paso === 1){
-      b.appendChild(el("p", "sub", "Paso 1 de 3 · ¿Qué vas a aplicar?"));
+      b.appendChild(el("p", "sub", "¿Qué vas a aplicar?"));
       AS_RECETAS.forEach(function(r){
         var bt = el("button"), t1 = el("strong", null, r.nombre), t2 = el("span", "note", r.sub); t1.style.display = "block"; t2.style.display = "block"; bt.appendChild(t1); bt.appendChild(t2); bt.style.cssText = "display:block;text-align:left;width:100%;margin:8px 0";
-        bt.onclick = function(){ asSt.rec = r; asSt.un = r.solo || "bombada"; asSt.paso = 2; asPinta(); }; b.appendChild(bt);
+        bt.onclick = function(){ asSt.rec = r; asSt.un = r.solo || "bombada"; asSt.paso = r.solo === "bombada" ? 3 : 2; asPinta(); }; b.appendChild(bt);
       });
       return;
     }
     var rec = asSt.rec;
     if (asSt.paso === 2){
-      b.appendChild(el("p", "sub", "Paso 2 de 3 · " + rec.nombre));
+      b.appendChild(el("p", "sub", rec.nombre + " · datos"));
       if (rec.solo){
         b.appendChild(el("p", "note", "Plantas que reciben el fertirriego (sale de la ficha de «Limón completo»; puedes corregirlo para probar)."));
         var f2 = el("div", "field"), lb2 = el("label", null, "Número de plantas"); lb2.setAttribute("for", "asPl"); f2.appendChild(lb2);
         var ip = el("input"); ip.type = "text"; ip.id = "asPl"; ip.setAttribute("inputmode", "numeric"); ip.value = String(asSt.pl); f2.appendChild(ip); b.appendChild(f2);
         ip.oninput = function(){ var n = parseInt(ip.value, 10); if (n > 0) asSt.pl = n; };
       }
-      b.appendChild(el("p", "note", "¿Qué unidad vas a preparar? La receta se calcula para una sola unidad; si preparas más de una, repite."));
-      ["bombada", "tambor"].forEach(function(k){
-        var ok = !rec.solo || rec.solo === k, bt = el("button", ok ? "primary" : null, AS_UN[k] + (ok ? "" : " (no aplica)"));
-        bt.disabled = !ok; bt.style.cssText = "display:block;width:100%;margin:8px 0";
-        bt.onclick = function(){ asSt.un = k; asSt.paso = 3; asPinta(); };
-        b.appendChild(bt);
-      });
+      var bt = el("button", "primary", "Ver qué preparar (" + AS_UN.tambor + ")"); bt.style.cssText = "display:block;width:100%;margin:8px 0";
+      bt.onclick = function(){ asSt.un = "tambor"; asSt.paso = 3; asPinta(); }; b.appendChild(bt);
       return;
     }
     /* Paso 3: resultado para una unidad */
     var L = AS_LITROS[asSt.un], bomba = asSt.un === "bombada";
-    b.appendChild(el("p", "sub", "Paso 3 de 3 · Qué preparar"));
-    b.appendChild(el("h3", null, "Prepara 1 " + (bomba ? "bombada de 15 L" : "tambor de 200 L") + (rec.solo ? " (" + nf(asSt.pl, 0) + " plantas)" : "")));
+    b.appendChild(el("p", "sub", "Qué preparar"));
+    b.appendChild(el("h3", null, "Prepara 1 " + (bomba ? "bombada de 15 L" : "tambor de 200 L") + (rec.prods[0].porPl != null ? " (" + nf(asSt.pl, 0) + " plantas)" : "")));
     var lista = el("div", "calc"), tx = [];
     tx.push("1. " + (bomba ? "Pon en la bomba:" : "Llena el tambor con unos 200 L de agua y agrega:"));
     rec.prods.forEach(function(d){ var c = asCant(d); tx.push("   • " + asQ(c.n, d.base) + " de " + d.nombre + "   (= " + asQ(c.c100, d.base) + " por cada 100 L)"); });
@@ -5843,7 +5850,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     b.scrollTop = 0;
   }
   $("asCerrar").onclick = function(){ $("asSheet").hidden = true; };
-  $("asAtras").onclick = function(){ asSt.paso = asSt.paso - 1; asPinta(); };
+  $("asAtras").onclick = function(){ asSt.paso = asSt.paso === 3 && asSt.rec && asSt.rec.solo === "bombada" ? 1 : asSt.paso - 1; asPinta(); };
   function abrirAs(){ asSt.paso = 1; asSt.rec = null; asSt.pl = Math.max(1, frPlantas() || 325); asPinta(); $("asSheet").hidden = false; }
 
   var M3H_HA = 22, DERECHO_SEM = 1210;
@@ -7031,7 +7038,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       f.appendChild(hc);
     }
     var pcb = el("button", null, "Calculadora de porcentaje"); pcb.onclick = abrirPct; f.appendChild(pcb);
-    if (S.owner){ var asb = el("button", null, "Asistente de mezclas (laboratorio)"); asb.onclick = abrirAs; f.appendChild(asb); }
+    if (lbOn()){ var asb = el("button", null, "Asistente de mezclas (laboratorio)"); asb.onclick = abrirAs; f.appendChild(asb); }
     var reg = el("button", "primary", "Registrar aplicación"); reg.onclick = function(){ abrirAp(null); }; f.appendChild(reg);
     var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimas aplicaciones"));
     if (!S.aplicaciones.length) l.appendChild(el("p", "note", "Todavía no hay aplicaciones registradas."));

@@ -2438,7 +2438,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
-    ["Perfiles de cada persona", "En «Trabajadores», solo para Diego, la tarjeta «Perfiles» muestra a cada persona una sola vez: su cuenta (con la que marca su llegada, comprobada por su email) y su ficha de Personal. Ahí puedes ponerle un apodo (por ejemplo «Yoli»), enlazar la ficha a la cuenta por email y quitar una ficha repetida. La ficha de Personal también tiene los campos Apodo y Email.", 80, "owner"],
+    ["Perfiles de cada persona", "En «Trabajadores», solo para Diego, la tarjeta «Perfiles» muestra a cada persona una sola vez: su cuenta (con la que marca su llegada, comprobada por su email) y su ficha de Personal. Ahí puedes ponerle un apodo (por ejemplo «Yoli»), enlazar la ficha a la cuenta por email marcarla como «Registrada» (revisada y parte del campo) o dejarla en «No registradas» (externos y pruebas, que puedes quitar), y quitar una ficha repetida. La ficha de Personal también tiene los campos Apodo y Email.", 80, "owner"],
     ["Cancelar o reprogramar riegos", "Si el riego se atrasó o cambió de orden: en «Riego», en «Riegos programados», toca el día y luego «Cambiar horario y orden». Pon la hora en que parte el primero (o los atajos «Ahora», «+15 min», «+30 min», «+1 h»), arrastra los sectores por el asa de la izquierda (o usa las flechas) y los horarios se recalculan solos, uno tras otro. Elige el motivo y toca «Guardar horario». Si el riego no se dio (corte de luz, falla de la bomba, línea rota, lluvia): en el mismo día toca «No se pudo regar (corte, falla)…», o ese botón de la pregunta «¿Partió el riego?». Marca los riegos que no se dieron, elige el motivo, cuenta qué pasó (mínimo 10 letras) y toca «Anular los riegos marcados»: se anulan todos de una vez y quedan guardados con tu nombre. Diego puede elegir «Anular y volver a programarlos»: pone la hora en que parte el primero y la app crea riegos nuevos para hoy, en el mismo orden y con las mismas horas, uno tras otro. Yolanda envía la solicitud y Diego la aprueba. Un riego solo de agua puede seguir de noche hasta la madrugada: si el programa pasa de medianoche, Inicio y Riego dan un «Aviso» informativo con las horas. Un riego con fertilización debe estar supervisado: si queda más allá de medianoche, Inicio y Riego dan la alerta «El riego X no cabe hoy» con el detalle y una propuesta (poner primero los riegos con fertilización, pasar el que falte a mañana, o superponer el limón con un nogal; juntos caben en la bomba según el diseño, revisa el manómetro). Se aplica con un toque. Para un solo riego, tócalo en la línea de tiempo y elige cambiarlo o quitarlo.", 79, "manager"],
     ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (sectores 1 al 4, cada uno con su lado norte y sur), La Rinconada, los limones (el 1 al oeste, junto al vivero, y el 6 al este), el vivero, V-Huerto y el acumulador. Toca un sector para ver su ficha. Con «Ocultar nombres» o «Mostrar nombres» eliges si ves las etiquetas (cada persona en su teléfono). Yolanda ve solo los sectores en uso. Diego, en un sector sin enlazar, elige el de la app con «Enlazar con este sector» (o «Crear un sector nuevo»); los apagados salen en gris y los prende con «Encender este sector», y con «Apagar este sector» deja de usarse sin perder su historial. «Ver árboles» abre el árbol por árbol del sector.", 41, ""],
     ["Fichas por especie", "En «Campo», en «Sectores en el plano», toca un sector de vivero (Vivero, V-Huerto, Vivero B): el plano se amplía para elegir bien y luego vuelve. Debajo ves «Especies»: cada una tiene una sola ficha, aunque tenga muchas plantas. Toca una especie para abrir su ficha justo debajo: hasta 3 fotos con «＋ Foto», el estado, las plantas aproximadas, la fecha de siembra y notas, y «Guardar ficha». Con «Nuevo registro» anotas qué ves, con foto si quieres. «Agregar especie» crea una especie nueva. Si un sector no tiene especies, aparece «Sin descripción» y la pregunta «¿Qué hay en este sector?»: con «Subir plano de plantación» o «Aún no hay plantación» lo dejas anotado.", 42, ""],
@@ -3049,7 +3049,15 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var grs = pfGrupos().filter(function(gr){ return !q || gr.some(function(p){ return norm(p.nombre + " " + p.apodo + " " + p.email).indexOf(q) >= 0; }); });
     if (!grs.length){ b.appendChild(el("p", "note", "No hay perfiles con ese nombre.")); return; }
     grs.sort(function(a, c){ return norm(a[0].nombre) < norm(c[0].nombre) ? -1 : 1; });
-    grs.forEach(function(gr){
+    var secs = [["Registradas", "Revisadas y parte del campo, con su email (o administradas por ti, como quien no usa cuenta).", grs.filter(function(g){ return g.some(function(p){ return p.registrada; }); }), true], ["No registradas", "Externos, pruebas o cuentas aún sin revisar. Aquí puedes quitar lo que sobra.", grs.filter(function(g){ return !g.some(function(p){ return p.registrada; }); }), false]];
+    secs.forEach(function(sc){
+      var h = el("h3", null, sc[0] + " (" + sc[2].length + ")"); h.style.margin = "16px 0 2px"; b.appendChild(h); b.appendChild(el("p", "note", sc[1]));
+      if (!sc[2].length) b.appendChild(el("p", "note", "Ninguna."));
+      sc[2].forEach(function(gr){ pfFila(b, gr, sc[3]); });
+    });
+  }
+  function pfFila(b, gr, esReg){
+    {
       var cuentas = gr.filter(function(p){ return p.tipo === "cuenta"; }), fichas = gr.filter(function(p){ return p.tipo === "ficha"; });
       var nom = (cuentas[0] || fichas[0]).nombre, ap = (gr.filter(function(p){ return p.apodo; })[0] || {}).apodo || "";
       var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, nom + (ap ? " · «" + ap + "»" : ""))); bx.appendChild(w);
@@ -3066,10 +3074,22 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var cu = cm[0] || cuentas.filter(function(c){ return c.email; })[0], sinEnl = cu ? fichas.filter(function(x){ return vsMail(x.email) !== vsMail(cu.email); }) : [];
       if (cu && sinEnl.length){ var e1 = el("button", null, "Enlazar ficha a la cuenta"); e1.type = "button"; e1.style.minHeight = "44px"; e1.onclick = async function(){ e1.disabled = true; await pfEnlaza(cu, sinEnl); }; acc.appendChild(e1); }
       if (fichas.length > 1){ var d1 = el("button", null, "Quitar ficha repetida"); d1.type = "button"; d1.style.minHeight = "44px"; d1.onclick = async function(){ if (d1.dataset.ok !== "1"){ d1.dataset.ok = "1"; d1.textContent = "Toca otra vez: quedará una sola ficha"; return; } d1.disabled = true; await pfQuitaRepetida(fichas); }; acc.appendChild(d1); }
+      var mk = el("button", null, esReg ? "Pasar a no registradas" : "Marcar como registrada"); mk.type = "button"; mk.style.minHeight = "44px"; mk.onclick = async function(){ mk.disabled = true; await pfMarca(gr, !esReg); mk.disabled = false; }; acc.appendChild(mk);
+      var act = cuentas.some(function(c){ var r = pfRegistro(c); return r.ult && r.ult >= addDays(fecha(), -30); });
+      w.appendChild(el("span", "chip " + (esReg ? "ok" : "idle"), esReg ? (cuentas.length ? (act ? "Registrada · activa" : "Registrada") : "Registrada · la administras tú") : (act ? "Con actividad reciente" : "Sin actividad")));
+      if (!esReg && cuentas.length && !cuentas.some(function(c){ return c.id === S.uid; })){ var q1 = el("button", null, "Quitar perfil de la cuenta"); q1.type = "button"; q1.style.minHeight = "44px"; q1.onclick = async function(){ if (q1.dataset.ok !== "1"){ q1.dataset.ok = "1"; q1.textContent = "Toca otra vez: se quita el perfil de " + nom; return; } q1.disabled = true; await pfQuitaCuenta(cuentas); }; acc.appendChild(q1); }
       bx.appendChild(acc); b.appendChild(bx);
-    });
+    }
   }
-  function pfAbre(){ if (!S.owner) return; $("pfQ").value = "yol"; pfRender(); $("pfSheet").hidden = false; }
+  async function pfMarca(gr, v){
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { await S.db.doc((p.tipo === "cuenta" ? "equipo/" : "personal/") + p.id).set({ registrada: v }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
+    toast(v ? "Marcada como registrada" : "Pasó a no registradas");
+  }
+  async function pfQuitaCuenta(cuentas){
+    for (var k = 0; k < cuentas.length; k++){ try { await S.db.doc("equipo/" + cuentas[k].id).delete(); delete S.team[cuentas[k].id]; } catch (e){ toast("No se pudo quitar el perfil."); return; } }
+    pfReset(); render(); toast("Perfil quitado. Los registros de llegada no se borran.");
+  }
+  function pfAbre(){ if (!S.owner) return; $("pfQ").value = ""; pfRender(); $("pfSheet").hidden = false; }
   $("pfQ").oninput = pfRender; $("pfCerrar").onclick = function(){ $("pfSheet").hidden = true; };
   function adAbre(t){ if (!S.owner) return; adTab = t || "adeudados"; adRender(); $("adSheet").hidden = false; }
   Array.prototype.forEach.call($("adTabs").children, function(b){ b.onclick = function(){ adTab = b.getAttribute("data-v"); adRender(); }; });
@@ -9122,8 +9142,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function pfGrupos(){
     if (PF_G) return PF_G;
     var ps = [];
-    Object.keys(S.team || {}).forEach(function(id){ var t = S.team[id]; ps.push({ tipo: "cuenta", id: id, nombre: t.nombre || "", apodo: t.apodo || "", email: vsMail(t.email) }); });
-    (S.personal || []).forEach(function(p){ ps.push({ tipo: "ficha", id: p.id, nombre: p.nombre || "", apodo: p.apodo || "", email: vsMail(p.email), rec: p }); });
+    Object.keys(S.team || {}).forEach(function(id){ var t = S.team[id]; ps.push({ tipo: "cuenta", id: id, nombre: t.nombre || "", apodo: t.apodo || "", email: vsMail(t.email), registrada: !!t.registrada }); });
+    (S.personal || []).forEach(function(p){ ps.push({ tipo: "ficha", id: p.id, nombre: p.nombre || "", apodo: p.apodo || "", email: vsMail(p.email), registrada: !!p.registrada, rec: p }); });
     var g = ps.map(function(_, i){ return i; });
     function raiz(i){ while (g[i] !== i) i = g[i] = g[g[i]]; return i; }
     function une(i, j){ i = raiz(i); j = raiz(j); if (i !== j) g[j] = i; }
@@ -11564,7 +11584,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (S.manager){
       db.collection("equipo").onSnapshot(function(s){
         s.docs.forEach(function(d){
-          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; pfReset();
+          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; pfReset();
           if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(S.owner ? 70 : 14).onSnapshot(function(q){
             t.dias = q.docs.map(function(x){ return x.data(); }); render();
           }, function(){});

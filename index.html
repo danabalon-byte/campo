@@ -1313,6 +1313,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     <div class="field" id="edAnioF"><label for="edAnio">Año de plantación</label><input type="text" id="edAnio" inputmode="numeric" maxlength="4" placeholder="Ej: 2018"></div>
     <div class="field"><label for="edHa" id="edHaL">Hectáreas</label><input type="text" id="edHa" inputmode="decimal" placeholder="Ej: 0,75"></div>
     <div class="field" id="edArbF"><label for="edArb">Número de árboles</label><input type="text" id="edArb" inputmode="numeric" placeholder="Ej: 250"></div>
+    <div class="field" id="edCuartelF"><label><input type="checkbox" id="edCuartel"> Es un cuartel de limón (solo para labores: desmalezadora, tutores, amarres). El riego y la fertilización se hacen en «Limón completo».</label></div>
+    <div class="field" id="edMarcoF"><label for="edMarcoH">Marco de plantación (metros)</label><div style="display:flex;gap:8px"><input type="text" id="edMarcoH" inputmode="decimal" placeholder="Entre hileras · Ej: 6" aria-label="Metros entre hileras"><input type="text" id="edMarcoS" inputmode="decimal" placeholder="Sobre la hilera · Ej: 3" aria-label="Metros sobre la hilera"></div><p class="note">Entre hileras × sobre la hilera. Si lo dejas vacío se usa el de la especie (nogal 6 × 5 m, limón 6 × 3 m).</p></div>
 </div>
 <div class="sfoot">    <button class="primary" id="edOk">Guardar</button>
     <button id="edCancel">Cancelar</button></div>
@@ -2291,7 +2293,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 70;
+  var GUIA_V = 71;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2326,6 +2328,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Trabajo", "En «Trabajo», el botón «Registrar trabajo realizado» anota qué se hizo, en qué sector, cuántas horas y con quién.", 2, ""],
     ["Aplicar", "Elige el sector, el producto y la dosis. La app calcula cuánto producto va en cada estanque y avisa si algo no corresponde. Si hay una aplicación agendada, toca «Hacerla ahora» y todo viene cargado.", 1, ""],
     ["Pasar de pantalla con el dedo", "En el teléfono puedes cambiar de sección deslizando el dedo hacia la izquierda (siguiente) o hacia la derecha (anterior) sobre la pantalla, además de tocar el menú de abajo. No funciona sobre campos de texto, listas o gráficos que se mueven de lado, ni con una hoja abierta; en Medidor el gesto cambia de medidor.", 70, ""],
+    ["Limón completo", "El riego y la fertilización de limón se hacen en un solo sector, «Limón completo» (puedes cambiarle el nombre en «Editar sector»). Los cuarteles de limón (Cuartel 1 al 6) sirven para las labores: desmalezadora, tutores, amarres. Un cuartel no aparece al registrar o programar riegos.", 71, "manager"],
     ["Riego anulado", "Si anulas un riego registrado, queda en el historial con la etiqueta «ANULADO», sus horas dejan de contar en «Riego de la semana» y en la necesidad de agua, y su tarea vuelve a «Pendientes» con la tarjeta «ANULADA». Desde ahí el dueño puede reprogramarlo o tocar «Anular definitivamente», que exige elegir un motivo y escribir un reporte. La encargada toca «Pedir anulación definitiva» con su motivo y reporte: la solicitud llega al dueño, que toca «Aprobar anulación» o «Rechazar»; mientras tanto el riego sigue pendiente.", 68, ""],
     ["Propuesta de riego de la semana", "Solo para el dueño. En «Riego», arriba, «Propuesta de riego» toma el programa del asesor (nogales lunes, miércoles, viernes y domingo; limones de lunes a sábado) y ajusta las horas con la evapotranspiración de los últimos 7 días. Nada queda programado hasta que tú decides: «Aprobar y programar» (se toca dos veces) crea los riegos de los días que quedan de la semana, con los limones primero y los nogales en fila después; «No la apruebo: la programo yo» abre el programador ya armado con esos días para que lo cambies. En cada bloque puedes dejar fuera nogales o limones. Los limones, que aún son árboles jóvenes y no tienen factor de cultivo, siguen el programa del asesor sin ajustarlo por evapotranspiración hasta que guardes el factor definitivo en «Riego de la semana · limones».", 67, "owner"],
     ["Programar por días de la semana", "En «Programar riego», con «Voy a regar», los botones «L M X J V S D» marcan en el calendario todos esos días de las próximas 4 semanas (o hasta «Repetir hasta»). Después puedes tocar el calendario para quitar o agregar días. Si el sector tiene cálculo de evapotranspiración, una línea dice cuántas horas por riego salen con esos días y «Usar esas horas» las pone. En la tarjeta de nogales, «Programar este reparto» abre el programador con el reparto elegido.", 67, "manager"],
@@ -2396,6 +2399,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 71, f: "2026-11-17", t: "Limón completo y cuarteles", d: "El riego y el fertirriego de limón son de «Limón completo». Los sectores 1 al 6 pasan a ser «Cuartel N», solo para labores. La ficha del sector tiene el marco de plantación (limón 6 × 3 m) y editar un sector ya no desenlaza el plano.", g: "Limón completo" },
     { v: 70, f: "2026-11-16", t: "Pasar de pantalla con el dedo", d: "En el teléfono, desliza el dedo a la izquierda o a la derecha sobre la pantalla para ir a la sección siguiente o anterior de la barra de abajo, sin tocar el menú.", g: "Pasar de pantalla con el dedo" },
     { v: 69, f: "2026-11-16", t: "Limones: sin cálculo hasta tener su factor", d: "Los limones son árboles jóvenes y no tienen factor de cultivo. «Riego de la semana · limones» ya no calcula necesidad, déficit ni exceso: muestra las horas aplicadas y sigue el programa del asesor. Cuando el asesor dé un factor para árboles jóvenes, se guarda en «Ajustar datos de limones» y el cálculo se activa.", g: "Propuesta de riego de la semana", r: "owner" },
     { v: 68, f: "2026-11-16", t: "Pedir la anulación definitiva de un riego", d: "Si un riego anulado ya no se va a hacer, la encargada puede tocar «Pedir anulación definitiva» con el motivo y su reporte. A Diego le llega una alerta con «Aprobar anulación» y «Rechazar». Mientras no se decida, el riego sigue pendiente.", g: "Riego anulado" },
@@ -3330,7 +3334,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var enf = huEnfermos();
       if (enf.length) out.push({ sev: 2, titulo: enf.length === 1 ? "1 árbol enfermo en seguimiento" : enf.length + " árboles enfermos en seguimiento", lineas: enf.slice(0, 3).map(function(c){ var o = huUlt(c); return ["cos", c, (o.tipo ? o.tipo.toLowerCase() : "enfermo") + " · " + (o.flujo || "Sospecha")]; }), acciones: [], ir: function(){ S.hv.filtro = "enfermos"; S.hv.vista = "lista"; S.screen = "arboles"; render(); } });
     }
-    if (S.owner){ var ld = limDefPend(); if (ld.faltan.length || ld.otros.length || ld.arb) out.push({ sev: 3, titulo: "Programa definitivo de limones", lineas: [["rg", "Por aplicar", "Desde el lun 16 nov · lunes a sábado hasta el 31 dic · 1,5 h con fertilización (327 árboles)" + (ld.otros.length ? " · se borran " + ld.otros.length + " riegos de limones que no calzan" : "")]], acciones: [{ txt: "Aplicar programa", pri: true, doble: true, aria: "Aplicar el programa definitivo de riego de limones", fn: limAplicaDef }], ir: function(){ S.screen = "agenda"; render(); } }); }
+    if (S.owner){ var lo = limOrdenPend(); if (lo.length) out.push({ sev: 3, titulo: "Limón: cuarteles y «Limón completo»", lineas: [["rg", "Por ordenar", "Los " + lo.length + " sectores de limón del plano pasan a «Cuartel 1…» (labores) y el riego y la fertilización quedan en «Limón completo». Podrás cambiarle el nombre desde «Editar sector»."]], acciones: [{ txt: "Ordenar limones", pri: true, doble: true, aria: "Renombrar los sectores de limón como cuarteles y dejar el riego en Limón completo", fn: limOrdena }], ir: function(){ S.screen = "campo"; render(); } }); }
+    if (S.owner){ var ld = limDefPend(); if (ld.faltan.length || ld.otros.length || ld.arb) out.push({ sev: 3, titulo: "Programa definitivo de limones", lineas: [["rg", "Por aplicar", "Desde el lun 16 nov · lunes a sábado hasta el 31 dic · 1,5 h con fertilización (" + frPlantas() + " árboles)" + (ld.otros.length ? " · se borran " + ld.otros.length + " riegos de limones que no calzan" : "")]], acciones: [{ txt: "Aplicar programa", pri: true, doble: true, aria: "Aplicar el programa definitivo de riego de limones", fn: limAplicaDef }], ir: function(){ S.screen = "agenda"; render(); } }); }
     if (S.owner){ var pp = propCalc(); if (pp && pp.pend) out.push({ sev: 3, titulo: "Propuesta de riego de la semana", lineas: [["rg", "Por aprobar", pp.items.filter(function(it){ return it.dias.length && it.cambia; }).map(function(it){ return it.titulo.split(" (")[0] + " " + rgHtxt(it.h) + (it.key === "nog" ? " por sector" : " por riego"); }).join(" · ") + " · programa del asesor ajustado con la evapotranspiración"]], acciones: [{ txt: "Revisar propuesta", pri: true, aria: "Revisar la propuesta de riego de la semana", fn: function(){ S.screen = "riego"; render(); } }], ir: function(){ S.screen = "riego"; render(); } }); }
     if (S.manager){ var au = rgAuditoria(); if (au.length) out.push({ sev: 3, titulo: "Riegos que se cruzan", lineas: au.slice(0, 3).map(function(a){ return ["rg", "Revisar", a.txt]; }), acciones: [{ txt: "Ordenar: limones primero", pri: true, aria: "Reordenar los riegos programados, limones primero", fn: rgOrdenar }], ir: function(){ S.screen = "agenda"; render(); } }); }
     riegosAtrasados().forEach(function(t){
@@ -3682,7 +3687,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var pr = late || t.prio === "u" ? "u" : (rg || t.tipo === "aplic" ? "h" : "s");
       var sub = (late ? "Pendiente desde el " + fmtD2(t.fecha) : (MOM[t.momento] || "Hoy")) + (t.quien ? " · " + t.quien : "") + (rg && t.horas ? " · " + nf(t.horas, 1) + " h" : "") + (frEs(t) ? " · con fertirriego" : "");
       var frd = frEs(t) ? (function(){ var rc = frReceta(), fa = frFaltas(rc); return "Receta del día: " + frTxt(rc) + ". " + FR_SEQ + (fa.length ? " Ojo, falta fertilizante en la bodega: " + fa.join("; ") + "." : "") + " Al registrar el riego eliges si se fertilizó o fue solo agua."; })() : "";
-      L.push({ id: "t" + t.id, late: late, col: "tareas", rid: t.id, fe: t.fecha, p: pr, done: hecha, t: t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub,
+      L.push({ id: "t" + t.id, late: late, col: "tareas", rid: t.id, fe: t.fecha, p: pr, done: hecha, t: tareaTodo(t) ? "Riego Limón completo" : t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub + (limAvTxt(t) ? " · " + limAvTxt(t) : ""),
         d: rg ? (frd || "Al registrar el riego quedan anotadas las horas y el agua.") : "Cuando termines, márcala como hecha.", b: rg ? "Registrar riego" : "Marcar como hecha", pulsa: !rg, tarea: t, go: function(){ if (rg){ S.screen = "riego"; render(); } marcarTarea(t); } });
     });
     return L.sort(function(a, b){ return (a.done ? 1 : 0) - (b.done ? 1 : 0) || HY_RK[a.p] - HY_RK[b.p]; });
@@ -3838,7 +3843,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (S.owner) EQ_FALTA.forEach(function(f){ L.push({ t: f[0], s: "Dato por actualizar", c: "am", ir: function(){ S.screen = "riego"; render(); } }); });
     return L;
   }
-  function pnLimones(){ return S.cuarteles.filter(function(c){ return c.especie === "Limón"; }).map(function(c){ return c.id; }); }
+  function pnLimones(){ return S.cuarteles.filter(function(c){ return c.especie === "Limón" && !c.cuartel; }).map(function(c){ return c.id; }); }
   function pnRiegoDatos(){
     var out = [], v = rgVentana(), hy = fecha(), ws = weekStart(hy);
     if (v){
@@ -3850,7 +3855,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var li = pnLimones();
     if (li.length){
       var prog = S.tareas.filter(function(t){ return t.tipo === "riego" && li.indexOf(t.sectorId) >= 0 && t.fecha >= ws && t.fecha <= hy; }).length * 1.5;
-      var hr = 0; S.riegos.forEach(function(r){ if (li.indexOf(r.sectorId) >= 0 && r.fecha >= ws && r.fecha <= hy) hr += Number(r.horas) || 0; });
+      var hr = rgHorasSum(S.riegos.filter(function(r){ return li.indexOf(r.sectorId) >= 0 && r.fecha >= ws && r.fecha <= hy; }));
       if (prog > 0) out.push({ n: "Limones", need: prog, done: hr, pct: hr / prog * 100, sub: "Programa del asesor: 1,5 h por día, de lunes a sábado" });
     }
     return out;
@@ -4753,7 +4758,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   function edPinta(){
     var v = $("edEsp").value === "Vivero";
-    $("edEspF").hidden = !v; $("edVarF").hidden = v; $("edAnioF").hidden = v; $("edArbF").hidden = v;
+    $("edEspF").hidden = !v; $("edVarF").hidden = v; $("edAnioF").hidden = v; $("edArbF").hidden = v; $("edMarcoF").hidden = v; $("edCuartelF").hidden = $("edEsp").value !== "Limón";
     $("edHaL").textContent = v ? "Superficie en m² (opcional)" : "Hectáreas"; $("edHa").placeholder = v ? "Ej: 400" : "Ej: 0,75";
     if (v) edPintaEsp();
   }
@@ -4769,6 +4774,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     $("edVar").value = (c && c.variedad) || ""; $("edAnio").value = c && c.anio ? c.anio : "";
     edEsps = (c && c.especies ? c.especies.slice() : []); $("edOtra").value = "";
     $("edHa").value = c && c.ha != null ? String(esViv(c) ? Math.round(c.ha * 10000) : c.ha).replace(".", ",") : ""; $("edArb").value = c && c.arboles != null ? c.arboles : "";
+    $("edCuartel").checked = !!(c && c.cuartel); $("edMarcoH").value = c && c.marcoH > 0 ? String(c.marcoH).replace(".", ",") : ""; $("edMarcoS").value = c && c.marcoS > 0 ? String(c.marcoS).replace(".", ",") : "";
     edPinta(); $("editSheet").hidden = false; $("edNombre").focus();
   }
   $("edCancel").onclick = function(){ $("editSheet").hidden = true; };
@@ -4780,12 +4786,15 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var viv = $("edEsp").value === "Vivero";
     if (viv && $("edOtra").value.trim()) edOtra();
     var haN = num($("edHa").value); if (viv && haN != null) haN = Math.round(haN) / 10000;
-    var data = { nombre: nombre, especie: $("edEsp").value, variedad: viv ? "" : $("edVar").value.trim(), anio: viv ? null : num($("edAnio").value), ha: haN, arboles: viv ? null : num($("edArb").value), orden: editing.orden || (S.cuarteles.length + 1) };
+    var mH = viv ? null : num($("edMarcoH").value), mS = viv ? null : num($("edMarcoS").value);
+    if ((mH != null && !(mH > 0)) || (mS != null && !(mS > 0)) || ((mH == null) !== (mS == null))){ toast("Escribe el marco con las dos medidas (entre hileras y sobre la hilera) o deja las dos vacías."); $("edMarcoH").focus(); return; }
+    var data = { nombre: nombre, especie: $("edEsp").value, variedad: viv ? "" : $("edVar").value.trim(), anio: viv ? null : num($("edAnio").value), ha: haN, arboles: viv ? null : num($("edArb").value), marcoH: mH, marcoS: mS, cuartel: $("edEsp").value === "Limón" && $("edCuartel").checked, orden: editing.orden || (S.cuarteles.length + 1) };
     if (viv){ data.especies = edEsps.slice(); data.riego = "manual"; if (!data.especies.length){ toast("Marca al menos una especie del vivero."); return; } }
     var b = $("edOk"); b.disabled = true;
     try {
       var ref = editing.id ? S.db.doc("cuarteles/" + editing.id) : S.db.collection("cuarteles").doc();
-      await ref.set(data); $("editSheet").hidden = true; toast("Sector guardado");
+      if (editing.id) await ref.update(data); else await ref.set(data);
+      $("editSheet").hidden = true; toast("Sector guardado");
     } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
     b.disabled = false;
   };
@@ -5380,13 +5389,18 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   function prodOrden(){ return S.productos.slice().sort(function(a, b){ return (a.orden || 0) - (b.orden || 0); }); }
   var MODOS = [{ value: "ha", label: "Por hectárea" }, { value: "pct", label: "% de la mezcla (agua)" }, { value: "arbol", label: "Por árbol (mL o g)" }, { value: "bomba", label: "Por bomba (mL o g)" }, { value: "directa", label: "Cantidad directa" }];
-  /* Árboles de un sector: manda el número de la ficha del cuartel; si falta, se estima por el marco (nogal 6 × 5 m, limón 4,5 × 2,5 m) y se avisa que es estimado. */
-  var MARCO_M2 = { "Nogal": 30, "Limón": 11.25 };
+  /* Árboles de un sector: manda el número de la ficha del cuartel; si falta, se estima por el marco (el de la ficha; si no hay, nogal 6 × 5 m y limón 6 × 3 m) y se avisa que es estimado. */
+  var MARCO_DEF = { "Nogal": [6, 5], "Limón": [6, 3] };
+  function marcoDe(cu){
+    var h = Number(cu && cu.marcoH), s2 = Number(cu && cu.marcoS);
+    if (h > 0 && s2 > 0) return { h: h, s: s2, m2: h * s2, propio: true };
+    var d = cu && MARCO_DEF[cu.especie]; return d ? { h: d[0], s: d[1], m2: d[0] * d[1], propio: false } : null;
+  }
   function arbDe(cu){
     if (!cu || cu.especie === "Vivero") return { n: 0, est: false, falta: true };
     var d = Number(cu.arboles) || 0; if (d > 0) return { n: d, est: false };
-    var m = MARCO_M2[cu.especie], h = Number(cu.ha) || 0;
-    return m && h > 0 ? { n: Math.round(h * 10000 / m), est: true } : { n: 0, est: false, falta: true };
+    var m = marcoDe(cu), h = Number(cu.ha) || 0;
+    return m && h > 0 ? { n: Math.round(h * 10000 / m.m2), est: true } : { n: 0, est: false, falta: true };
   }
   function arbSector(cu){
     if (cu) return Object.assign({ cu: cu, des: [] }, arbDe(cu));
@@ -5733,14 +5747,14 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
 
   var M3H_HA = 22, DERECHO_SEM = 1210;
   function demandaM3h(c){ return c && c.ha && c.especie !== "Limón" && c.especie !== "Vivero" ? c.ha * M3H_HA : null; }
-  function rgSel(){ var v = $("rgSector").value; if (v === "grp:nogal") return rgGrupo()[0]; return S.cuarteles.filter(function(c){ return c.id === v; })[0]; }
+  function rgSel(){ var v = $("rgSector").value; if (v === "grp:nogal") return rgGrupo()[0]; if (v === "grp:limon") return limSecs()[0]; return S.cuarteles.filter(function(c){ return c.id === v; })[0]; }
   function rgEstim(){
     var c = rgSel(), hr = parseFloat($("rgHoras").value), d = demandaM3h(c), t = $("rgCalc");
     if (d){ t.textContent = "Estimado: " + nf(d * hr, 0) + " m³ (" + nf(d, 1) + " m³/h × " + nf(hr, 1) + " h)"; t.hidden = false; }
     else { t.textContent = esViv(c) ? "Riego manual con manguera: no se calcula el agua. En las notas anota qué se regó." : "No hay estimación para este sector. Si tienes medidor, escribe los m³."; t.hidden = false; }
     return d ? d * hr : null;
   }
-  $("rgSector").onchange = function(){ rgHrsSec = {}; if (rgEsGrp() && !$("rgHora").value) $("rgHora").value = "09:00"; rgHorasPara(); rgEstim(); rgAjusta(); rgDibuja(); }; $("rgHoras").onchange = function(){ rgHrsSec = {}; rgEstim(); rgBoton(); };
+  $("rgSector").onchange = function(){ rgHrsSec = {}; if (rgEsGrp() && !$("rgHora").value) $("rgHora").value = "09:00"; rgHorasPara(); rgEstim(); rgAjusta(); rgDibuja(); frRecalc(); }; $("rgHoras").onchange = function(){ rgHrsSec = {}; rgEstim(); rgBoton(); };
   function rgHorasPara(){
     var v = esViv(rgSel()), hs = [], i, sel = $("rgHoras").value;
     if (v){ hs.push({ value: "0.25", label: "15 minutos" }); hs.push({ value: "0.5", label: "30 minutos" }); hs.push({ value: "0.75", label: "45 minutos" }); for (i = 2; i <= 16; i++) hs.push({ value: String(i / 2), label: nf(i / 2, 1) + (i === 2 ? " hora" : " horas") }); }
@@ -5752,7 +5766,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function vis(id, on){ $(id).style.display = on ? "" : "none"; }
   function rgGrupo(){ return sectoresOrden().filter(function(c){ return c.especie === "Nogal"; }); }
   function rgEsGrp(){ return $("rgSector").value === "grp:nogal"; }
-  function rgSecs(){ return rgEsGrp() ? rgGrupo() : [rgSel()].filter(Boolean); }
+  function rgEsGrpL(){ return $("rgSector").value === "grp:limon"; }
+  function rgSecs(){ return rgEsGrp() ? rgGrupo() : rgEsGrpL() ? limSecs() : [rgSel()].filter(Boolean); }
   function hmMin(h){ var m = /^(\d{1,2}):(\d{2})$/.exec(h || ""); return m ? (+m[1]) * 60 + (+m[2]) : null; }
   function minHm(n){ n = ((n % 1440) + 1440) % 1440; var h = Math.floor(n / 60), m = n % 60; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
   var rgDow = {}, rgEtH = null;
@@ -5829,19 +5844,19 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     rgFechasProg().filter(function(f){ return f >= fecha(); }).forEach(function(f){
       var gid = "g" + Date.now().toString(36) + f.replace(/-/g, "");
       if (grp) tr.forEach(function(x, k){ lote.push({ f: f, c: x.c, h: x.h, ini: x.ini, grupo: gid, orden: k + 1 }); });
-      else lote.push({ f: f, c: c, h: hr, ini: ini1, grupo: "", orden: 0 });
+      else lote.push({ f: f, c: c, h: hr, ini: ini1, grupo: "", orden: 0, todo: rgEsGrpL() ? true : (rgEsLim(c.id) && limSecs().length >= 2 ? false : null) });
     });
     return lote;
   }
   function rgCrucesLote(lote){
     var antes = [], cruces = [], dup = [];
     lote.forEach(function(x, i){
-      if (S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === x.c.id && t.fecha === x.f && (!rgEditT || t.id !== rgEditT.id); })) dup.push(x);
+      if (S.tareas.some(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.fecha === x.f && (!rgEditT || t.id !== rgEditT.id) && (t.sectorId === x.c.id || (x.todo !== false && rgEsLim(x.c.id) && tareaTodo(t))); })) dup.push(x);
       if (x.ini == null) return;
       var fin = x.ini + Math.round(x.h * 60);
       if (x.ini < RG_INI && antes.indexOf(x.f) < 0) antes.push(x.f);
       S.tareas.forEach(function(t){
-        if (t.tipo !== "riego" || t.estado === "hecha" || t.fecha !== x.f || t.sectorId === x.c.id || (rgEditT && t.id === rgEditT.id)) return;
+        if (t.tipo !== "riego" || t.estado === "hecha" || t.fecha !== x.f || t.sectorId === x.c.id || (rgEditT && t.id === rgEditT.id) || (rgEsLim(t.sectorId) && rgEsLim(x.c.id))) return;
         var r = rgFinT(t); if (r && x.ini < r.b && r.a < fin) cruces.push(fmtD2(x.f) + ": " + x.c.nombre + " con " + t.sector);
       });
       lote.forEach(function(y, j){ if (j > i && y.f === x.f && y.c.id !== x.c.id && y.ini != null && y.grupo !== x.grupo){ var f2 = y.ini + Math.round(y.h * 60); if (x.ini < f2 && y.ini < fin) cruces.push(fmtD2(x.f) + ": " + x.c.nombre + " con " + y.c.nombre); } });
@@ -5869,21 +5884,48 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     S.tareas.forEach(function(t){ if (t.tipo === "riego" && t.estado === "hecha" && rgEsLim(t.sectorId)) reg[t.fecha] = 1; });
     S.riegos.forEach(function(r){ if (rgEsLim(r.sectorId)) reg[r.fecha] = 1; });
     pend.forEach(function(t){ if (fs.indexOf(t.fecha) >= 0 && t.hora === LIM_DEF.hora && Number(t.horas) === LIM_DEF.h && !ok[t.fecha]) ok[t.fecha] = t; else otros.push(t); });
-    var lim = S.cuarteles.filter(function(c){ return c.especie === "Limón"; })[0];
-    return { faltan: fs.filter(function(f){ return !ok[f] && !reg[f] && f >= hy; }), otros: otros, ok: ok, lim: lim, arb: lim && Number(lim.arboles) !== 327 };
+    var lim = limSecs()[0];
+    return { faltan: fs.filter(function(f){ return !ok[f] && !reg[f] && f >= hy; }), otros: otros, ok: ok, lim: lim, arb: false };
+  }
+  /* Limón: los sectores del plano 1 a 6 pasan a «Cuartel N» (solo labores) y el riego queda en «Limón completo». */
+  function limOrdenPend(){ return S.cuarteles.filter(function(c){ return c.especie === "Limón" && /^l\d/.test(c.planoId || "") && !c.cuartel; }); }
+  async function limOrdena(){
+    var pl = limOrdenPend(); if (!pl.length) return;
+    try {
+      var ids = {}; pl.forEach(function(c){ ids[c.id] = 1; });
+      var resto = S.cuarteles.filter(function(c){ return c.especie === "Limón" && !ids[c.id] && !c.cuartel; });
+      var suma = 0; pl.forEach(function(c){ suma += Number(c.arboles) || 0; });
+      var comp = resto[0], orden = S.cuarteles.reduce(function(m, c){ return Math.max(m, c.orden || 0); }, 0) + 1;
+      if (!comp){
+        /* el sector que ya llevaba el riego de limón pasa a ser «Limón completo»; si estaba enlazado al plano, se crea uno nuevo */
+        var viejo = pl.filter(function(c){ return S.tareas.some(function(t){ return t.tipo === "riego" && t.sectorId === c.id; }) || S.riegos.some(function(r){ return r.sectorId === c.id; }); })[0];
+        var ref = S.db.doc("cuarteles/limon_completo");
+        await ref.set({ nombre: "Limón completo", especie: "Limón", variedad: "", anio: viejo && viejo.anio || null, ha: viejo && viejo.ha || null, arboles: suma > 0 ? suma : (viejo && Number(viejo.arboles) || null), marcoH: 6, marcoS: 3, cuartel: false, orden: orden });
+        comp = { id: "limon_completo", nombre: "Limón completo" };
+      } else {
+        var up = { nombre: "Limón completo", cuartel: false }; if (suma > 0) up.arboles = suma;
+        await S.db.doc("cuarteles/" + comp.id).update(up);
+      }
+      for (var c of pl){
+        var n = (String(c.nombre || "").match(/(\d+)\s*$/) || String(c.nombre || "").match(/(?:sector|cuartel)\s*(\d+)/i) || c.planoId.match(/^l(\d)/) || [])[1] || "";
+        await S.db.doc("cuarteles/" + c.id).update({ nombre: "Cuartel " + n, cuartel: true });
+      }
+      /* riegos programados pendientes que quedaron en un cuartel pasan a «Limón completo» */
+      for (var t of S.tareas){ if (t.tipo === "riego" && t.estado !== "hecha" && ids[t.sectorId]) await S.db.doc("tareas/" + t.id).update({ sectorId: comp.id, sector: "Limón completo", titulo: "Riego Limón completo" }); }
+      toast("Listo: sectores 1 a 6 como «Cuartel N» y el riego en «Limón completo»");
+    } catch (e){ toast("No se pudo ordenar. Revisa tu señal e intenta de nuevo."); }
   }
   async function limAplicaDef(){
     var ah = new Date().toISOString(), d = limDefPend(), lim = d.lim; if (!lim) return;
     try {
       var quien = (d.otros[0] && d.otros[0].quien) || "", reuso = d.otros.slice(), nBorr = 0, nNue = 0, n = 0;
       for (var f of d.faltan){
-        var fin = hmMin(LIM_DEF.hora) + LIM_DEF.h * 60, doc = { fecha: f, titulo: "Riego " + lim.nombre, tipo: "riego", horas: LIM_DEF.h, sectorId: lim.id, sector: lim.nombre, momento: "dia", quien: quien, estado: "pendiente", hora: LIM_DEF.hora, horaFin: minHm(fin), finSig: false, ts: ah, uid: S.uid, por: S.nombre };
+        var fin = hmMin(LIM_DEF.hora) + LIM_DEF.h * 60, varios = limSecs().length >= 2, nomL = varios ? "Limón completo" : lim.nombre, doc = { fecha: f, titulo: "Riego " + nomL, tipo: "riego", horas: LIM_DEF.h, sectorId: lim.id, sector: nomL, todo: varios ? true : null, momento: "dia", quien: quien, estado: "pendiente", hora: LIM_DEF.hora, horaFin: minHm(fin), finSig: false, ts: ah, uid: S.uid, por: S.nombre };
         var t = reuso.shift();
         if (t){ await S.db.doc("tareas/" + t.id).update(doc); } else { await S.db.collection("tareas").add(doc); }
         nNue++;
       }
       for (var t2 of reuso){ await S.db.doc("tareas/" + t2.id).delete(); nBorr++; }
-      if (d.arb) await S.db.doc("cuarteles/" + lim.id).update({ arboles: 327 });
       /* Nogales después de los limones, en fila, sin pisarse. */
       var L = hmMin(LIM_DEF.hora) + LIM_DEF.h * 60;
       var grupos = {};
@@ -5966,6 +6008,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var b = $("rgOk"), n = rgDias.length, g = rgEsGrp() ? rgGrupo().length : 1;
     if (rgSolo()) b.textContent = "Guardar cambios";
     else if (rgMod === "prog"){ var k = rgFechasProg().length * g; b.textContent = k > 1 ? "Programar " + k + " riegos" : "Programar riego"; }
+    else if (rgEsGrpL()) b.textContent = n > 1 ? "Guardar " + n + " días de Limón completo" : "Guardar Limón completo";
     else { var k2 = n * g; b.textContent = k2 > 1 ? "Guardar " + k2 + " riegos" : "Guardar riego"; }
     var fp = rgFechasProg(), rp = parseInt($("rgRep").value, 10) || 0;
     $("rgHastaNota").textContent = rp > 0 ? (fp.length ? "Se programarán " + fp.length + " días: del " + fmtD2(fp[0]) + " al " + fmtD2(fp[fp.length - 1]) + ". Se repite desde cada día que elegiste." : "Elige primero los días en el calendario.") : "";
@@ -5980,15 +6023,16 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     $("rgTitle").textContent = rgEdit ? "Corregir riego" : rgEditT ? "Cambiar riego programado" : rgTarea ? "Registrar el riego programado" : prog ? "Programar riego" : "Registrar riego";
     vis("rgModo", !!S.manager && !edit && !rgTarea);
     Array.prototype.forEach.call($("rgModo").children, function(bt){ var on = bt.getAttribute("data-m") === rgMod; bt.classList.toggle("on", on); bt.setAttribute("aria-pressed", on ? "true" : "false"); });
-    $("rgHorasL").textContent = grp ? "Horas por sector (todos igual)" : prog ? "Horas previstas por día" : "Horas de riego";
+    var grpL = rgEsGrpL();
+    $("rgHorasL").textContent = grp ? "Horas por sector (todos igual)" : grpL ? (prog ? "Horas previstas por día (todos los sectores a la vez)" : "Horas de riego (todos los sectores a la vez)") : prog ? "Horas previstas por día" : "Horas de riego";
     $("rgDiaL").textContent = edit ? "Día" : "Día(s)";
     $("rgHoraL").textContent = grp ? "Inicia el sector 1 a las" : "Hora de inicio (opcional)";
-    vis("rgM3F", !prog && !grp); vis("rgNotasF", !prog); vis("rgCalc", !prog && !grp);
+    vis("rgM3F", !prog && !grp && !grpL); vis("rgNotasF", !prog); vis("rgCalc", !prog && !grp && !grpL);
     vis("rgHoraF", prog && (!edit || !!rgEditT));
     vis("rgQuienF", prog); vis("rgRepF", prog && !edit); vis("rgHastaF", prog && !edit && $("rgRep").value !== "0");
     vis("rgQuitar", !!rgEditT); vis("rgQuitarG", !!(rgEditT && rgEditT.grupo));
     vis("rgDowF", prog && !edit); rgEtActualiza();
-    rgBoton();
+    rgBoton(); frRecalc();
   }
   function rgMesMas(n){ var d = new Date(rgMes + "-01T12:00:00Z"); d.setUTCMonth(d.getUTCMonth() + n); return d.toISOString().slice(0, 7); }
   var fmtMesRg = new Intl.DateTimeFormat("es-CL", { timeZone: "UTC", month: "long", year: "numeric" });
@@ -6028,10 +6072,12 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (foco){ var fb = box.querySelector('[data-f="' + foco + '"]'); if (fb) fb.focus(); }
   }
   function rgAbre(modo){
-    var cs = sectoresOrden();
+    var cs = sectoresOrden().filter(function(c){ return !c.cuartel; });
     if (!cs.length){ toast("Aún no hay sectores cargados."); return false; }
     rgTarea = null; rgEdit = null; rgEditT = null; rgHrsSec = {}; rgMod = modo === "prog" && S.manager ? "prog" : "reg"; frOcultar();
     var lista = cs.map(function(c){ return { value: c.id, label: c.nombre }; }), ng = rgGrupo().length;
+    var nl = limSecs().length;
+    if (nl >= 2) lista.unshift({ value: "grp:limon", label: "Limón completo (" + nl + " sectores)" });
     if (ng >= 2) lista.unshift({ value: "grp:nogal", label: "Nogales (" + ng + " sectores)" });
     fill($("rgSector"), lista, cs[0].id);
     var hoy = fecha();
@@ -6044,7 +6090,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     $("rgM3").value = ""; $("rgNotas").value = ""; rgDow = {}; rgDowDibuja(); rgEstim(); rgAjusta(); rgDibuja(); $("rgSheet").hidden = false;
     return true;
   }
-  function rgSinGrupo(){ var o = $("rgSector").querySelector('option[value="grp:nogal"]'); if (o) o.remove(); }
+  function rgSinGrupo(){ ["grp:nogal", "grp:limon"].forEach(function(v){ var o = $("rgSector").querySelector('option[value="' + v + '"]'); if (o) o.remove(); }); }
   function abrirRiego(){ rgAbre("reg"); }
   function abrirProgramar(){ rgAbre("prog"); }
   function corregirRiego(r){
@@ -6083,7 +6129,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   };
   $("rgOk").onclick = async function(){
     var c = rgSel(); if (!c) return;
-    var b = $("rgOk"), hoy = fecha(), hr = parseFloat($("rgHoras").value), ahora = new Date().toISOString(), grp = rgEsGrp();
+    var b = $("rgOk"), hoy = fecha(), hr = parseFloat($("rgHoras").value), ahora = new Date().toISOString(), grp = rgEsGrp(), grpL = rgEsGrpL();
     if (!rgDias.length){ toast("Toca al menos un día en el calendario."); return; }
     if (rgEditT){
       b.disabled = true;
@@ -6091,6 +6137,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         var t0 = rgEditT, hIni = $("rgHora").value, fNew = rgDias[0], iniM = hmMin(hIni);
         var upT = { fecha: fNew, sectorId: c.id, sector: c.nombre, horas: hr, quien: $("rgQuien").value, hora: "", horaFin: "", finSig: false };
         if (/^Riego/.test(t0.titulo || "")) upT.titulo = "Riego " + c.nombre;
+        var eraTodo = tareaTodo(t0);
+        if (eraTodo && c.id === t0.sectorId){ upT.sector = "Limón completo"; upT.todo = true; if (/^Riego/.test(t0.titulo || "")) upT.titulo = "Riego Limón completo"; }
+        else if (eraTodo) upT.todo = false;
         var finM = null; if (iniM != null){ finM = iniM + Math.round(hr * 60); upT.hora = minHm(iniM); upT.horaFin = minHm(finM); upT.finSig = finM > 1440; }
         await S.db.doc("tareas/" + t0.id).update(upT);
         if (t0.grupo){
@@ -6126,9 +6175,10 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       b.disabled = true;
       try {
         for (var j2 = 0; j2 < nuevas.length; j2++){
-          var x = nuevas[j2], doc = { fecha: x.f, titulo: "Riego " + x.c.nombre, tipo: "riego", horas: x.h, sectorId: x.c.id, sector: x.c.nombre, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre };
+          var x = nuevas[j2], nomT = x.todo === true ? "Limón completo" : x.c.nombre, doc = { fecha: x.f, titulo: "Riego " + nomT, tipo: "riego", horas: x.h, sectorId: x.c.id, sector: nomT, momento: "dia", quien: $("rgQuien").value, estado: "pendiente", ts: ahora, uid: S.uid, por: S.nombre };
           if (x.ini != null){ var fin = x.ini + Math.round(x.h * 60); doc.hora = minHm(x.ini); doc.horaFin = minHm(fin); doc.finSig = fin > 1440; }
           if (x.grupo){ doc.grupo = x.grupo; doc.orden = x.orden; }
+          if (x.todo === true || x.todo === false) doc.todo = x.todo;
           if (cruce) doc.cruce = cruce;
           await S.db.collection("tareas").add(doc);
         }
@@ -6136,42 +6186,63 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
       b.disabled = false; return;
     }
-    var med = grp ? null : numI($("rgM3")), est = rgEstim(), m3 = med != null && med > 0 ? med : est;
+    var med = grp || grpL ? null : numI($("rgM3")), est = rgEstim(), m3 = med != null && med > 0 ? med : est;
     if (rgEdit){
       var aidE = rgEdit.aplicacionId || (rgEdit.fert === "si" ? "fert_" + rgEdit.id : ""), apE = aidE ? S.aplicaciones.filter(function(a){ return a.id === aidE; })[0] : null;
       if (apE && c && !rgEsLim(c.id)){ toast("Este riego lleva fertirriego de limones: no se puede pasar a otro sector. Anúlalo y regístralo de nuevo."); return; }
       b.disabled = true;
       try {
         await S.db.doc("riegos/" + rgEdit.id).update({ fecha: rgDias[0], sectorId: c.id, sector: c.nombre, horas: hr, m3: m3, medido: med != null && med > 0, notas: $("rgNotas").value.trim(), editadoPor: S.nombre, editadoTs: ahora });
-        if (apE) await S.db.doc("aplicaciones/" + aidE).update({ fecha: rgDias[0], sectorId: c.id, sector: c.nombre, notas: "Fertirriego con el riego de " + nf(hr, 1) + " h (" + frPlantas() + " plantas)", editadoPor: S.nombre, editadoTs: ahora });
+        if (apE) await S.db.doc("aplicaciones/" + aidE).update({ fecha: rgDias[0], sectorId: c.id, sector: c.nombre, notas: "Fertirriego con el riego de " + nf(hr, 1) + " h (" + frPlantas(c) + " plantas)", editadoPor: S.nombre, editadoTs: ahora });
         $("rgSheet").hidden = true; rgEdit = null; toast(apE ? "Riego corregido; su fertirriego quedó con la misma fecha y sector" : "Riego corregido");
       } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
       b.disabled = false; return;
     }
     if (!rgTarea && !rgEdit && !grp && c && rgEsLim(c.id) && rgDias.length === 1){
-      var tf = S.tareas.filter(function(t){ return frEs(t) && t.sectorId === c.id && t.fecha === rgDias[0]; })[0];
+      var tf = S.tareas.filter(function(t){ return frEs(t) && (grpL || t.sectorId === c.id) && t.fecha === rgDias[0]; })[0];
       if (tf){ rgTarea = tf; frAbrir(tf); toast("Ese día tiene fertirriego programado: elige «Regué y fertilicé» o «Solo agua» y toca guardar otra vez."); return; }
     }
     if (rgTarea && frInfo && !frValida()) return;
     var dias = rgDias.slice().sort(), items = [];
-    dias.forEach(function(f){ if (grp) rgTurnos().forEach(function(x){ items.push({ f: f, c: x.c, h: x.h }); }); else items.push({ f: f, c: c, h: hr }); });
+    dias.forEach(function(f){
+      if (grp) rgTurnos().forEach(function(x){ items.push({ f: f, c: x.c, h: x.h }); });
+      else if (grpL) limCubre(f).falt.forEach(function(x){ items.push({ f: f, c: x, h: hr }); });
+      else items.push({ f: f, c: c, h: hr });
+    });
+    if (grpL && !items.length){ toast("Ese día ya están regados todos los sectores de limón."); return; }
     var dup = items.filter(function(it){ return S.riegos.some(function(r){ return r.sectorId === it.c.id && r.fecha === it.f; }); });
     if (dup.length && !rgConfirmDup){ rgConfirmDup = true; b.textContent = "Ya hay riego ese día: toca otra vez para guardar"; toast("En " + dup[0].c.nombre + " ya hay un riego el " + fmtD2(dup[0].f) + (dup.length > 1 ? " y en otros casos" : "") + "."); return; }
     b.disabled = true;
     try {
-      var usados = {}, creados = 0, cerradas = 0, cerrada = null;
+      var usados = {}, creados = 0, cerradas = 0, cerrada = null, lmReg = {}, variosL = limSecs().length >= 2;
       for (var k = 0; k < items.length; k++){
-        var it = items[k], tarea = null, mm = grp ? (demandaM3h(it.c) ? demandaM3h(it.c) * it.h : null) : m3;
-        var rref = await S.db.collection("riegos").add({ fecha: it.f, ts: ahora, sectorId: it.c.id, sector: it.c.nombre, horas: it.h, m3: mm, medido: !grp && med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: rgTarea && k === 0 ? rgTarea.id : "" });
+        var it = items[k], tarea = null, mm = grp ? (demandaM3h(it.c) ? demandaM3h(it.c) * it.h : null) : (grpL ? null : m3);
+        var esRT = !!rgTarea && (grpL ? rgTarea.fecha === it.f : k === 0);
+        var rref = await S.db.collection("riegos").add({ fecha: it.f, ts: ahora, sectorId: it.c.id, sector: it.c.nombre, horas: it.h, m3: mm, medido: !grp && !grpL && med != null && med > 0, notas: $("rgNotas").value.trim(), uid: S.uid, por: S.nombre, tareaId: esRT ? rgTarea.id : "" });
         creados++;
-        if (rgTarea && k === 0 && frInfo) await frGuardar(rref, it);
+        if (esRT && frInfo) await frGuardar(rref, it);
+        /* Limón: la tarea del día es «Limón completo» y se cierra cuando todos los sectores tienen su riego (más abajo). */
+        if (variosL && rgEsLim(it.c.id)){
+          (lmReg[it.f] = lmReg[it.f] || { ids: [], ref: rref, h: it.h }).ids.push(it.c.id);
+          /* una tarea programada solo para este sector (no «Limón completo») se cierra con su riego */
+          var solo = esRT && rgTarea.sectorId === it.c.id && !tareaTodo(rgTarea) ? rgTarea : S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && !tareaTodo(t) && t.sectorId === it.c.id && t.fecha && t.fecha <= it.f && !usados[t.id]; }).sort(function(a, bb){ var ea = a.fecha === it.f ? 0 : 1, eb = bb.fecha === it.f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
+          if (solo){ usados[solo.id] = 1; try { await S.db.doc("tareas/" + solo.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: it.h }); cerradas++; cerrada = solo; } catch (e6){} }
+          continue;
+        }
         if (rgTarea && k === 0) tarea = rgTarea;
         else tarea = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "hecha" && t.sectorId === it.c.id && t.fecha && t.fecha <= it.f && !usados[t.id] && !(rgTarea && t.id === rgTarea.id); }).sort(function(a, bb){ var ea = a.fecha === it.f ? 0 : 1, eb = bb.fecha === it.f ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
         if (tarea){ usados[tarea.id] = 1; try { await S.db.doc("tareas/" + tarea.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: rref && rref.id || "", horasReal: it.h }); cerradas++; cerrada = tarea; } catch (e4){} }
       }
-      avisar("riego", "Riego, " + items.map(function(x){ return x.c.nombre + " " + String(x.h).replace(".", ",") + " h"; }).join("; "));
+      var lmParcial = 0;
+      for (var fd of Object.keys(lmReg).sort()){
+        var cub = {}; S.riegos.forEach(function(r){ if (r.fecha === fd) cub[r.sectorId] = 1; }); lmReg[fd].ids.forEach(function(id){ cub[id] = 1; });
+        if (!limSecs().every(function(q){ return cub[q.id]; })){ lmParcial++; continue; }
+        var tt = rgTarea && tareaTodo(rgTarea) && rgTarea.fecha === fd ? rgTarea : S.tareas.filter(function(t){ return tareaTodo(t) && t.estado !== "hecha" && t.fecha && t.fecha <= fd && !usados[t.id]; }).sort(function(a, bb){ var ea = a.fecha === fd ? 0 : 1, eb = bb.fecha === fd ? 0 : 1; return ea !== eb ? ea - eb : (a.fecha < bb.fecha ? -1 : 1); })[0] || null;
+        if (tt){ usados[tt.id] = 1; try { await S.db.doc("tareas/" + tt.id).update({ estado: "hecha", hechaPor: S.nombre, hechaTs: ahora, riegoId: lmReg[fd].ref && lmReg[fd].ref.id || "", horasReal: lmReg[fd].h }); cerradas++; cerrada = tt; } catch (e5){} }
+      }
+      avisar("riego", "Riego, " + (grpL ? "Limón completo (" + creados + (creados === 1 ? " sector) " : " sectores) ") + String(hr).replace(".", ",") + " h" : items.map(function(x){ return x.c.nombre + " " + String(x.h).replace(".", ",") + " h"; }).join("; ")));
       rgTarea = null; frOcultar(); $("rgSheet").hidden = true;
-      toast(creados === 1 ? (cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : "Riego registrado") : creados + " riegos registrados" + (cerradas ? ". Cerré " + cerradas + " programado" + (cerradas > 1 ? "s" : "") : ""));
+      toast(grpL ? "Limón completo: " + creados + (creados === 1 ? " sector registrado" : " sectores registrados") + (cerrada ? ". Cerré la tarea del " + fmtD2(cerrada.fecha) : "") : creados === 1 ? (cerrada ? "Riego registrado. También cerré la tarea del " + fmtD2(cerrada.fecha) : (lmParcial ? "Riego registrado. La tarea de limón sigue pendiente hasta que se rieguen todos los sectores" : "Riego registrado")) : creados + " riegos registrados" + (cerradas ? ". Cerré " + cerradas + " programado" + (cerradas > 1 ? "s" : "") : ""));
     } catch (err){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
   };
@@ -6188,7 +6259,21 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function rvIni(t){ return hmMin(t.hora); }
   function rvFin(t){ var b = hmMin(t.horaFin); return b == null ? null : b + (t.finSig ? 1440 : 0); }
   function rvLimon(t){ var cu = S.cuarteles.filter(function(c){ return c.id === t.sectorId; })[0]; return !!(cu && cu.especie === "Limón"); }
-  function rvNom(t){ return t.sector && t.sector !== "Todo el campo" ? t.sector : (t.titulo || "Riego"); }
+  function rvNom(t){ if (tareaTodo(t)) return "Limón completo"; return t.sector && t.sector !== "Todo el campo" ? t.sector : (t.titulo || "Riego"); }
+  /* Limón completo: lista por sector, con el «Ya lo regué» de cada uno (la tarea del día se cierra cuando están todos). */
+  function rvSub(t){
+    var c = limCubre(t.fecha), d = el("details", "rv-sub"); d.style.cssText = "margin:6px 0 10px;padding:6px 10px;border:1px solid var(--line,#d8d4c6);border-radius:10px";
+    d.appendChild(el("summary", null, "Limón por sector · " + c.ok.length + " de " + c.tot + " regados"));
+    limSecs().forEach(function(q){
+      var ya = c.ok.indexOf(q) >= 0, r = el("div"); r.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0";
+      r.appendChild(el("span", null, q.nombre + (limArb(q) ? " · " + limArb(q) + " árboles" : "")));
+      if (ya) r.appendChild(el("b", null, "✓ regado"));
+      else if (rvPuede(t)){ var b = el("button", "small", "Ya lo regué"); b.type = "button"; b.setAttribute("aria-label", "Ya regué " + q.nombre); b.onclick = function(e){ e.stopPropagation(); riegoDeTarea(t, q.id); }; r.appendChild(b); }
+      else r.appendChild(el("span", "note", "pendiente"));
+      d.appendChild(r);
+    });
+    return d;
+  }
   function rvH(h){ h = Number(h) || 0; return nf(h, h % 1 ? 1 : 0); }
   function rvPuede(t){
     if (t.estado === "hecha") return false; var hoy = fecha();
@@ -6200,7 +6285,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (t.estado === "hecha") return false; var i = rvIni(t), e = rvFin(t); if (i == null || e == null) return false;
     var d = diasDesde(t.fecha); if (d < 0 || d > 1) return false; var n = ahora + d * 1440; return n >= i && n < e;
   }
-  function rvEstadoTxt(t, ahora){
+  function rvEstadoTxt(t, ahora){ var x = rvEstadoTxt0(t, ahora), av = limAvTxt(t); return av ? x + " · " + av : x; }
+  function rvEstadoTxt0(t, ahora){
     if (t.estado === "hecha") return "hecho";
     if (t.fecha < fecha()) return "atrasado";
     if (rvAct(t, ahora)) return "regando ahora · termina " + t.horaFin;
@@ -6225,7 +6311,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var r = el("div", "rv-f" + (primera ? " t0" : "") + (ya ? " ya" : "") + (act ? " ahora" : ""));
     var tc = el("div", "t", t.hora || "Sin hora"); if (t.hora && t.horaFin) tc.appendChild(el("small", null, "a " + t.horaFin)); r.appendChild(tc);
     r.appendChild(el("div", "bar" + (rvLimon(t) ? " l" : "")));
-    var w = el("div", "w"); w.appendChild(el("b", null, rvNom(t))); w.appendChild(el("span", null, rvH(t.horas) + " h · " + (act ? "regando ahora" : ya ? "hecho" : t.fecha < hoy ? "atrasado" : t.fecha === hoy ? (t.hora ? "programado" : "para hoy") : "en " + (-diasDesde(t.fecha)) + (diasDesde(t.fecha) === -1 ? " día" : " días")))); r.appendChild(w);
+    var w = el("div", "w"); w.appendChild(el("b", null, rvNom(t))); w.appendChild(el("span", null, rvH(t.horas) + " h · " + (act ? "regando ahora" : ya ? "hecho" : t.fecha < hoy ? "atrasado" : t.fecha === hoy ? (t.hora ? "programado" : "para hoy") : "en " + (-diasDesde(t.fecha)) + (diasDesde(t.fecha) === -1 ? " día" : " días")) + (limAvTxt(t) ? " · " + limAvTxt(t) : ""))); r.appendChild(w);
     if (ya) r.appendChild(el("div", "rv-ck hec", "✓"));
     else if (rvPuede(t)){ var b = el("button", "rv-ck" + (t.fecha < hoy ? " warn" : ""), "✓"); b.type = "button"; b.setAttribute("aria-label", "Ya lo regué: " + rvNom(t)); b.onclick = function(e){ e.stopPropagation(); riegoDeTarea(t); }; r.appendChild(b); }
     if (S.manager && !ya){ r.setAttribute("role", "button"); r.tabIndex = 0; r.setAttribute("aria-label", "Cambiar o quitar: " + rvNom(t) + ", " + rvNomDia(t.fecha)); r.onclick = function(){ cambiarProgramado(t); }; r.onkeydown = function(e){ if ((e.key === "Enter" || e.key === " ") && e.target === r){ e.preventDefault(); cambiarProgramado(t); } }; }
@@ -6262,6 +6348,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (tim.some(function(t){ return t.finSig; })) box.appendChild(el("p", "note", "Termina después de la medianoche."));
     }
     if (sin.length){ box.appendChild(el("div", "rv-dh")).appendChild(el("b", null, "Sin hora fija")); sin.forEach(function(t, i){ box.appendChild(rvFila(t, ahora, i === 0)); }); }
+    ts.forEach(function(t){ if (tareaTodo(t) && t.estado !== "hecha") box.appendChild(rvSub(t)); });
     extra.forEach(function(r, i){
       var fl = el("div", "rv-f ya" + (i === 0 && !sin.length && !tim.length ? " t0" : "")); fl.appendChild(el("div", "t", "Hecho")); fl.appendChild(el("div", "bar"));
       var w = el("div", "w"); w.appendChild(el("b", null, r.sector)); w.appendChild(el("span", null, rvH(r.horas) + " h" + (r.por ? " · " + r.por : ""))); fl.appendChild(w); fl.appendChild(el("div", "rv-ck hec", "✓")); box.appendChild(fl);
@@ -6294,7 +6381,23 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     });
     var vistos = {}; Object.keys(g.map).forEach(function(k){ vistos[g.map[k].sid] = 1; });
     var tot = [0, 0, 0, 0, 0, 0, 0];
+    var limFila = false;
     sectoresOrden().filter(function(c){ return vistos[c.id]; }).forEach(function(c){
+      if (c.especie === "Limón" && limSecs().length >= 2){
+        if (limFila) return; limFila = true;
+        var rl = el("div", "rv-r"); rl.appendChild(el("s", "l")); rl.appendChild(el("span", null, "Limón completo")); mx.appendChild(rl);
+        g.ds.forEach(function(f, i){
+          var xs = limSecs().map(function(q){ return g.map[q.id + "|" + f]; }).filter(Boolean);
+          if (!xs.length){ mx.appendChild(el("div", "rv-c vacio")); return; }
+          var h = Math.max.apply(null, xs.map(function(x){ return x.h; })), est = xs.some(function(x){ return x.atr; }) ? "atr" : xs.some(function(x){ return x.pen; }) ? "pen" : "hec", cu = limCubre(f);
+          tot[i] += h;
+          var bl = el("button", "rv-c " + est + " l" + (f === sel ? " sel" : "")); bl.type = "button";
+          bl.appendChild(document.createTextNode(rvH(h) + "h")); bl.appendChild(el("small", null, est !== "hec" && cu.ok.length ? cu.ok.length + "/" + cu.tot : est === "atr" ? "atraso" : est === "hec" ? "hecho" : f === hoy ? "hoy" : "prog."));
+          bl.setAttribute("aria-label", "Limón completo, " + rvNomDia(f) + ", " + rvH(h) + " horas, " + (est === "atr" ? "atrasado" : est === "hec" ? "hecho" : "programado") + (est !== "hec" && cu.ok.length ? ", " + cu.ok.length + " de " + cu.tot + " sectores regados" : ""));
+          bl.onclick = function(){ S.rgDia = f; repinta(); }; mx.appendChild(bl);
+        });
+        return;
+      }
       var r = el("div", "rv-r"); r.appendChild(el("s", c.especie === "Limón" ? "l" : "")); r.appendChild(el("span", null, c.nombre)); mx.appendChild(r);
       g.ds.forEach(function(f, i){
         var x = g.map[c.id + "|" + f]; if (!x){ mx.appendChild(el("div", "rv-c vacio")); return; }
@@ -6331,12 +6434,12 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var card = el("div", "rv-ag"), first = true;
     function grupo(txt, sub, cls){ var d = el("div", "rv-dh" + (cls ? " " + cls : "")); d.appendChild(el("b", null, txt)); d.appendChild(el("span", null, sub)); card.appendChild(d); }
     var lates = pend.filter(function(t){ return t.fecha < hoy; }).sort(function(a, b){ return a.fecha === b.fecha ? rvOrden(a, b) : (a.fecha < b.fecha ? -1 : 1); });
-    if (lates.length){ grupo("Atrasados", String(lates.length), "atr"); lates.forEach(function(t, i){ var fl = rvFila(t, ahora, i === 0); var tt = fl.firstChild; tt.textContent = rvNomDia(t.fecha).split(" ").map(function(s, j){ return j === 0 ? s.slice(0, 3) : s; }).join(" "); if (t.hora) tt.appendChild(el("small", null, t.hora)); card.appendChild(fl); }); }
+    if (lates.length){ grupo("Atrasados", String(lates.length), "atr"); lates.forEach(function(t, i){ var fl = rvFila(t, ahora, i === 0); var tt = fl.firstChild; tt.textContent = rvNomDia(t.fecha).split(" ").map(function(s, j){ return j === 0 ? s.slice(0, 3) : s; }).join(" "); if (t.hora) tt.appendChild(el("small", null, t.hora)); card.appendChild(fl); if (tareaTodo(t)) card.appendChild(rvSub(t)); }); }
     for (var d = 0; d <= 13; d++){
       var f = addDays(hoy, d), dts = ts.filter(function(t){ return t.fecha === f; }).sort(rvOrden);
       if (d > 7 && !dts.length) continue; var h = 0; dts.forEach(function(t){ h += Number(t.horas) || 0; });
       grupo((d === 0 ? "Hoy · " : d === 1 ? "Mañana · " : "") + rvNomDia(f), dts.length ? rvH(h) + " h" : "sin riegos", d === 0 ? "hoy" : "");
-      dts.forEach(function(t, i){ card.appendChild(rvFila(t, ahora, i === 0)); });
+      dts.forEach(function(t, i){ card.appendChild(rvFila(t, ahora, i === 0)); if (tareaTodo(t) && t.estado !== "hecha") card.appendChild(rvSub(t)); });
     }
     if (S.manager) card.appendChild(el("p", "note", "Toca un riego para cambiarlo o quitarlo."));
     sec.appendChild(card);
@@ -6379,16 +6482,16 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Programa del asesor (plantilla semanal): limones de lunes a sábado 1,5 h desde las 09:00; nogales L, X, V, D (domingo = 0). */
   var RG_PLAN = { lim: { dias: [1, 2, 3, 4, 5, 6], h: 1.5, hora: "09:00" }, nog: { dias: [1, 3, 5, 0], h: 3.5 } };
   /* Limones: árboles jóvenes, sin factor de cultivo conocido. Mientras el dueño no guarde datos definitivos con un factor propio (que da el asesor) en «Ajustar datos de limones», NO se calcula necesidad: se sigue el programa del asesor. */
-  var RG_LIM = { m2: 11.25, lh: 22 }, rgEditLim = false, rgFotosAb = false;
+  var RG_LIM = { m2: 18, lh: 26.4 }, /* marco 6 × 3 m; 2 líneas × 6 goteros de 2,2 L/h por árbol (1,47 mm/h) */ rgEditLim = false, rgFotosAb = false;
   function rgLimCfg(){
     var c = S.rgFac || {}, m2 = Number(c.limM2), lh = Number(c.limLh), f = Number(c.limFactor);
     return { m2: m2 > 0 ? m2 : RG_LIM.m2, lh: lh > 0 ? lh : RG_LIM.lh, f: f > 0 && f <= 1.5 ? f : rgFactor().f, def: !!c.limDef, propio: f > 0 && f <= 1.5 };
   }
-  function rgLimSec(){ return S.cuarteles.filter(function(c){ return c.especie === "Limón"; })[0]; }
+  function rgLimSec(){ return limSecs()[0]; }
   function rgLimDatos(){
     var v = rgVentana(), sc = rgLimSec(); if (!v || !sc) return null;
     var cf = rgLimCfg(), mmh = cf.lh / cf.m2 * RG_EF, need = v.et0 * cf.f / mmh, app = 0;
-    S.riegos.forEach(function(r){ if (r.sectorId === sc.id && r.fecha >= v.ini && r.fecha <= v.fin) app += Number(r.horas) || 0; });
+    app = rgHorasSum(S.riegos.filter(function(r){ return rgEsLim(r.sectorId) && r.fecha >= v.ini && r.fecha <= v.fin; }));
     return { v: v, cf: cf, mmh: mmh, need: need, app: app, cov: need > 0 ? app / need : 1, prog: RG_PLAN.lim.h * RG_PLAN.lim.dias.length, sc: sc, calc: !!(cf.def && cf.propio) };
   }
   /* Propuesta semanal (C): plantilla del asesor ajustada con la evapotranspiración. No programa nada hasta que el dueño la aprueba (config/riegoPropuesta guarda la decisión de la semana). */
@@ -6409,7 +6512,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (lim){
       var hL = lim.calc ? Math.max(0.25, Math.round(lim.need / RG_PLAN.lim.dias.length * 4) / 4) : RG_PLAN.lim.h, dL = dias.filter(function(d){ return RG_PLAN.lim.dias.indexOf(propDow(d)) >= 0; }), m3hL = (Number(sc.arboles) || FR.plantas) * lim.cf.lh / 1000;
       var rowsL = dL.map(function(d){ return { f: d, prog: progH([sc.id], d) }; });
-      items.push({ key: "lim", titulo: "Limones (" + (Number(sc.arboles) || FR.plantas) + " árboles)", need: lim.calc ? lim.need : null, sinFactor: !lim.calc, h: hL, asesor: RG_PLAN.lim.h, dias: dL, rows: rowsL, m3: dL.length * hL * m3hL, prov: false, cambia: rowsL.some(function(r){ return Math.abs(r.prog - hL) > 0.01; }) });
+      items.push({ key: "lim", titulo: "Limones (" + frPlantas() + " árboles)", need: lim.calc ? lim.need : null, sinFactor: !lim.calc, h: hL, asesor: RG_PLAN.lim.h, dias: dL, rows: rowsL, m3: dL.length * hL * m3hL, prov: false, cambia: rowsL.some(function(r){ return Math.abs(r.prog - hL) > 0.01; }) });
     }
     if (!items.length) return null;
     var tot = 0; items.forEach(function(it){ tot += it.m3; });
@@ -6439,7 +6542,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var nC = it.rows.filter(function(r){ return Math.abs(r.prog - it.h) > 0.01; }).length;
       if (it.sinFactor) bx.appendChild(el("p", "sub", "Árboles jóvenes, sin factor de cultivo: se sigue el programa del asesor, sin ajustar por evapotranspiración. Cambia en " + nC + " de " + it.rows.length + " días de lo que hoy está programado."));
       else bx.appendChild(el("p", "sub", "La evapotranspiración pide " + nf(it.need, 1) + " h por semana por sector. Cambia en " + nC + " de " + it.rows.length + " días de lo que hoy está programado."));
-      if (it.prov) bx.appendChild(el("p", "note warn", "Provisorio: usa el marco de 4,5 × 2,5 m y el factor de los nogales hasta que guardes los datos definitivos de limones."));
+      if (it.prov) bx.appendChild(el("p", "note warn", "Provisorio: usa el marco de 6 × 3 m y el factor de los nogales hasta que guardes los datos definitivos de limones."));
       var tg = el("button", "small", propSel[it.key] ? "Incluida en la propuesta" : "No incluida"); tg.type = "button"; tg.setAttribute("aria-pressed", propSel[it.key] ? "true" : "false"); tg.onclick = function(){ propSel[it.key] = !propSel[it.key]; propRepinta(); }; bx.appendChild(tg);
       sec.appendChild(bx);
     });
@@ -6462,7 +6565,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         async function escribe(c, h, grupo, orden){
           var t = pend.filter(function(x){ return x.sectorId === c.id; })[0], e = cur + Math.round(h * 60), tm = { horas: h, hora: minHm(cur), horaFin: minHm(e), finSig: e > 1440 };
           if (t) await S.db.doc("tareas/" + t.id).update(Object.assign({}, tm, { propuestaSemana: P.ws, ordenadoPor: S.nombre, ordenadoTs: ah }));
-          else { var doc = Object.assign({ fecha: f, titulo: "Riego " + c.nombre, tipo: "riego", sectorId: c.id, sector: c.nombre, momento: "dia", quien: "", estado: "pendiente", ts: ah, uid: S.uid, por: S.nombre, propuestaSemana: P.ws }, tm); if (grupo){ doc.grupo = grupo; doc.orden = orden; } await S.db.collection("tareas").add(doc); }
+          else { var todoL = rgEsLim(c.id) && limSecs().length >= 2, nomT = todoL ? "Limón completo" : c.nombre, doc = Object.assign({ fecha: f, titulo: "Riego " + nomT, tipo: "riego", sectorId: c.id, sector: nomT, momento: "dia", quien: "", estado: "pendiente", ts: ah, uid: S.uid, por: S.nombre, propuestaSemana: P.ws }, tm); if (todoL) doc.todo = true; if (grupo){ doc.grupo = grupo; doc.orden = orden; } await S.db.collection("tareas").add(doc); }
           cur = e; n++;
         }
         if (porDia[f].lim != null && sc) await escribe(sc, porDia[f].lim, "", 0);
@@ -6480,7 +6583,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   async function propRechaza(P){
     try { await S.db.doc("config/riegoPropuesta").set({ semana: P.ws, estado: "rechazada", por: S.nombre, ts: new Date().toISOString(), resumen: "Quedó sin programar desde la propuesta: la configuraste a mano." }); } catch (e){}
     var it = P.items.filter(function(x){ return x.key === "nog"; })[0] || P.items[0], ng = rgGrupo(), sc = rgLimSec();
-    rgPlanificar({ sector: it.key === "nog" ? (ng.length >= 2 ? "grp:nogal" : ng[0] && ng[0].id) : sc && sc.id, dow: (it.key === "nog" ? RG_PLAN.nog.dias : RG_PLAN.lim.dias), horas: it.h, hora: "" });
+    rgPlanificar({ sector: it.key === "nog" ? (ng.length >= 2 ? "grp:nogal" : ng[0] && ng[0].id) : sc && (limSecs().length >= 2 ? "grp:limon" : sc.id), dow: (it.key === "nog" ? RG_PLAN.nog.dias : RG_PLAN.lim.dias), horas: it.h, hora: "" });
   }
   function rgRepintaLim(){ var o = $("rgSemLim"); if (o) o.replaceWith(rgNodoLim()); var g = $("rgFotos"), n = rgNodoFotos(); if (g && !n) g.remove(); else if (g) g.replaceWith(n); else if (n && $("rgSemLim")) $("rgSemLim").after(n); }
   function rgNodoLim(){
@@ -6496,7 +6599,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var est = d.cov >= 1.15 ? ["info", "Exceso"] : d.cov >= 0.9 ? ["ok", "Al día"] : d.cov >= 0.7 ? ["idle", "Déficit leve"] : ["warn", "Déficit alto"], falta = d.need - d.app;
     sec.appendChild(el("p", "sub", "Del " + fmtD2(d.v.ini) + " al " + fmtD2(d.v.fin) + " · evapotranspiración " + nf(d.v.et0, 1) + " mm · factor " + nf(d.cf.f, 2)));
     var hd = el("div", "who"), big = el("b", "rgs-big", nf(d.need, 1)); big.appendChild(el("small", null, " h por semana")); hd.appendChild(big); hd.appendChild(el("span", "chip " + est[0], est[1] + " · " + nf(d.cov * 100, 0) + " %")); sec.appendChild(hd);
-    if (!d.cf.def) sec.appendChild(el("p", "note warn", "Cálculo provisorio: usa marco de " + nf(d.cf.m2, 2) + " m² por árbol (4,5 × 2,5 m), " + nf(d.cf.lh, 0) + " L/h por árbol y el factor de los nogales. Cuando guardes los datos definitivos se recalcula todo."));
+    if (!d.cf.def) sec.appendChild(el("p", "note warn", "Cálculo provisorio: usa marco de " + nf(d.cf.m2, 2) + " m² por árbol, " + nf(d.cf.lh, 1) + " L/h por árbol y el factor de los nogales. Cuando guardes los datos definitivos se recalcula todo."));
     var bar = el("div", "meter" + (d.cov >= 1.15 ? " over" : "")), fil = el("i"); fil.style.width = Math.min(100, d.cov * 100) + "%"; bar.appendChild(fil); sec.appendChild(bar);
     sec.appendChild(el("p", "note", "Se aplicaron " + nf(d.app, 1) + " h en esos 7 días. " + (falta > 0.05 ? "Faltaron " + nf(falta, 1) + " h (unos " + nf(falta * d.mmh, 0) + " mm de agua efectiva)." : falta < -0.05 ? "Sobraron " + nf(-falta, 1) + " h." : "Fue lo que necesitaban.")));
     var dif = d.prog > 0 ? (d.need - d.prog) / d.prog * 100 : 0;
@@ -6508,7 +6611,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         var fm = el("div", "rgs-form");
         function campo(id, lab, val){ var dv = el("div", "field"), l = el("label", null, lab); l.htmlFor = id; var i = el("input"); i.id = id; i.type = "text"; i.inputMode = "decimal"; i.maxLength = 12; i.value = val; dv.appendChild(l); dv.appendChild(i); fm.appendChild(dv); }
         campo("rgLimF", "Factor de limones para árboles jóvenes (lo da el asesor)", d.cf.propio ? String(d.cf.f).replace(".", ",") : "");
-        campo("rgLimM2", "Metros cuadrados por árbol (marco, por ejemplo 11,25)", String(d.cf.m2).replace(".", ","));
+        campo("rgLimM2", "Metros cuadrados por árbol (marco, por ejemplo 18)", String(d.cf.m2).replace(".", ","));
         campo("rgLimLh", "Litros por hora por árbol (por ejemplo 22)", String(d.cf.lh).replace(".", ","));
         var ck = el("label", "rgs-ck"), cb = el("input"); cb.type = "checkbox"; cb.id = "rgLimDef"; cb.checked = d.cf.def; ck.appendChild(cb); ck.appendChild(document.createTextNode(" Son los datos definitivos (marco confirmado y factor del asesor para árboles jóvenes)")); fm.appendChild(ck);
         var gb = el("button", "primary", "Guardar datos de limones"); gb.type = "button";
@@ -6624,10 +6727,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Presión de la red de goteo: medirla", "Estimada en 2,5 a 3,5 bar (25 a 35 m) sin contar el desnivel. La Reggio da unos 37 m con un sector y unos 31 a 32 m con nogales y limones a la vez, así que alcanzaría justo. Pon un manómetro de 0 a 6 bar a la salida del filtro y anota la lectura con un sector y con los dos."],
     ["Caudal del pozo sobre los 2 L/s", "Entre el 3 nov (15:43) y el 6 nov (21:02) salieron 709 m³: 9,2 m³/h (2,55 L/s) como mínimo. Cierra la llave de descarga hasta que una vuelta de la aguja grande del caudalímetro tarde 50 segundos o más."],
     ["Título del derecho del pozo", "Pide o busca el título (o el certificado de la DGA): debe indicar el caudal máximo instantáneo y el volumen anual (art. 7 del Código de Aguas) y si es continuo."],
-    ["Lectura del caudalímetro de comienzos de enero", "Para contar el año desde el 1 de enero. Si tienes una foto de esos días, anótala con su fecha."],
-    ["Marco real de los limones", "4,5 × 2,5 m por confirmar (el plano decía 5 × 2 m)."]
+    ["Lectura del caudalímetro de comienzos de enero", "Para contar el año desde el 1 de enero. Si tienes una foto de esos días, anótala con su fecha."]
   ];
-  var EQ_OK = ["Emisores de nogales y limones: 3 líneas por hilera, gotero autocompensado de 2,2 L/h cada 50 cm (confirmado en terreno).", "Limones plantados: 327 en total; el reparto por cuartel es la capacidad estimada.", "Tarifa eléctrica: sacada de las cuentas de CGE (solo la ve el dueño).", "Año del derecho de agua: del 1 de enero al 31 de diciembre.", "Riego de limones: 1,5 h todos los días menos el domingo (asesor), de 9:00 a 10:30."];
+  var EQ_OK = ["Marco de plantación de los limones: 6 m entre hileras × 3 m sobre la hilera (confirmado por Diego el 17 nov).", "Emisores de nogales: 3 líneas por hilera; limones: 2 líneas por hilera (confirmado por Diego el 17 nov); gotero autocompensado de 2,2 L/h cada 50 cm (confirmado en terreno).", "Limones plantados: se cuentan con el número de árboles de la ficha de cada sector (Campo → Editar sector).", "Tarifa eléctrica: sacada de las cuentas de CGE (solo la ve el dueño).", "Año del derecho de agua: del 1 de enero al 31 de diciembre.", "Riego de limones: 1,5 h todos los días menos el domingo (asesor), de 9:00 a 10:30."];
   var EQ_KWH_POZO = 0.42, EQ_KWH_REG = 0.28, EQ_TARIFA0 = 268;
   var eqAbre = false;
   function eqNodo(){
@@ -6649,17 +6751,19 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     EQ_BLOQ.forEach(function(x){ a.appendChild(el("p", "sub", x[0] + " · " + x[1] + " ha · " + x[2] + " m³/h · " + x[3] + " L/s")); });
     a.appendChild(el("p", "note", "Nogales 6 × 5 m (2,91 ha, sectores A a D). Limones 5 × 2 m (1,00 ha) como sector futuro F. Vivero 0,28 ha. El plano proyectó cuatro líneas de 3,3 L/h a 0,7 m, pero lo instalado son 3 líneas de 2,2 L/h cada 50 cm (por eso los caudales reales son menores que los del cuadro). Vivero 1 L/h a 0,2 m. Los nogales se riegan de a un sector."));
     sec.appendChild(a);
-    var l = el("div", "asg"); l.appendChild(el("b", null, "Limones · reparto por cuartel"));
-    var tot = 0; EQ_LIM.forEach(function(x){ tot += x[1]; l.appendChild(el("p", "sub", x[0] + " · " + x[1] + " árboles · " + x[2])); });
-    l.appendChild(el("p", "note", "Capacidad estimada: " + tot + " árboles. Para la disposición y la orientación manda el esquema del plano de limones, no los puntos rojos del mapa satelital. Los cuarteles 1 a 5 están plantados hoy y se riegan como un solo sector (separables a futuro). Marco 4,5 × 2,5 m por confirmar; 3 líneas por hilera, gotero autocompensado 2,2 L/h. Plantados: 327 (cuartel 1 = 87); estas cifras son la capacidad estimada de cada cuartel."));
+    var l = el("div", "asg"); l.appendChild(el("b", null, "Limones · sectores y árboles"));
+    var tot = 0, lsq = limSecs();
+    lsq.forEach(function(c){ var a = arbDe(c), mc = marcoDe(c); tot += a.n; l.appendChild(el("p", "sub", c.nombre + " · " + (a.n ? a.n + " árboles" + (a.est ? " (estimado por el marco)" : "") : "sin número de árboles") + (mc ? " · marco " + String(mc.h).replace(".", ",") + " × " + String(mc.s).replace(".", ",") + " m" : ""))); });
+    if (!lsq.length) EQ_LIM.forEach(function(x){ tot += x[1]; l.appendChild(el("p", "sub", x[0] + " · " + x[1] + " árboles · " + x[2])); });
+    l.appendChild(el("p", "note", "Total: " + tot + " árboles. Para la disposición y la orientación manda el esquema del plano de limones, no los puntos rojos del mapa satelital. El riego se hace en «Limón completo»; los cuarteles son para labores. Marco 6 × 3 m; 2 líneas por hilera, gotero autocompensado 2,2 L/h."));
     sec.appendChild(l);
     var ok = el("div", "asg"); ok.appendChild(el("b", null, "Ya confirmado"));
     EQ_OK.forEach(function(t){ if (/Tarifa/.test(t) && !S.owner) return; ok.appendChild(el("p", "sub", "• " + t)); });
     sec.appendChild(ok);
-    var q = el("div", "asg"); q.appendChild(el("b", null, "Lo que pide el riego (con 3 líneas de 2,2 L/h cada 50 cm)"));
+    var q = el("div", "asg"); q.appendChild(el("b", null, "Lo que pide el riego (goteros de 2,2 L/h cada 50 cm; nogales 3 líneas, limones 2)"));
     ["Nogal (5 × 6 m): 66 L/h por árbol, unos 22 m³/h por hectárea. Un sector de 0,65 ha pide unos 14,3 m³/h (238 L/min), que son 2,2 mm/h.",
-     "Limones (4,5 × 2,5 m a confirmar): 33 L/h por árbol. Con 327 árboles piden unos 10,8 m³/h (180 L/min), unos 16 m³ en 1,5 h.",
-     "Nogal y limones a la vez: unos 25 m³/h (418 L/min)."].forEach(function(t){ q.appendChild(el("p", "sub", "• " + t)); });
+     (function(){ var n = frPlantas(), m3h = n * 26.4 / 1000; return "Limones (6 × 3 m): 26,4 L/h por árbol (2 líneas × 6 goteros de 2,2 L/h). Con " + n + " árboles piden unos " + nf(m3h, 1) + " m³/h (" + nf(m3h * 1000 / 60, 0) + " L/min), unos " + nf(m3h * 1.5, 1) + " m³ en 1,5 h. Es un cálculo con los goteros, no una medición: compáralo con el caudal que entrega el pozo."; })(),
+     (function(){ var m3h = frPlantas() * 26.4 / 1000; return "Nogal (un sector de 0,65 ha) y limones a la vez: unos " + nf(14.3 + m3h, 1) + " m³/h (" + nf((14.3 + m3h) * 1000 / 60, 0) + " L/min)."; })()].forEach(function(t){ q.appendChild(el("p", "sub", "• " + t)); });
     sec.appendChild(q);
     var LP = medLect("m_pozo"), anio = fecha().slice(0, 4), ini = anio + "-01-01", ref = null;
     LP.forEach(function(l){ if (l.fecha <= ini) ref = l; });
@@ -6706,7 +6810,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var mSem = 0, mHoy = 0, hSem = 0;
     S.riegos.forEach(function(r){ if (r.fecha >= sem){ mSem += Number(r.m3) || 0; hSem += Number(r.horas) || 0; } if (r.fecha === hoy) mHoy += Number(r.m3) || 0; });
     var mes = hoy.slice(0, 7), hMes = 0, hTot = 0, hProg = 0, progPend = [];
-    S.riegos.forEach(function(r){ var h = Number(r.horas) || 0; hTot += h; if (r.fecha.slice(0, 7) === mes) hMes += h; });
+    hTot = rgHorasSum(S.riegos); hMes = rgHorasSum(S.riegos.filter(function(r){ return r.fecha.slice(0, 7) === mes; }));
     S.tareas.forEach(function(t){ if (t.tipo !== "riego") return; if (t.fecha >= sem && t.fecha <= addDays(sem, 6)) hProg += Number(t.horas) || 0; if (t.estado !== "hecha") progPend.push(t); });
     var res = el("section", "card sect"); res.appendChild(el("h2", null, "Agua de esta semana"));
     var rows = el("div", "rows");
@@ -9313,7 +9417,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     });
     S.tareas.forEach(function(t){
       if (t.fecha !== f) return;
-      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: [t.tipo === "riego" && t.horas ? (t.estado === "hecha" && t.horasReal != null ? "Programado " + nf(t.horas, 1) + " h · regado " + nf(t.horasReal, 1) + " h" : "Programado " + nf(t.horas, 1) + " h" + (t.hora ? " · " + t.hora + " a " + t.horaFin : "")) : "", t.quien || ""].filter(Boolean).join(" · "), hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true, anul: t.riegoAnulado && t.estado !== "hecha" ? "ANULADO" : "" });
+      out.push({ k: TK[t.tipo] ? t.tipo : "otra", titulo: tareaTodo(t) ? "Riego Limón completo" : t.titulo + (t.sector && t.sector !== "Todo el campo" ? " · " + t.sector : ""), sub: [limAvTxt(t), t.tipo === "riego" && t.horas ? (t.estado === "hecha" && t.horasReal != null ? "Programado " + nf(t.horas, 1) + " h · regado " + nf(t.horasReal, 1) + " h" : "Programado " + nf(t.horas, 1) + " h" + (t.hora ? " · " + t.hora + " a " + t.horaFin : "")) : "", t.quien || ""].filter(Boolean).join(" · "), hecho: t.estado === "hecha", mom: MOM[t.momento] ? t.momento : "dia", tarea: t, plani: true, anul: t.riegoAnulado && t.estado !== "hecha" ? "ANULADO" : "" });
     });
     (S.tareasAnul || []).forEach(function(t){
       if (t.fecha !== f) return;
@@ -9332,16 +9436,52 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
   }
   /* Fertirriego de limones: todos los riegos programados de limones entre FR.desde y FR.hasta llevan la receta del día (tambor de 200 L). Se registra enlazado al riego y descuenta la bodega. */
-  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 327, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
+  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 325, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
     prods: [{ re: /urea/i, dosis: 2, base: "g", nombre: "Urea" }, { re: /nitrato.*potasio|potasio.*nitrato|kno3/i, dosis: 2, base: "g", nombre: "Nitrato de potasio" }, { re: /fosf/i, dosis: 2, base: "cc", nombre: "Ácido fosfórico" }] };
   var frInfo = null, frModo = "si";
-  /* Árboles que reciben el fertirriego: los de la ficha del cuartel de limones (editable); el 327 solo sirve si la ficha está vacía. */
-  function frPlantas(){ return FR.plantas; } /* 327 plantados: dato definitivo (15 nov); la ficha del cuartel se deja igual en 327 */
+  /* Árboles que reciben el fertirriego: los de la ficha del cuartel de limones (editable); el 325 solo sirve si la ficha está vacía. */
+  /* Árboles de limón: por sector, los de su ficha (o los estimados por su marco); en total, la suma de los sectores. El 325 solo sirve si ninguna ficha tiene árboles. */
+  function limSecs(){ return sectoresOrden().filter(function(c){ return c.especie === "Limón" && !c.cuartel; }); }
+  function limArb(c){ var a = arbDe(c); return a.n > 0 ? a.n : 0; }
+  function frPlantas(c){
+    if (c){ var n = limArb(c); return n > 0 ? n : (limSecs().length === 1 ? FR.plantas : 0); }
+    var t = 0; limSecs().forEach(function(x){ t += limArb(x); }); return t > 0 ? t : FR.plantas;
+  }
+  /* La tarea diaria de limón representa «Limón completo»: todos los sectores de limón, regados a la vez. Marca todo (`todo: true`) la que se programa así o, si es antigua, la que está en el primer sector de limón. Una tarea de un solo sector queda con `todo: false`. */
+  function tareaTodo(t){
+    if (!t || t.tipo !== "riego" || !rgEsLim(t.sectorId)) return false;
+    if (t.todo === true) return true; if (t.todo === false) return false;
+    var ls = limSecs(); return ls.length >= 2 && ls[0].id === t.sectorId;
+  }
+  /* Qué sectores de limón ya tienen su riego registrado ese día. */
+  function limCubre(f){
+    var ok = [], falt = [];
+    limSecs().forEach(function(c){ (S.riegos.some(function(r){ return r.sectorId === c.id && r.fecha === f; }) ? ok : falt).push(c); });
+    return { ok: ok, falt: falt, tot: ok.length + falt.length };
+  }
+  function limAvTxt(t){
+    if (!tareaTodo(t) || t.estado === "hecha") return "";
+    var c = limCubre(t.fecha); return c.ok.length ? c.ok.length + " de " + c.tot + " sectores regados" : "";
+  }
+  /* Horas regadas: los sectores de limón riegan a la vez, así que cada día cuentan una sola vez (el mayor). */
+  function rgHorasSum(rs){
+    var t = 0, lim = {}, varios = limSecs().length >= 2;
+    rs.forEach(function(r){ var h = Number(r.horas) || 0; if (varios && rgEsLim(r.sectorId)) lim[r.fecha] = Math.max(lim[r.fecha] || 0, h); else t += h; });
+    Object.keys(lim).forEach(function(k){ t += lim[k]; });
+    return t;
+  }
+  /* Árboles que reciben el fertirriego en lo que se está registrando: el sector elegido, o los sectores que faltan ese día si es «Limón completo». */
+  function frPlSel(t){
+    var sl = $("rgSector"), v = sl && sl.value;
+    if (v === "grp:limon"){ var n = 0; limCubre(rgDias[0] || (t && t.fecha) || fecha()).falt.forEach(function(c){ n += limArb(c); }); return n > 0 ? n : frPlantas(); }
+    var c = rgSel(); return c && rgEsLim(c.id) ? frPlantas(c) : frPlantas();
+  }
+  function frRecalc(){ if (!frInfo) return; frInfo.rc = frReceta(frPlSel(frInfo.t)); frPinta(); }
   function frEs(t){ return !!t && t.tipo === "riego" && t.estado !== "hecha" && t.fert !== false && !!t.fecha && t.fecha >= FR.desde && t.fecha <= FR.hasta && pnLimones().indexOf(t.sectorId) >= 0; }
   function frConv(c, base, u){ u = String(u || "").toLowerCase(); if (base === "g") return u === "kg" ? c / 1000 : c; return /^(l|lt|lts|litro|litros)$/.test(u) ? c / 1000 : c; }
-  function frReceta(){
+  function frReceta(pl){
     return FR.prods.map(function(d){
-      var p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0], base = d.dosis * frPlantas(), cant = p ? frConv(base, d.base, p.unidad) : null, st = p ? stockDe(p) : 0;
+      var p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0], base = d.dosis * (pl != null ? pl : frPlantas()), cant = p ? frConv(base, d.base, p.unidad) : null, st = p ? stockDe(p) : 0;
       return { d: d, p: p, base: base, cant: cant, st: st, ok: !!p && st + 1e-9 >= cant };
     });
   }
@@ -9351,7 +9491,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function frCobertura(){
     var rc = frReceta(), dem = S.tareas.filter(frEs), ev = {}, out = {};
     function add(pid, f, c, k){ if (!pid || !(c > 0)) return; (ev[pid] = ev[pid] || []).push({ f: f, c: c, k: k }); }
-    rc.forEach(function(x){ if (x.p && x.cant > 0) dem.forEach(function(t){ add(x.p.id, t.fecha, x.cant, "riego"); }); });
+    function fracT(t){ if (tareaTodo(t) || limSecs().length < 2) return 1; var c = S.cuarteles.filter(function(q){ return q.id === t.sectorId; })[0], tot = frPlantas(); return c && tot > 0 ? limArb(c) / tot : 1; }
+    rc.forEach(function(x){ if (x.p && x.cant > 0) dem.forEach(function(t){ add(x.p.id, t.fecha, x.cant * fracT(t), "riego"); }); });
     S.plan.filter(function(x){ return x.estado === "pendiente"; }).forEach(function(x){ add(x.productoId, x.fecha || "", Number(x.cantidad) || 0, "apl"); add(x.productoId2, x.fecha || "", Number(x.cantidad2) || 0, "apl"); });
     var porId = {}; rc.forEach(function(x){ if (x.p && x.cant > 0) porId[x.p.id] = x.cant; });
     var ids = Object.keys(ev); Object.keys(porId).forEach(function(k){ if (ids.indexOf(k) < 0) ids.push(k); });
@@ -9379,7 +9520,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   function frAbrir(t){
     if (!frEs(t)){ frOcultar(); return; }
-    frInfo = { rc: frReceta(), t: t }; frModo = frFaltas(frInfo.rc).length ? "no" : "si"; $("frMotivo").value = ""; $("frNota").value = ""; $("frF").hidden = false; frPinta();
+    frInfo = { rc: frReceta(frPlSel(t)), t: t }; frModo = frFaltas(frInfo.rc).length ? "no" : "si"; $("frMotivo").value = ""; $("frNota").value = ""; $("frF").hidden = false; frPinta();
   }
   $("frSi").onclick = function(){ frModo = "si"; frPinta(); };
   $("frNo").onclick = function(){ frModo = "no"; frPinta(); };
@@ -9390,14 +9531,14 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   async function frGuardar(rref, it){
     if (!frInfo || !rref) return;
-    var rc = frInfo.rc, falta = frFaltas(rc).length > 0, ahora = new Date().toISOString(), up = {};
+    var rc0 = frInfo.rc, rc = frReceta(frPlantas(it.c)), falta = frFaltas(rc0).length > 0, ahora = new Date().toISOString(), up = {};
     try {
       if (frModo === "si"){
         var items = rc.filter(function(x){ return x.p; }).map(function(x){ return { productoId: x.p.id, nombre: x.p.nombre, unidad: x.p.unidad, cantidad: Math.round(x.cant * 1000) / 1000, rol: "Fertirriego", modo: "directa", valor: x.d.dosis }; });
-        var ar = items.length ? await S.db.collection("aplicaciones").doc("fert_" + rref.id).set({ fecha: it.f, ts: ahora, items: items, productoId: items[0].productoId, producto: items.map(function(i){ return i.nombre; }).join(" + "), unidad: items[0].unidad, cantidad: items[0].cantidad, aguaTotalL: FR.tamborL, sectorId: it.c.id, sector: it.c.nombre, equipo: FR.equipo, via: "riego", riegoId: rref.id, notas: "Fertirriego con el riego de " + nf(it.h, 1) + " h (" + frPlantas() + " plantas)", uid: S.uid, por: S.nombre }) : null;
+        var ar = items.length ? await S.db.collection("aplicaciones").doc("fert_" + rref.id).set({ fecha: it.f, ts: ahora, items: items, productoId: items[0].productoId, producto: items.map(function(i){ return i.nombre; }).join(" + "), unidad: items[0].unidad, cantidad: items[0].cantidad, aguaTotalL: FR.tamborL, sectorId: it.c.id, sector: it.c.nombre, equipo: FR.equipo, via: "riego", riegoId: rref.id, notas: "Fertirriego con el riego de " + nf(it.h, 1) + " h (" + frPlantas(it.c) + " plantas)", uid: S.uid, por: S.nombre }) : null;
         up = { fert: "si", aplicacionId: items.length ? "fert_" + rref.id : "" };
       } else up = { fert: "no" };
-      if (falta){ up.fertFalta = true; up.fertResuelta = false; up.fertMotivo = $("frMotivo").value; up.fertNota = $("frNota").value.trim(); up.fertFaltan = frFaltas(rc); }
+      if (falta){ up.fertFalta = true; up.fertResuelta = false; up.fertMotivo = $("frMotivo").value; up.fertNota = $("frNota").value.trim(); up.fertFaltan = frFaltas(rc0); }
       await S.db.doc("riegos/" + rref.id).update(up);
     } catch (e){ toast("El riego quedó guardado, pero no se pudo anotar el fertirriego. Avísale a Diego."); }
   }
@@ -9451,9 +9592,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     b.disabled = false;
   };
   var rgTarea = null;
-  function riegoDeTarea(t){
+  function riegoDeTarea(t, secId){
     if (!rgAbre("reg")) return;
-    rgTarea = t; rgSetSel("rgSector", t.sectorId); rgHorasPara(); rgSetHoras(t.horas || 3);
+    rgTarea = t; rgSetSel("rgSector", !secId && tareaTodo(t) && limSecs().length >= 2 ? "grp:limon" : (secId || t.sectorId)); rgHorasPara(); rgSetHoras(t.horas || 3);
     var hoy = fecha(); rgDias = [t.fecha && t.fecha <= hoy && t.fecha >= addDays(hoy, -120) ? t.fecha : hoy]; rgMes = rgDias[0].slice(0, 7);
     rgEstim(); rgAjusta(); rgDibuja(); frAbrir(t);
   }
@@ -9494,7 +9635,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var evs = eventosDia(f), cuenta = evs.filter(function(e){ return !e.nc; }), hechas = cuenta.filter(function(e){ return e.hecho; }).length;
     var pc = el("section", "card sect"); pc.appendChild(el("h2", null, cuenta.length ? hechas + " de " + cuenta.length + (cuenta.length === 1 ? " tarea hecha" : " tareas hechas") : "Sin tareas este día"));
     var bar = el("div", "ag-bar"); var bi = el("i"); bi.style.width = (cuenta.length ? Math.round(100 * hechas / cuenta.length) : 0) + "%"; bar.appendChild(bi); bar.setAttribute("role", "img"); bar.setAttribute("aria-label", cuenta.length ? Math.round(100 * hechas / cuenta.length) + " por ciento hecho" : "Sin tareas"); pc.appendChild(bar);
-    var hp = 0, hr2 = 0; S.tareas.forEach(function(t){ if (t.fecha === f && t.tipo === "riego") hp += Number(t.horas) || 0; }); S.riegos.forEach(function(r){ if (r.fecha === f) hr2 += Number(r.horas) || 0; });
+    var hp = 0, hr2 = 0; S.tareas.forEach(function(t){ if (t.fecha === f && t.tipo === "riego") hp += Number(t.horas) || 0; }); hr2 = rgHorasSum(S.riegos.filter(function(r){ return r.fecha === f; }));
     if (hp || hr2) pc.appendChild(el("p", "sub", "Riego del día: " + nf(hp, 1) + " h programadas · " + nf(hr2, 1) + " h regadas"));
     if (S.manager){ var add = el("button", "primary", "Agendar tarea"); add.onclick = function(){ abrirTarea(f); }; pc.appendChild(add); }
     c.appendChild(pc);
@@ -9530,7 +9671,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var sc = el("div", "ag-sc");
     [[tot ? Math.round(100 * ok / tot) + " %" : "—", "de lo agendado, cumplido"], [String(hechas), "tareas hechas"], [String(atras), "atrasadas"]].forEach(function(x){ var d = el("div"); d.appendChild(el("b", null, x[0])); d.appendChild(el("small", null, x[1])); sc.appendChild(d); });
     c.appendChild(sc);
-    var hp2 = 0, hr3 = 0; S.tareas.forEach(function(t){ if (t.fecha >= ws && t.fecha <= we && t.tipo === "riego") hp2 += Number(t.horas) || 0; }); S.riegos.forEach(function(r){ if (r.fecha >= ws && r.fecha <= we) hr3 += Number(r.horas) || 0; });
+    var hp2 = 0, hr3 = 0; S.tareas.forEach(function(t){ if (t.fecha >= ws && t.fecha <= we && t.tipo === "riego") hp2 += Number(t.horas) || 0; }); hr3 = rgHorasSum(S.riegos.filter(function(r){ return r.fecha >= ws && r.fecha <= we; }));
     var rr = el("section", "card sect"); rr.appendChild(el("h2", null, "Riego de la semana"));
     var rw = el("div", "rows"); [["Horas programadas", nf(hp2, 1) + " h"], ["Horas regadas", nf(hr3, 1) + " h"], ["Faltan por regar", nf(Math.max(0, hp2 - hr3), 1) + " h"]].forEach(function(x){ var r = el("div", "row"); r.appendChild(el("span", "l", x[0])); r.appendChild(el("span", "r", x[1])); rw.appendChild(r); });
     rr.appendChild(rw); c.appendChild(rr); return c;

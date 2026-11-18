@@ -1649,8 +1649,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     <h2 id="cnTitle">Cuéntale a Diego</h2>
 <div class="sbody">
     <p class="sub">Si algo no funciona, no entiendes un paso o tienes una idea para mejorar la app, escríbelo aquí. Diego lo recibe con la pantalla donde estabas.</p>
-    <div class="field"><label for="cnTipo">¿Qué es?</label><select id="cnTipo"><option>Algo no funciona</option><option>No entiendo cómo se hace</option><option>Tengo una idea o sugerencia</option></select></div>
+    <div class="field"><label for="cnTipo">¿Qué es?</label><select id="cnTipo"><option>Algo no funciona</option><option>No entiendo cómo se hace</option><option>Tengo una idea o sugerencia</option><option>Falla de un equipo</option><option>Algo que vi en el campo</option></select></div>
     <div class="field"><label for="cnTexto">Cuéntalo con tus palabras</label><textarea id="cnTexto" maxlength="600" placeholder="Ej: al guardar la aplicación me aparece un error"></textarea></div>
+    <div class="field"><button type="button" id="cnFotoB">Adjuntar foto</button><input type="file" id="cnFoto" accept="image/*" capture="environment" hidden><p class="note" id="cnFotoT">Opcional. Si tienes la ubicación activada, Diego también ve dónde estabas.</p></div>
 </div>
 <div class="sfoot">    <button class="primary" id="cnOk">Enviar a Diego</button>
     <button id="cnCancel">Cancelar</button></div>
@@ -2585,13 +2586,21 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
 
 
   /* ---- consultas del equipo y guía de uso ---- */
-  function abrirConsulta(){ $("cnTexto").value = ""; $("cnTipo").selectedIndex = 0; $("cnSheet").hidden = false; $("cnTexto").focus(); }
+  var cnFotoF = null;
+  $("cnFotoB").onclick = function(){ $("cnFoto").click(); };
+  $("cnFoto").onchange = function(){ var f = $("cnFoto").files && $("cnFoto").files[0]; $("cnFoto").value = ""; if (f){ cnFotoF = f; $("cnFotoT").textContent = "Foto lista: " + f.name.slice(0, 24); $("cnFotoB").textContent = "Cambiar foto"; } };
+  function abrirConsulta(){ cnFotoF = null; $("cnFotoB").textContent = "Adjuntar foto"; $("cnFotoT").textContent = "Opcional. Si tienes la ubicación activada, Diego también ve dónde estabas."; $("cnTexto").value = ""; $("cnTipo").selectedIndex = 0; $("cnSheet").hidden = false; $("cnTexto").focus(); }
   $("cnCancel").onclick = function(){ $("cnSheet").hidden = true; };
   $("cnOk").onclick = async function(){
     var t = $("cnTexto").value.trim(); if (t.length < 3){ toast("Escribe qué pasó o qué idea tienes."); return; }
     var b = $("cnOk"); b.disabled = true;
     try {
-      await S.db.collection("consultas").add({ tipo: $("cnTipo").value, texto: t, pantalla: (PH[S.screen] ? PH[S.screen][0] : "Inicio"), rol: S.owner ? "dueño" : S.manager ? "editora" : "colaboradora", resuelta: false, ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
+      var cnFid = "", cnGeo = null;
+      if (cnFotoF){
+        try { var cnD = await comprimirFoto(cnFotoF); cnGeo = await gfGeo(); var cnFr = S.db.collection("fotos").doc(); await cnFr.set({ data: cnD, ts: new Date().toISOString(), uid: S.uid, por: S.nombre, geo: cnGeo }); cnFid = cnFr.id; }
+        catch (e5){ toast("No se pudo guardar la foto. Quítala o revisa tu señal."); b.disabled = false; return; }
+      } else if (/equipo|campo/i.test($("cnTipo").value)) cnGeo = await gfGeo();
+      await S.db.collection("consultas").add({ fotoId: cnFid, geo: cnGeo, tipo: $("cnTipo").value, texto: t, pantalla: (PH[S.screen] ? PH[S.screen][0] : "Inicio"), rol: S.owner ? "dueño" : S.manager ? "editora" : "colaboradora", resuelta: false, ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
       $("cnSheet").hidden = true; toast("Listo, Diego recibió tu mensaje");
     } catch (err){ toast("No se pudo enviar. Revisa tu señal e intenta de nuevo."); }
     b.disabled = false;
@@ -2711,7 +2720,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
-    { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás. Además, las fotos del huerto y de las plantas guardan el punto donde se tomaron (con «Ver dónde se tomó»), si tienes la ubicación activada.", g: "Llegada y salida por ubicación" },
+    { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Nuevo: en «Tengo un problema o una idea» puedes avisar de una falla de equipo o algo visto en el campo con foto y ubicación. Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás. Además, las fotos del huerto y de las plantas guardan el punto donde se tomaron (con «Ver dónde se tomó»), si tienes la ubicación activada.", g: "Llegada y salida por ubicación" },
     { v: 81, f: "2026-11-18", t: "Riego: avance y control", d: "Nueva tarjeta en el Panel: avance de la semana en vivo (registrado, en curso y programado frente al objetivo) y control semana a semana de las últimas 8 semanas.", g: "Riego: avance y control" },
     { v: 80, f: "2026-11-18", t: "Perfiles de cada persona", d: "Una sola cuenta y ficha por persona: se enlazan por email, la asistencia se comprueba con él y se puede poner un apodo (ej. «Yoli»). En Trabajadores → Perfiles.", g: "Perfiles de cada persona" },
     { v: 79, f: "2026-11-18", t: "Aviso «el riego no cabe hoy»", d: "Si el programa pasa de medianoche, un riego solo de agua da un «Aviso» informativo (puede regar de noche). Si un riego con fertilización (que debe estar supervisado) queda más allá de medianoche, Inicio y Riego avisan «El riego X no cabe hoy» con el detalle: a qué hora parte y termina, cuánto no cabe, cuántas horas de riego hay pendientes, cuánto queda hasta medianoche y a qué hora tendría que partir todo para que quepa. También lo advierte «Cambiar horario y orden» mientras acomodas el orden. Además propone una solución que se aplica con un toque: poner primero los riegos con fertilización, pasar el que falte a mañana o superponer el limón con un nogal.", g: "Cancelar o reprogramar riegos" },
@@ -9854,7 +9863,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var f = espFicha(c, nombre), box = el("div", "pl-esp-det"), dr = S.plDraft = S.plDraft || {}, id = "esp_" + c.id + "_" + espSlug(nombre);
     var fids = (f && f.fotoIds) || [];
     var g = el("div", "ph3");
-    fids.forEach(function(x){ var w = el("div"); w.appendChild(espImg(x, "Foto de " + nombre)); { var q = el("button", "link", "Quitar"); q.type = "button"; q.onclick = async function(){ try { await S.db.doc("arboles/" + id).update({ fotoIds: fids.filter(function(y){ return y !== x; }) }); } catch (e){ toast("No se pudo quitar la foto."); } }; w.appendChild(q); } g.appendChild(w); });
+    fids.forEach(function(x){ var w = el("div"); w.appendChild(espImg(x, "Foto de " + nombre)); fotoGeoLink(x, w); { var q = el("button", "link", "Quitar"); q.type = "button"; q.onclick = async function(){ try { await S.db.doc("arboles/" + id).update({ fotoIds: fids.filter(function(y){ return y !== x; }) }); } catch (e){ toast("No se pudo quitar la foto."); } }; w.appendChild(q); } g.appendChild(w); });
     var fi = espFotoInput(async function(file){
       try { var fid = await espSubeFoto(file); var base = f ? {} : espAuto(Object.assign(espBase(c, nombre), { estado: "Sano", cantidad: null, siembra: "", notas: "" })); await S.db.doc("arboles/" + id).set(Object.assign(base, { fotoIds: fids.concat([fid]) }), { merge: true }); toast("Foto guardada"); }
       catch (e){ toast("No se pudo guardar la foto. Revisa tu señal o prueba con otra."); }
@@ -11572,6 +11581,18 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (!abierto) return card;
     var b = el("div", "cs-b"); b.appendChild(el("p", "msg", x.texto));
     b.appendChild(el("p", "ctx", fmtFH.format(new Date(x.ts)) + " · pantalla: " + (x.pantalla || "inicio") + (x.rol ? " · " + x.rol : "")));
+    if (x.fotoId){
+      var cvb = el("button", "link", "Ver foto"), cim = el("img"); cvb.type = "button"; cim.alt = "Foto adjunta"; cim.style.cssText = "width:100%;border-radius:14px;margin-top:8px"; cim.hidden = true;
+      cvb.onclick = async function(){
+        if (!cim.hidden){ cim.hidden = true; cvb.textContent = "Ver foto"; return; }
+        cvb.textContent = "Cargando…";
+        try { var cd = fotosCache[x.fotoId]; if (!cd){ var csn = await S.db.doc("fotos/" + x.fotoId).get(); cd = csn.exists ? csn.data().data : null; if (cd) fotosCache[x.fotoId] = cd; }
+          if (!cd){ cvb.textContent = "Ver foto"; toast("La foto no está disponible."); return; } cim.src = cd; cim.hidden = false; cvb.textContent = "Ocultar foto"; fotoGeoLink(x.fotoId, b); }
+        catch (e6){ cvb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
+      };
+      b.appendChild(cvb); b.appendChild(cim);
+    }
+    if (x.geo && !x.fotoId){ var cga = el("a", "link", "Ver dónde estaba (mapa)"); cga.href = "https://www.google.com/maps?q=" + x.geo.lat + "," + x.geo.lng; cga.target = "_blank"; cga.rel = "noopener"; cga.style.display = "block"; b.appendChild(cga); }
     (x.hist || (x.resp ? [x.resp] : [])).forEach(function(r){ var d = el("div", "cs-rep"); d.appendChild(document.createTextNode(r.texto)); d.appendChild(el("small", null, (r.por || "Diego") + " · " + fmtFH.format(new Date(r.ts)))); b.appendChild(d); });
     if (S.owner){
       if (x.resuelta){

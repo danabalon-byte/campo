@@ -38,6 +38,11 @@ service cloud.firestore {
       allow read: if isMember();
       allow write: if isOwner() || (isMember() && request.auth.uid == uid);
     }
+    // Datos personales (teléfono, contacto de emergencia, nombre completo): cada persona ve y edita solo los suyos; el dueño ve los de todos.
+    // La fecha de cumpleaños va en equipo/{uid} (campo nac), visible para el equipo, para los avisos de cumpleaños.
+    match /equipo_privado/{uid} {
+      allow read, write: if isOwner() || (isMember() && request.auth.uid == uid);
+    }
     match /cuarteles/{d} { allow read: if isMember(); allow write: if isOwner(); }
     match /productos/{d} { allow read: if isMember(); allow write: if isOwner(); }
     match /movimientos/{d} { allow read: if isMember(); allow write: if isOwner(); }

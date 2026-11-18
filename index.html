@@ -2350,20 +2350,158 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     document.addEventListener("touchend", fin, { passive: true }); document.addEventListener("touchcancel", fin, { passive: true });
   })();
 
-  async function marcar(tipo, desde0){
+  async function marcar(tipo, desde0, via){
     var now = new Date(), iso = now.toISOString(), hoy = fecha(now);
     if (desde0 && tipo === "in") iso = isoLocal(hoy, "00:00");
     var e = estado(S.dias, now.getTime());
     var tr = e.tr.map(function(t){ return Object.assign({}, t, { entrada: t.entrada, salida: t.salida || null }); });
-    if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null, por: S.nombre, uid: S.uid, regTs: iso }); }
-    else { if (e.st !== "open") return; tr[tr.length - 1].salida = iso; tr[tr.length - 1].salidaPor = S.nombre; tr[tr.length - 1].salidaUid = S.uid; }
+    if (tipo === "in"){ if (e.st === "open") return; tr.push({ entrada: iso, salida: null, por: S.nombre, uid: S.uid, regTs: iso }); if (via) tr[tr.length - 1].via = via; }
+    else { if (e.st !== "open") return; tr[tr.length - 1].salida = iso; tr[tr.length - 1].salidaPor = S.nombre; tr[tr.length - 1].salidaUid = S.uid; if (via) tr[tr.length - 1].salidaVia = via; else GF.bloqIn = true; }
     try {
       await S.db.doc("asistencia/" + S.uid + "/dias/" + hoy).set({ fecha: hoy, tramos: tr, actualizadoPor: S.nombre, actualizadoTs: iso });
-      toast(tipo === "in" ? "Llegada registrada a las " + hora(iso) : "Salida registrada a las " + hora(iso));
+      toast((tipo === "in" ? "Llegada registrada a las " + hora(iso) : "Salida registrada a las " + hora(iso)) + (via ? " (por ubicación)" : ""));
     } catch (err) {
       if (err && err.code === "invalid_argument"){ S.noWrite = true; render(); toast("No tienes permiso para registrar. Avísale a Diego."); }
       else toast("No se pudo guardar. Revisa tu señal e intenta de nuevo.");
     }
+  }
+
+  /* ---- Ubicación: llegada y salida detectadas dentro/fuera del campo ----
+     El perímetro (KMZ de Diego) vive en Firestore «config/perimetro», no en el código. Solo se mira la ubicación con la app abierta (la web no puede vigilar en segundo plano).
+     Las coordenadas de cada persona NO se guardan: solo queda en el tramo la marca «via: ubicacion». */
+  var GF = { cfg: null, polys: [], ent: null, entP: null, wid: null, ult: 0, fuera: [], snooze: 0, busy: false, bloqIn: false, preg: false, sh: null };
+  function gfLs(){ try { return localStorage.getItem("campo_gf"); } catch (e){ return null; } }
+  function gfParse(s){ return String(s || "").trim().split(/\s+/).map(function(p){ var a = p.split(",").map(Number); return [a[0], a[1]]; }).filter(function(p){ return isFinite(p[0]) && isFinite(p[1]); }); }
+  function gfCfgSet(c){
+    GF.cfg = c; GF.polys = ((c && c.poligonos) || []).map(gfParse).filter(function(p){ return p.length >= 3; });
+    GF.ent = c && c.entrada && isFinite(c.entrada.lat) && isFinite(c.entrada.lng) ? [Number(c.entrada.lat), Number(c.entrada.lng)] : null;
+    var ep = c && c.entradaPoly ? gfParse(c.entradaPoly) : []; GF.entP = ep.length >= 3 ? ep : null;
+    gfArranca();
+  }
+  function gfM(la0, ln0, la, ln){ return [(ln - ln0) * 111320 * Math.cos(la0 * Math.PI / 180), (la - la0) * 110574]; }
+  function gfDentro(la, ln, poly){ var d = false; for (var i = 0, j = poly.length - 1; i < poly.length; j = i++){ var a = poly[i], b = poly[j]; if ((a[0] > la) !== (b[0] > la) && ln < (b[1] - a[1]) * (la - a[0]) / (b[0] - a[0]) + a[1]) d = !d; } return d; }
+  function gfDist(la, ln, poly){
+    var best = 1e9;
+    for (var i = 0; i < poly.length; i++){
+      var a = gfM(la, ln, poly[i][0], poly[i][1]), b = gfM(la, ln, poly[(i + 1) % poly.length][0], poly[(i + 1) % poly.length][1]);
+      var dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy, t = l2 ? Math.max(0, Math.min(1, -(a[0] * dx + a[1] * dy) / l2)) : 0;
+      var px = a[0] + t * dx, py = a[1] + t * dy, d = Math.sqrt(px * px + py * py); if (d < best) best = d;
+    }
+    return best;
+  }
+  function gfEval(la, ln, acc){
+    if (!GF.polys.length || acc > 80 || S.noWrite || !S.uid) return;
+    var dentro = false, best = 1e9;
+    GF.polys.forEach(function(p){ if (gfDentro(la, ln, p)) dentro = true; var d = gfDist(la, ln, p); if (d < best) best = d; });
+    if (dentro) best = 0;
+    var cercaEnt = false; if (GF.entP){ cercaEnt = gfDentro(la, ln, GF.entP) || gfDist(la, ln, GF.entP) <= 30; }
+    if (!cercaEnt && GF.ent){ var m = gfM(la, ln, GF.ent[0], GF.ent[1]); cercaEnt = Math.sqrt(m[0] * m[0] + m[1] * m[1]) <= 60; }
+    var now = Date.now(), e = estado(S.dias, now), margen = Number(GF.cfg && GF.cfg.margen) || 40;
+    if (best > margen) GF.bloqIn = false;
+    if (e.st !== "open"){
+      GF.fuera = [];
+      if ((dentro || cercaEnt) && acc <= 60 && !GF.bloqIn && now > GF.snooze && now - GF.ult > 30 * 60000) gfAccion("in");
+    } else if (best > margen + Math.min(acc, 50)){
+      GF.fuera.push(now); GF.fuera = GF.fuera.filter(function(t){ return now - t < 10 * 60000; });
+      if (GF.fuera.length >= 2 && now - GF.fuera[0] >= 60000 && now > GF.snooze) gfAccion("out");
+    } else GF.fuera = [];
+  }
+  async function gfAccion(tipo){
+    if (GF.busy) return; GF.busy = true;
+    try {
+      if (GF.cfg && GF.cfg.modo === "auto"){ GF.ult = Date.now(); await marcar(tipo, false, "ubicacion"); }
+      else await gfPregunta(tipo);
+    } finally { GF.busy = false; }
+  }
+  function gfSheet(){
+    if (GF.sh) return GF.sh;
+    var sh = el("div", "sheet"); sh.hidden = true; var bx = el("div", "box"); bx.setAttribute("role", "dialog"); bx.setAttribute("aria-modal", "true");
+    var h = el("h2", null, ""), sb = el("div", "sbody"), p = el("p", "sub", ""), ft = el("div", "sfoot"), ok = el("button", "primary", ""), no = el("button", null, "Ahora no");
+    sb.appendChild(p); ft.appendChild(ok); ft.appendChild(no); bx.appendChild(h); bx.appendChild(sb); bx.appendChild(ft); sh.appendChild(bx); document.body.appendChild(sh);
+    GF.sh = { sh: sh, h: h, p: p, ok: ok, no: no }; return GF.sh;
+  }
+  function gfPregunta(tipo){
+    return new Promise(function(res){
+      var s = gfSheet(), hh = fmtH.format(new Date());
+      s.h.textContent = tipo === "in" ? "Estás en el campo" : "Parece que ya saliste del campo";
+      s.p.textContent = tipo === "in" ? "No marcaste tu llegada. ¿La registramos ahora (" + hh + ")? Si llegaste antes, corrígela después en «Mi semana»." : "Sigues con la jornada abierta. ¿Registramos tu salida ahora (" + hh + ")? Si saliste antes, corrígela después en «Mi semana».";
+      s.ok.textContent = tipo === "in" ? "Sí, registrar llegada" : "Sí, registrar salida"; s.sh.hidden = false;
+      function fin(){ s.sh.hidden = true; s.ok.onclick = s.no.onclick = null; res(); }
+      s.ok.onclick = async function(){ s.ok.disabled = true; GF.ult = Date.now(); await marcar(tipo, false, "ubicacion"); s.ok.disabled = false; fin(); };
+      s.no.onclick = function(){ GF.snooze = Date.now() + 2 * 3600000; fin(); };
+    });
+  }
+  function gfOptIn(){
+    GF.preg = true; var s = gfSheet();
+    s.h.textContent = "¿Marcar llegada y salida con tu ubicación?";
+    s.p.textContent = "Si olvidas marcar, la app lo detecta al estar dentro o fuera del campo y te lo propone. Solo mira tu ubicación con la app abierta y no guarda dónde estás: solo queda anotado que se detectó por ubicación. Tu teléfono te pedirá permiso.";
+    s.ok.textContent = "Permitir"; s.no.textContent = "No, gracias"; s.sh.hidden = false;
+    function fin(v){ try { localStorage.setItem("campo_gf", v); } catch (e){} s.sh.hidden = true; s.ok.onclick = s.no.onclick = null; s.no.textContent = "Ahora no"; if (v === "si") gfArranca(); }
+    s.ok.onclick = function(){ fin("si"); }; s.no.onclick = function(){ fin("no"); };
+  }
+  function gfParar(){ if (GF.wid != null){ try { navigator.geolocation.clearWatch(GF.wid); } catch (e){} GF.wid = null; } }
+  function gfArranca(){
+    if (!GF.cfg || !GF.polys.length || !S.uid || window.__DEMO || !navigator.geolocation) return;
+    var v = gfLs();
+    if (v == null){ if (!GF.preg && !document.hidden) setTimeout(function(){ if (gfLs() == null) gfOptIn(); }, 1500); return; }
+    if (v !== "si" || document.hidden || GF.wid != null) return;
+    var t0 = 0;
+    GF.wid = navigator.geolocation.watchPosition(function(p){ var n = Date.now(); if (n - t0 < 20000) return; t0 = n; gfEval(p.coords.latitude, p.coords.longitude, p.coords.accuracy || 999); },
+      function(er){ if (er && er.code === 1){ try { localStorage.setItem("campo_gf", "no"); } catch (e){} gfParar(); toast("Sin permiso de ubicación: se desactivó la detección automática."); } },
+      { enableHighAccuracy: true, maximumAge: 15000, timeout: 30000 });
+  }
+  document.addEventListener("visibilitychange", function(){ if (document.hidden) gfParar(); else gfArranca(); });
+  window.__gf = { cfg: gfCfgSet, eval: gfEval, leer: gfLeeArchivo, st: function(){ return { polys: GF.polys.length, ent: GF.ent }; } };
+
+  /* Lectura de KMZ/KML en el teléfono: perímetro (polígonos) y entrada (punto) */
+  async function gfLeeArchivo(f){
+    var buf = await f.arrayBuffer(), txt;
+    if (/\.kml$/i.test(f.name)) txt = new TextDecoder().decode(buf);
+    else {
+      var dv = new DataView(buf), u8 = new Uint8Array(buf), eo = -1;
+      for (var i = buf.byteLength - 22; i >= 0; i--){ if (dv.getUint32(i, true) === 0x06054b50){ eo = i; break; } }
+      if (eo < 0) throw new Error("zip");
+      var n = dv.getUint16(eo + 10, true), p = dv.getUint32(eo + 16, true);
+      for (var k = 0; k < n; k++){
+        var met = dv.getUint16(p + 10, true), cs = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true);
+        var nom = new TextDecoder().decode(u8.slice(p + 46, p + 46 + nl)); p += 46 + nl + xl + cl;
+        if (!/\.kml$/i.test(nom)) continue;
+        var ds = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true), dat = u8.slice(ds, ds + cs);
+        if (met === 0) txt = new TextDecoder().decode(dat);
+        else { var st = new Blob([dat]).stream().pipeThrough(new DecompressionStream("deflate-raw")); txt = new TextDecoder().decode(await new Response(st).arrayBuffer()); }
+        break;
+      }
+      if (txt == null) throw new Error("kml");
+    }
+    var doc = new DOMParser().parseFromString(txt, "text/xml"), out = { poligonos: [], entrada: null, entradaPoly: null };
+    Array.prototype.forEach.call(doc.getElementsByTagName("Placemark"), function(pm){
+      var pg = pm.getElementsByTagName("Polygon")[0], pt = pm.getElementsByTagName("Point")[0];
+      if (pg){ var c = pg.getElementsByTagName("coordinates")[0]; if (c){ var q = c.textContent.trim().split(/\s+/).map(function(s){ var a = s.split(",").map(Number); return a[1] + "," + a[0]; }); if (q.length > 3 && q[0] === q[q.length - 1]) q.pop(); if (q.length >= 3){ var nm = pm.getElementsByTagName("name")[0]; if (nm && /ingreso|entrada/i.test(nm.textContent)) out.entradaPoly = q.join(" "); else out.poligonos.push(q.join(" ")); } } }
+      else if (pt){ var c2 = pt.getElementsByTagName("coordinates")[0]; if (c2){ var a2 = c2.textContent.trim().split(",").map(Number); if (isFinite(a2[0]) && isFinite(a2[1])) out.entrada = { lat: a2[1], lng: a2[0] }; } }
+    });
+    return out;
+  }
+  async function gfCarga(files){
+    var pol = [], ent = null, entP = null;
+    try { for (var i = 0; i < files.length; i++){ var r = await gfLeeArchivo(files[i]); pol = pol.concat(r.poligonos); if (r.entrada) ent = r.entrada; if (r.entradaPoly) entP = r.entradaPoly; } }
+    catch (e){ toast("No pude leer el archivo. Usa un KMZ o KML exportado de Google Earth."); return; }
+    if (!pol.length && !ent && !entP){ toast("El archivo no trae polígonos ni un punto de entrada."); return; }
+    var d = { por: S.nombre, ts: new Date().toISOString() }; if (pol.length) d.poligonos = pol; if (ent) d.entrada = ent; if (entP) d.entradaPoly = entP; if (!GF.cfg) d.modo = "preguntar";
+    try { await pfUp("config/perimetro", d); toast((pol.length ? pol.length + " polígono(s) cargado(s). " : "") + (ent || entP ? "Entrada cargada." : "")); } catch (e2){ toast("No se pudo guardar. Revisa tu señal e intenta de nuevo."); }
+  }
+  function gfAjustes(ay){
+    ay.appendChild(el("p", "ajs-t", "Llegada y salida por ubicación"));
+    var c = GF.cfg;
+    ay.appendChild(el("p", "note", c && GF.polys.length ? "Perímetro cargado: " + GF.polys.length + " polígono(s)" + (GF.ent || GF.entP ? " y entrada marcada." : ". Sin entrada: opcional, mejora la detección al llegar.") : "Aún no hay perímetro. Carga los KMZ de las parcelas (y, si quieres, un KMZ con un punto en la entrada)."));
+    var inp = document.createElement("input"); inp.type = "file"; inp.accept = ".kmz,.kml"; inp.multiple = true; inp.hidden = true; inp.onchange = function(){ if (inp.files.length) gfCarga(inp.files); inp.value = ""; };
+    var bl = el("button", null, c ? "Cargar o cambiar KMZ (perímetro / entrada)" : "Cargar KMZ del perímetro"); bl.type = "button"; bl.onclick = function(){ inp.click(); }; ay.appendChild(bl); ay.appendChild(inp);
+    if (c){
+      var bm = el("button", null, "Modo: " + (c.modo === "auto" ? "automático (marca solo)" : "preguntar antes de marcar") + " · cambiar"); bm.type = "button";
+      bm.onclick = async function(){ try { await pfUp("config/perimetro", { modo: c.modo === "auto" ? "preguntar" : "auto" }); } catch (e){ toast("No se pudo guardar."); } }; ay.appendChild(bm);
+    }
+    var on = gfLs() === "si", bo = el("button", null, on ? "Mi ubicación: activada · desactivar" : "Activar en mi teléfono"); bo.type = "button";
+    bo.onclick = function(){ try { localStorage.setItem("campo_gf", on ? "no" : "si"); } catch (e){} if (on) gfParar(); else gfArranca(); render(); }; ay.appendChild(bo);
+    ay.appendChild(el("p", "note", "Solo funciona con la app abierta. No guarda dónde está cada persona."));
   }
 
   var pending = null;
@@ -2443,7 +2581,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 81;
+  var GUIA_V = 82;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2466,6 +2604,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
+    ["Llegada y salida por ubicación", "Si activas la ubicación en tu teléfono, al abrir la app dentro del campo sin haber marcado llegada te pregunta «¿Registrar llegada?», y si ya saliste con la jornada abierta te pregunta por la salida. Diego puede dejarlo en «preguntar» o en «automático». Solo funciona con la app abierta, no guarda dónde estás (solo queda anotado «por ubicación») y la hora es la del momento en que se detecta: si fue antes, corrígela en «Mi semana»."],
     ["Riego: avance y control", "En «Panel» está la tarjeta «Riego: avance y control». «Esta semana» se actualiza sola con los riegos: muestra por sector lo ya registrado, lo que está corriendo ahora y lo que queda programado hasta el domingo, frente al objetivo de la semana, y te dice cuántas horas faltan si no alcanza. Si un riego de hoy ya terminó y no está registrado, avisa que falta registrarlo. «Semana a semana» deja el control de las últimas 8 semanas: horas regadas frente a lo que pedía la evapotranspiración (nogales) y el programa del asesor (limones).", 81, ""],
     ["Perfiles de cada persona", "En «Trabajadores», solo para Diego, la tarjeta «Perfiles» muestra a cada persona una sola vez: su cuenta (con la que marca su llegada, comprobada por su email) y su ficha de Personal. Ahí puedes ponerle un apodo (por ejemplo «Yoli»), enlazar la ficha a la cuenta por email marcarla como «Registrada» (revisada y parte del campo) o dejarla en «No registradas» (externos y pruebas, que puedes quitar), y quitar una ficha repetida. La ficha de Personal también tiene los campos Apodo y Email. Cada persona completa sus datos (teléfono, contacto de emergencia) en una ventana que le pides desde ahí: solo ella y tú los ven. Su fecha de cumpleaños la ve el equipo: unos días antes, a todos menos a ella les aparece un aviso.", 80, "owner"],
     ["Cancelar o reprogramar riegos", "Si el riego se atrasó o cambió de orden: en «Riego», en «Riegos programados», toca el día y luego «Cambiar horario y orden». Pon la hora en que parte el primero (o los atajos «Ahora», «+15 min», «+30 min», «+1 h»), arrastra los sectores por el asa de la izquierda (o usa las flechas) y los horarios se recalculan solos, uno tras otro. Elige el motivo y toca «Guardar horario». Si el riego no se dio (corte de luz, falla de la bomba, línea rota, lluvia): en el mismo día toca «No se pudo regar (corte, falla)…», o ese botón de la pregunta «¿Partió el riego?». Marca los riegos que no se dieron, elige el motivo, cuenta qué pasó (mínimo 10 letras) y toca «Anular los riegos marcados»: se anulan todos de una vez y quedan guardados con tu nombre. Diego puede elegir «Anular y volver a programarlos»: pone la hora en que parte el primero y la app crea riegos nuevos para hoy, en el mismo orden y con las mismas horas, uno tras otro. Yolanda envía la solicitud y Diego la aprueba. Un riego solo de agua puede seguir de noche hasta la madrugada: si el programa pasa de medianoche, Inicio y Riego dan un «Aviso» informativo con las horas. Un riego con fertilización debe estar supervisado: si queda más allá de medianoche, Inicio y Riego dan la alerta «El riego X no cabe hoy» con el detalle y una propuesta (poner primero los riegos con fertilización, pasar el que falte a mañana, o superponer el limón con un nogal; juntos caben en la bomba según el diseño, revisa el manómetro). Se aplica con un toque. Para un solo riego, tócalo en la línea de tiempo y elige cambiarlo o quitarlo.", 79, "manager"],
@@ -2554,6 +2693,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás.", g: "Llegada y salida por ubicación" },
     { v: 81, f: "2026-11-18", t: "Riego: avance y control", d: "Nueva tarjeta en el Panel: avance de la semana en vivo (registrado, en curso y programado frente al objetivo) y control semana a semana de las últimas 8 semanas.", g: "Riego: avance y control" },
     { v: 80, f: "2026-11-18", t: "Perfiles de cada persona", d: "Una sola cuenta y ficha por persona: se enlazan por email, la asistencia se comprueba con él y se puede poner un apodo (ej. «Yoli»). En Trabajadores → Perfiles.", g: "Perfiles de cada persona" },
     { v: 79, f: "2026-11-18", t: "Aviso «el riego no cabe hoy»", d: "Si el programa pasa de medianoche, un riego solo de agua da un «Aviso» informativo (puede regar de noche). Si un riego con fertilización (que debe estar supervisado) queda más allá de medianoche, Inicio y Riego avisan «El riego X no cabe hoy» con el detalle: a qué hora parte y termina, cuánto no cabe, cuántas horas de riego hay pendientes, cuánto queda hasta medianoche y a qué hora tendría que partir todo para que quepa. También lo advierte «Cambiar horario y orden» mientras acomodas el orden. Además propone una solución que se aplica con un toque: poner primero los riegos con fertilización, pasar el que falte a mañana o superponer el limón con un nogal.", g: "Cancelar o reprogramar riegos" },
@@ -3997,6 +4137,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ay.appendChild(el("p", "ajs-t", "Ayuda"));
     var bg = el("button", null, "Ver la guía de uso"); bg.onclick = function(){ abrirGuia(true); }; ay.appendChild(bg);
     var bnv = el("button", null, "Novedades de la app"); bnv.onclick = function(){ abrirNovedades(true); }; ay.appendChild(bnv);
+    if (S.owner && !window.__DEMO) gfAjustes(ay);
     ay.appendChild(el("p", "ajs-t", "Compartir"));
     function compartir(titulo, texto, url){
       if (navigator.share){ navigator.share({ title: titulo, text: texto, url: url }).catch(function(){}); return; }
@@ -11630,7 +11771,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     return sec;
   }
   function render(){
-    dtRevisa();
+    dtRevisa(); gfArranca();
     try { if ($("pfSheet") && !$("pfSheet").hidden && !(document.activeElement && document.activeElement.tagName === "INPUT" && $("pfSheet").contains(document.activeElement))) pfRender(); } catch (e0){}
     pcSync();
     var scrOk = !!(S.db && S.uid && S.nombre), SCR = { riego: "riego", acum: "riego", medidores: "riego", campo: "campo", arboles: "campo", sectores: "campo", aplic: "aplic", trabajo: "trabajo", agenda: "agenda", cosecha: "cosecha", personal: "equipo", permisos: "equipo", horarios: "equipo", terceros: "equipo", legal: "gris", ajustes: "gris" };
@@ -11750,6 +11891,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     }, function(){});
     db.collection("nivelAcum").orderBy("fecha", "desc").limit(300).onSnapshot(function(s){ S.nivel = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
     db.collection("pozoEventos").orderBy("fecha", "desc").limit(300).onSnapshot(function(s){ S.pozoEv = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); render(); }, function(){});
+    db.doc("config/perimetro").onSnapshot(function(s){ gfCfgSet(s.exists ? s.data() : null); if (S.screen === "ajustes") render(); }, function(){});
     db.doc("config/acumulador").onSnapshot(function(s){ S.acumCfg = s.exists ? s.data() : {}; render(); }, function(){});
     db.collection("cuarteles").onSnapshot(function(s){
       var todos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); S.cuartelesOff = todos.filter(function(c){ return c.apagado; }); S.cuarteles = todos.filter(function(c){ return !c.apagado; }); render();

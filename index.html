@@ -3055,6 +3055,16 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (!sc[2].length) b.appendChild(el("p", "note", "Ninguna."));
       sc[2].forEach(function(gr){ pfFila(b, gr, sc[3]); });
     });
+    var qs = Object.keys(S.eqQuit || {}).map(function(k){ return S.eqQuit[k]; }).filter(function(c){ return !q || norm((c.nombre || "") + " " + (c.email || "")).indexOf(q) >= 0; });
+    if (qs.length){
+      var hq = el("h3", null, "Quitadas (" + qs.length + ")"); hq.style.margin = "16px 0 2px"; b.appendChild(hq); b.appendChild(el("p", "note", "Perfiles quitados. Conservan sus registros de llegada y se pueden restaurar."));
+      qs.forEach(function(c){
+        var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, c.nombre || "Sin nombre")); bx.appendChild(w);
+        bx.appendChild(el("p", "sub", "Cuenta: " + (c.email || "sin email")));
+        var rb = el("button", "primary", "Restaurar perfil"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ quitada: false }, { merge: true }); toast("Perfil restaurado"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
+        bx.appendChild(rb); b.appendChild(bx);
+      });
+    }
   }
   function pfFila(b, gr, esReg){
     {
@@ -3093,8 +3103,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     toast(v ? "Marcada como registrada" : "Pasó a no registradas");
   }
   async function pfQuitaCuenta(cuentas){
-    for (var k = 0; k < cuentas.length; k++){ try { await S.db.doc("equipo/" + cuentas[k].id).delete(); delete S.team[cuentas[k].id]; } catch (e){ toast("No se pudo quitar el perfil."); return; } }
-    pfReset(); render(); toast("Perfil quitado. Los registros de llegada no se borran.");
+    for (var k = 0; k < cuentas.length; k++){ try { await S.db.doc("equipo/" + cuentas[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true }); S.eqQuit = S.eqQuit || {}; S.eqQuit[cuentas[k].id] = Object.assign({}, S.team[cuentas[k].id], { id: cuentas[k].id }); delete S.team[cuentas[k].id]; } catch (e){ toast("No se pudo quitar el perfil."); return; } }
+    pfReset(); render(); toast("Perfil quitado (se puede restaurar abajo, en «Quitadas»).");
   }
   function pfAbre(){ if (!S.owner) return; $("pfQ").value = ""; pfRender(); $("pfSheet").hidden = false; }
   $("pfQ").oninput = pfRender; $("pfCerrar").onclick = function(){ $("pfSheet").hidden = true; };
@@ -11590,8 +11600,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     }
     if (S.manager){
       db.collection("equipo").onSnapshot(function(s){
+        S.eqQuit = S.eqQuit || {};
         s.docs.forEach(function(d){
-          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; t.oficial = !!d.data().oficial; pfReset();
+          var id = d.id; if (d.data().quitada){ S.eqQuit[id] = Object.assign({}, d.data(), { id: id }); delete S.team[id]; pfReset(); return; } delete S.eqQuit[id]; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; t.oficial = !!d.data().oficial; pfReset();
           if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(S.owner ? 70 : 14).onSnapshot(function(q){
             t.dias = q.docs.map(function(x){ return x.data(); }); render();
           }, function(){});

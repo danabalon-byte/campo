@@ -2384,7 +2384,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 75;
+  var GUIA_V = 76;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2492,6 +2492,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 76, f: "2026-11-18", t: "Fotos de la bomba inyectora", d: "En «Riego», al abrir «Ver el plano y los equipos», aparece la bomba inyectora de fertilización con los datos de su placa y siete fotos: instalada, placas y caja de bornes.", g: "Equipos y plano de riego" },
     { v: 75, f: "2026-11-18", t: "Adeudados y debidos", d: "En «No llegó hoy» hay una nueva opción, «Adeudados», con botones al estilo de las pestañas de Agenda. En Trabajadores, la tarjeta «Adeudados» (solo tú) cuenta los días que te adeuda cada persona y, en «Debidos», los días que tú pediste (aseo, visitas al campo) con jornada y fechas desde–hasta.", g: "Adeudados y debidos" },
     { v: 74, f: "2026-11-18", t: "«No llegó hoy»: control de ausencias", d: "Nuevo botón «No llegó hoy» (solo dueño): marca si avisó o no, la justificación y si descuenta de los días que le quedan, con el conteo del año. Cada persona puede tener días y hora de ingreso fijos; Yolanda viene de lunes a viernes a las 08:00. Si no marca su llegada, Inicio te pregunta si no llegó.", g: "No llegó hoy" },
     { v: 73, f: "2026-11-18", t: "Riegos programados arriba, con horario y orden editables", d: "En Riego, «Riegos programados» queda primero. La encargada puede tocar «Cambiar horario y orden»: pone la hora real de partida (o +15 min, +30 min, +1 h, Ahora) y arrastra los sectores para cambiar el orden; los horarios se recalculan solos. Si el primer riego del día ya debería estar corriendo, la app pregunta si partió o se atrasó. Queda anotado «antes HH:MM» y el motivo.", g: "Cambiar horario y orden" },
@@ -7249,6 +7250,21 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   var EQ_OK = ["Marco de plantación de los limones: 6 m entre hileras × 3 m sobre la hilera (confirmado por Diego el 17 nov).", "Emisores de nogales: 3 líneas por hilera; limones: 2 líneas por hilera (confirmado por Diego el 17 nov); gotero autocompensado de 2,2 L/h cada 50 cm (confirmado en terreno).", "Limones plantados: se cuentan con el número de árboles de la ficha de cada sector (Campo → Editar sector).", "Tarifa eléctrica: sacada de las cuentas de CGE (solo la ve el dueño).", "Año del derecho de agua: del 1 de enero al 31 de diciembre.", "Riego de limones: 1,5 h todos los días menos el domingo (asesor), de 9:00 a 10:30."];
   var EQ_KWH_POZO = 0.42, EQ_KWH_REG = 0.28, EQ_TARIFA0 = 268;
   var eqAbre = false;
+  /* Bomba inyectora de fertilización (Calpeda MXH 205/B): placa leída de la foto y fotos guardadas en equipos/bomba-inyectora/. */
+  var EQ_FOTOS = [["5-instalada-lateral", "Instalada, vista lateral"], ["6-instalada-superior-1", "Instalada, desde arriba"], ["7-instalada-superior-2", "Instalada, desde arriba (otra toma)"], ["4-placa", "Placas de la bomba y del motor"], ["1-caja-bornes-general", "Caja de bornes del motor, vista general"], ["2-caja-bornes-detalle-1", "Caja de bornes, detalle"], ["3-caja-bornes-detalle-2", "Caja de bornes, detalle (otra toma)"]];
+  function eqBomba(){
+    var b = el("div", "asg"); b.appendChild(el("b", null, "Bomba inyectora de fertilización"));
+    b.appendChild(el("p", "sub", "Calpeda MXH 205/B · 0,75 kW (1 HP) · 2800 rpm · caudal 1 a 4,8 m³/h · altura 53,5 a 19 m · motor 230 Δ / 400 Y V trifásico 50 Hz, 3,5 / 2 A · IP 54 · 12,8 kg. Leído de la foto de la placa; revisa contra la bomba."));
+    b.appendChild(el("p", "note", "Fotos del 18 nov 2026 con la caja de bornes abierta, antes de llevarla al técnico. Toca una foto para verla grande."));
+    var g = el("div", null); g.style.cssText = "display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px";
+    EQ_FOTOS.forEach(function(f){
+      var a = el("a"); a.href = "equipos/bomba-inyectora/" + f[0] + ".jpg"; a.target = "_blank"; a.rel = "noopener"; a.style.cssText = "display:block;text-decoration:none;color:inherit";
+      var im = el("img"); im.src = a.href; im.alt = f[1]; im.loading = "lazy"; im.style.cssText = "width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;display:block";
+      a.appendChild(im); a.appendChild(el("span", "note", f[1])); g.appendChild(a);
+    });
+    b.appendChild(g);
+    return b;
+  }
   function eqNodo(){
     var sec = el("section", "card sect"); sec.id = "eqPlano";
     var hd = el("div", "rv-head"); hd.appendChild(el("h2", null, "Equipos y plano de riego"));
@@ -7282,6 +7298,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
      (function(){ var n = frPlantas(), m3h = n * 26.4 / 1000; return "Limones (6 × 3 m): 26,4 L/h por árbol (2 líneas × 6 goteros de 2,2 L/h). Con " + n + " árboles piden unos " + nf(m3h, 1) + " m³/h (" + nf(m3h * 1000 / 60, 0) + " L/min), unos " + nf(m3h * 1.5, 1) + " m³ en 1,5 h. Es un cálculo con los goteros, no una medición: compáralo con el caudal que entrega el pozo."; })(),
      (function(){ var m3h = frPlantas() * 26.4 / 1000; return "Nogal (un sector de 0,65 ha) y limones a la vez: unos " + nf(14.3 + m3h, 1) + " m³/h (" + nf((14.3 + m3h) * 1000 / 60, 0) + " L/min)."; })()].forEach(function(t){ q.appendChild(el("p", "sub", "• " + t)); });
     sec.appendChild(q);
+    sec.appendChild(eqBomba());
     var LP = medLect("m_pozo"), anio = fecha().slice(0, 4), ini = anio + "-01-01", ref = null;
     LP.forEach(function(l){ if (l.fecha <= ini) ref = l; });
     var primeraAnio = LP.filter(function(l){ return l.fecha >= ini; })[0], base = ref || primeraAnio, ultL = LP[LP.length - 1];

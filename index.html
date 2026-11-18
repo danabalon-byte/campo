@@ -4081,6 +4081,13 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var hoy = fecha(), out = [], vistos = {};
     asignaciones().forEach(function(a){ var k = String(a.nombre || "").toLowerCase(); vistos[k] = 1; out.push({ nombre: a.nombre, est: a.hs ? "out" : a.hi ? "on" : "wait", sub: a.hs ? "Salió " + hora(a.hs) : a.hi ? "Desde " + hora(a.hi) : "Por llegar" }); });
     (S.agendados || []).forEach(function(a){ var k = String(a.nombre || "").toLowerCase(); if (a.desde <= hoy && a.hasta >= hoy && !vistos[k]){ vistos[k] = 1; out.push({ nombre: a.nombre, est: "wait", sub: "Agendado" }); } });
+    /* Quien marcó su llegada hoy está en el campo aunque no esté en la lista de «Quién trabaja hoy»: la asistencia manda. */
+    Object.keys(S.team).forEach(function(id){
+      var t = S.team[id], d = (t.dias || []).filter(function(x){ return x.fecha === hoy; })[0]; if (!d || !d.tramos || !d.tramos.length) return;
+      var nom = t.apodo || t.nombre || "Sin nombre", tr = d.tramos, ult = tr[tr.length - 1], abierto = !ult.salida, est = abierto ? "on" : "out", sub = abierto ? "Desde " + hora(tr[0].entrada) : "Salió " + hora(ult.salida);
+      var ex = out.filter(function(g){ return mismaPersona(g.nombre, t.nombre || nom) || mismaPersona(g.nombre, nom); })[0];
+      if (ex){ if (ex.est === "wait"){ ex.est = est; ex.sub = sub; } } else out.push({ nombre: nom, est: est, sub: sub });
+    });
     return out;
   }
   /* ---- Bienvenida con animación y «¡Esto tenemos para hoy!» (Inicio) ---- */
@@ -5122,7 +5129,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   function pnCuerpoEquipo(b){
     var gente = ecGente(), now = Date.now(), hs = {};
-    Object.keys(S.team).forEach(function(id){ var mm = S.team[id]; hs[String(mm.nombre || "").toLowerCase()] = semana(mm.dias, now).total; });
+    Object.keys(S.team).forEach(function(id){ var mm = S.team[id], tt = semana(mm.dias, now).total; hs[String(mm.nombre || "").toLowerCase()] = tt; if (mm.apodo) hs[String(mm.apodo).toLowerCase()] = tt; });
     hs[String(S.nombre || "").toLowerCase()] = semana(S.dias, now).total;
     if (!gente.length){ b.appendChild(el("p", "note", "Nadie en el campo todavía.")); }
     gente.forEach(function(g){

@@ -2402,7 +2402,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 78;
+  var GUIA_V = 79;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2425,7 +2425,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
-    ["Cancelar o reprogramar riegos", "Si el riego se atrasó o cambió de orden: en «Riego», en «Riegos programados», toca el día y luego «Cambiar horario y orden». Pon la hora en que parte el primero (o los atajos «Ahora», «+15 min», «+30 min», «+1 h»), arrastra los sectores por el asa de la izquierda (o usa las flechas) y los horarios se recalculan solos, uno tras otro. Elige el motivo y toca «Guardar horario». Si el riego no se dio (corte de luz, falla de la bomba, línea rota, lluvia): en el mismo día toca «No se pudo regar (corte, falla)…», o ese botón de la pregunta «¿Partió el riego?». Marca los riegos que no se dieron, elige el motivo, cuenta qué pasó (mínimo 10 letras) y toca «Anular los riegos marcados»: se anulan todos de una vez y quedan guardados con tu nombre. Diego puede elegir «Anular y volver a programarlos»: pone la hora en que parte el primero y la app crea riegos nuevos para hoy, en el mismo orden y con las mismas horas, uno tras otro. Yolanda envía la solicitud y Diego la aprueba. Para un solo riego, tócalo en la línea de tiempo y elige cambiarlo o quitarlo.", 77, "manager"],
+    ["Cancelar o reprogramar riegos", "Si el riego se atrasó o cambió de orden: en «Riego», en «Riegos programados», toca el día y luego «Cambiar horario y orden». Pon la hora en que parte el primero (o los atajos «Ahora», «+15 min», «+30 min», «+1 h»), arrastra los sectores por el asa de la izquierda (o usa las flechas) y los horarios se recalculan solos, uno tras otro. Elige el motivo y toca «Guardar horario». Si el riego no se dio (corte de luz, falla de la bomba, línea rota, lluvia): en el mismo día toca «No se pudo regar (corte, falla)…», o ese botón de la pregunta «¿Partió el riego?». Marca los riegos que no se dieron, elige el motivo, cuenta qué pasó (mínimo 10 letras) y toca «Anular los riegos marcados»: se anulan todos de una vez y quedan guardados con tu nombre. Diego puede elegir «Anular y volver a programarlos»: pone la hora en que parte el primero y la app crea riegos nuevos para hoy, en el mismo orden y con las mismas horas, uno tras otro. Yolanda envía la solicitud y Diego la aprueba. Si los riegos de hoy no caben antes de medianoche, Inicio y Riego avisan «El riego X no cabe hoy» con el detalle y una propuesta: pasar a mañana lo mínimo necesario o superponer el limón con un nogal (juntos caben en la bomba según el diseño; revisa el manómetro). Se aplica con un toque. Para un solo riego, tócalo en la línea de tiempo y elige cambiarlo o quitarlo.", 79, "manager"],
     ["Sectores en el plano", "En «Campo», bajo «Superficie plantada», está «Sectores en el plano»: el dibujo del campo con los nogales (sectores 1 al 4, cada uno con su lado norte y sur), La Rinconada, los limones (el 1 al oeste, junto al vivero, y el 6 al este), el vivero, V-Huerto y el acumulador. Toca un sector para ver su ficha. Con «Ocultar nombres» o «Mostrar nombres» eliges si ves las etiquetas (cada persona en su teléfono). Yolanda ve solo los sectores en uso. Diego, en un sector sin enlazar, elige el de la app con «Enlazar con este sector» (o «Crear un sector nuevo»); los apagados salen en gris y los prende con «Encender este sector», y con «Apagar este sector» deja de usarse sin perder su historial. «Ver árboles» abre el árbol por árbol del sector.", 41, ""],
     ["Fichas por especie", "En «Campo», en «Sectores en el plano», toca un sector de vivero (Vivero, V-Huerto, Vivero B): el plano se amplía para elegir bien y luego vuelve. Debajo ves «Especies»: cada una tiene una sola ficha, aunque tenga muchas plantas. Toca una especie para abrir su ficha justo debajo: hasta 3 fotos con «＋ Foto», el estado, las plantas aproximadas, la fecha de siembra y notas, y «Guardar ficha». Con «Nuevo registro» anotas qué ves, con foto si quieres. «Agregar especie» crea una especie nueva. Si un sector no tiene especies, aparece «Sin descripción» y la pregunta «¿Qué hay en este sector?»: con «Subir plano de plantación» o «Aún no hay plantación» lo dejas anotado.", 42, ""],
     ["En el campo ahora", "En «Inicio», bajo las alertas, la tarjeta «En el campo ahora» muestra con iniciales a quienes trabajan hoy: punto verde si ya llegó, color claro si falta por llegar (o está agendado) y tenue si ya salió. Mantén el dedo sobre una inicial para ver el nombre. Abajo dice cuántas personas hay en el campo. «Ver detalle» abre «Trabajadores». Sale de «Quién trabaja hoy» y de los trabajadores agendados.", 43, "manager"],
@@ -2511,6 +2511,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 79, f: "2026-11-18", t: "Aviso «el riego no cabe hoy»", d: "Si el horario de los riegos de hoy pasa de medianoche, Inicio y Riego avisan «El riego X no cabe hoy» con el detalle: a qué hora parte y termina, cuánto no cabe, cuántas horas de riego hay pendientes, cuánto queda hasta medianoche y a qué hora tendría que partir todo para que quepa. También lo advierte «Cambiar horario y orden» mientras acomodas el orden. Además propone una solución que se aplica con un toque: pasar a mañana lo mínimo necesario o superponer el limón con un nogal.", g: "Cancelar o reprogramar riegos" },
     { v: 78, f: "2026-11-18", t: "Riegos que pasan la medianoche", d: "Si el horario reprogramado hace que un riego parta después de las 00:00 (por ejemplo, el limón al final de un día largo), ahora queda al final de la lista, con su hora, y ya no aparece como «regando ahora» ni sube al principio. En el detalle del día se agrupan bajo «Después de medianoche». Tampoco te vuelve a preguntar si partió el riego que acabas de reprogramar.", g: "Cancelar o reprogramar riegos" },
     { v: 77, f: "2026-11-18", t: "No se pudo regar", d: "Cuando se corta la luz o falla la bomba y los riegos del día no se dan, en Riego toca «No se pudo regar (corte, falla)…» en ese día (o en la pregunta «¿Partió el riego?»): marcas los riegos, eliges el motivo, cuentas qué pasó y los anulas todos de una vez. Diego también puede dejarlos programados de nuevo desde la hora que elija. Yolanda envía la solicitud y Diego la aprueba.", g: "Cancelar o reprogramar riegos" },
     { v: 76, f: "2026-11-18", t: "Fotos de la bomba inyectora", d: "En «Riego», al abrir «Ver el plano y los equipos», aparece la bomba inyectora de fertilización con los datos de su placa y siete fotos: instalada, placas y caja de bornes.", g: "Equipos y plano de riego" },
@@ -3711,7 +3712,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     });
     if (S.owner && corrPend().length){ var ncp = corrPend().length; out.push({ sev: 3, titulo: ncp + (ncp === 1 ? " corrección de horario por aprobar" : " correcciones de horario por aprobar"), lineas: [["pm", "Horarios", "las horas cuentan cuando las apruebes"]], acciones: [], ir: function(){ S.screen = "horarios"; render(); } }); }
     (function(){ var e0 = estado(S.dias, Date.now()); if (e0.st === "open" && e0.min >= 600) out.push({ sev: 2, titulo: "Llevas " + dur(e0.min) + " en turno", lineas: [["pm", "Salida", "si ya terminaste, registra tu salida"]], acciones: [{ txt: "Registrar salida", pri: true, aria: "Registrar tu salida", fn: function(){ pedir("out"); } }], ir: function(){ pedir("out"); } }); })();
-    nlAlertas(out);
+    nlAlertas(out); rvCabeAlertas(out);
     if (S.owner) ausPorDefinir().forEach(function(x){
       out.push({ sev: 3, titulo: nf(x.dias, x.dias % 1 ? 1 : 0) + (x.dias === 1 ? " día de ausencia" : " días de ausencia") + " de " + x.nombre + " por definir", lineas: [["pm", "Ausencia", "decide si se descuentan, van con goce o a vacaciones"]], acciones: [], ir: function(){ S.screen = "permisos"; render(); } });
     });
@@ -6871,6 +6872,102 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (S.manager) card.appendChild(el("p", "note", "Toca un riego para cambiarlo o quitarlo."));
     sec.appendChild(card);
   }
+  /* «No cabe hoy»: riegos pendientes de un día que, según el horario, parten o terminan después de medianoche. Devuelve cada uno con sus detalles. */
+  function rvCabe(f){
+    var hoy = fecha(), ahora = rvAhora(), ts = rvTareas().filter(function(t){ return t.fecha === f && t.estado !== "hecha" && t.estado !== "anulada" && rvIni(t) != null && rvFin(t) != null; }).sort(rvOrden);
+    var pasan = ts.filter(function(t){ return rvFin(t) > 1440; }); if (!pasan.length) return [];
+    var ini0 = rvIni(ts[0]), finU = Math.max.apply(null, ts.map(rvFin)), exceso = finU - 1440, ahoraT = f === hoy ? ahora : 0;
+    var tot = 0; ts.forEach(function(t){ tot += Number(t.horas) || 0; });
+    var hasta = 1440 - Math.max(ahoraT, Math.min(ini0, 1440)), nuevo = ini0 - exceso;
+    return pasan.map(function(t){
+      var i = rvIni(t), e = rvFin(t), entero = i >= 1440, no = Math.min(e - Math.max(i, 1440), e - i), l = [];
+      l.push(["pm", "Horario", "parte a las " + minHm(i) + (entero ? " de la madrugada siguiente" : "") + " y termina a las " + minHm(e) + " del día siguiente"]);
+      l.push(["pm", "No cabe", (entero ? "todo el riego (" : "") + dur(Math.round(no)) + (entero ? ")" : " después de medianoche") + " · dura " + rvH(t.horas) + " h"]);
+      l.push(["pm", f === hoy ? "Hoy" : "Ese día", "hay " + rvH(Math.round(tot * 10) / 10) + " h de riego pendiente y " + (hasta > 0 ? "hasta medianoche " + (f === hoy ? "quedan " : "hay ") + dur(hasta) : "ya no queda tiempo hasta medianoche")]);
+      l.push(["pm", "Para que quepa", nuevo >= ahoraT ? "todo el horario tendría que partir a las " + minHm(nuevo) + " (hoy parte a las " + minHm(ini0) + ")" : "ni partiendo ahora alcanza: faltan " + dur(ahoraT - nuevo) + ". Saca un riego de hoy, acorta alguno o pásalo a mañana"]);
+      return { t: t, f: f, lineas: l };
+    });
+  }
+  /* Propuestas para un riego que no cabe: A) pasar a mañana lo mínimo necesario; B) superponer el limón con un nogal (juntos caben en la bomba según el diseño) y, si aún no cabe, pasar a mañana lo que falte. */
+  function rvPropone(f){
+    var hoy = fecha(), ahora = rvAhora(), ts = rvTareas().filter(function(t){ return t.fecha === f && t.estado !== "hecha" && t.estado !== "anulada" && rvIni(t) != null && rvFin(t) != null; }).sort(rvOrden);
+    if (!ts.length || !rvCabe(f).length) return [];
+    var ini0 = rvIni(ts[0]), finU = Math.max.apply(null, ts.map(rvFin)), man = addDays(f, 1);
+    var tm = rvTareas().filter(function(t){ return t.fecha === man && t.estado !== "hecha" && t.estado !== "anulada" && rvIni(t) != null && rvFin(t) != null; });
+    var mIni = tm.length ? Math.min(1380, Math.max.apply(null, tm.map(rvFin))) : 540;
+    var min = function(t){ return Math.round((Number(t.horas) || 0) * 60); };
+    var corre = function(t){ return f === hoy && t === ts[0] && ini0 <= ahora; };
+    var cad = function(lista, s0){ var cur = s0; return lista.map(function(t){ var a = cur; cur += min(t); return { t: t, s: a, e: cur }; }); };
+    var esLim = function(t){ return rvLimon(t) || tareaTodo(t); };
+    function plan(sup){
+      var L = null, N = null, seq = ts.slice(), exc = finU - 1440;
+      if (sup){
+        L = ts.filter(esLim)[0]; if (!L) return null;
+        var cn = ts.filter(function(t){ return !esLim(t) && min(t) >= min(L); }); N = cn[cn.length - 1]; if (!N) return null;
+        seq = ts.filter(function(t){ return t !== L; }); exc -= min(L);
+      }
+      var R = [], rest, rc, guard = 0;
+      for (;;){
+        rest = seq.filter(function(t){ return R.indexOf(t) < 0; }); rc = cad(rest, ini0);
+        var fin0 = rc.length ? rc[rc.length - 1].e : ini0; if (fin0 <= 1440 || ++guard > 12) break;
+        var falta = fin0 - 1440, qui = rest.filter(function(t){ return !corre(t) && t !== N; });
+        var c1 = qui.filter(function(t){ return min(t) >= falta; }).sort(function(a, b){ return min(a) - min(b) || rvIni(b) - rvIni(a); });
+        var pick = c1.length ? c1[0] : qui[qui.length - 1]; if (!pick) return null; R.push(pick);
+      }
+      R.sort(rvOrden);
+      var mc = cad(R, mIni), sol = null;
+      if (sup){ var nn = rc.filter(function(x){ return x.t === N; })[0]; sol = { t: L, s: nn.s, e: nn.s + min(L) }; }
+      var fin = rc.length ? rc[rc.length - 1].e : ini0; if (fin > 1440) return null;
+      return { sup: sup, L: L, N: N, R: R, rc: rc, mc: mc, sol: sol, fin: fin, man: man, mFin: mc.length ? mc[mc.length - 1].e : null };
+    }
+    var out = [], pa = plan(false), pb = plan(true);
+    var nom = function(l){ return l.map(function(t){ return "«" + rvNom(t) + "»"; }).join(" y "); };
+    var hm = function(x){ return minHm(x % 1440); };
+    function arma(p, rec){
+      var tx, det;
+      if (p.sup){
+        tx = "Superponer " + nom([p.L]) + " con " + nom([p.N]) + (p.R.length ? " y pasar " + nom(p.R) + " a mañana" : "");
+        det = "Hoy terminaría a las " + hm(p.fin) + " (" + (1440 - p.fin >= 0 ? "sobran " + dur(1440 - p.fin) : "") + "). " + nom([p.L]) + " va junto con " + nom([p.N]) + " de " + hm(p.sol.s) + " a " + hm(p.sol.e) + (p.R.length ? "; " + nom(p.R) + " va mañana de " + hm(p.mc[0].s) + " a " + hm(p.mFin) : "") + ". Juntos piden unos " + nf(frPlantas() * 26.4 / 1000 + 14.3, 1) + " m³/h; la bomba Reggio daría unos 31 a 32 m, justo para una red que pide 25 a 35 m (sin medir): revisa el manómetro.";
+      } else {
+        tx = "Pasar " + nom(p.R) + " a mañana";
+        det = "Hoy terminaría a las " + hm(p.fin) + " (sobran " + dur(1440 - p.fin) + "), sin riegos simultáneos. " + nom(p.R) + (p.R.length > 1 ? " van" : " va") + " mañana de " + hm(p.mc[0].s) + " a " + hm(p.mFin) + (tm.length ? ", después de lo que ya hay ese día" : "") + ".";
+      }
+      return { txt: tx, det: det, rec: rec, p: p };
+    }
+    if (pa) out.push(arma(pa, !(pb && pb.R.length === 0)));
+    if (pb) out.push(arma(pb, pb.R.length === 0 && !(pa && pa.R.length === 0)));
+    return out;
+  }
+  async function rvAplicaPlan(p, f){
+    var ah = new Date().toISOString(), ups = [], base = { manual: true, reprogramadoPor: S.nombre, reprogramadoTs: ah, motivoCambio: "No cabía hoy" };
+    p.rc.forEach(function(x, k){ var t = x.t; ups.push({ id: t.id, up: Object.assign({ hora: minHm(x.s % 1440), horaFin: minHm(x.e % 1440), finSig: x.e > 1440, iniSig: x.s >= 1440, orden: (k + 1) * 10 }, base, t.horaOrig || !t.hora || t.hora === minHm(x.s % 1440) ? {} : { horaOrig: t.hora }) }); });
+    if (p.sol) ups.push({ id: p.sol.t.id, up: Object.assign({ hora: minHm(p.sol.s % 1440), horaFin: minHm(p.sol.e % 1440), finSig: p.sol.e > 1440, iniSig: p.sol.s >= 1440, superpuestoCon: p.N.id }, base, p.sol.t.horaOrig || !p.sol.t.hora ? {} : { horaOrig: p.sol.t.hora }) });
+    p.mc.forEach(function(x, k){ ups.push({ id: x.t.id, up: Object.assign({ fecha: p.man, hora: minHm(x.s % 1440), horaFin: minHm(x.e % 1440), finSig: x.e > 1440, iniSig: false, orden: (k + 1) * 10 + 500, horaOrig: x.t.horaOrig || x.t.hora || "", pasadoDesde: f }, base) }); });
+    try { for (var i = 0; i < ups.length; i++) await S.db.doc("tareas/" + ups[i].id).update(ups[i].up); toast("Listo: " + (p.sup ? "superpuesto" : "reprogramado") + (p.R.length ? " y " + p.R.length + (p.R.length === 1 ? " riego pasado" : " riegos pasados") + " a mañana." : ".")); }
+    catch (e){ toast("No se pudo guardar todo. Revisa tu señal y mira qué quedó antes de repetir."); }
+  }
+  function rvCabeNodo(sec){
+    if (!S.manager) return; var hoy = fecha();
+    var pr0 = rvPropone(hoy);
+    rvCabe(hoy).forEach(function(x, ix){
+      var bx = el("div", "ro-ask"); bx.setAttribute("role", "group"); bx.setAttribute("aria-label", "El riego no cabe hoy");
+      bx.appendChild(el("b", null, "El riego " + rvNom(x.t) + " no cabe hoy"));
+      x.lineas.forEach(function(l){ bx.appendChild(el("span", null, l[1] + ": " + l[2])); });
+      var pr = ix === 0 ? pr0 : []; if (ix > 0) bx.appendChild(el("span", null, "Ver la propuesta de arriba: resuelve ambos."));
+      pr.forEach(function(q){ var d = el("span", null, "Propuesta" + (q.rec ? " (recomendada)" : "") + ": " + q.txt + ". " + q.det); bx.appendChild(d); });
+      var bs = el("div", "ro-q"); pr.forEach(function(q){ var b = el("button", "small" + (q.rec ? " primary" : ""), q.txt); b.type = "button"; b.onclick = function(){ rvAplicaPlan(q.p, hoy); }; bs.appendChild(b); });
+      var cb = el("button", "small", "Cambiar horario y orden"); cb.type = "button"; cb.onclick = function(){ roAbre(hoy); }; bs.appendChild(cb); bx.appendChild(bs); sec.appendChild(bx);
+    });
+  }
+  function rvCabeAlertas(out){
+    if (!S.manager) return; var hoy = fecha();
+    var pr0 = rvPropone(hoy);
+    rvCabe(hoy).forEach(function(x, ix){
+      var pr = ix === 0 ? pr0 : [];
+      var ac = pr.map(function(q){ return { txt: q.txt, pri: q.rec, aria: q.txt, fn: function(){ rvAplicaPlan(q.p, hoy); } }; });
+      out.push({ sev: 2, titulo: "El riego " + rvNom(x.t) + " no cabe hoy", lineas: x.lineas.concat(pr.map(function(q){ return ["pm", "Propuesta" + (q.rec ? " (recomendada)" : ""), q.txt + ". " + q.det]; })), acciones: ac.concat([{ txt: "Cambiar horario y orden", pri: !ac.length, aria: "Cambiar el horario y el orden de los riegos de hoy", fn: function(){ S.screen = "riego"; render(); roAbre(hoy); } }]), ir: function(){ S.screen = "riego"; render(); } });
+    });
+  }
   function rvNodo(){
     var hoy = fecha(), ts = rvTareas(), pend = ts.filter(function(t){ return t.estado !== "hecha"; });
     var sem = S.rgSem || weekStart(S.rgDia || hoy), fin = addDays(sem, 6);
@@ -6880,7 +6977,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var on = rvVivo(), sw = el("div", "rv-sw"), tx = el("div"); tx.appendChild(el("b", null, "Vista en vivo")); tx.appendChild(el("span", "s", on ? "Agenda del día, se actualiza sola" : "Apagada · tablero y línea de tiempo")); sw.appendChild(tx);
     var tg = el("button", "rv-tg" + (on ? " on" : "")); tg.type = "button"; tg.setAttribute("role", "switch"); tg.setAttribute("aria-checked", on ? "true" : "false"); tg.setAttribute("aria-label", "Vista en vivo"); tg.appendChild(el("em", null, on ? "ON" : "OFF"));
     tg.onclick = function(){ rvVivoSet(!on); rvRepinta(); }; sw.appendChild(tg); sec.appendChild(sw);
-    rvPregunta(sec, pend);
+    rvPregunta(sec, pend); rvCabeNodo(sec);
     if (on) rvVivoVista(sec, pend); else rvTablero(sec, pend, rvRepinta);
     return sec;
   }
@@ -6903,6 +7000,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var tx = "Parte a las " + minHm(ini) + " y termina a las " + minHm(ult.e) + (ult.e > 1440 ? " (día siguiente)" : "") + ".";
     if (d > 0) tx += " Se atrasa " + dur(d) + "."; else if (d < 0) tx += " Se adelanta " + dur(-d) + ".";
     if (ini < RG_INI) tx += " Ojo: el riego programado parte a las 09:00.";
+    var nc = calc.filter(function(x){ return x.e > 1440; }); if (nc.length) tx += " No cabe " + (RO.f === fecha() ? "hoy" : "ese día") + ": " + nc.map(function(x){ return rvNom(x.t) + " (" + (x.s >= 1440 ? "parte" : "termina") + " a las " + minHm(x.s >= 1440 ? x.s : x.e) + " del día siguiente)"; }).join(", ") + ". Puedes guardarlo igual, o adelantar la partida para que quepan.";
     fin.textContent = tx;
   }
   function roFila(t, i, n, x){

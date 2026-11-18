@@ -4369,11 +4369,14 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var fc = rgFactor(), need = v.et0 * fc.f / (RG_TASA * RG_EF), cs = sectoresOrden().filter(function(c){ return c.especie === "Nogal"; });
       var ap = cs.map(function(c){ var h = 0; S.riegos.forEach(function(r){ if (r.sectorId === c.id && r.fecha >= v.ini && r.fecha <= v.fin) h += Number(r.horas) || 0; }); return h; });
       var app = ap.length ? ap.reduce(function(a, b){ return a + b; }, 0) / ap.length : 0;
-      out.push({ n: "Nogales", need: need, done: app, pct: need > 0 ? app / need * 100 : 100, sub: "Del " + fmtD2(v.ini) + " al " + fmtD2(v.fin) + " · evapotranspiración " + nf(v.et0, 1) + " mm" });
+      /* Los riegos de los días posteriores a la ventana (aún sin evapotranspiración medida) no entran en el %, pero se muestran aparte para que se vean. */
+      var pos = cs.map(function(c){ var h = 0; S.riegos.forEach(function(r){ if (r.sectorId === c.id && r.fecha > v.fin && r.fecha <= hy) h += Number(r.horas) || 0; }); return h; });
+      var posP = pos.length ? pos.reduce(function(a, b){ return a + b; }, 0) / pos.length : 0;
+      out.push({ n: "Nogales", need: need, done: app, pct: need > 0 ? app / need * 100 : 100, sub: "Del " + fmtD2(v.ini) + " al " + fmtD2(v.fin) + " · evapotranspiración " + nf(v.et0, 1) + " mm" + (v.fin < hy ? " · " + (posP > 0 ? "después de esa fecha, " + nf(posP, 1) + " h regadas por sector" : "aún sin riegos registrados después de esa fecha") : "") });
     }
     var li = pnLimones();
     if (li.length){
-      var prog = S.tareas.filter(function(t){ return t.tipo === "riego" && li.indexOf(t.sectorId) >= 0 && t.fecha >= ws && t.fecha <= hy; }).length * 1.5;
+      var prog = S.tareas.filter(function(t){ return t.tipo === "riego" && t.estado !== "anulada" && li.indexOf(t.sectorId) >= 0 && t.fecha >= ws && (t.fecha < hy || (t.fecha === hy && rvIni(t) <= rvAhora())); }).length * 1.5;
       var hr = rgHorasSum(S.riegos.filter(function(r){ return li.indexOf(r.sectorId) >= 0 && r.fecha >= ws && r.fecha <= hy; }));
       if (prog > 0) out.push({ n: "Limones", need: prog, done: hr, pct: hr / prog * 100, sub: "Programa del asesor: 1,5 h por día, de lunes a sábado" });
     }

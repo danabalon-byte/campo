@@ -2451,6 +2451,24 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       { enableHighAccuracy: true, maximumAge: 15000, timeout: 30000 });
   }
   document.addEventListener("visibilitychange", function(){ if (document.hidden) gfParar(); else gfArranca(); });
+  /* Fotos con ubicación: solo si la persona activó la ubicación en su teléfono. Se guarda en la foto el punto donde se tomó (lat, lng, precisión en m). */
+  var fotosGeo = {};
+  async function gfGeo(){
+    if (gfLs() !== "si" || !navigator.geolocation || window.__DEMO) return null;
+    return new Promise(function(res){
+      var fin = false; function ok(r){ if (!fin){ fin = true; res(r); } }
+      setTimeout(function(){ ok(null); }, 4500);
+      navigator.geolocation.getCurrentPosition(function(p){ ok({ lat: Math.round(p.coords.latitude * 1e5) / 1e5, lng: Math.round(p.coords.longitude * 1e5) / 1e5, acc: Math.round(p.coords.accuracy || 0) }); }, function(){ ok(null); }, { enableHighAccuracy: true, maximumAge: 60000, timeout: 4000 });
+    });
+  }
+  async function fotoGeoLink(id, parent){
+    try {
+      if (!(id in fotosGeo)){ var sn = await S.db.doc("fotos/" + id).get(); fotosGeo[id] = sn.exists && sn.data().geo ? sn.data().geo : null; }
+      var g = fotosGeo[id]; if (!g || parent.querySelector('a[data-fgeo="' + id + '"]')) return;
+      var a = el("a", "link", "Ver dónde se tomó (mapa)"); a.setAttribute("data-fgeo", id); a.href = "https://www.google.com/maps?q=" + g.lat + "," + g.lng; a.target = "_blank"; a.rel = "noopener"; a.style.display = "block"; a.style.marginTop = "6px";
+      parent.appendChild(a);
+    } catch (e){}
+  }
   window.__gf = { cfg: gfCfgSet, eval: gfEval, leer: gfLeeArchivo, st: function(){ return { polys: GF.polys.length, ent: GF.ent }; } };
 
   /* Lectura de KMZ/KML en el teléfono: perímetro (polígonos) y entrada (punto) */
@@ -2693,7 +2711,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
-    { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás.", g: "Llegada y salida por ubicación" },
+    { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás. Además, las fotos del huerto y de las plantas guardan el punto donde se tomaron (con «Ver dónde se tomó»), si tienes la ubicación activada.", g: "Llegada y salida por ubicación" },
     { v: 81, f: "2026-11-18", t: "Riego: avance y control", d: "Nueva tarjeta en el Panel: avance de la semana en vivo (registrado, en curso y programado frente al objetivo) y control semana a semana de las últimas 8 semanas.", g: "Riego: avance y control" },
     { v: 80, f: "2026-11-18", t: "Perfiles de cada persona", d: "Una sola cuenta y ficha por persona: se enlazan por email, la asistencia se comprueba con él y se puede poner un apodo (ej. «Yoli»). En Trabajadores → Perfiles.", g: "Perfiles de cada persona" },
     { v: 79, f: "2026-11-18", t: "Aviso «el riego no cabe hoy»", d: "Si el programa pasa de medianoche, un riego solo de agua da un «Aviso» informativo (puede regar de noche). Si un riego con fertilización (que debe estar supervisado) queda más allá de medianoche, Inicio y Riego avisan «El riego X no cabe hoy» con el detalle: a qué hora parte y termina, cuánto no cabe, cuántas horas de riego hay pendientes, cuánto queda hasta medianoche y a qué hora tendría que partir todo para que quepa. También lo advierte «Cambiar horario y orden» mientras acomodas el orden. Además propone una solución que se aplica con un toque: poner primero los riegos con fertilización, pasar el que falte a mañana o superponer el limón con un nogal.", g: "Cancelar o reprogramar riegos" },
@@ -5601,7 +5619,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     try {
       var fotoId = "";
       if (arFoto){
-        try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: arFoto, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotoId = fr.id; }
+        try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: arFoto, ts: new Date().toISOString(), uid: S.uid, por: S.nombre, geo: await gfGeo() }); fotoId = fr.id; }
         catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
       }
       await S.db.collection("arboles").add({ fotoId: fotoId, sectorId: cu.id, sector: cu.nombre, hilera: h, arbol: a, estado: $("arEstado").value, texto: $("arTexto").value.trim(), ts: new Date().toISOString(), uid: S.uid, por: S.nombre });
@@ -5636,7 +5654,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
             var d = fotosCache[o.fotoId];
             if (!d){ var sn = await S.db.doc("fotos/" + o.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[o.fotoId] = d; }
             if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; }
-            im.src = d; im.hidden = false; vb.textContent = "Ocultar foto";
+            im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; fotoGeoLink(o.fotoId, box);
           } catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
         };
         box.appendChild(vb); box.appendChild(im);
@@ -5881,7 +5899,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         var d = fotosCache[o.fotoId];
         if (!d){ var sn = await S.db.doc("fotos/" + o.fotoId).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[o.fotoId] = d; }
         if (!d){ vb.textContent = "Ver foto"; toast("La foto no está disponible."); return; }
-        im.src = d; im.hidden = false; vb.textContent = "Ocultar foto";
+        im.src = d; im.hidden = false; vb.textContent = "Ocultar foto"; fotoGeoLink(o.fotoId, w);
       } catch (e3){ vb.textContent = "Ver foto"; toast("No se pudo cargar la foto. Revisa tu señal."); }
     };
     var w = el("div"); w.appendChild(vb); w.appendChild(im); return w;
@@ -6041,7 +6059,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       try {
         var fotoId = "";
         if (st.foto){
-          try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: st.foto, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotoId = fr.id; }
+          try { var fr = S.db.collection("fotos").doc(); await fr.set({ data: st.foto, ts: new Date().toISOString(), uid: S.uid, por: S.nombre, geo: await gfGeo() }); fotoId = fr.id; }
           catch (e2){ toast("No se pudo guardar la foto. Revisa tu señal o quita la foto."); b.disabled = false; return; }
         }
         var flujo = st.estado === "Enfermo" ? st.flujo : (prev && prev.estado === "Enfermo" && prev.flujo !== "Recuperado" ? "Recuperado" : "");
@@ -9812,7 +9830,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function espPlant(c){ return (S.arboles || []).filter(function(o){ return o.id === "plant_" + c.id; })[0] || null; }
   function espBase(c, nombre){ return { kind: "espFicha", sectorId: c.id, sector: c.nombre, especie: nombre }; }
   function espAuto(o){ o.ts = new Date().toISOString(); o.uid = S.uid; o.por = S.nombre; return o; }
-  async function espSubeFoto(file){ var d = await comprimirFoto(file), fr = S.db.collection("fotos").doc(); await fr.set({ data: d, ts: new Date().toISOString(), uid: S.uid, por: S.nombre }); fotosCache[fr.id] = d; return fr.id; }
+  async function espSubeFoto(file){ var d = await comprimirFoto(file), fr = S.db.collection("fotos").doc(); await fr.set({ data: d, ts: new Date().toISOString(), uid: S.uid, por: S.nombre, geo: await gfGeo() }); fotosCache[fr.id] = d; return fr.id; }
   function espImg(id, alt){
     var im = el("img"); im.alt = alt; im.style.cssText = "width:100%; height:78px; object-fit:cover; border-radius:10px; background:var(--surface-2)";
     (async function(){ try { var d = fotosCache[id]; if (!d){ var sn = await S.db.doc("fotos/" + id).get(); d = sn.exists ? sn.data().data : null; if (d) fotosCache[id] = d; } if (d) im.src = d; } catch (e){} })();

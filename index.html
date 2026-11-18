@@ -5759,26 +5759,26 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   $("pcCerrar").onclick = function(){ $("pcSheet").hidden = true; };
   function abrirPct(){ $("pcPct").value = ""; $("pcLitros").value = ""; $("pcUn").value = "L"; $("pcTipo").value = "liq"; $("pcDil").selectedIndex = 0; calcPct(); $("pcSheet").hidden = false; $("pcPct").focus(); }
 
-  /* LABORATORIO (solo dueño): asistente de mezclas por «bombada» (15 L de la bomba de espalda). Solo calcula y muestra: no registra nada ni descuenta bodega. Recetas por concentración, con margen de ±10 %. */
-  var AS_MARGEN = 0.10, AS_BOMBADA = 15;
+  /* LABORATORIO (solo dueño): asistente de mezclas. Se elige la unidad a preparar (bombada de 15 L o tambor de 200 L) y la receta se calcula para UNA unidad. Solo calcula y muestra: no registra nada ni descuenta bodega. Recetas por concentración, con margen de ±10 % (redondeado al entero más cercano). */
+  var AS_MARGEN = 0.10, AS_LITROS = { bombada: 15, tambor: 200 }, AS_UN = { bombada: "Bombada de espalda (15 L)", tambor: "Tambor de 200 L" };
   var AS_RECETAS = [
-    { id: "potenza", nombre: "Potenza Amino (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", tipo: "bomba", prods: [{ nombre: "Potenza Amino", re: /potenza/i, base: "cc", porL: 2.5 }], aviso: "" },
-    { id: "algae", nombre: "Algae Plus (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", tipo: "bomba", prods: [{ nombre: "Algae Plus", re: /algae/i, base: "cc", porL: 2.5 }], aviso: "" },
-    { id: "gli", nombre: "Glifosato + urea (herbicida)", sub: "Solo sobre la hilera de los limones", tipo: "bomba", prods: [{ nombre: "Glifosato 480 SL", re: /glifosato/i, base: "cc", porL: 20 }, { nombre: "Urea", re: /urea/i, base: "g", porL: 20 }], aviso: "Carencia en limón: 1 día. Reingreso: 24 horas. Protege troncos y hojas de los árboles jóvenes. (Datos de la ficha del producto: confírmalos contra el envase.)" },
-    { id: "fert", nombre: "Fertirriego de limones", sub: "Tambor de 200 L · una receta por riego · EN PAUSA (bomba en reparación)", tipo: "tambor", prods: [{ nombre: "Urea", re: /urea/i, base: "g", porPl: 2 }, { nombre: "Nitrato de Potasio", re: /nitrato.*potasio|potasio.*nitrato|kno3/i, base: "g", porPl: 2 }, { nombre: "Ácido Fosfórico", re: /fosf/i, base: "cc", porPl: 2 }], aviso: "El ácido fosfórico se agrega al agua, nunca al revés; con guantes y lentes." }
+    { id: "potenza", nombre: "Potenza Amino (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", prods: [{ nombre: "Potenza Amino", re: /potenza/i, base: "cc", porL: 2.5 }], aviso: "" },
+    { id: "algae", nombre: "Algae Plus (foliar)", sub: "Foliar de limones · por la mañana · cada 21 días, en jueves", prods: [{ nombre: "Algae Plus", re: /algae/i, base: "cc", porL: 2.5 }], aviso: "" },
+    { id: "gli", nombre: "Glifosato + urea (herbicida)", sub: "Solo sobre la hilera de los limones", prods: [{ nombre: "Glifosato 480 SL", re: /glifosato/i, base: "cc", porL: 20 }, { nombre: "Urea", re: /urea/i, base: "g", porL: 20 }], aviso: "Carencia en limón: 1 día. Reingreso: 24 horas. Protege troncos y hojas de los árboles jóvenes. (Datos de la ficha del producto: confírmalos contra el envase.)" },
+    { id: "fert", nombre: "Fertirriego de limones", sub: "Solo tambor de 200 L · una receta por riego · EN PAUSA (bomba en reparación)", solo: "tambor", prods: [{ nombre: "Urea", re: /urea/i, base: "g", porPl: 2 }, { nombre: "Nitrato de Potasio", re: /nitrato.*potasio|potasio.*nitrato|kno3/i, base: "g", porPl: 2 }, { nombre: "Ácido Fosfórico", re: /fosf/i, base: "cc", porPl: 2 }], aviso: "El ácido fosfórico se agrega al agua, nunca al revés; con guantes y lentes." }
   ];
-  var asSt = { paso: 1, rec: null, n: 3, pl: 325 };
+  var asSt = { paso: 1, rec: null, un: "bombada", pl: 325 };
   function asCeil(x){ return Math.ceil(x - 1e-9); }
-  function asQ(v, base){ if (v >= 1000) return nf(v / 1000, 2) + (base === "g" ? " kg" : " L"); return nf(v, 0) + " " + base; }
-  /* Cantidad de la receta por unidad (bombada o tambor), cerrada hacia arriba, con su margen y límite. */
-  function asCant(d, rec){
-    var raw = rec.tipo === "bomba" ? d.porL * AS_BOMBADA : d.porPl * asSt.pl, n = asCeil(raw);
-    return { n: n, lo: asCeil(n * (1 - AS_MARGEN)), hi: Math.floor(n * (1 + AS_MARGEN) + 1e-9) };
+  function asQ(v, base){ if (v >= 1000) return nf(v / 1000, 2) + (base === "g" ? " kg" : " L") + " (" + nf(Math.round(v), 0) + " " + base + ")"; return nf(Math.round(v * 10) / 10, v % 1 ? 1 : 0) + " " + base; }
+  /* Cantidad de la receta para UNA unidad, cerrada hacia arriba; margen ±10 % al entero más cercano. Por 100 L: el estándar para comparar. */
+  function asCant(d){
+    var L = AS_LITROS[asSt.un], raw = d.porL != null ? d.porL * L : d.porPl * asSt.pl, n = asCeil(raw);
+    return { n: n, lo: Math.round(n * (1 - AS_MARGEN)), hi: Math.round(n * (1 + AS_MARGEN)), c100: (d.porL != null ? d.porL * 100 : raw * 100 / L) };
   }
-  function asVeredicto(v, c){
+  function asVeredicto(v, c, base){
     if (v == null) return { t: "", cls: "" };
-    if (v > c.hi) return { t: "SOBRE EL LÍMITE: no uses esta mezcla. Revisa el pesaje.", cls: "note warn" };
-    if (v < c.lo) return { t: "Bajo el margen: lleva menos de lo recomendado.", cls: "note" };
+    if (v > c.hi) return { t: "SOBRE EL LÍMITE: no uses esta mezcla. Baja la dosis hasta " + asQ(c.hi, base) + " o menos (receta: " + asQ(c.n, base) + ").", cls: "note warn" };
+    if (v < c.lo) return { t: "BAJO EL MARGEN: no uses esta mezcla. Sube la dosis hasta " + asQ(c.lo, base) + " o más (receta: " + asQ(c.n, base) + ").", cls: "note warn" };
     return { t: "Dentro del margen. Puedes usarla.", cls: "chip ok" };
   }
   function asPinta(){
@@ -5788,59 +5788,54 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       b.appendChild(el("p", "sub", "Paso 1 de 3 · ¿Qué vas a aplicar?"));
       AS_RECETAS.forEach(function(r){
         var bt = el("button"), t1 = el("strong", null, r.nombre), t2 = el("span", "note", r.sub); t1.style.display = "block"; t2.style.display = "block"; bt.appendChild(t1); bt.appendChild(t2); bt.style.cssText = "display:block;text-align:left;width:100%;margin:8px 0";
-        bt.onclick = function(){ asSt.rec = r; asSt.paso = 2; asPinta(); }; b.appendChild(bt);
+        bt.onclick = function(){ asSt.rec = r; asSt.un = r.solo || "bombada"; asSt.paso = 2; asPinta(); }; b.appendChild(bt);
       });
       return;
     }
     var rec = asSt.rec;
     if (asSt.paso === 2){
       b.appendChild(el("p", "sub", "Paso 2 de 3 · " + rec.nombre));
-      if (rec.tipo === "bomba"){
-        b.appendChild(el("p", "note", "Equipo: bomba de espalda. 1 bombada = " + AS_BOMBADA + " L de agua. Escribe cuántas bombadas vas a preparar."));
-        var f = el("div", "field"), lb = el("label", null, "Número de bombadas"); lb.setAttribute("for", "asN"); f.appendChild(lb);
-        var inp = el("input"); inp.type = "text"; inp.id = "asN"; inp.setAttribute("inputmode", "numeric"); inp.value = String(asSt.n); f.appendChild(inp); b.appendChild(f);
-        var fila = el("div"); fila.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px";
-        var mn = el("button", null, "− 1 bombada"), mas = el("button", null, "+ 1 bombada");
-        mn.onclick = function(){ asSt.n = Math.max(1, (parseInt(inp.value, 10) || 1) - 1); inp.value = String(asSt.n); };
-        mas.onclick = function(){ asSt.n = (parseInt(inp.value, 10) || 0) + 1; inp.value = String(asSt.n); };
-        fila.appendChild(mn); fila.appendChild(mas); b.appendChild(fila);
-        inp.oninput = function(){ var n = parseInt(inp.value, 10); if (n > 0) asSt.n = n; };
-      } else {
-        b.appendChild(el("p", "note", "Equipo: tambor de 200 L. Plantas que reciben el fertirriego (sale de la ficha de «Limón completo»; puedes corregirlo para probar)."));
+      if (rec.solo){
+        b.appendChild(el("p", "note", "Plantas que reciben el fertirriego (sale de la ficha de «Limón completo»; puedes corregirlo para probar)."));
         var f2 = el("div", "field"), lb2 = el("label", null, "Número de plantas"); lb2.setAttribute("for", "asPl"); f2.appendChild(lb2);
         var ip = el("input"); ip.type = "text"; ip.id = "asPl"; ip.setAttribute("inputmode", "numeric"); ip.value = String(asSt.pl); f2.appendChild(ip); b.appendChild(f2);
         ip.oninput = function(){ var n = parseInt(ip.value, 10); if (n > 0) asSt.pl = n; };
       }
-      var sg = el("button", "primary", "Ver qué preparar"); sg.style.marginTop = "12px"; sg.onclick = function(){ asSt.paso = 3; asPinta(); }; b.appendChild(sg);
+      b.appendChild(el("p", "note", "¿Qué unidad vas a preparar? La receta se calcula para una sola unidad; si preparas más de una, repite."));
+      ["bombada", "tambor"].forEach(function(k){
+        var ok = !rec.solo || rec.solo === k, bt = el("button", ok ? "primary" : null, AS_UN[k] + (ok ? "" : " (no aplica)"));
+        bt.disabled = !ok; bt.style.cssText = "display:block;width:100%;margin:8px 0";
+        bt.onclick = function(){ asSt.un = k; asSt.paso = 3; asPinta(); };
+        b.appendChild(bt);
+      });
       return;
     }
-    /* Paso 3: resultado */
-    var bomba = rec.tipo === "bomba", u = bomba ? asSt.n : 1, un = bomba ? "bombada" : "tambor";
+    /* Paso 3: resultado para una unidad */
+    var L = AS_LITROS[asSt.un], bomba = asSt.un === "bombada";
     b.appendChild(el("p", "sub", "Paso 3 de 3 · Qué preparar"));
-    b.appendChild(el("h3", null, bomba ? "Prepara " + u + (u === 1 ? " bombada" : " bombadas") + " de " + AS_BOMBADA + " L (" + nf(u * AS_BOMBADA, 0) + " L de mezcla)" : "Prepara 1 tambor de 200 L (" + nf(asSt.pl, 0) + " plantas)"));
-    var lista = el("div", "calc"), tx = [], i = 1;
-    tx.push((i++) + ". " + (bomba ? "En cada bombada, pon en la bomba:" : "Llena el tambor con unos 200 L de agua y agrega:"));
-    rec.prods.forEach(function(d){ var c = asCant(d, rec); tx.push("   • " + asQ(c.n, d.base) + " de " + d.nombre + (bomba ? " por bombada" : "")); });
-    tx.push((i++) + ". " + (bomba ? "Completa con agua hasta los " + AS_BOMBADA + " L y mezcla bien." : "Mezcla bien hasta que se disuelva."));
-    if (bomba) tx.push((i++) + ". Repite hasta completar las " + u + (u === 1 ? " bombada." : " bombadas."));
+    b.appendChild(el("h3", null, "Prepara 1 " + (bomba ? "bombada de 15 L" : "tambor de 200 L") + (rec.solo ? " (" + nf(asSt.pl, 0) + " plantas)" : "")));
+    var lista = el("div", "calc"), tx = [];
+    tx.push("1. " + (bomba ? "Pon en la bomba:" : "Llena el tambor con unos 200 L de agua y agrega:"));
+    rec.prods.forEach(function(d){ var c = asCant(d); tx.push("   • " + asQ(c.n, d.base) + " de " + d.nombre + "   (= " + asQ(c.c100, d.base) + " por cada 100 L)"); });
+    tx.push("2. " + (bomba ? "Completa con agua hasta los 15 L y mezcla bien." : "Mezcla bien hasta que se disuelva."));
     lista.textContent = tx.join("\n"); b.appendChild(lista);
     if (rec.aviso) b.appendChild(el("p", "note warn", rec.aviso));
     b.appendChild(el("h3", null, "Margen y límite (±10 %)"));
     rec.prods.forEach(function(d, k){
-      var c = asCant(d, rec), box = el("div", "calc"); box.style.margin = "8px 0";
-      box.textContent = d.nombre + (bomba ? " por bombada" : " por tambor") + "\nReceta: " + asQ(c.n, d.base) + "\nAceptable: " + asQ(c.lo, d.base) + " a " + asQ(c.hi, d.base) + "\nLímite máximo: " + asQ(c.hi, d.base);
+      var c = asCant(d), box = el("div", "calc"); box.style.margin = "8px 0";
+      box.textContent = d.nombre + " por " + (bomba ? "bombada" : "tambor") + "\nReceta: " + asQ(c.n, d.base) + "\nAceptable: " + asQ(c.lo, d.base) + " a " + asQ(c.hi, d.base) + "\nLímite máximo: " + asQ(c.hi, d.base) + "\nPor 100 L de agua: " + asQ(c.c100, d.base);
       b.appendChild(box);
       var f = el("div", "field"), lb = el("label", null, "¿Cuánto mediste o pesaste de " + d.nombre + "? (" + d.base + ")"); lb.setAttribute("for", "asM" + k); f.appendChild(lb);
       var ip = el("input"); ip.type = "text"; ip.id = "asM" + k; ip.setAttribute("inputmode", "decimal"); f.appendChild(ip);
       var vd = el("p", "note"); f.appendChild(vd); b.appendChild(f);
-      ip.oninput = function(){ var r = asVeredicto(numI(ip), c); vd.className = r.cls; vd.textContent = r.t; };
+      ip.oninput = function(){ var r = asVeredicto(numI(ip), c, d.base); vd.className = r.cls; vd.textContent = r.t; };
     });
-    b.appendChild(el("h3", null, "Total y bodega"));
+    b.appendChild(el("h3", null, "Bodega (con esta unidad)"));
     var tot = el("div", "calc"), tl = [];
     rec.prods.forEach(function(d){
-      var c = asCant(d, rec), t = c.n * u, p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0];
-      var l = d.nombre + ": " + asQ(t, d.base);
-      if (p){ var usa = frConv(t, d.base, p.unidad), st = stockDe(p), q = st - usa; l += "\n   En bodega: " + nf(st, 2) + " " + p.unidad + (q >= 0 ? " → quedarían " + nf(q, 2) + " " + p.unidad : " → NO ALCANZA (faltan " + nf(-q, 2) + " " + p.unidad + ")"); }
+      var c = asCant(d), p = S.productos.filter(function(x){ return d.re.test(x.nombre || ""); })[0];
+      var l = d.nombre + ": usa " + asQ(c.n, d.base);
+      if (p){ var usa = frConv(c.n, d.base, p.unidad), st = stockDe(p), q = st - usa; l += "\n   En bodega: " + nf(st, 2) + " " + p.unidad + (q >= 0 ? " → quedarían " + nf(q, 2) + " " + p.unidad : " → NO ALCANZA (faltan " + nf(-q, 2) + " " + p.unidad + ")"); }
       else l += "\n   No está en la bodega.";
       tl.push(l);
     });

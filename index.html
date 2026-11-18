@@ -2293,7 +2293,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 71;
+  var GUIA_V = 72;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2332,7 +2332,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Riego anulado", "Si anulas un riego registrado, queda en el historial con la etiqueta «ANULADO», sus horas dejan de contar en «Riego de la semana» y en la necesidad de agua, y su tarea vuelve a «Pendientes» con la tarjeta «ANULADA». Desde ahí el dueño puede reprogramarlo o tocar «Anular definitivamente», que exige elegir un motivo y escribir un reporte. La encargada toca «Pedir anulación definitiva» con su motivo y reporte: la solicitud llega al dueño, que toca «Aprobar anulación» o «Rechazar»; mientras tanto el riego sigue pendiente.", 68, ""],
     ["Propuesta de riego de la semana", "Solo para el dueño. En «Riego», arriba, «Propuesta de riego» toma el programa del asesor (nogales lunes, miércoles, viernes y domingo; limones de lunes a sábado) y ajusta las horas con la evapotranspiración de los últimos 7 días. Nada queda programado hasta que tú decides: «Aprobar y programar» (se toca dos veces) crea los riegos de los días que quedan de la semana, con los limones primero y los nogales en fila después; «No la apruebo: la programo yo» abre el programador ya armado con esos días para que lo cambies. En cada bloque puedes dejar fuera nogales o limones. Los limones, que aún son árboles jóvenes y no tienen factor de cultivo, siguen el programa del asesor sin ajustarlo por evapotranspiración hasta que guardes el factor definitivo en «Riego de la semana · limones».", 67, "owner"],
     ["Programar por días de la semana", "En «Programar riego», con «Voy a regar», los botones «L M X J V S D» marcan en el calendario todos esos días de las próximas 4 semanas (o hasta «Repetir hasta»). Después puedes tocar el calendario para quitar o agregar días. Si el sector tiene cálculo de evapotranspiración, una línea dice cuántas horas por riego salen con esos días y «Usar esas horas» las pone. En la tarjeta de nogales, «Programar este reparto» abre el programador con el reparto elegido.", 67, "manager"],
-    ["Riego de limones y fertirriego", "Los limones se riegan de lunes a sábado, 1,5 h, desde las 09:00; los nogales siguen después. Cada riego de limones lleva su fertirriego: al registrarlo con «Ya lo regué» eliges «Regué y fertilicé» (crea la aplicación y descuenta la bodega) o «Solo agua». En «Aplicar», «Bodega» cada producto dice para cuántos riegos alcanza lo que hay según lo programado, y «Alertas» avisa cuando hay que recargar. Si anulas un riego con fertirriego, el producto vuelve a la bodega. Si lo corriges (día u horas), su fertirriego queda con el mismo día; el sector no se puede cambiar mientras lleve fertirriego.", 66, ""],
+    ["Riego de limones y fertirriego", "Los limones se riegan de lunes a sábado, 1,5 h, desde las 09:00; los nogales siguen después. PAUSA desde el 17-nov: la bomba de fertilizante está en reparación, así que «Regué y fertilicé» está bloqueado y el riego se anota solo con agua, sin descontar de la bodega (hasta que Diego avise). Con la bomba funcionando, cada riego de limones lleva su fertirriego: al registrarlo con «Ya lo regué» eliges «Regué y fertilicé» (crea la aplicación y descuenta la bodega) o «Solo agua». En «Aplicar», «Bodega» cada producto dice para cuántos riegos alcanza lo que hay según lo programado, y «Alertas» avisa cuando hay que recargar. Si anulas un riego con fertirriego, el producto vuelve a la bodega. Si lo corriges (día u horas), su fertirriego queda con el mismo día; el sector no se puede cambiar mientras lleve fertirriego.", 66, ""],
     ["Bodega", "En «Aplicar», «Bodega» muestra cuánto producto queda. Para sumar una compra o fijar lo que hay (conteo real), desliza la fila del producto y toca «Ajustar stock». Para un producto que no está, Diego usa «Agregar producto nuevo». Diego revisa y autoriza cada cambio.", 1, ""],
     ["Sectores en una casilla", "En «Campo», todos los sectores están reunidos en la casilla «Sectores». Tócala para abrir la lista y toca un sector para ver su información: superficie, árboles, densidad y avisos. Solo se abre uno a la vez. Si algún sector tiene aviso de reingreso o carencia, la casilla cerrada lo indica.", 6, ""],
     ["Árboles y fotos", "En «Campo», el botón «Registrar un árbol» guarda la hilera, el número de árbol y lo que viste. Puedes agregar una foto con «Tomar o elegir una foto».", 2, ""],
@@ -2399,6 +2399,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 72, f: "2026-11-17", t: "Fertirriego en pausa", d: "La bomba de fertilizante está en reparación: los limones se riegan igual, pero el botón «Regué y fertilicé» queda bloqueado y el riego se anota solo con agua, sin descontar de la bodega. Cuando Diego avise que volvió, se reactiva y se reinicia el contador.", g: "Riego de limones y fertirriego" },
     { v: 71, f: "2026-11-17", t: "Limón completo y cuarteles", d: "El riego y el fertirriego de limón son de «Limón completo». Los sectores 1 al 6 pasan a ser «Cuartel N», solo para labores. La ficha del sector tiene el marco de plantación (limón 6 × 3 m) y editar un sector ya no desenlaza el plano.", g: "Limón completo" },
     { v: 70, f: "2026-11-16", t: "Pasar de pantalla con el dedo", d: "En el teléfono, desliza el dedo a la izquierda o a la derecha sobre la pantalla para ir a la sección siguiente o anterior de la barra de abajo, sin tocar el menú.", g: "Pasar de pantalla con el dedo" },
     { v: 69, f: "2026-11-16", t: "Limones: sin cálculo hasta tener su factor", d: "Los limones son árboles jóvenes y no tienen factor de cultivo. «Riego de la semana · limones» ya no calcula necesidad, déficit ni exceso: muestra las horas aplicadas y sigue el programa del asesor. Cuando el asesor dé un factor para árboles jóvenes, se guarda en «Ajustar datos de limones» y el cálculo se activa.", g: "Propuesta de riego de la semana", r: "owner" },
@@ -3685,7 +3686,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       if (hecha ? t.fecha !== hy : (!t.fecha || t.fecha > hy)) return;
       var late = !hecha && t.fecha < hy, rg = t.tipo === "riego";
       var pr = late || t.prio === "u" ? "u" : (rg || t.tipo === "aplic" ? "h" : "s");
-      var sub = (late ? "Pendiente desde el " + fmtD2(t.fecha) : (MOM[t.momento] || "Hoy")) + (t.quien ? " · " + t.quien : "") + (rg && t.horas ? " · " + nf(t.horas, 1) + " h" : "") + (frEs(t) ? " · con fertirriego" : "");
+      var sub = (late ? "Pendiente desde el " + fmtD2(t.fecha) : (MOM[t.momento] || "Hoy")) + (t.quien ? " · " + t.quien : "") + (rg && t.horas ? " · " + nf(t.horas, 1) + " h" : "") + (frEs(t) ? " · con fertirriego" : (FR.pausa && frEsB(t) ? " · fertirriego en pausa" : ""));
       var frd = frEs(t) ? (function(){ var rc = frReceta(), fa = frFaltas(rc); return "Receta del día: " + frTxt(rc) + ". " + FR_SEQ + (fa.length ? " Ojo, falta fertilizante en la bodega: " + fa.join("; ") + "." : "") + " Al registrar el riego eliges si se fertilizó o fue solo agua."; })() : "";
       L.push({ id: "t" + t.id, late: late, col: "tareas", rid: t.id, fe: t.fecha, p: pr, done: hecha, t: tareaTodo(t) ? "Riego Limón completo" : t.titulo + (t.sector && t.sector !== "Todo el campo" && t.titulo.indexOf(t.sector) < 0 ? " · " + t.sector : ""), s: sub + (limAvTxt(t) ? " · " + limAvTxt(t) : ""),
         d: rg ? (frd || "Al registrar el riego quedan anotadas las horas y el agua.") : "Cuando termines, márcala como hecha.", b: rg ? "Registrar riego" : "Marcar como hecha", pulsa: !rg, tarea: t, go: function(){ if (rg){ S.screen = "riego"; render(); } marcarTarea(t); } });
@@ -5691,6 +5692,11 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var sc = el("section", "card sect"); sc.appendChild(el("h2", null, "Calendario de aplicaciones"));
     var pend = S.plan.filter(function(x){ return x.estado === "pendiente"; }).sort(function(a, b){ return a.fecha === b.fecha ? (a.ts < b.ts ? -1 : 1) : (a.fecha < b.fecha ? -1 : 1); });
     var frs = S.tareas.filter(frEs).sort(function(a, b){ return a.fecha === b.fecha ? String(a.hora || "").localeCompare(String(b.hora || "")) : a.fecha < b.fecha ? -1 : 1; });
+    if (FR.pausa && S.tareas.some(frEsB)){
+      var fp = el("div", "asg"), fpw = el("div", "who"); fpw.appendChild(el("b", null, "Fertirriego de limones en pausa")); fpw.appendChild(el("span", "chip idle", "Pausa")); fp.appendChild(fpw);
+      fp.appendChild(el("p", null, "La bomba de fertilizante está en reparación. Los limones se siguen regando; el riego se anota solo con agua y no se descuenta nada de la bodega. Diego avisa cuando vuelva para reiniciar el contador."));
+      sc.appendChild(fp);
+    }
     if (frs.length){
       var fb = el("div", "asg"), fw = el("div", "who"); fw.appendChild(el("b", null, "Fertirriego con el riego de limones")); fw.appendChild(el("span", "chip idle", frs.length + (frs.length === 1 ? " riego" : " riegos"))); fb.appendChild(fw);
       fb.appendChild(el("p", null, "Por riego: " + frTxt(frReceta()) + ". " + FR_SEQ));
@@ -6199,8 +6205,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       b.disabled = false; return;
     }
     if (!rgTarea && !rgEdit && !grp && c && rgEsLim(c.id) && rgDias.length === 1){
-      var tf = S.tareas.filter(function(t){ return frEs(t) && (grpL || t.sectorId === c.id) && t.fecha === rgDias[0]; })[0];
-      if (tf){ rgTarea = tf; frAbrir(tf); toast("Ese día tiene fertirriego programado: elige «Regué y fertilicé» o «Solo agua» y toca guardar otra vez."); return; }
+      var tf = S.tareas.filter(function(t){ return frEsB(t) && (grpL || t.sectorId === c.id) && t.fecha === rgDias[0]; })[0];
+      if (tf){ rgTarea = tf; frAbrir(tf); if (!FR.pausa){ toast("Ese día tiene fertirriego programado: elige «Regué y fertilicé» o «Solo agua» y toca guardar otra vez."); return; } }
     }
     if (rgTarea && frInfo && !frValida()) return;
     var dias = rgDias.slice().sort(), items = [];
@@ -9436,7 +9442,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     n.appendChild(a); n.appendChild(m); n.appendChild(b); return n;
   }
   /* Fertirriego de limones: todos los riegos programados de limones entre FR.desde y FR.hasta llevan la receta del día (tambor de 200 L). Se registra enlazado al riego y descuenta la bodega. */
-  var FR = { desde: "2026-11-15", hasta: "2026-12-31", plantas: 325, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
+  /* PAUSA (17-nov): la bomba de fertilizante está en el técnico. Los limones se riegan igual, pero no se fertiliza: el botón «Regué y fertilicé» queda bloqueado y el riego se anota solo con agua. Las tareas no se tocan. Para reactivar: pausa false y reiniciar el contador (desde) cuando Diego avise. */
+  var FR = { pausa: true, desde: "2026-11-15", hasta: "2026-12-31", plantas: 325, tamborL: 200, lh: 200, equipo: "Fertirriego · tambor 200 L (fertilización)",
     prods: [{ re: /urea/i, dosis: 2, base: "g", nombre: "Urea" }, { re: /nitrato.*potasio|potasio.*nitrato|kno3/i, dosis: 2, base: "g", nombre: "Nitrato de potasio" }, { re: /fosf/i, dosis: 2, base: "cc", nombre: "Ácido fosfórico" }] };
   var frInfo = null, frModo = "si";
   /* Árboles que reciben el fertirriego: los de la ficha del cuartel de limones (editable); el 325 solo sirve si la ficha está vacía. */
@@ -9477,7 +9484,8 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var c = rgSel(); return c && rgEsLim(c.id) ? frPlantas(c) : frPlantas();
   }
   function frRecalc(){ if (!frInfo) return; frInfo.rc = frReceta(frPlSel(frInfo.t)); frPinta(); }
-  function frEs(t){ return !!t && t.tipo === "riego" && t.estado !== "hecha" && t.fert !== false && !!t.fecha && t.fecha >= FR.desde && t.fecha <= FR.hasta && pnLimones().indexOf(t.sectorId) >= 0; }
+  function frEs(t){ return !FR.pausa && frEsB(t); }
+  function frEsB(t){ return !!t && t.tipo === "riego" && t.estado !== "hecha" && t.fert !== false && !!t.fecha && t.fecha >= FR.desde && t.fecha <= FR.hasta && pnLimones().indexOf(t.sectorId) >= 0; }
   function frConv(c, base, u){ u = String(u || "").toLowerCase(); if (base === "g") return u === "kg" ? c / 1000 : c; return /^(l|lt|lts|litro|litros)$/.test(u) ? c / 1000 : c; }
   function frReceta(pl){
     return FR.prods.map(function(d){
@@ -9514,23 +9522,30 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function frOcultar(){ frInfo = null; var f = $("frF"); if (f) f.hidden = true; }
   function frPinta(){
     var rc = frInfo.rc, fa = frFaltas(rc), falta = fa.length > 0;
+    if (frInfo.pausa){
+      $("frSi").disabled = true; $("frSi").textContent = "Regué y fertilicé (en pausa)"; $("frNo").textContent = "Solo regué"; $("frSi").setAttribute("aria-pressed", "false"); $("frNo").setAttribute("aria-pressed", "true");
+      $("frRc").textContent = "Fertirriego en pausa: la bomba de fertilizante está en reparación. Se anota solo el riego y no se descuenta nada de la bodega."; $("frFaltaB").hidden = true; return;
+    }
+    $("frSi").disabled = false; $("frSi").textContent = "Regué y fertilicé"; $("frNo").textContent = "Solo agua";
     $("frSi").setAttribute("aria-pressed", frModo === "si" ? "true" : "false"); $("frNo").setAttribute("aria-pressed", frModo === "no" ? "true" : "false");
     $("frRc").textContent = frModo === "si" ? "Receta: " + frTxt(rc) + ". " + FR_SEQ : "Solo agua: no se descuenta nada de la bodega.";
     $("frFaltaB").hidden = !falta; if (falta) $("frFaltaT").textContent = "Falta fertilizante en la bodega. " + fa.join("; ") + ". Cuéntanos qué pasó: queda una alerta hasta que se resuelva.";
   }
   function frAbrir(t){
-    if (!frEs(t)){ frOcultar(); return; }
+    if (!frEsB(t)){ frOcultar(); return; }
+    if (FR.pausa){ frInfo = { rc: [], t: t, pausa: true }; frModo = "no"; $("frMotivo").value = ""; $("frNota").value = ""; $("frF").hidden = false; frPinta(); return; }
     frInfo = { rc: frReceta(frPlSel(t)), t: t }; frModo = frFaltas(frInfo.rc).length ? "no" : "si"; $("frMotivo").value = ""; $("frNota").value = ""; $("frF").hidden = false; frPinta();
   }
   $("frSi").onclick = function(){ frModo = "si"; frPinta(); };
   $("frNo").onclick = function(){ frModo = "no"; frPinta(); };
   function frValida(){
-    if (!frInfo) return true;
+    if (!frInfo || frInfo.pausa) return true;
     if (frFaltas(frInfo.rc).length && !$("frMotivo").value){ toast("Elige por qué no se pudo fertilizar."); $("frMotivo").focus(); return false; }
     return true;
   }
   async function frGuardar(rref, it){
     if (!frInfo || !rref) return;
+    if (frInfo.pausa){ try { await S.db.doc("riegos/" + rref.id).update({ fert: "no", fertPausa: true }); } catch (e0){} return; }
     var rc0 = frInfo.rc, rc = frReceta(frPlantas(it.c)), falta = frFaltas(rc0).length > 0, ahora = new Date().toISOString(), up = {};
     try {
       if (frModo === "si"){

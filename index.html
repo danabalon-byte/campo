@@ -3086,14 +3086,25 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     for (var k = 0; k < fichas.length; k++){ try { await S.db.doc("personal/" + fichas[k].id).set({ email: vsMail(cu.email) }, { merge: true }); } catch (e){ toast("No se pudo enlazar la ficha."); return; } }
     toast("Ficha enlazada al email de la cuenta");
   }
+  function pfDoble(btn, segundo, fn){
+    var ini = btn.textContent;
+    btn.onclick = async function(){
+      if (btn.dataset.ok !== "1"){ btn.dataset.ok = "1"; btn.classList.add("armado"); btn.textContent = segundo; setTimeout(function(){ if (btn.isConnected && btn.dataset.ok === "1"){ btn.dataset.ok = ""; btn.classList.remove("armado"); btn.textContent = ini; } }, 7000); return; }
+      btn.disabled = true; await fn();
+    };
+  }
+  async function pfQuitaFicha(fichas){
+    try { for (var k = 0; k < fichas.length; k++) await S.db.doc("personal/" + fichas[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true }); toast("Ficha quitada (se puede restaurar en «Quitadas»)."); }
+    catch (e){ toast("No se pudo quitar la ficha."); }
+  }
   async function pfQuitaRepetida(fichas){
     var pun = function(p){ return ["plan", "tel", "nac", "funcion", "jornada", "email", "apodo"].filter(function(k){ return p.rec && p.rec[k]; }).length; };
     var orden = fichas.slice().sort(function(a, b){ return pun(b) - pun(a); }), queda = orden[0];
     try {
       var comp = {}; orden.slice(1).forEach(function(o){ ["plan", "tel", "nac", "funcion", "jornada", "email", "apodo"].forEach(function(k){ if (!(queda.rec && queda.rec[k]) && o.rec && o.rec[k] && comp[k] == null) comp[k] = o.rec[k]; }); });
       if (Object.keys(comp).length) await S.db.doc("personal/" + queda.id).set(comp, { merge: true });
-      for (var k = 1; k < orden.length; k++) await S.db.doc("personal/" + orden[k].id).delete();
-      toast("Ficha repetida quitada; quedó la de " + queda.nombre);
+      for (var k = 1; k < orden.length; k++) await S.db.doc("personal/" + orden[k].id).set({ quitada: true, quitadaTs: new Date().toISOString() }, { merge: true });
+      toast("Ficha repetida quitada (restaurable); quedó la de " + queda.nombre);
     } catch (e){ toast("No se pudo quitar la ficha repetida."); }
   }
   function pfRender(){
@@ -3108,12 +3119,18 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       sc[2].forEach(function(gr){ pfFila(b, gr, sc[3]); });
     });
     var qs = Object.keys(S.eqQuit || {}).map(function(k){ return S.eqQuit[k]; }).filter(function(c){ return !q || norm((c.nombre || "") + " " + (c.email || "")).indexOf(q) >= 0; });
-    if (qs.length){
-      var hq = el("h3", null, "Quitadas (" + qs.length + ")"); hq.style.margin = "16px 0 2px"; b.appendChild(hq); b.appendChild(el("p", "note", "Perfiles quitados. Conservan sus registros de llegada y se pueden restaurar."));
+    var pq = (S.perQuit || []).filter(function(p){ return !q || norm((p.nombre || "") + " " + (p.email || "")).indexOf(q) >= 0; });
+    if (qs.length || pq.length){
+      var hq = el("h3", null, "Quitadas (" + (qs.length + pq.length) + ")"); hq.style.margin = "16px 0 2px"; b.appendChild(hq); b.appendChild(el("p", "note", "Perfiles quitados. Conservan sus registros de llegada y se pueden restaurar."));
       qs.forEach(function(c){
         var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, c.nombre || "Sin nombre")); bx.appendChild(w);
         bx.appendChild(el("p", "sub", "Cuenta: " + (c.email || "sin email")));
         var rb = el("button", "primary", "Restaurar perfil"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ quitada: false }, { merge: true }); toast("Perfil restaurado"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
+        bx.appendChild(rb); b.appendChild(bx);
+      });
+      pq.forEach(function(p){
+        var bx = el("div", "asg"), w = el("div", "who"); w.appendChild(el("b", null, p.nombre || "Sin nombre")); bx.appendChild(w); bx.appendChild(el("p", "sub", "Ficha de Personal quitada"));
+        var rb = el("button", "primary", "Restaurar ficha"); rb.type = "button"; rb.style.minHeight = "44px"; rb.onclick = async function(){ rb.disabled = true; try { await S.db.doc("personal/" + p.id).set({ quitada: false }, { merge: true }); toast("Ficha restaurada"); } catch (e){ toast("No se pudo restaurar."); rb.disabled = false; } };
         bx.appendChild(rb); b.appendChild(bx);
       });
     }
@@ -3137,12 +3154,13 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var acc = el("div", "row"), g1 = el("button", "primary", "Guardar apodo"); g1.type = "button"; g1.style.minHeight = "44px"; g1.onclick = async function(){ g1.disabled = true; await pfApodo(gr, inp.value); g1.disabled = false; }; acc.appendChild(g1);
       var cu = cm[0] || cuentas.filter(function(c){ return c.email; })[0], sinEnl = cu ? fichas.filter(function(x){ return vsMail(x.email) !== vsMail(cu.email); }) : [];
       if (cu && sinEnl.length){ var e1 = el("button", null, "Enlazar ficha a la cuenta"); e1.type = "button"; e1.style.minHeight = "44px"; e1.onclick = async function(){ e1.disabled = true; await pfEnlaza(cu, sinEnl); }; acc.appendChild(e1); }
-      if (fichas.length > 1){ var d1 = el("button", null, "Quitar ficha repetida"); d1.type = "button"; d1.style.minHeight = "44px"; d1.onclick = async function(){ if (d1.dataset.ok !== "1"){ d1.dataset.ok = "1"; d1.textContent = "Toca otra vez: quedará una sola ficha"; return; } d1.disabled = true; await pfQuitaRepetida(fichas); }; acc.appendChild(d1); }
+      if (fichas.length > 1){ var d1 = el("button", null, "Quitar ficha repetida"); d1.type = "button"; d1.style.minHeight = "44px"; pfDoble(d1, "Toca otra vez: quedará una sola ficha", function(){ return pfQuitaRepetida(fichas); }); acc.appendChild(d1); }
       cuentas.forEach(function(c){ var t = S.team[c.id] || {}; var pd = el("button", null, t.pedirDatos ? "Ya se le pidió completar sus datos" : t.datosTs ? "Pedir de nuevo que complete sus datos" : "Pedir que complete sus datos"); pd.type = "button"; pd.style.minHeight = "44px"; pd.disabled = !!t.pedirDatos; pd.onclick = async function(){ pd.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ pedirDatos: true }, { merge: true }); toast("Le aparecerá la ventana al abrir la app"); } catch (e){ toast("No se pudo guardar."); pd.disabled = false; } }; acc.appendChild(pd); });
       var mk = el("button", null, esReg ? "Pasar a no registradas" : "Marcar como registrada"); mk.type = "button"; mk.style.minHeight = "44px"; mk.onclick = async function(){ mk.disabled = true; await pfMarca(gr, !esReg); mk.disabled = false; }; acc.appendChild(mk);
       var act = cuentas.some(function(c){ var r = pfRegistro(c); return r.ult && r.ult >= addDays(fecha(), -30); });
       w.appendChild(el("span", "chip " + (esReg ? "ok" : "idle"), esReg ? (cuentas.length ? (act ? "Registrada · activa" : "Registrada") : "Registrada · la administras tú") : (act ? "Con actividad reciente" : "Sin actividad")));
-      if (!esReg && cuentas.length && !cuentas.some(function(c){ return c.id === S.uid; })){ var q1 = el("button", null, "Quitar perfil de la cuenta"); q1.type = "button"; q1.style.minHeight = "44px"; q1.onclick = async function(){ if (q1.dataset.ok !== "1"){ q1.dataset.ok = "1"; q1.textContent = "Toca otra vez: se quita el perfil de " + nom; return; } q1.disabled = true; await pfQuitaCuenta(cuentas); }; acc.appendChild(q1); }
+      if (!esReg && cuentas.length && !cuentas.some(function(c){ return c.id === S.uid; })){ var q1 = el("button", null, "Quitar perfil de la cuenta"); q1.type = "button"; q1.style.minHeight = "44px"; pfDoble(q1, "Toca otra vez para quitar: " + nom, function(){ return pfQuitaCuenta(cuentas); }); acc.appendChild(q1); }
+      if (!esReg && fichas.length === 1){ var q2 = el("button", null, "Quitar ficha de Personal"); q2.type = "button"; q2.style.minHeight = "44px"; pfDoble(q2, "Toca otra vez para quitar la ficha de " + nom, function(){ return pfQuitaFicha(fichas); }); acc.appendChild(q2); }
       bx.appendChild(acc); b.appendChild(bx);
     }
   }
@@ -11636,7 +11654,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     }
     if (S.manager){
       db.collection("personal").orderBy("nombre").limit(200).onSnapshot(function(s){
-        S.personal = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); pfReset(); render();
+        var pTodos = s.docs.map(function(d){ return Object.assign({}, d.data(), { id: d.id }); }); S.personal = pTodos.filter(function(p){ return !p.quitada; }); S.perQuit = pTodos.filter(function(p){ return p.quitada; }); pfReset(); render();
         if (S.owner && !S.semillaP){ S.semillaP = true; sembrarPersonal(); }
       }, function(){});
       subJornada();

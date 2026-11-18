@@ -3064,7 +3064,9 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var cm = cuentas.filter(function(c){ return pfRegistro(c).n; });
       cuentas.forEach(function(c){
         var r = pfRegistro(c);
-        bx.appendChild(el("p", "sub", "Cuenta" + (c.id === S.uid ? " (tuya)" : "") + ": " + (c.email || "sin email") + " · " + (r.n ? "con registro: " + r.n + (r.n === 1 ? " día" : " días") + ", el último el " + fmtD2(r.ult) : "sin registro de llegada")));
+        var pc = el("p", "sub"); if (c.oficial){ var ch = el("span", "chip ok", "★ Cuenta oficial"); ch.style.marginRight = "6px"; pc.appendChild(ch); }
+        pc.appendChild(document.createTextNode("Cuenta" + (c.id === S.uid ? " (tuya)" : "") + ": " + (c.email || "sin email") + " · " + (r.n ? "con registro: " + r.n + (r.n === 1 ? " día" : " días") + ", el último el " + fmtD2(r.ult) : "sin registro de llegada"))); bx.appendChild(pc);
+        if (!c.oficial && c.email){ var of = el("button", null, "Marcar como cuenta oficial"); of.type = "button"; of.style.minHeight = "44px"; of.onclick = async function(){ of.disabled = true; await pfOficial(gr, c); }; bx.appendChild(of); }
       });
       fichas.forEach(function(f){ bx.appendChild(el("p", "sub", "Ficha de Personal: " + (f.email ? f.email : "sin email enlazado") + (f.rec && f.rec.plan ? " · con plan de días" : ""))); });
       if (!cuentas.length) bx.appendChild(el("p", "note", "Sin cuenta: esta persona no puede marcar llegada en la app."));
@@ -3081,8 +3083,13 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       bx.appendChild(acc); b.appendChild(bx);
     }
   }
+  async function pfOficial(gr, c){
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; if (p.tipo !== "cuenta") continue; try { await S.db.doc("equipo/" + p.id).set(p.id === c.id ? { oficial: true, registrada: true } : { oficial: false }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
+    for (var j = 0; j < gr.length; j++){ if (gr[j].tipo === "ficha"){ try { await S.db.doc("personal/" + gr[j].id).set({ registrada: true, email: vsMail(c.email) }, { merge: true }); } catch (e){} } }
+    toast("Cuenta oficial marcada: " + c.email);
+  }
   async function pfMarca(gr, v){
-    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { await S.db.doc((p.tipo === "cuenta" ? "equipo/" : "personal/") + p.id).set({ registrada: v }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
+    for (var k = 0; k < gr.length; k++){ var p = gr[k]; try { await S.db.doc((p.tipo === "cuenta" ? "equipo/" : "personal/") + p.id).set(v ? { registrada: true } : { registrada: false, oficial: false }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
     toast(v ? "Marcada como registrada" : "Pasó a no registradas");
   }
   async function pfQuitaCuenta(cuentas){
@@ -9142,7 +9149,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function pfGrupos(){
     if (PF_G) return PF_G;
     var ps = [];
-    Object.keys(S.team || {}).forEach(function(id){ var t = S.team[id]; ps.push({ tipo: "cuenta", id: id, nombre: t.nombre || "", apodo: t.apodo || "", email: vsMail(t.email), registrada: !!t.registrada }); });
+    Object.keys(S.team || {}).forEach(function(id){ var t = S.team[id]; ps.push({ tipo: "cuenta", id: id, nombre: t.nombre || "", apodo: t.apodo || "", email: vsMail(t.email), registrada: !!t.registrada, oficial: !!t.oficial }); });
     (S.personal || []).forEach(function(p){ ps.push({ tipo: "ficha", id: p.id, nombre: p.nombre || "", apodo: p.apodo || "", email: vsMail(p.email), registrada: !!p.registrada, rec: p }); });
     var g = ps.map(function(_, i){ return i; });
     function raiz(i){ while (g[i] !== i) i = g[i] = g[g[i]]; return i; }
@@ -11584,7 +11591,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (S.manager){
       db.collection("equipo").onSnapshot(function(s){
         s.docs.forEach(function(d){
-          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; pfReset();
+          var id = d.id; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; t.oficial = !!d.data().oficial; pfReset();
           if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(S.owner ? 70 : 14).onSnapshot(function(q){
             t.dias = q.docs.map(function(x){ return x.data(); }); render();
           }, function(){});

@@ -1741,6 +1741,33 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     <button id="nlCancel">Cancelar</button></div>
   </div>
 </div>
+<div class="sheet" id="dtAviso" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="dtATitle">
+    <h2 id="dtATitle">Completa tus datos personales</h2>
+<div class="sbody">
+    <p>Diego te pide que completes tu información personal en la app: nombre, teléfono, fecha de nacimiento y un contacto de emergencia. Toma un minuto.</p>
+    <p><a href="?datos=1" id="dtLink" style="font-weight:700;text-decoration:underline">Rellenar mis datos aquí</a></p>
+</div>
+<div class="sfoot">    <button class="primary" id="dtAbre">Rellenar ahora</button>
+    <button id="dtLuego">Más tarde</button></div>
+  </div>
+</div>
+<div class="sheet" id="dtForm" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="dtFTitle">
+    <h2 id="dtFTitle">Mis datos personales</h2>
+<div class="sbody">
+    <p class="note" id="dtEmail"></p>
+    <div class="field"><label for="dtNombre">Nombre completo</label><input type="text" id="dtNombre" maxlength="60" autocomplete="name"></div>
+    <div class="field"><label for="dtTel">Teléfono</label><input type="tel" id="dtTel" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="Ej: +56 9 1234 5678"></div>
+    <div class="field"><label for="dtNac">Fecha de nacimiento</label><input type="date" id="dtNac"></div>
+    <div class="field"><label for="dtEmN">Contacto de emergencia: nombre</label><input type="text" id="dtEmN" maxlength="60"></div>
+    <div class="field"><label for="dtEmT">Contacto de emergencia: teléfono</label><input type="tel" id="dtEmT" maxlength="20" inputmode="tel"></div>
+    <p class="note">Estos datos quedan guardados en tu perfil del equipo.</p>
+</div>
+<div class="sfoot">    <button class="primary" id="dtGuarda">Guardar mis datos</button>
+    <button id="dtCancel">Cancelar</button></div>
+  </div>
+</div>
 <div class="sheet" id="pfSheet" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="pfTitle">
     <h2 id="pfTitle">Perfiles y registro de llegada</h2>
@@ -3019,6 +3046,31 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       });
     }
   }
+  /* Ventana «Completa tus datos personales»: la activa Diego desde Perfiles; sale al abrir la app hasta que la persona guarda sus datos. */
+  function dtAbreForm(){
+    var d = S.misDatos || {}; $("dtNombre").value = d.nombre || S.nombre || ""; $("dtTel").value = d.tel || ""; $("dtNac").value = d.nac || "";
+    $("dtEmN").value = (d.emergencia && d.emergencia.nom) || ""; $("dtEmT").value = (d.emergencia && d.emergencia.tel) || "";
+    $("dtEmail").textContent = S.email ? "Tu cuenta: " + S.email : ""; $("dtAviso").hidden = true; $("dtForm").hidden = false; $("dtNombre").focus();
+  }
+  $("dtAbre").onclick = dtAbreForm; $("dtLink").onclick = function(e){ e.preventDefault(); dtAbreForm(); };
+  $("dtLuego").onclick = function(){ S.datosOculto = true; $("dtAviso").hidden = true; };
+  $("dtCancel").onclick = function(){ $("dtForm").hidden = true; };
+  $("dtGuarda").onclick = async function(){
+    var n = $("dtNombre").value.trim(), tel = $("dtTel").value.trim(); if (!n){ toast("Escribe tu nombre completo."); $("dtNombre").focus(); return; } if (!tel){ toast("Escribe tu teléfono."); $("dtTel").focus(); return; }
+    var b = $("dtGuarda"); b.disabled = true;
+    try {
+      await S.db.doc("equipo/" + S.uid).set({ nombre: n, tel: tel, nac: $("dtNac").value || "", emergencia: { nom: $("dtEmN").value.trim(), tel: $("dtEmT").value.trim() }, datosTs: new Date().toISOString(), pedirDatos: false }, { merge: true });
+      $("dtForm").hidden = true; S.datosOculto = true; toast("Datos guardados. ¡Gracias!");
+    } catch (err){ toast("No se pudo guardar. Intenta de nuevo."); }
+    b.disabled = false;
+  };
+  function dtRevisa(){
+    try {
+      if (!S.uid || !S.nombre) return;
+      var quiere = S.pedirDatos || /[?&]datos=1/.test(location.search);
+      if (quiere && !S.datosOculto && $("dtForm").hidden && $("dtAviso").hidden){ if (/[?&]datos=1/.test(location.search) && !S.datosLink){ S.datosLink = true; dtAbreForm(); } else $("dtAviso").hidden = false; }
+    } catch (e0){}
+  }
   /* Perfiles: una fila por persona (cuenta + ficha enlazadas por email), con apodo. Solo dueño. */
   var pfArma = {};
   function pfRegistro(c){
@@ -3076,7 +3128,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         var r = pfRegistro(c);
         var pc = el("p", "sub"); if (c.oficial){ var ch = el("span", "chip ok", "★ Cuenta oficial"); ch.style.marginRight = "6px"; pc.appendChild(ch); }
         pc.appendChild(document.createTextNode("Cuenta" + (c.id === S.uid ? " (tuya)" : "") + ": " + (c.email || "sin email") + " · " + (r.n ? "con registro: " + r.n + (r.n === 1 ? " día" : " días") + ", el último el " + fmtD2(r.ult) : "sin registro de llegada"))); bx.appendChild(pc);
-        if (!c.oficial && c.email){ var of = el("button", null, "Marcar como cuenta oficial"); of.type = "button"; of.style.minHeight = "44px"; of.onclick = async function(){ of.disabled = true; await pfOficial(gr, c); }; bx.appendChild(of); }
+        if (!c.oficial){ var of = el("button", null, "Marcar como cuenta oficial"); of.type = "button"; of.style.minHeight = "44px"; of.onclick = async function(){ of.disabled = true; await pfOficial(gr, c); }; bx.appendChild(of); }
       });
       fichas.forEach(function(f){ bx.appendChild(el("p", "sub", "Ficha de Personal: " + (f.email ? f.email : "sin email enlazado") + (f.rec && f.rec.plan ? " · con plan de días" : ""))); });
       if (!cuentas.length) bx.appendChild(el("p", "note", "Sin cuenta: esta persona no puede marcar llegada en la app."));
@@ -3086,6 +3138,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       var cu = cm[0] || cuentas.filter(function(c){ return c.email; })[0], sinEnl = cu ? fichas.filter(function(x){ return vsMail(x.email) !== vsMail(cu.email); }) : [];
       if (cu && sinEnl.length){ var e1 = el("button", null, "Enlazar ficha a la cuenta"); e1.type = "button"; e1.style.minHeight = "44px"; e1.onclick = async function(){ e1.disabled = true; await pfEnlaza(cu, sinEnl); }; acc.appendChild(e1); }
       if (fichas.length > 1){ var d1 = el("button", null, "Quitar ficha repetida"); d1.type = "button"; d1.style.minHeight = "44px"; d1.onclick = async function(){ if (d1.dataset.ok !== "1"){ d1.dataset.ok = "1"; d1.textContent = "Toca otra vez: quedará una sola ficha"; return; } d1.disabled = true; await pfQuitaRepetida(fichas); }; acc.appendChild(d1); }
+      cuentas.forEach(function(c){ var t = S.team[c.id] || {}; var pd = el("button", null, t.pedirDatos ? "Ya se le pidió completar sus datos" : t.datosTs ? "Pedir de nuevo que complete sus datos" : "Pedir que complete sus datos"); pd.type = "button"; pd.style.minHeight = "44px"; pd.disabled = !!t.pedirDatos; pd.onclick = async function(){ pd.disabled = true; try { await S.db.doc("equipo/" + c.id).set({ pedirDatos: true }, { merge: true }); toast("Le aparecerá la ventana al abrir la app"); } catch (e){ toast("No se pudo guardar."); pd.disabled = false; } }; acc.appendChild(pd); });
       var mk = el("button", null, esReg ? "Pasar a no registradas" : "Marcar como registrada"); mk.type = "button"; mk.style.minHeight = "44px"; mk.onclick = async function(){ mk.disabled = true; await pfMarca(gr, !esReg); mk.disabled = false; }; acc.appendChild(mk);
       var act = cuentas.some(function(c){ var r = pfRegistro(c); return r.ult && r.ult >= addDays(fecha(), -30); });
       w.appendChild(el("span", "chip " + (esReg ? "ok" : "idle"), esReg ? (cuentas.length ? (act ? "Registrada · activa" : "Registrada") : "Registrada · la administras tú") : (act ? "Con actividad reciente" : "Sin actividad")));
@@ -3095,7 +3148,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   }
   async function pfOficial(gr, c){
     for (var k = 0; k < gr.length; k++){ var p = gr[k]; if (p.tipo !== "cuenta") continue; try { await S.db.doc("equipo/" + p.id).set(p.id === c.id ? { oficial: true, registrada: true } : { oficial: false }, { merge: true }); } catch (e){ toast("No se pudo guardar."); return; } }
-    for (var j = 0; j < gr.length; j++){ if (gr[j].tipo === "ficha"){ try { await S.db.doc("personal/" + gr[j].id).set({ registrada: true, email: vsMail(c.email) }, { merge: true }); } catch (e){} } }
+    for (var j = 0; j < gr.length; j++){ if (gr[j].tipo === "ficha"){ try { await S.db.doc("personal/" + gr[j].id).set(c.email ? { registrada: true, email: vsMail(c.email) } : { registrada: true }, { merge: true }); } catch (e){} } }
     toast("Cuenta oficial marcada: " + c.email);
   }
   async function pfMarca(gr, v){
@@ -3885,7 +3938,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     b.onclick = async function(){
       var n = i.value.trim(); if (!n){ toast("Escribe tu nombre primero."); i.focus(); return; }
       b.disabled = true;
-      try { await S.db.doc("equipo/" + S.uid).set({ nombre: n, creado: new Date().toISOString() }); }
+      try { await S.db.doc("equipo/" + S.uid).set({ nombre: n, creado: new Date().toISOString() }, { merge: true }); }
       catch (err){ b.disabled = false; toast(err && err.code === "invalid_argument" ? "No tienes permiso para guardar. Avísale a Diego." : "No se pudo guardar. Intenta de nuevo."); }
     };
     fl.appendChild(l); fl.appendChild(i); b2.appendChild(fl); b2.appendChild(b); c.appendChild(b2); return c;
@@ -11446,6 +11499,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     return sec;
   }
   function render(){
+    dtRevisa();
     try { if ($("pfSheet") && !$("pfSheet").hidden && !(document.activeElement && document.activeElement.tagName === "INPUT" && $("pfSheet").contains(document.activeElement))) pfRender(); } catch (e0){}
     pcSync();
     var scrOk = !!(S.db && S.uid && S.nombre), SCR = { riego: "riego", acum: "riego", medidores: "riego", campo: "campo", arboles: "campo", sectores: "campo", aplic: "aplic", trabajo: "trabajo", agenda: "agenda", cosecha: "cosecha", personal: "equipo", permisos: "equipo", horarios: "equipo", terceros: "equipo", legal: "gris", ajustes: "gris" };
@@ -11492,7 +11546,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     try { var me0 = await user.me(); S.email = vsMail(me0 && me0.email); } catch (e0){ S.email = ""; }
     if (!S.uid) return render();
     db.doc("equipo/" + S.uid).onSnapshot(function(s){
-      S.okEq = true; var d = s.exists ? s.data() : null; S.nombre = d && d.nombre ? d.nombre : ""; if (d && S.email && d.email !== S.email){ try { db.doc("equipo/" + S.uid).set(Object.assign({}, d, { email: S.email })).catch(function(){}); } catch (e0){} } render();
+      S.okEq = true; var d = s.exists ? s.data() : null; S.nombre = d && d.nombre ? d.nombre : ""; S.pedirDatos = !!(d && d.pedirDatos); S.misDatos = d || {}; if (d && S.email && d.email !== S.email){ try { db.doc("equipo/" + S.uid).set(Object.assign({}, d, { email: S.email })).catch(function(){}); } catch (e0){} } render();
     }, function(){ S.okEq = true; render(); });
     if (S.email){
       db.doc("visib/" + S.email).onSnapshot(function(s){ S.visCfg = s.exists ? s.data() : null; if (!S.visIni){ S.visIni = 1; if (S.screen === "home" && vsOculta("home")) S.screen = vsPrimera() || "ajustes"; } render(); cpRepinta(); }, function(){});
@@ -11602,7 +11656,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       db.collection("equipo").onSnapshot(function(s){
         S.eqQuit = S.eqQuit || {};
         s.docs.forEach(function(d){
-          var id = d.id; if (d.data().quitada){ S.eqQuit[id] = Object.assign({}, d.data(), { id: id }); delete S.team[id]; pfReset(); return; } delete S.eqQuit[id]; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; t.oficial = !!d.data().oficial; pfReset();
+          var id = d.id; if (d.data().quitada){ S.eqQuit[id] = Object.assign({}, d.data(), { id: id }); delete S.team[id]; pfReset(); return; } delete S.eqQuit[id]; var t = S.team[id] || (S.team[id] = { dias: [] }); t.nombre = d.data().nombre; t.email = d.data().email || ""; t.apodo = d.data().apodo || ""; t.registrada = !!d.data().registrada; t.oficial = !!d.data().oficial; t.pedirDatos = !!d.data().pedirDatos; t.datosTs = d.data().datosTs || ""; pfReset();
           if (!S.subs[id]) S.subs[id] = db.collection("asistencia/" + id + "/dias").orderBy("fecha", "desc").limit(S.owner ? 70 : 14).onSnapshot(function(q){
             t.dias = q.docs.map(function(x){ return x.data(); }); render();
           }, function(){});

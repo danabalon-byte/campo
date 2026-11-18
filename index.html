@@ -6985,6 +6985,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function buildAplic(){
     var f = document.createDocumentFragment(), now = Date.now();
     f.appendChild(ph("aplic"));
+    if (lbOn()){ var asb = el("button", "primary", "Asistente de mezclas (laboratorio)"); asb.type = "button"; asb.onclick = abrirAs; f.appendChild(asb); }
     var bod = el("section", "card sect"); bod.appendChild(el("h2", null, "Bodega"));
     var tipos = []; prodOrden().forEach(function(p){ var t = p.tipo || "Producto"; if (tipos.indexOf(t) < 0) tipos.push(t); });
     if (S.bdTipoF && tipos.indexOf(S.bdTipoF) < 0) S.bdTipoF = "";
@@ -7038,7 +7039,6 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       f.appendChild(hc);
     }
     var pcb = el("button", null, "Calculadora de porcentaje"); pcb.onclick = abrirPct; f.appendChild(pcb);
-    if (lbOn()){ var asb = el("button", null, "Asistente de mezclas (laboratorio)"); asb.onclick = abrirAs; f.appendChild(asb); }
     var reg = el("button", "primary", "Registrar aplicación"); reg.onclick = function(){ abrirAp(null); }; f.appendChild(reg);
     var l = el("section", "card sect"); l.appendChild(el("h2", null, "Últimas aplicaciones"));
     if (!S.aplicaciones.length) l.appendChild(el("p", "note", "Todavía no hay aplicaciones registradas."));

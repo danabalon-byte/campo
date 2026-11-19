@@ -8749,13 +8749,15 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         if (m.id === "m_pozo" && S.manager && !acEventos().filter(function(e){ return e.lecId === l.id; })[0]){
           [["on", "Partida"], ["off", "Parada"]].forEach(function(t){ accs.push([t[1], "", function(){ pzAbrir(t[0], { fecha: l.fecha, hora: l.hora || "", valor: l.valor, fotoId: l.fotoId || "", lecId: l.id, guardada: l.ts ? fmtFH.format(new Date(l.ts)) : "" }); }]); });
         }
+        if (S.owner) accs.push(["Corregir", "", function(){ S.medEdL = l.id; S.medEdV = null; S.medLSel = l.id; render(); }]);
         if (S.owner) accs.push(["Quitar", "rm", function(){ quitarL = l.id; S.medLSel = l.id; render(); }]);
         if (accs.length) dt.appendChild(filaDeslizable(rb, rbClick, accs)); else { rb.onclick = rbClick; dt.appendChild(rb); }
         if (!op) return;
         var bx = el("div", "ml-det");
         bx.appendChild(el("p", "note", fmtNum(l.valor, 2) + " " + un + " · " + (l.por || "") + " · " + fmtFH.format(new Date(l.ts))));
         if (l.nota) bx.appendChild(el("p", "sub", l.nota));
-        if (x.an) bx.appendChild(el("p", "note warn", "Es menor que una lectura anterior (" + fmtNum(x.ref, 2) + " " + un + "). Un medidor no baja: revisa la foto. Si el número está mal, quita esta lectura y anótala de nuevo."));
+        if (x.an) bx.appendChild(el("p", "note warn", "Es menor que una lectura anterior (" + fmtNum(x.ref, 2) + " " + un + "). Un medidor no baja: revisa la foto. Si el número está mal, toca «Corregir el número»."));
+        if (x.sa) bx.appendChild(el("p", "note warn", "Esta lectura sube mucho más que las demás. Compárala con la foto: si el número se escribió mal, toca «Corregir el número»."));
         if (x.an && S.owner){ var okb = el("button", "small", "Es correcta"); okb.type = "button"; okb.onclick = async function(){ try { await S.db.doc("lecturas/" + l.id).update({ okAnom: true }); toast("Marcada como correcta"); } catch (err){ toast("No se pudo guardar."); } }; bx.appendChild(okb); }
         [[l.fotoId, "Ver foto", "Ocultar foto"], [l.fotoId2, "Ver 2ª foto", "Ocultar 2ª foto"]].forEach(function(ft){
           var fid = ft[0]; if (!fid) return;
@@ -8778,6 +8780,19 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
           });
         }
         if (S.owner){
+          if (S.medEdL === l.id){
+            var ef = el("div", "field"), el1 = el("label", null, "Número correcto (" + un + ")"), ei = el("input"); ei.type = "text"; ei.inputMode = "decimal"; ei.value = S.medEdV != null ? S.medEdV : String(l.valor).replace(".", ","); ei.oninput = function(){ S.medEdV = ei.value; };
+            ef.appendChild(el1); ef.appendChild(ei); bx.appendChild(ef);
+            var eok = el("button", "small primary", "Guardar corrección"); eok.type = "button";
+            eok.onclick = async function(){
+              var nv = leeNum(ei.value); if (nv == null || nv < 0){ toast("Escribe un número válido."); return; }
+              eok.disabled = true;
+              try { await S.db.doc("lecturas/" + l.id).update({ valor: nv, okAnom: false, nota: ((l.nota ? l.nota + " · " : "") + "Corregida por " + S.nombre + " (estaba " + fmtNum(l.valor, 2) + ")") }); S.medEdL = null; S.medEdV = null; toast("Lectura corregida"); }
+              catch (err){ toast("No se pudo corregir. Revisa tu señal e intenta de nuevo."); eok.disabled = false; }
+            };
+            var ecx = el("button", "small", "Cancelar"); ecx.type = "button"; ecx.onclick = function(){ S.medEdL = null; S.medEdV = null; render(); };
+            bx.appendChild(eok); bx.appendChild(ecx);
+          } else { var ebt = el("button", "small", "Corregir el número"); ebt.type = "button"; ebt.onclick = function(){ S.medEdL = l.id; S.medEdV = null; render(); }; bx.appendChild(ebt); }
           var q = el("button", "small" + (quitarL === l.id ? " armado" : ""), quitarL === l.id ? "Confirmar" : "Quitar");
           q.onclick = async function(){ if (quitarL !== l.id){ quitarL = l.id; render(); return; } quitarL = null; try { await S.db.doc("lecturas/" + l.id).delete(); toast("Lectura quitada"); } catch (err){ toast("No se pudo quitar."); } };
           bx.appendChild(q);

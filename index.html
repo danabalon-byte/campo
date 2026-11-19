@@ -8288,6 +8288,12 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       out.push({ l: l, d: an || base == null ? null : l.valor - base, an: an, ref: an ? base : null });
       if (!an) base = l.valor;
     });
+    /* Salto atípico: una lectura que sube muchísimo más que todas las demás (por ejemplo, un dígito de más al escribirla). Se marca para revisarla y no aplasta el gráfico. */
+    out.forEach(function(x, i){
+      if (x.d == null || x.d <= 0) return;
+      var otros = out.filter(function(y, j){ return j !== i && y.d != null && y.d > 0; }).map(function(y){ return y.d; }), mxO = otros.length ? Math.max.apply(null, otros) : 0, prev = x.l.valor - x.d;
+      if ((out.length >= 4 && mxO > 0 && x.d > 10 * mxO && x.d > 0.5 * prev) || (prev > 0 && x.d > 3 * prev)) x.sa = true;
+    });
     return out;
   }
   function medAnomalias(){ var out = []; medidoresAct().forEach(function(m){ medFilas(medLect(m.id)).forEach(function(x){ if (x.an) out.push({ m: m, l: x.l, ref: x.ref }); }); }); return out; }
@@ -8485,6 +8491,13 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     if (!mdForzar && ((ant && v < ant.valor) || (sig && v > sig.valor))){
       mdForzar = true; $("mdAviso").textContent = ant && v < ant.valor ? "Es menor que la lectura anterior (" + fmtNum(ant.valor, 2) + "). ¿Se reinició el medidor o hay un error al escribir? Si es correcto, toca «Guardar igual»." : "Es mayor que una lectura posterior (" + fmtNum(sig.valor, 2) + "). Revisa el número o la fecha. Si es correcto, toca «Guardar igual».";
       $("mdAviso").hidden = false; $("mdOk").textContent = "Guardar igual"; return;
+    }
+    if (!mdForzar && ant && ant.valor > 0 && v > ant.valor){
+      var dsAnt = medFilas(L).filter(function(y){ return y.d != null && y.d > 0 && y.l.fecha <= f; }).map(function(y){ return y.d; }), mxA = dsAnt.length >= 3 ? Math.max.apply(null, dsAnt) : 0, dnew = v - ant.valor;
+      if (dnew > 3 * ant.valor || (mxA > 0 && dnew > 10 * mxA && dnew > 0.5 * ant.valor)){
+        mdForzar = true; $("mdAviso").textContent = "Sube " + fmtNum(dnew, 1) + " desde la lectura anterior (" + fmtNum(ant.valor, 2) + "), mucho más que lo habitual. ¿Escribiste un dígito de más o corriste la coma? Si es correcto, toca «Guardar igual».";
+        $("mdAviso").hidden = false; $("mdOk").textContent = "Guardar igual"; return;
+      }
     }
     var b = $("mdOk"); b.disabled = true;
     try {
@@ -8703,12 +8716,13 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     function medDelta(d){ return (d >= 0 ? "+" : "−") + fmtNum(Math.abs(d), 1) + " " + un; }
     var conC = rowsL.filter(function(x){ return x.d != null; }).slice(-12);
     if (conC.length >= 2){
-      var gc = el("section", "card sect"), gh = el("div", "who"), sumC = 0, mxC = 0; conC.forEach(function(x){ sumC += x.d; mxC = Math.max(mxC, Math.abs(x.d)); });
-      gh.appendChild(el("h2", null, "Consumo por lectura")); gh.appendChild(el("span", "chip info", "promedio " + fmtNum(sumC / conC.length, 1) + " " + un)); gc.appendChild(gh);
+      var gc = el("section", "card sect"), gh = el("div", "who"), sumC = 0, mxC = 0; var nSa = 0; conC.forEach(function(x){ if (x.sa){ nSa++; return; } sumC += x.d; mxC = Math.max(mxC, Math.abs(x.d)); });
+      gh.appendChild(el("h2", null, "Consumo por lectura")); gh.appendChild(el("span", "chip info", "promedio " + fmtNum(sumC / Math.max(1, conC.length - nSa), 1) + " " + un)); gc.appendChild(gh);
+      if (nSa) gc.appendChild(el("p", "note", "Hay " + (nSa === 1 ? "una lectura con un salto" : nSa + " lecturas con un salto") + " mucho mayor que el resto (barra pálida con «!»). Toca la barra y revisa si el número se escribió bien; si no, corrígela. No entra en el promedio."));
       var bars = el("div", "ml-bars"), labs = el("div", "ml-bl");
       conC.forEach(function(x, i){
         var b = el("button", "ml-bar" + (x.l.id === S.medLSel ? " on" : "")), bi = el("i"); b.type = "button"; b.setAttribute("aria-label", medFC(x.l.fecha) + ": " + medDelta(x.d));
-        bi.style.height = Math.max(4, mxC ? Math.abs(x.d) / mxC * 100 : 4) + "%"; b.appendChild(bi);
+        bi.style.height = x.sa ? "100%" : Math.max(4, mxC ? Math.abs(x.d) / mxC * 100 : 4) + "%"; if (x.sa){ bi.style.opacity = ".4"; bi.style.backgroundImage = "repeating-linear-gradient(45deg, transparent 0 4px, rgba(0,0,0,.25) 4px 8px)"; b.setAttribute("aria-label", medFC(x.l.fecha) + ": " + medDelta(x.d) + " (salto muy grande, revisar)"); } b.appendChild(bi);
         b.onclick = function(){ S.medLSel = S.medLSel === x.l.id ? "" : x.l.id; if (!S.medAb) S.medAb = {}; S.medAb[m.id + "|" + x.l.fecha.slice(0, 7)] = true; render(); };
         bars.appendChild(b);
         var mm = x.l.fecha.slice(5, 7); labs.appendChild(el("span", null, Number(x.l.fecha.slice(8)) + (i === 0 || conC[i - 1].l.fecha.slice(5, 7) !== mm ? " " + RV_MES[Number(mm) - 1] : "")));

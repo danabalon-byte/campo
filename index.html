@@ -5351,7 +5351,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var mx = Math.max.apply(null, dias.map(function(d){ return d.v; }).concat([1])), sv = pnSvg("svg", { viewBox: "0 0 300 96", width: "100%", height: "96", role: "img", "aria-label": "kWh por día de la última semana" });
     dias.forEach(function(d, k){ var h = Math.round(d.v / mx * 60); pnSvg("rect", { x: String(12 + k * 41), y: String(72 - h), width: "28", height: String(Math.max(h, 2)), rx: "6", fill: "var(--pn-am)", opacity: d.v ? "1" : ".3" }, sv); var t = pnSvg("text", { x: String(26 + k * 41), y: "90", "text-anchor": "middle", "font-size": "11", fill: "var(--muted)" }, sv); t.textContent = "DLMXJVS".charAt(new Date(d.f + "T12:00:00Z").getUTCDay()); });
     b.appendChild(sv);
-    b.appendChild(el("p", "note", "Tarifa $" + nf(tf, 0) + " por kWh con IVA. Lectura de " + fmtD2(p.ref.fecha) + " a " + fmtD2(p.ult.fecha) + "."));
+    b.appendChild(el("p", "note", "Tarifa $" + nf(tf, 0) + " por kWh con IVA; la boleta suma además un cargo fijo de $" + nf(EQ_FIJO, 0) + " al mes. Lectura de " + fmtD2(p.ref.fecha) + " a " + fmtD2(p.ult.fecha) + "."));
     b.appendChild(pnIr("Ver la lectura de luz", function(){ S.screen = "medidores"; render(); }));
   }
   function pnCuerpoEquipo(b){
@@ -7900,7 +7900,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Lectura del caudalímetro de comienzos de enero", "Para contar el año desde el 1 de enero. Si tienes una foto de esos días, anótala con su fecha."]
   ];
   var EQ_OK = ["Marco de plantación de los limones: 6 m entre hileras × 3 m sobre la hilera (confirmado por Diego el 17 nov).", "Emisores de nogales: 3 líneas por hilera; limones: 2 líneas por hilera (confirmado por Diego el 17 nov); gotero autocompensado de 2,2 L/h cada 50 cm (confirmado en terreno).", "Limones plantados: se cuentan con el número de árboles de la ficha de cada sector (Campo → Editar sector).", "Tarifa eléctrica: sacada de las cuentas de CGE (solo la ve el dueño).", "Año del derecho de agua: del 1 de enero al 31 de diciembre.", "Riego de limones: 1,5 h todos los días menos el domingo (asesor), de 9:00 a 10:30."];
-  var EQ_KWH_POZO = 0.42, EQ_KWH_REG = 0.28, EQ_TARIFA0 = 268;
+  var EQ_KWH_POZO = 0.42, EQ_KWH_REG = 0.28, EQ_TARIFA0 = 268, EQ_FIJO = 5063; /* cargo fijo mensual con IVA: administración $900 + arriendo de medidor $3.355 + IVA (boleta CGE oct 2026) */
   var eqAbre = false;
   /* Bomba inyectora de fertilización (Calpeda MXH 205/B): placa leída de la foto y fotos guardadas en equipos/bomba-inyectora/. */
   var EQ_FOTOS = [["5-instalada-lateral", "Instalada, vista lateral"], ["6-instalada-superior-1", "Instalada, desde arriba"], ["7-instalada-superior-2", "Instalada, desde arriba (otra toma)"], ["4-placa", "Placas de la bomba y del motor"], ["1-caja-bornes-general", "Caja de bornes del motor, vista general"], ["2-caja-bornes-detalle-1", "Caja de bornes, detalle"], ["3-caja-bornes-detalle-2", "Caja de bornes, detalle (otra toma)"]];
@@ -7970,7 +7970,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       c.appendChild(el("p", "sub", "• Pozo: unos " + nf(EQ_KWH_POZO, 2) + " kWh por m³ = $" + nf(EQ_KWH_POZO * t, 0) + " por m³."));
       c.appendChild(el("p", "sub", "• Regar desde el acumulador (Reggio): unos " + nf(EQ_KWH_REG, 2) + " kWh por m³ = $" + nf(EQ_KWH_REG * t, 0) + " por m³ (estimado con las lecturas de luz)."));
       c.appendChild(el("p", "sub", "• Del pozo al riego: unos $" + nf(m3, 0) + " por m³. Un riego de limones de 1,5 h cuesta unos $" + nf(m3 * 16.2, 0) + "; un turno de 3 h en un sector de nogal, unos $" + nf(m3 * 42.9, 0) + "."));
-      c.appendChild(el("p", "note", "Sin IVA son unos $225 por kWh (energía, transporte y cargos). Las cuentas de CGE tienen tarifa BT1 y 9,87 kW de potencia conectada; el pozo y la Reggio juntas suman unos 8,8 kW."));
+      c.appendChild(el("p", "note", "Cargo fijo de la boleta: $" + nf(EQ_FIJO, 0) + " al mes con IVA (administración y arriendo del medidor), aparte de los kWh. Total del mes = kWh × tarifa + cargo fijo; con 534 kWh la boleta de oct 2026 fue de $147.900 (unos $277 por kWh todo incluido). Sin IVA son unos $225 por kWh (energía, transporte y cargos). Las cuentas de CGE tienen tarifa BT1 y 9,87 kW de potencia conectada; el pozo y la Reggio juntas suman unos 8,8 kW."));
       var fi = el("div", "field"), lb = el("label", null, "Tarifa en $/kWh con IVA"); lb.htmlFor = "eqTar"; var ip = el("input"); ip.id = "eqTar"; ip.type = "text"; ip.inputMode = "decimal"; ip.maxLength = 8; ip.value = String(Math.round(t)); fi.appendChild(lb); fi.appendChild(ip); c.appendChild(fi);
       var gb = el("button", "small", "Guardar tarifa"); gb.type = "button";
       gb.onclick = async function(){ var n = leeNum(ip.value); if (n == null || n < 50 || n > 1000){ toast("Escribe un valor entre 50 y 1.000."); return; } gb.disabled = true; try { await S.db.doc("tarifas/med_m_luz").set(Object.assign({}, tl || {}, { kwh: n, por: S.nombre, ts: new Date().toISOString() })); toast("Tarifa guardada"); } catch (e){ toast("No se pudo guardar."); } gb.disabled = false; };

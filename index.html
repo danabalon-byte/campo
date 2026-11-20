@@ -2608,7 +2608,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   /* Guía de uso. Cada paso: [título, texto, desde qué versión de la guía existe, quién lo ve ("" todos, "manager" editoras, "owner" dueño)].
      REGLA: si cambias pantallas, botones o campos, actualiza los pasos que los nombran, sube GUIA_V y agrega o corrige pasos con la versión nueva:
      así las personas que ya vieron la guía reciben solo las novedades. Los nombres entre «» deben existir en la app (lo revisa test/run12.js). */
-  var GUIA_V = 82;
+  var GUIA_V = 83;
   var GUIA = [
     ["Bienvenida", "Esta app sirve para anotar lo que pasa en el campo: cuándo llegas, qué trabajo hiciste, qué aplicaste y cuánto regaste. Todo se guarda solo y Diego lo ve.", 1, ""],
     ["Llegué y Me voy", "En «Inicio», al abrir la app te recibe una tarjeta con el saludo: toca «Llegué» para registrar tu llegada. Después, el encabezado de «Inicio» muestra el botón «Me voy» para cuando termines. Si sales a almorzar, usa «Me voy» y luego «Volví al campo».", 1, ""],
@@ -2631,6 +2631,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["Programar riegos", "En «Riego», el botón «Programar riego» (o «Voy a regar» dentro del formulario) agenda riegos futuros: elige el sector, los días en el calendario y las horas previstas. Puedes repetirlo cada cierto número de días hasta una fecha. Aparecen en la Agenda y en «Riegos programados», donde se pueden cambiar o quitar.", 26, "manager"],
     ["Riego de los 4 nogales", "En «Programar riego» (o «Ya regué») elige la opción Nogales, al comienzo de la lista de sectores. Pon la hora en que parte el sector 1 y las horas por sector: la app calcula la hora de cada sector siguiente, sin pausas, y muestra el total de horas, a qué hora termina, el agua estimada y avisos si pasa de medianoche, se cruza con otro riego o excede el derecho de agua. Si cambias la hora de uno, los que siguen se mueven solos.", 28, "manager"],
     ["Vista de riegos programados", "En «Riego», «Riegos programados» muestra un tablero de la semana: una fila por sector y una columna por día, con las horas de cada riego (hecho, programado o atrasado). Toca un día o una celda y debajo aparece la línea de tiempo de ese día; el botón ✓ de un riego abre «Registrar riego» y, si eres encargada o dueño, tocar el riego te deja cambiarlo o quitarlo. Con las flechas cambias de semana y «Volver a esta semana» te trae de vuelta. El pulsador «Vista en vivo» cambia a una agenda: arriba dice qué sector se está regando, cuánto falta y cuál sigue, y abajo van los atrasados y los próximos días. Se actualiza sola cada minuto y el pulsador queda como lo dejaste en este teléfono.", 31, ""],
+    ["Resumen de la semana", "En «Panel» está la tarjeta «Resumen de la semana»: muestra el porcentaje de tareas hechas, el riego de nogales y limones frente a su objetivo, el cumplimiento de cada responsable, las horas trabajadas según la asistencia y la lista de pendientes. Con las flechas ‹ › cambias de semana, y «Copiar resumen para WhatsApp» lo deja listo para enviar.", 83, "manager"],
     ["Llegada y salida por ubicación", "Si activas la ubicación en tu teléfono, al abrir la app dentro del campo sin haber marcado llegada te pregunta «¿Registrar llegada?», y si ya saliste con la jornada abierta te pregunta por la salida. Diego puede dejarlo en «preguntar» o en «automático». Solo funciona con la app abierta, no guarda dónde estás (solo queda anotado «por ubicación») y la hora es la del momento en que se detecta: si fue antes, corrígela en «Mi semana»."],
     ["Riego: avance y control", "En «Panel» está la tarjeta «Riego: avance y control». «Esta semana» se actualiza sola con los riegos: muestra por sector lo ya registrado, lo que está corriendo ahora y lo que queda programado hasta el domingo, frente al objetivo de la semana, y te dice cuántas horas faltan si no alcanza. Si un riego de hoy ya terminó y no está registrado, avisa que falta registrarlo. «Semana a semana» deja el control de las últimas 8 semanas: horas regadas frente a lo que pedía la evapotranspiración (nogales) y el programa del asesor (limones).", 81, ""],
     ["Perfiles de cada persona", "En «Trabajadores», solo para Diego, la tarjeta «Perfiles» muestra a cada persona una sola vez: su cuenta (con la que marca su llegada, comprobada por su email) y su ficha de Personal. Ahí puedes ponerle un apodo (por ejemplo «Yoli»), enlazar la ficha a la cuenta por email marcarla como «Registrada» (revisada y parte del campo) o dejarla en «No registradas» (externos y pruebas, que puedes quitar), y quitar una ficha repetida. La ficha de Personal también tiene los campos Apodo y Email. Cada persona completa sus datos (teléfono, contacto de emergencia) en una ventana que le pides desde ahí: solo ella y tú los ven. Su fecha de cumpleaños la ve el equipo: unos días antes, a todos menos a ella les aparece un aviso.", 80, "owner"],
@@ -2720,6 +2721,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
   function guiaVista(){ try { return Number(localStorage.getItem("guia_v")) || (localStorage.getItem("guia1") ? 1 : 0); } catch (e){ return 0; } }
   /* Novedades: lista corta de lo que cambió en cada versión. Cada una apunta a un paso de la guía (mismo título), que también define quién la ve. */
   var NOVEDADES = [
+    { v: 83, f: "2026-11-20", t: "Resumen de la semana", d: "Nueva tarjeta en el Panel: cumplimiento de tareas, riego frente al objetivo, avance por responsable, horas trabajadas y pendientes de cada semana, con un botón para copiarlo y enviarlo por WhatsApp.", g: "Resumen de la semana" },
     { v: 82, f: "2026-11-18", t: "Llegada y salida por ubicación", d: "Nuevo: en «Tengo un problema o una idea» puedes avisar de una falla de equipo o algo visto en el campo con foto y ubicación. Si olvidas marcar, la app detecta que estás dentro del campo (o que ya saliste) y te propone registrarlo, o lo marca sola si Diego activó el modo automático. Solo funciona con la app abierta y no guarda dónde estás. Además, las fotos del huerto y de las plantas guardan el punto donde se tomaron (con «Ver dónde se tomó»), si tienes la ubicación activada.", g: "Llegada y salida por ubicación" },
     { v: 81, f: "2026-11-18", t: "Riego: avance y control", d: "Nueva tarjeta en el Panel: avance de la semana en vivo (registrado, en curso y programado frente al objetivo) y control semana a semana de las últimas 8 semanas.", g: "Riego: avance y control" },
     { v: 80, f: "2026-11-18", t: "Perfiles de cada persona", d: "Una sola cuenta y ficha por persona: se enlazan por email, la asistencia se comprueba con él y se puede poner un apodo (ej. «Yoli»). En Trabajadores → Perfiles.", g: "Perfiles de cada persona" },
@@ -4479,6 +4481,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     ["agua", "Agua del pozo", "Derecho semanal y anual (solo dueño)", "riego", 1, "cy"],
     ["acum", "Acumulador", "Nivel y días de autonomía", "tanque", 0, "vi"],
     ["elec", "Electricidad", "kWh de la semana y su costo (solo dueño)", "bolt", 1, "am"],
+    ["resumen", "Resumen de la semana", "Lo hecho, lo pendiente, cumplimiento y responsables", "agenda", 2, "vi"],
     ["equipo", "Equipo hoy", "Quién trabaja y sus horas", "personal", 2, "gr"],
     ["bodega", "Aplicaciones y bodega", "Pendientes y poco stock", "caja", 0, "pk"]
   ];
@@ -4622,6 +4625,62 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
       out.push({ ini: ini, fin: fin, actual: k === 0, hn: hn, needN: an.need, hl: hl, objL: RG_PLAN.lim.dias.length * RG_PLAN.lim.h });
     }
     return out;
+  }
+  /* ---- Resumen de la semana: lo hecho, lo pendiente, cumplimiento y responsables ---- */
+  function rsDatos(ws){
+    var we = addDays(ws, 6), hy = fecha(), ts = S.tareas.filter(function(t){ return t.fecha >= ws && t.fecha <= we; }), an = (S.tareasAnul || []).filter(function(t){ return t.fecha >= ws && t.fecha <= we; }).length;
+    var quien = {}, tot = { h: 0, n: 0 }, lab = { h: 0, n: 0 }, rg = { h: 0, n: 0 }, pend = [];
+    ts.forEach(function(t){
+      var q = String(t.quien || "").trim() || "Sin responsable", ok = t.estado === "hecha", esR = t.tipo === "riego";
+      if (!quien[q]) quien[q] = { n: 0, h: 0 }; quien[q].n++; tot.n++; (esR ? rg : lab).n++;
+      if (ok){ quien[q].h++; tot.h++; (esR ? rg : lab).h++; } else pend.push({ t: t, q: q, atr: t.fecha < hy });
+    });
+    pend.sort(function(a, b){ return a.t.fecha < b.t.fecha ? -1 : a.t.fecha > b.t.fecha ? 1 : 0; });
+    var ps = personasHor().map(function(p){ var d = 0, m = 0; for (var k = 0; k < 7; k++){ var fd = addDays(ws, k), tr = p.dias[fd]; if (tr && tr.length){ d++; m += mins(tr, fd === hy ? Date.now() : null); } } return { n: p.nombre, d: d, m: m }; }).filter(function(p){ return p.d > 0; }).sort(function(a, b){ return b.m - a.m; });
+    var ap = S.aplicaciones.filter(function(a){ return a.fecha >= ws && a.fecha <= we; }), riegoH = avHist().filter(function(w){ return w.ini === ws; })[0] || null;
+    return { ws: ws, we: we, tot: tot, lab: lab, rg: rg, an: an, quien: quien, pend: pend, ps: ps, ap: ap, riegoH: riegoH };
+  }
+  function rsTexto(D){
+    var pc = function(x){ return x.n ? nf(x.h / x.n * 100, 0) + " %" : "—"; }, L = [];
+    L.push("Resumen de la semana " + rangoSem(D.ws, D.we));
+    L.push("Cumplimiento: " + D.tot.h + " de " + D.tot.n + " tareas (" + pc(D.tot) + "). Labores " + D.lab.h + "/" + D.lab.n + " · riegos " + D.rg.h + "/" + D.rg.n + (D.an ? " · " + D.an + " anuladas" : "") + ".");
+    if (D.riegoH){ var w = D.riegoH; if (w.needN) L.push("Nogales: " + nf(w.hn, 1) + " h por sector de " + nf(w.needN, 1) + " h necesarias (" + nf(w.hn / w.needN * 100, 0) + " %)."); L.push("Limones: " + nf(w.hl, 1) + " h de " + nf(w.objL, 1) + " h (" + nf(w.hl / w.objL * 100, 0) + " %)."); }
+    L.push("Responsables:"); Object.keys(D.quien).sort().forEach(function(k){ var q = D.quien[k]; L.push("- " + k + ": " + q.h + "/" + q.n + " (" + nf(q.h / q.n * 100, 0) + " %)"); });
+    if (D.ps.length){ L.push("Horas trabajadas:"); D.ps.forEach(function(p){ L.push("- " + p.n + ": " + dur(p.m) + " en " + p.d + (p.d === 1 ? " día" : " días")); }); }
+    if (D.ap.length) L.push("Aplicaciones hechas: " + D.ap.length + ".");
+    if (D.pend.length){ L.push("Pendientes (" + D.pend.length + "):"); D.pend.slice(0, 15).forEach(function(x){ L.push("- " + fmtD2(x.t.fecha) + " " + (x.t.titulo || "Tarea") + " · " + x.q + (x.atr ? " (atrasada)" : "")); }); }
+    return L.join("\n");
+  }
+  function pnCuerpoResumen(b){
+    var hy = fecha(), ws0 = weekStart(hy), ws = PN.rs && PN.rs <= ws0 ? PN.rs : ws0, D = rsDatos(ws);
+    var nav = el("div", "mes"), pv = el("button", null, "‹"), nx = el("button", null, "›");
+    pv.type = nx.type = "button"; pv.setAttribute("aria-label", "Semana anterior"); nx.setAttribute("aria-label", "Semana siguiente");
+    pv.onclick = function(){ PN.rs = addDays(ws, -7); render(); }; nx.disabled = ws >= ws0; nx.onclick = function(){ var n = addDays(ws, 7); PN.rs = n >= ws0 ? ws0 : n; render(); };
+    nav.appendChild(pv); nav.appendChild(el("b", null, rangoSem(D.ws, D.we) + (ws === ws0 ? " · esta semana" : ""))); nav.appendChild(nx); b.appendChild(nav);
+    if (!D.tot.n && !D.ps.length){ b.appendChild(el("p", "note", "No hay tareas ni asistencia registradas en esta semana.")); return; }
+    var pg = D.tot.n ? D.tot.h / D.tot.n * 100 : 0, wrap = el("div", "pn-bw"), hd = el("div", "pn-bh");
+    hd.appendChild(el("b", null, "Cumplimiento de tareas")); hd.appendChild(el("span", "pn-c " + pnCol(pg), D.tot.n ? nf(pg, 0) + " %" : "—")); wrap.appendChild(hd); wrap.appendChild(pnBarra(pg, pnCol(pg)));
+    wrap.appendChild(el("p", "note", D.tot.h + " de " + D.tot.n + " tareas hechas · labores " + D.lab.h + "/" + D.lab.n + " · riegos " + D.rg.h + "/" + D.rg.n + (D.an ? " · " + D.an + " anuladas (no cuentan)" : ""))); b.appendChild(wrap);
+    if (D.riegoH){
+      var w = D.riegoH; b.appendChild(el("p", "pn-te", "Riego (horas registradas frente al objetivo)"));
+      if (w.needN){ var pn = w.hn / w.needN * 100, r1 = el("div", "pn-br"); r1.appendChild(el("span", null, "Nogales")); r1.appendChild(pnBarra(pn, pnCol(pn))); r1.appendChild(el("b", null, nf(pn, 0) + " %")); b.appendChild(r1); }
+      var pl = w.objL ? w.hl / w.objL * 100 : 0, r2 = el("div", "pn-br"); r2.appendChild(el("span", null, "Limones")); r2.appendChild(pnBarra(pl, pnCol(pl))); r2.appendChild(el("b", null, nf(pl, 0) + " %")); b.appendChild(r2);
+    }
+    var ks = Object.keys(D.quien).sort(function(x, y){ return D.quien[y].n - D.quien[x].n; });
+    if (ks.length){ b.appendChild(el("p", "pn-te", "Por responsable (tareas hechas / asignadas)")); ks.forEach(function(k){ var q = D.quien[k], p = q.n ? q.h / q.n * 100 : 0, r = el("div", "pn-br"); r.appendChild(el("span", null, k)); r.appendChild(pnBarra(p, pnCol(p))); r.appendChild(el("b", null, q.h + "/" + q.n)); b.appendChild(r); }); }
+    if (D.ps.length){
+      var mx = Math.max.apply(null, D.ps.map(function(p){ return p.m; })) || 1; b.appendChild(el("p", "pn-te", "Horas trabajadas (según asistencia)"));
+      D.ps.forEach(function(p){ var r = el("div", "pn-br"); r.appendChild(el("span", null, p.n)); r.appendChild(pnBarra(p.m / mx * 100, "gr")); r.appendChild(el("b", null, dur(p.m))); b.appendChild(r); });
+    }
+    if (D.ap.length) b.appendChild(el("p", "note", "Aplicaciones hechas: " + D.ap.length + "."));
+    if (D.pend.length){
+      b.appendChild(el("p", "pn-te", "Pendientes (" + D.pend.length + ")"));
+      D.pend.slice(0, 12).forEach(function(x){ b.appendChild(el("p", "note" + (x.atr ? " warn" : ""), fmtD2(x.t.fecha) + " · " + (x.t.titulo || "Tarea") + " · " + x.q + (x.atr ? " · atrasada" : ""))); });
+      if (D.pend.length > 12) b.appendChild(el("p", "note", "y " + (D.pend.length - 12) + " más en la agenda."));
+    } else if (D.tot.n) b.appendChild(el("p", "note", "No quedan tareas pendientes en esta semana."));
+    var bc = el("button", "small", "Copiar resumen para WhatsApp"); bc.type = "button";
+    bc.onclick = function(){ var t = rsTexto(D); if (navigator.share){ navigator.share({ text: t }).catch(function(){}); return; } try { navigator.clipboard.writeText(t).then(function(){ toast("Resumen copiado"); }, function(){ toast("No se pudo copiar."); }); } catch (e){ toast("No se pudo copiar."); } };
+    b.appendChild(bc);
   }
   function pnCuerpoRiegoAv(b){
     var G = avRiego();
@@ -5319,6 +5378,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
     var D;
     if (k === "alertas"){ var n = pnAlertasLista().length; return n ? n + (n === 1 ? " cosa por atender" : " cosas por atender") : "Todo al día"; }
     if (k === "riego"){ D = pnRiegoDatos(); return D.length ? D.map(function(d){ return d.n + " " + nf(d.pct, 0) + " %"; }).join(" · ") : "Calculando…"; }
+    if (k === "resumen"){ var Dr = rsDatos(weekStart(fecha())); return Dr.tot.n ? Dr.tot.h + " de " + Dr.tot.n + " tareas hechas (" + nf(Dr.tot.h / Dr.tot.n * 100, 0) + " %)" : "Sin tareas esta semana"; }
     if (k === "riegoav"){ var G = avRiego(); if (!G.length) return "Calculando…"; var gn = G.filter(function(g){ return g.nog; }), gl = G.filter(function(g){ return !g.nog; })[0], tx = [];
       if (gn.length) tx.push("Nogales llegan a " + nf(gn.reduce(function(a, g){ return a + (g.obj > 0 ? g.proy / g.obj * 100 : 100); }, 0) / gn.length, 0) + " %"); if (gl) tx.push("Limones " + nf(gl.obj > 0 ? gl.proy / gl.obj * 100 : 100, 0) + " %"); return tx.join(" · "); }
     if (k === "equipo"){ var on = ecGente().filter(function(g){ return g.est === "on"; }).length; return on + (on === 1 ? " persona en el campo" : " personas en el campo"); }
@@ -5370,7 +5430,7 @@ html.viv[data-theme="dark"] .vs-mi{--on1:#2FA85F; --on2:#1F8C4B}
         var L = pnAlertasLista(); if (!L.length){ b.appendChild(el("p", "note", "No hay alertas ni recordatorios urgentes.")); return; }
         L.slice(0, 6).forEach(function(a){ var r = el("div", "pn-al " + a.c); r.appendChild(el("i", "pn-dot")); var c = el("div", "pn-pc"); c.appendChild(el("b", null, a.t)); if (a.s) c.appendChild(el("span", "note", a.s)); r.appendChild(c); r.appendChild(pnIr("Ir", a.ir)); b.appendChild(r); });
         if (L.length > 6) b.appendChild(el("p", "note", "y " + (L.length - 6) + " más en Inicio"));
-      }, riego: pnCuerpoRiego, riegoav: pnCuerpoRiegoAv, agua: pnCuerpoAgua, acum: pnCuerpoAcum, elec: pnCuerpoElec, equipo: pnCuerpoEquipo, bodega: pnCuerpoBodega }[x[0]];
+      }, riego: pnCuerpoRiego, riegoav: pnCuerpoRiegoAv, resumen: pnCuerpoResumen, agua: pnCuerpoAgua, acum: pnCuerpoAcum, elec: pnCuerpoElec, equipo: pnCuerpoEquipo, bodega: pnCuerpoBodega }[x[0]];
       f.appendChild(pnCaja(x, pnPgDe(x[0]), cuerpo));
     });
     if (!alguna) f.appendChild(el("p", "note", "No tienes tarjetas activas. Enciéndelas en «Ajustes del panel»."));

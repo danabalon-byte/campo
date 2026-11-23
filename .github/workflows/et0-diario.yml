@@ -1,4 +1,4 @@
-name: Clima diario Chincolco (ET0, grados día, heladas)
+name: Clima diario Chincolco (ET0, grados día, heladas, pronóstico)
 on:
   schedule:
     - cron: "17 11 * * *"   # 11:17 UTC (~08:17 hora de Chile)
@@ -14,11 +14,15 @@ jobs:
         run: python3 et0/actualizar.py
       - name: Descargar grados día y heladas
         run: python3 clima/actualizar.py
+      - name: Guardar pronóstico Open-Meteo (no detiene el flujo si falla)
+        continue-on-error: true
+        run: python3 pronostico/actualizar.py
       - name: Guardar cambios
         run: |
           git config user.name "et0-bot"
           git config user.email "et0-bot@users.noreply.github.com"
           git add et0/chincolco.json et0/chincolco-resumen.json clima/chincolco-gd.json clima/chincolco-heladas.json
+          git add pronostico/openmeteo.csv pronostico/resumen.json 2>/dev/null || true
           git diff --cached --quiet && echo "Sin cambios" && exit 0
           git commit -m "Datos: clima diario Chincolco $(date -u +%F)"
           git push

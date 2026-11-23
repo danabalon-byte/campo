@@ -12,7 +12,7 @@ CSV = RAIZ / "openmeteo.csv"
 RESUMEN = RAIZ / "resumen.json"
 MEDIDA = RAIZ.parent / "et0" / "chincolco.json"
 MODELOS = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]
-LAT, LON = -32.25, -71.0   # punto de grilla cercano a Chincolco (la grilla no es la estación)
+LAT, LON = -32.2225, -70.83167   # coordenadas de la estación Liceo Agrícola Chincolco (665 m)
 URL = ("https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=%s"
        "&daily=et0_fao_evapotranspiration,temperature_2m_max,temperature_2m_min,precipitation_sum"
        "&timezone=America%%2FSantiago&forecast_days=8" % (LAT, LON, ",".join(MODELOS)))

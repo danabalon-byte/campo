@@ -1,5 +1,27 @@
 {
  "actualizado": "2026-11-24",
  "nota": "sesgo = pronóstico − medido (mm/día); plazo 0 = mismo día de la emisión",
- "modelos": {}
+ "modelos": {
+  "ecmwf_ifs025": {
+   "0": {
+    "n": 1,
+    "sesgo_mm": -0.81,
+    "rmse_mm": 0.81
+   }
+  },
+  "gfs_seamless": {
+   "0": {
+    "n": 1,
+    "sesgo_mm": 1.18,
+    "rmse_mm": 1.18
+   }
+  },
+  "icon_seamless": {
+   "0": {
+    "n": 1,
+    "sesgo_mm": 0.23,
+    "rmse_mm": 0.23
+   }
+  }
+ }
 }

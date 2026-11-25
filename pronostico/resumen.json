@@ -1,26 +1,41 @@
 {
- "actualizado": "2026-11-24",
+ "actualizado": "2026-11-25",
  "nota": "sesgo = pronóstico − medido (mm/día); plazo 0 = mismo día de la emisión",
  "modelos": {
   "ecmwf_ifs025": {
    "0": {
+    "n": 2,
+    "sesgo_mm": -0.7,
+    "rmse_mm": 0.71
+   },
+   "1": {
     "n": 1,
-    "sesgo_mm": -0.81,
-    "rmse_mm": 0.81
+    "sesgo_mm": -0.63,
+    "rmse_mm": 0.63
    }
   },
   "gfs_seamless": {
    "0": {
+    "n": 2,
+    "sesgo_mm": 0.75,
+    "rmse_mm": 0.86
+   },
+   "1": {
     "n": 1,
-    "sesgo_mm": 1.18,
-    "rmse_mm": 1.18
+    "sesgo_mm": 0.23,
+    "rmse_mm": 0.23
    }
   },
   "icon_seamless": {
    "0": {
+    "n": 2,
+    "sesgo_mm": 0.06,
+    "rmse_mm": 0.18
+   },
+   "1": {
     "n": 1,
-    "sesgo_mm": 0.23,
-    "rmse_mm": 0.23
+    "sesgo_mm": -0.34,
+    "rmse_mm": 0.34
    }
   }
  }

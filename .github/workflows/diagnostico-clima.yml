@@ -1,0 +1,20 @@
+name: Diagnóstico clima (una sola vez, solo en esta rama)
+on:
+  push:
+    branches: [diagnostico-clima]
+permissions:
+  contents: write
+jobs:
+  diagnosticar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sondear agrometeorologia.cl
+        run: python3 clima/diagnostico.py
+      - name: Guardar resultado en la rama
+        run: |
+          git config user.name "et0-bot"
+          git config user.email "et0-bot@users.noreply.github.com"
+          git add clima/diagnostico.txt
+          git commit -m "Diagnóstico clima: resultado" || exit 0
+          git push

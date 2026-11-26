@@ -114,6 +114,10 @@ def semana(lun, hoy, med, clima, pron, previa):
         for dia in dias:
             if dia < e and med.get(dia) is not None: tot += med[dia]; continue
             p = proy_dia(pron, e, dia, ses_e)
+            if p is None and dia < e:
+                # día ya pasado sin medición aún: se usa la última proyección previa a esa emisión
+                prev = [k[0] for k in pron if k[1] == dia and k[0] <= e]
+                if prev: p = proy_dia(pron, max(prev), dia, ses_e)
             if p is None: sd += 1; continue
             tot += p
         out["historial"].append({"emision": e, "total_mm": round(tot, 2) if not sd else None, "sin_dato": sd})

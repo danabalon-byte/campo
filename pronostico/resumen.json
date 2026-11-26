@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-25",
+ "actualizado": "2026-11-26",
  "nota": "sesgo = pronóstico − medido (mm/día); plazo 0 = mismo día de la emisión",
  "modelos": {
   "ecmwf_ifs025": {

@@ -20,12 +20,15 @@ jobs:
       - name: Guardar pronóstico Open-Meteo (no detiene el flujo si falla)
         continue-on-error: true
         run: python3 pronostico/actualizar.py
+      - name: Registrar la semana de ET0 (proyección inicial y actual) (no detiene el flujo si falla)
+        continue-on-error: true
+        run: python3 pronostico/semanas.py
       - name: Guardar cambios
         run: |
           git config user.name "et0-bot"
           git config user.email "et0-bot@users.noreply.github.com"
           git add et0/chincolco.json et0/chincolco-resumen.json clima/chincolco-gd.json clima/chincolco-heladas.json clima/chincolco-diario.csv
-          git add pronostico/openmeteo.csv pronostico/resumen.json 2>/dev/null || true
+          git add pronostico/openmeteo.csv pronostico/resumen.json pronostico/semanas.json 2>/dev/null || true
           git diff --cached --quiet && echo "Sin cambios" && exit 0
           git commit -m "Datos: clima diario Chincolco $(date -u +%F)"
           git push

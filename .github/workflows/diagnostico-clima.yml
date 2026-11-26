@@ -1,20 +1,24 @@
-name: Diagnóstico clima (una sola vez, solo en esta rama)
+name: Prueba clima diario (solo en la rama diagnostico-clima)
 on:
   push:
     branches: [diagnostico-clima]
 permissions:
   contents: write
 jobs:
-  diagnosticar:
+  probar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Sondear agrometeorologia.cl
-        run: python3 clima/diagnostico.py
+      - name: Probar script con copia del CSV
+        run: |
+          cp clima/chincolco-diario.csv clima/prueba-diario.csv
+          python3 clima/diario.py --mostrar --destino clima/prueba-diario.csv | tee clima/diagnostico.txt
+          diff <(head -2899 clima/chincolco-diario.csv) <(head -2899 clima/prueba-diario.csv) > clima/diff-historico.txt || true
+          tail -14 clima/prueba-diario.csv >> clima/diagnostico.txt
       - name: Guardar resultado en la rama
         run: |
           git config user.name "et0-bot"
           git config user.email "et0-bot@users.noreply.github.com"
-          git add clima/diagnostico.txt
-          git commit -m "Diagnóstico clima: resultado" || exit 0
+          git add clima/diagnostico.txt clima/prueba-diario.csv clima/diff-historico.txt
+          git commit -m "Prueba clima diario: resultado" || exit 0
           git push
